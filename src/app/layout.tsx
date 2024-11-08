@@ -1,4 +1,4 @@
-import Head from 'next/head';
+// import Head from 'next/head';
 import './globals.css';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

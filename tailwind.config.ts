@@ -13,7 +13,8 @@ const config: Config = {
         foreground: "var(--foreground)",
         titleColor: "#171719",
         descriptionColor : "#5E5E5E",
-        detailColor : "#858587"
+        detailColor : "#858587",
+        strokeColor : "#F1F1F1"
       },
     },
   },
