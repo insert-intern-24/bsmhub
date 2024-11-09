@@ -59,7 +59,7 @@ const Detail: React.FC<WholeDetailProps> = ({
 				{/* 텍스트 넣는 곳이 여기에요~~ */}
 				{symbol=='link' ? 
 				<a href={address}>{value}</a>
-				: <span className="text-base">{value}</span>
+				: <span className="text-[0.875rem]">{value}</span>
 				}
 
         {/* symbol이 'license'이고 certified가 true일 경우 인증 아이콘 표시 */}

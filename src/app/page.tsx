@@ -1,5 +1,5 @@
 import Detail from './components/shared/Detail';
-import Description from './components/shared/Description';
+// import Description from './components/shared/Description';
 
 export default function Home() {
 	return (
