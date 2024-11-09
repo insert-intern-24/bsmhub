@@ -7,7 +7,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 		<html lang="en">
 			<body>
 				<Header />
-				<main className="bg-[#F5F5F7]">
+				<main className="bg-[#F5F5F7] mt-14">
 					{/* 페이지 콘텐츠 */}
 					{children}
 				</main>
