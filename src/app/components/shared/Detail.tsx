@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 
 interface DetailProps {
-  symbol?: 'prize' | 'link' | 'license';
   value: string;
   edit?: boolean;
 }
@@ -21,7 +20,11 @@ interface DetailLinkProps extends DetailProps {
   address: string;
 }
 
-type WholeDetailProps = DetailLicenseProps | DetailLinkProps | DetailPrizeProps;
+type WholeDetailProps = 
+  | (DetailLicenseProps & { symbol: 'license' })
+  | (DetailPrizeProps & { symbol: 'prize' })
+  | (DetailLinkProps & { symbol: 'link' });
+
 
 const symbolName = {
   license: 'id_card',

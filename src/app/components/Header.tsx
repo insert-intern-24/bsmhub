@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Header() {
 	return (
-		<header className="select-none bg-white border-b-[0.25rem] border-strokeColor w-[100%] fixed top-0 z-40">
+		<header className="select-none bg-white border-b-[0.12rem] border-strokeColor w-[100%] fixed top-0 z-40">
 			<div className='flex items-center justify-between max-w-custom mx-auto py-3'>
 				<a href='' className="text-xl text-titleColor">
 					<b>부산소프트웨어마이스터고</b> 프로젝트의장

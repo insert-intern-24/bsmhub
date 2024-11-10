@@ -6,7 +6,7 @@ import Footer from './components/Footer';
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en">
-			<body>
+			<body className='bg-[#F5F5F7]'>
 				<Header />
 				<main className="bg-[#F5F5F7] mt-14">
 					{/* 페이지 콘텐츠 */}
