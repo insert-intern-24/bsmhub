@@ -17,7 +17,9 @@ const config: Config = {
         titleColor: "#171719",
         descriptionColor : "#5E5E5E",
         detailColor : "#858587",
-        strokeColor : "#F1F1F1"
+        strokeColor : "#F1F1F1",
+        footerTextColor : "#7E7E8C",
+        footerBgColor : "#EDEDED",
       },
     },
   },
