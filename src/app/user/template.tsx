@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import TabButton from '@components/TabButton';
-import DetailBox from '@components/DetailBox';
+import DetailBoxes from '@components/DetailBoxes';
 
 const UserTemplate = () => {
   return (
@@ -32,12 +32,7 @@ const UserTemplate = () => {
         <div className='w-full h-32 text-titleColor'>
           마크다운 들어가는 섹션
         </div>
-        <div className='w-full h-32 flex gap-6'>
-          <DetailBox />
-          <DetailBox />
-          <DetailBox />
-          <DetailBox />
-        </div>
+        <DetailBoxes />
       </section> 
     </>
     );
