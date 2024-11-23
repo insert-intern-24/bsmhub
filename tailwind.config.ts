@@ -8,6 +8,12 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      padding: {
+        "14px": "0.875rem",
+      },
+      text: {
+        "14px": "0.875rem",
+      },
       fontFamily: {
         threat: ['Threat', 'sans-serif'],
       },

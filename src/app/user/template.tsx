@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
-import TabButton from '../components/TabButton';
+import TabButton from '@components/TabButton';
+import DetailBoxes from '@components/DetailBoxes';
 
 const UserTemplate = () => {
   return (
@@ -28,7 +29,11 @@ const UserTemplate = () => {
             <TabButton tab="posts" />
           </ul>
         </nav>
-      </section>
+        <div className='w-full h-32 text-titleColor'>
+          마크다운 들어가는 섹션
+        </div>
+        <DetailBoxes />
+      </section> 
     </>
     );
 }

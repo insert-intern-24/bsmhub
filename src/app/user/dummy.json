@@ -1,0 +1,60 @@
+[
+  {
+    "symbol": "license",
+    "details": [
+      {
+        "value": "Software Engineer Certification",
+        "certified": true,
+        "edit": false
+      },
+      {
+        "value": "Project Manager Certification",
+        "certified": false,
+        "edit": false
+      }
+    ]
+  },
+  {
+    "symbol": "prize",
+    "details": [
+      {
+        "value": "Employee of the Year",
+        "edit": false
+      },
+      {
+        "value": "Best Innovator Award",
+        "edit": false
+      }
+    ]
+  },
+  {
+    "symbol": "link",
+    "details": [
+      {
+        "value": "Visit GitHub",
+        "address": "https://github.com/user",
+        "edit": false
+      },
+      {
+        "value": "Personal Blog",
+        "address": "https://userblog.com",
+        "edit": false
+      }
+    ]
+  },
+  {
+    "symbol": "link",
+    "details": [
+      {
+        "value": "Visit GitHub",
+        "address": "https://github.com/user",
+        "edit": false
+      },
+      {
+        "value": "Personal Blog",
+        "address": "https://userblog.com",
+        "edit": false
+      }
+    ]
+  }
+]
