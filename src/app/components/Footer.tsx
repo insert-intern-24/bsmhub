@@ -4,7 +4,7 @@ import Image from 'next/image';
 export default function Footer() {
 	return (
 		<footer className="w-[100%] bg-footerBgColor">
-			<div className="max-w-custom mx-auto py-10 text-footerTextColor flex justify-between items-center">
+			<div className="max-w-outer mx-auto py-10 text-footerTextColor flex justify-between items-center">
 				<div className="flex flex-col">
 					<a href="" className="text-xl mb-4">
 						<b>부산소프트웨어마이스터고</b> 프로젝트의장
