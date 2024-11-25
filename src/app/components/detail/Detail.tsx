@@ -4,11 +4,13 @@ import React, { useState } from 'react';
 interface DetailProps {
 	value: string;
 	edit?: boolean;
+	address?: string;
+	certified?: boolean;
 }
 
 interface DetailLicenseProps extends DetailProps {
 	symbol: 'license';
-	certified?: boolean;
+	certified: boolean;
 }
 
 interface DetailPrizeProps extends DetailProps {
@@ -20,7 +22,7 @@ interface DetailLinkProps extends DetailProps {
 	address: string;
 }
 
-type WholeDetailProps = (DetailLicenseProps & { symbol: 'license' }) | (DetailPrizeProps & { symbol: 'prize' }) | (DetailLinkProps & { symbol: 'link' });
+type WholeDetailProps = (DetailLicenseProps | DetailPrizeProps | DetailLinkProps);
 
 const symbolName = {
 	license: 'id_card',
