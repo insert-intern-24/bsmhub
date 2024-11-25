@@ -15,7 +15,7 @@ const symbolName = {
 
 const DetailBox: React.FC<DetailBoxProps> = ({ symbol, length, data }) => {
 	return (
-		<div className="block w-[25rem] overflow-auto min-h-[9rem] h-auto p-14px mb-[1.2rem] border border-strokeColor rounded-lg">
+		<div className="block w-[21.0625rem] overflow-auto min-h-[9rem] h-auto p-14px mb-[1.2rem] border border-strokeColor rounded-lg">
 			<div className="flex gap-2">
 				<p className="text-descriptionColor">{symbolName[symbol]}</p>
 				<span className="text-descriptionColor text-14px">{length}</span>
