@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
-import UserTabs from '@components/section/UserTabs';
-import UserTabsClient from '@components/section/UserTabsClient';
+import UserTabs from '@/app/components/section/userTabs/UserTabsServer';
+import UserTabsClient from '@/app/components/section/userTabs/UserTabsClient';
 
 const UserTemplate = () => {
   return (

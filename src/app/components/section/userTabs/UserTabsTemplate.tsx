@@ -1,13 +1,9 @@
-'use client';
-// UserTabs.tsx (클라이언트 컴포넌트)
+import TabButton from '@components/TabButton';
+import tabsType from '../../tabs';
+
 import UserHome from '@components/section/UserHome';
 import UserProjects from '@components/section/UserProjects';
 import UserPosts from '@components/section/UserPosts';
-import tabsType from '../tabs';
-import TabButton from '@components/TabButton';
-// import { headers } from 'next/headers';
-import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
 
 const tabComponents: { [key: string]: JSX.Element } = {
   home: <UserHome />,
@@ -15,18 +11,12 @@ const tabComponents: { [key: string]: JSX.Element } = {
   posts: <UserPosts />,
 };
 
-const UserTabsClient = () => {
-  const [tabName, setTabName] = useState(
-    (useSearchParams().get('tab') || 'home') as tabsType,
-  );
+const UserTabsTemplate: React.FC<{
+  tabName: tabsType;
+  setTabName?: React.Dispatch<React.SetStateAction<tabsType>>;
+}> = ({ tabName, setTabName }) => {
   return (
     <>
-      <script>
-        {`
-        const serverRenderElement = document.querySelector('.serverRender').style.display = 'none';
-        console.log(serverRenderElement);
-      `}
-      </script>
       <section>
         <nav className="border-strokeColor border-b-[1px]">
           <ul className="flex">
@@ -55,4 +45,4 @@ const UserTabsClient = () => {
   );
 };
 
-export default UserTabsClient;
+export default UserTabsTemplate;
