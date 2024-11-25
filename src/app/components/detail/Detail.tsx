@@ -22,7 +22,7 @@ interface DetailLinkProps extends DetailProps {
 	address: string;
 }
 
-type WholeDetailProps = (DetailLicenseProps | DetailPrizeProps | DetailLinkProps);
+type WholeDetailProps = DetailLicenseProps | DetailPrizeProps | DetailLinkProps;
 
 const symbolName = {
 	license: 'id_card',
@@ -30,9 +30,8 @@ const symbolName = {
 	prize: 'emoji_events',
 };
 
-const Detail: React.FC<WholeDetailProps> = ({ symbol, value, certified, edit, address }) => {
+function Detail({ symbol, value, certified, edit, address }: WholeDetailProps) {
 	const [isVisible, setIsVisible] = useState(true);
-
 	const toggleVisibility = () => {
 		setIsVisible((prevState) => !prevState);
 	};
@@ -62,6 +61,6 @@ const Detail: React.FC<WholeDetailProps> = ({ symbol, value, certified, edit, ad
 			)}
 		</div>
 	);
-};
+}
 
 export default Detail;
