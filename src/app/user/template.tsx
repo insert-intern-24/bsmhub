@@ -1,6 +1,5 @@
 import React from 'react';
 import Image from 'next/image';
-import TabButton from '@components/TabButton';
 import UserTabs from '@components/section/UserTabs';
 
 const UserTemplate = () => {
@@ -21,18 +20,7 @@ const UserTemplate = () => {
 				</div>
 			</section>
 			{/* 홈/프로젝트/게시물에 대한 section */}
-			<section>
-				<nav className="border-strokeColor border-b-[0.12rem]">
-					<ul className="flex">
-						<TabButton tab="home" />
-						<TabButton tab="project" />
-						<TabButton tab="posts" />
-					</ul>
-				</nav>
-			</section>
-			<section>
-				<UserTabs/>
-			</section>
+			<UserTabs/>
 		</>
 	);
 };
