@@ -4,7 +4,7 @@ import Detail from '@components/detail/Detail';
 interface DetailBoxProps {
 	symbol: 'link' | 'license' | 'prize';
 	length?: number;
-	data: { value: string; certified: boolean; edit: boolean; address: string }[];
+	data: { value: string; certified?: boolean; edit: boolean; address?: string }[];
 }
 
 const symbolName = {
@@ -21,7 +21,14 @@ const DetailBox: React.FC<DetailBoxProps> = ({ symbol, length, data }) => {
 				<span className="text-descriptionColor text-14px">{length}</span>
 			</div>
 			{data.map((detail, index) => (
-				<Detail key={index} symbol={symbol} value={detail.value} certified={detail.certified} edit={detail.edit} address={detail.address} />
+				<Detail 
+					key={index} 
+					symbol={symbol} 
+					value={detail.value} 
+					certified={detail.certified? detail.certified : false}
+          edit={detail.edit}
+          address={detail.address ? detail.address : ""}
+				/>
 			))}
 		</div>
 	);
