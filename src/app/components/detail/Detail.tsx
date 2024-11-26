@@ -29,7 +29,7 @@ const symbolName = {
 
 function Detail({ symbol, value, certified, address }: WholeDetailProps) {
   return (
-    <div className={`w-full flex text-strokeColor justify-between select-none`}>
+    <div className={`w-full flex text-detailColor justify-between select-none`}>
       <div className="flex items-center gap-1">
         {/* symbol이 있을 경우 아이콘을 렌더링 */}
         {!!symbol && (
