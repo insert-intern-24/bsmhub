@@ -8,8 +8,18 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      padding: {
+        "14px": "0.875rem",
+      },
+      text: {
+        "14px": "0.875rem",
+      },
+      fontFamily: {
+        threat: ['Threat', 'sans-serif'],
+      },
       maxWidth: {
-        custom: '92.5rem', 
+        outer: '92.5rem', 
+        inner: '86.625rem',
       },
       colors: {
         background: "var(--background)",
@@ -26,3 +36,4 @@ const config: Config = {
   plugins: [],
 };
 export default config;
+
