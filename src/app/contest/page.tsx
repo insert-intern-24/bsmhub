@@ -1,4 +1,4 @@
-import ContestItem from '@components/shared/ContestItem';
+import ContestItem from '@components/layout/ContestItem';
 
 const ContestItems = [
 	{
@@ -35,13 +35,13 @@ const ContestItems = [
 
 function ContestPage() {
 	return (
-		<>
-			<div className="flex flex-wrap gap-5">
+		<div className="max-w-inner mx-auto">
+			<div className="flex flex-wrap gap-[0.7rem]">
 				{ContestItems.map((contest, key) => (
 					<ContestItem key={key} title={contest.title} startDate={contest.startDate} endDate={contest.endDate} />
 				))}
 			</div>
-		</>
+		</div>
 	);
 }
 
