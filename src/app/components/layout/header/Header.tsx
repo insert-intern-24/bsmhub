@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import UserComponent from './UserComponent';
+import AccountComponent from './AccountComponent';
 
 export default function Header() {
   return (
@@ -26,7 +26,7 @@ export default function Header() {
               </li>
             </ul>
           </nav>
-          <UserComponent />
+          <AccountComponent />
         </div>
       </div>
     </header>
