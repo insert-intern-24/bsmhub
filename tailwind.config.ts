@@ -37,6 +37,7 @@ const config: Config = {
         customGray: '#F5F5F7',
         customGray2: '#F2F2F2',
         followBlue: '#216BFF',
+        moreGray: '#8E8E8E',
       },
     },
   },
