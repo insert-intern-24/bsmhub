@@ -4,6 +4,7 @@ import Script from 'next/script';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { User } from '@supabase/supabase-js';
 
 // google 전역 객체에 대한 타입 정의
 declare global {
@@ -11,7 +12,7 @@ declare global {
     google: {
       accounts: {
         id: {
-          initialize: (config: any) => void;
+          initialize: (config: unknown) => void;
           prompt: () => void;
         };
       };
@@ -24,7 +25,11 @@ interface CredentialResponse {
   select_by: string;
 }
 
-const OneTapComponent = () => {
+const OneTapComponent = ({
+  setUser,
+}: {
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+}) => {
   const supabase = createClient();
 
   const router = useRouter();
@@ -49,9 +54,6 @@ const OneTapComponent = () => {
 
     const initializeGoogleOneTap = async () => {
       if (isInitialized) return;
-      const isLogined = (await supabase.auth.getUser()).data?.user;
-      console.log(isLogined);
-      if (isLogined) return;
       console.log('Initializing Google One Tap');
 
       const [nonce, hashedNonce] = await generateNonce();
@@ -80,8 +82,7 @@ const OneTapComponent = () => {
             if (error) throw error;
             console.log('Session data: ', data);
             console.log('Successfully logged in with Google One Tap');
-
-            router.push('/');
+            setUser(data.user);
           } catch (error) {
             console.error('Error logging in with Google One Tap', error);
           }

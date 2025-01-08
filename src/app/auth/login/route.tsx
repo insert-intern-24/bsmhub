@@ -3,13 +3,15 @@
 import { createClient } from '@/utils/supabase/server';
 import { NextResponse } from 'next/server';
 
-export const GET = async (request: Request) => {
+export const GET = async () => {
   try {
     const supabase = await createClient();
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'http://localhost:3000/auth/callback',
+        redirectTo: `${baseUrl}/auth/callback`,
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
