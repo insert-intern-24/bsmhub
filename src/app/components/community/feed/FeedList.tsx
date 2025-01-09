@@ -22,7 +22,7 @@ export default async function FeedList() {
           key={post.id}
           name={post.user_id}
           time={post.created_at}
-          profileImage={'asdf  '}
+          profileImage={'asdf'}
           text={post.context}
         />
       ))}
