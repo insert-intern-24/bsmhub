@@ -41,6 +41,11 @@ const config: Config = {
       },
     },
   },
-  plugins: [require('@tailwindcss/line-clamp')],
+  plugins: [
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('@tailwindcss/line-clamp'),
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('@tailwindcss/typography'),
+  ],
 };
 export default config;

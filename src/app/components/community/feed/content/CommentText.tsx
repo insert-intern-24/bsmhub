@@ -1,26 +1,27 @@
 'use client';
 import React, { useState } from 'react';
+import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
 
-interface CommentTextProps {
+export default function CommentText({
+  mdxSource,
+  text,
+}: {
+  mdxSource: MDXRemoteSerializeResult;
   text: string;
-}
-
-export default function CommentText({ text }: CommentTextProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+}) {
+  const [isExpanded, setIsExpanded] = useState(text.length < 300);
 
   const handleToggle = () => setIsExpanded((prev) => !prev);
-
   return (
     <>
       <div className="flex self-stretch flex-col gap-4 ">
-        <span
-          className={`text-black font-pretendard text-base font-normal leading-[160%] flex-col ${
-            !isExpanded &&
-            'line-clamp-8 transition-all duration-500 ease-in-out'
+        <article
+          className={`prose text-black leading-[160%] max-w-full w-full ${
+            !isExpanded && 'line-clamp-4'
           }`}
         >
-          {text}
-        </span>
+          <MDXRemote {...mdxSource} />
+        </article>
         {!isExpanded && (
           <div className="flex justify-center">
             <span

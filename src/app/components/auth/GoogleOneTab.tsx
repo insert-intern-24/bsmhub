@@ -65,7 +65,6 @@ const OneTapComponent = ({
         console.error('Error getting session', error);
       }
       if (data.session) {
-        router.push('/');
         return;
       }
 

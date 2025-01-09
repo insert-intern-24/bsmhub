@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 
 interface CommentHeaderProps {
   name: string;
@@ -15,11 +14,11 @@ export default function CommentHeader({
   return (
     <>
       <div className="flex items-center gap-2 self-stretch">
-        <Image
+        <img
           src={profileImage}
           alt="UserProfile"
-          width={(44 / 16) * 12}
-          height={(44 / 16) * 12}
+          width={`${44 / 16}rem`}
+          height={`${44 / 16}rem`}
         />
         <div className="flex items-center gap-1">
           <span className="text-black font-pretendard text-base font-bold leading-none">
