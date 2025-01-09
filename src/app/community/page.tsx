@@ -8,7 +8,7 @@ import FeedList from '../components/community/feed/FeedList';
 function MainCommunity() {
   return (
     <main className="flex gap-[0.625rem] py-[6.875rem]">
-      <section className="flex w-full flex-col items-start gap-3">
+      <section className="flex w-full flex-col items-start gap-3 max-w-[66rem]">
         <Search />
         <FeedList />
         <SuggestProfile />
