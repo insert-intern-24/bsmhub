@@ -1,8 +1,18 @@
-import React from "react";
-import Image from "next/image";
-import TeamProfile from "@public/images/icon/TeamProfile.svg";
+import React from 'react';
+import Image from 'next/image';
+import TeamProfile from '@public/images/icon/TeamProfile.svg';
 
-export default function CardHeader() {
+interface CardHeaderProps {
+  profileName: string;
+  projectStatus: string;
+  time: string;
+}
+
+export default function CardHeader({
+  profileName,
+  projectStatus,
+  time,
+}: CardHeaderProps) {
   return (
     <>
       <div className="flex items-center gap-2 self-stretch">
@@ -15,14 +25,14 @@ export default function CardHeader() {
         <div className="flex flex-col justify-center items-start">
           <div className="flex items-center">
             <span className="text-black font-pretendard text-sm font-bold leading-none">
-              TEAM FOUND
+              {profileName}
             </span>
             <span className="text-descriptionColor font-pretendard text-sm font-normal leading-none">
-              에서 새 프로젝트 출시
+              {projectStatus}
             </span>
           </div>
           <span className="text-descriptionColor font-pretendard text-xs font-normal leading-none">
-            2분전
+            {time}
           </span>
         </div>
       </div>
