@@ -12,6 +12,7 @@
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.11",
     "@tailwindcss/line-clamp": "^0.4.4",
+    "date-fns": "^4.1.0",
     "google-one-tap": "^1.0.6",
     "next": "^15.1.4",
     "next-mdx-remote": "^5.0.0",
