@@ -64,7 +64,7 @@ export default function PopularProject() {
               <span className="text-[0.75rem] text-detailColor">
                 {index + 1}
               </span>
-              <div className="w-[2.25rem] h-[2.25rem] bg-strokeColor rounded-xl"></div>
+              <div className="w-[2.25rem] h-[2.25rem] bg-strokeColor rounded-xl" />
               <div className="flex flex-col">
                 <span className="text-[0.875rem] font-bold text-titleColor">
                   {project.name}
