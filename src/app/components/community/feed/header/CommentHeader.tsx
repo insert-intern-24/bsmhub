@@ -1,4 +1,6 @@
 import React from 'react';
+import { formatDistanceToNow, parseISO } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 interface CommentHeaderProps {
   name: string;
@@ -11,6 +13,11 @@ export default function CommentHeader({
   time,
   profileImage,
 }: CommentHeaderProps) {
+  const formattedTime = formatDistanceToNow(parseISO(time), {
+    addSuffix: true,
+    locale: ko,
+  }).replace('약 ', '');
+
   return (
     <>
       <div className="flex items-center gap-2 self-stretch">
@@ -25,7 +32,7 @@ export default function CommentHeader({
             {name}
           </span>
           <span className="text-descriptionColor font-pretendard text-xs font-normal leading-none">
-            {time}
+            {formattedTime}
           </span>
         </div>
         <span className="text-followBlue font-pretendard text-sm font-normal leading-none">
