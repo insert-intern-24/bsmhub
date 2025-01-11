@@ -20,7 +20,7 @@ interface ContestListProps {
 
 function ContestList({ contests, onContestClick }: ContestListProps) {
   return (
-    <div className="w-full flex justify-center">
+    <div className="w-full p-8">
       <div className="flex flex-wrap gap-4">
         {contests.map((contest, key) => (
           <ContestItem
