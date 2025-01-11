@@ -9,11 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@tailwindcss/line-clamp": "^0.4.4",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.11",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "google-one-tap": "^1.0.6",
-    "next": "15.0.2",
+    "next": "^15.1.4",
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028"
   },

@@ -16,7 +16,7 @@ export default function SuggestProfile() {
             width={(24 / 16) * 12}
             height={(24 / 16) * 12}
           />
-          <span className="text-black font-pretendard text-base font-normal leading-none">
+          <span className="text-black  text-base font-normal leading-none">
             Recommend Profiles
           </span>
         </div>
