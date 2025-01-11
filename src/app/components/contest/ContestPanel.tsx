@@ -17,7 +17,7 @@ interface Contest {
 function SelectedContestPanel({ contest }: { contest: Contest }) {
   return (
     <div className="w-[21.0625rem] flex flex-col shrink-0 [background:linear-gradient(180deg,rgba(47,66,205,0.07)_0%,rgba(255,255,255,0.07)_100%)]">
-      <div className="mx-10 flex flex-col gap-6 mt-[12.5rem]">
+      <div className="mx-10 flex flex-col mt-[12.5rem]">
         <section className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-[0.4rem]">
@@ -38,7 +38,7 @@ function SelectedContestPanel({ contest }: { contest: Contest }) {
             <ContestInformation name="조회수" value="1089" />
           </div>
         </section>
-        <div className="w-full h-[1px] bg-strokeColor"></div>
+        <hr className="w-full h-[1px] bg-strokeColor my-6"/>
         <section className="flex flex-col gap-8">
           <ContestDetail description={contest.description} />
           <ContestDetail judges={contest.judges} />
