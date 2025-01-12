@@ -21,7 +21,7 @@ const UserHome = () => {
           })}
         </select>
       </div>
-      <div className="flex gap-[0.7rem] flex-wrap">
+      <div className="flex gap-[1.25rem] flex-wrap">
         {[...Array(7)].map((_, index) => (
           <ProjectItem
             key={index}
