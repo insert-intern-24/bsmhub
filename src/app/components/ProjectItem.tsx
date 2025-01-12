@@ -20,15 +20,8 @@ function ProjectItem({
 
   return (
     <div className="w-full sm:w-fit h-fit">
-      <div className="w-full sm:w-[21.0625rem] h-[11.8125rem] bg-[#F1F1F1] rounded-2xl overflow-hidden">
-        <Image
-          className="rounded-2xl"
-          src={imageUrl}
-          alt="Project Image"
-          layout="responsive"
-          width={337}
-          height={189}
-        />
+      <div className="w-full sm:w-[calc(20.21rem)] bg-[#F1F1F1] rounded-2xl overflow-hidden">
+        <Image className="rounded-2xl" src={imageUrl} alt="Project Image" />
       </div>
       <div className="mt-[-26px]">
         <span className="text-xs ml-3 px-4 py-[0.125rem] bg-white text-titleColor rounded-3xl">
