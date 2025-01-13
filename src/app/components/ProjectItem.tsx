@@ -20,7 +20,7 @@ function ProjectItem({
 
   return (
     <div className="w-full sm:w-fit h-fit">
-      <div className="w-full sm:w-[calc(20.21rem)] bg-[#F1F1F1] rounded-2xl overflow-hidden">
+      <div className="w-full sm:w-[20.21rem] bg-[#F1F1F1] rounded-2xl overflow-hidden">
         <Image className="rounded-2xl" src={imageUrl} alt="Project Image" />
       </div>
       <div className="mt-[-26px]">
