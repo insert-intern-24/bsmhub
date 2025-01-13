@@ -16,7 +16,7 @@ interface Contest {
 
 function SelectedContestPanel({ contest }: { contest: Contest }) {
   return (
-    <aside className="max-w-[21.0625rem] bg-contest-gradient px-10">
+    <aside className="max-w-[21.0625rem] w-full bg-contest-gradient px-10">
       <div className="mt-[12.5rem]">
         <header className="flex flex-col gap-4">
           <div className="flex flex-col gap-[0.4rem]">
@@ -26,7 +26,7 @@ function SelectedContestPanel({ contest }: { contest: Contest }) {
             </span>
           </div>
           <button className="w-full py-2 bg-titleColor rounded-[30px] font-bold text-white">
-            투표하기
+            입장하기
           </button>
           <div className="flex flex-col gap-1 text-[1rem]">
             <ContestInformation name="대상" value="1학년" />

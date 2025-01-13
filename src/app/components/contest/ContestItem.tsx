@@ -20,10 +20,10 @@ function ContestItem({ title, startDate, endDate, onClick }: ContestItemProps) {
         height={(200 * 12) / 16}
       />
       <div className="w-full h-20 flex flex-col justify-center mx-3">
-        <div className="text-titleColor text-[1rem] font-semibold leading-5">
+        <div className="text-titleColor text-base font-semibold leading-5">
           {title}
         </div>
-        <div className="text-detailColor text-[0.75rem] leading-4">
+        <div className="text-detailColor text-xs leading-4">
           {startDate} ~ {endDate}
         </div>
       </div>
