@@ -1,20 +1,29 @@
-import React from "react";
-import DetailBox from "@components/detail/DetailBox";
-import dummyData from "../../user/dummy.json";
+import React from 'react';
+import DetailBox from '@components/detail/DetailBox';
 
-const DetailBoxes = () => {
+interface ContentItem {
+  name: string
+	symbol: 'link' | 'license' | 'prize' | null;
+	details: { value: string; certified?: boolean; edit?: boolean; address?: string }[];
+}
+
+interface Contents {
+  contents: ContentItem[];
+}
+
+const DetailBoxes = ({contents}:Contents) => {
   return (
-    <div className="w-full h-fit flex flex-wrap gap-[0.7rem]">
-      {dummyData.map((item, index) => (
+    <>
+      {contents.map((item, index) => (
         <DetailBox
           key={index}
           name={item.name}
-          symbol={item.symbol as "link" | "license" | "prize" | null}
+          symbol={item.symbol}
           length={item.details.length}
-          data={item.details}
+          details={item.details}
         />
       ))}
-    </div>
+    </>
   );
 };
 

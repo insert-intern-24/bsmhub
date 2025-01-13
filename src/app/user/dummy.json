@@ -1,64 +1,58 @@
-[
-  {
-    "name" : "자격증",
-    "symbol": "license",
-    "details": [
-      {
-        "value": "Software Engineer Certification",
-        "certified": true,
-        "edit": false
-      },
-      {
-        "value": "Project Manager Certification",
-        "certified": false,
-        "edit": false
-      }
-    ]
-  },
-  {
-    "name" : "수상내역",
-    "symbol": "prize",
-    "details": [
-      {
-        "value": "Employee of the Year",
-        "edit": false
-      },
-      {
-        "value": "Best Innovator Award",
-        "edit": false
-      }
-    ]
-  },
-  {
-    "name" : "링크",
-    "symbol": "link",
-    "details": [
-      {
-        "value": "Visit GitHub",
-        "address": "https://github.com/user",
-        "edit": false
-      },
-      {
-        "value": "Personal Blog",
-        "address": "https://userblog.com",
-        "edit": false
-      }
-    ]
-  },
-  {
-    "name" : "링크",
-    "symbol": "link",
-    "details": [
-      {
-        "value": "Visit GitHub",
-        "address": "https://github.com/user",
-        "edit": false
-      },
-      {
-        "value": "Personal Blog",
-        "address": "https://userblog.com",
-        "edit": false
-      }
-    ]
-  }
-]
+{
+  "contents": [
+    {
+      "name": "자격증",
+      "symbol": "license",
+      "details": [
+        {
+          "value": "Software Engineer Certification",
+          "certified": true
+        },
+        {
+          "value": "Project Manager Certification",
+          "certified": false
+        }
+      ]
+    },
+    {
+      "name": "수상내역",
+      "symbol": "prize",
+      "details": [
+        {
+          "value": "Employee of the Year"
+        },
+        {
+          "value": "Best Innovator Award"
+        }
+      ]
+    },
+    {
+      "name": "링크",
+      "symbol": "link",
+      "details": [
+        {
+          "value": "Visit GitHub",
+          "address": "https://github.com/user"
+        },
+        {
+          "value": "Personal Blog",
+          "address": "https://userblog.com"
+        }
+      ]
+    },
+    {
+      "name": "링크",
+      "symbol": "link",
+      "details": [
+        {
+          "value": "Visit GitHub",
+          "address": "https://github.com/user"
+        },
+        {
+          "value": "Personal Blog",
+          "address": "https://userblog.com"
+        }
+      ]
+    }
+  ]
+}

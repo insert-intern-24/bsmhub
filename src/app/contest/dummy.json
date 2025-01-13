@@ -1,0 +1,31 @@
+{
+  "title": "상반기 AI캠프 해커톤",
+  "startDate": "2024.03.01(금)",
+  "endDate": "2024.03.05(화)",
+  "description": "AI 기술을 활용한 혁신적인 아이디어를 발굴하고 구현하는 해커톤입니다.",
+  "contents": [
+    {
+      "symbol": "license",
+      "details": [
+        {
+          "value": "Software Engineer Certification",
+        },
+        {
+          "value": "Project Manager Certification",
+        }
+      ]
+    },
+    {
+      "symbol": "prize",
+      "details": [
+        {
+          "value": "Software Engineer Certification",
+        },
+        {
+          "value": "Project Manager Certification",
+        
+        }
+      ]
+    }
+  ]
+}
