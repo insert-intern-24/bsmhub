@@ -1,5 +1,6 @@
 [
   {
+    "name" : "자격증",
     "symbol": "license",
     "details": [
       {
@@ -15,6 +16,7 @@
     ]
   },
   {
+    "name" : "수상내역",
     "symbol": "prize",
     "details": [
       {
@@ -28,6 +30,7 @@
     ]
   },
   {
+    "name" : "링크",
     "symbol": "link",
     "details": [
       {
@@ -43,6 +46,7 @@
     ]
   },
   {
+    "name" : "링크",
     "symbol": "link",
     "details": [
       {

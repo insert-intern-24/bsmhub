@@ -8,7 +8,8 @@ const DetailBoxes = () => {
       {dummyData.map((item, index) => (
         <DetailBox
           key={index}
-          symbol={item.symbol as "link" | "license" | "prize"}
+          name={item.name}
+          symbol={item.symbol as "link" | "license" | "prize" | null}
           length={item.details.length}
           data={item.details}
         />

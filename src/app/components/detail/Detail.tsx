@@ -19,7 +19,11 @@ interface DetailLinkProps extends DetailProps {
   address: string;
 }
 
-type WholeDetailProps = DetailLicenseProps | DetailPrizeProps | DetailLinkProps;
+interface DetailNullProps extends DetailProps {
+  symbol: null;
+}
+
+type WholeDetailProps = DetailLicenseProps | DetailPrizeProps | DetailLinkProps | DetailNullProps;
 
 const symbolName = {
   license: "id_card",
