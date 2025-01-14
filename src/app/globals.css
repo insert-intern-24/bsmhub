@@ -78,6 +78,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.selected{
+  background: linear-gradient(180deg, rgba(0, 117, 251, 0.00) 92.07%, rgba(0, 117, 251, 0.10) 99.61%);
+}
+
 html {
   font-size: 12px;
 }

@@ -19,6 +19,7 @@ function CollectionPage() {
       <CollectionList
         collections={dummy}
         onClick={setSelectedCollectionId}
+        selectedCollectionId={selectedCollectionId}
       />
     </div>
   );

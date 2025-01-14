@@ -5,9 +5,10 @@ import type { Collections } from '@models/collection';
 interface CollectionListProps {
   collections : Collections;
   onClick: (id: number) => number;
+  selectedCollectionId : number | null;
 }
 
-function CollectionList({ collections, onClick }: CollectionListProps) {
+function CollectionList({ collections, onClick, selectedCollectionId }: CollectionListProps) {
   return (
     <div className="w-full p-8">
       <div className="flex flex-wrap gap-4">
@@ -19,6 +20,7 @@ function CollectionList({ collections, onClick }: CollectionListProps) {
             startDate={collection.startDate}
             endDate={collection.endDate}
             onClick={onClick}
+            selected={selectedCollectionId === collection.id}
           />
         ))}
       </div>
