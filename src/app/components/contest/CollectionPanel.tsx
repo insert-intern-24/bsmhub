@@ -3,7 +3,11 @@ import ContestInformation from './ContestInformation';
 import DetailBoxes from '../detail/DetailBoxes';
 import { Collection } from '@models/collection';
 
-function CollectionPanel({collection} : Collection) {
+interface CollectionPanelProps {
+  collection: Collection;
+}
+
+function CollectionPanel({ collection }: CollectionPanelProps) {
   return (
     <aside className="max-w-[21.0625rem] w-full bg-contest-gradient px-10">
       <div className="mt-[12.5rem]">
