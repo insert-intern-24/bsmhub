@@ -1,17 +1,15 @@
 import Image from 'next/image';
+import { Collection } from '@models/collection';
 
-interface ContestItemProps {
-  title: string;
-  startDate: string;
-  endDate: string;
-  onClick: () => void;
+interface ContestItemProps extends Pick<Collection, "id" | "title" | "startDate" | "endDate" | "thumbnail"> {
+  onClick: (id: number) => number;
 }
 
-function ContestItem({ title, startDate, endDate, onClick }: ContestItemProps) {
+function CollectionItem({ id, title, startDate, endDate = null , thumbnail = null, onClick }: ContestItemProps) {
   return (
     <div
       className="w-fit h-fit border-solid border-[#E8E8EF] border-[1px] rounded-[5px] cursor-pointer"
-      onClick={onClick}
+      onClick={() => onClick(id)}
     >
       <Image
         src="/images/contest/Project.png"
@@ -31,4 +29,4 @@ function ContestItem({ title, startDate, endDate, onClick }: ContestItemProps) {
   );
 }
 
-export default ContestItem;
+export default CollectionItem;

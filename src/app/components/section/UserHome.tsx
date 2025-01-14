@@ -8,7 +8,7 @@ const UserHome = () => {
 		<div>
       <div className="w-full max-h-32 text-titleColor mt-4">마크다운 입력하는 곳</div>
 				<div className="w-full h-fit flex flex-wrap gap-[0.7rem]">
-					<DetailBoxes contents={dummy.contents}/>
+					<DetailBoxes details={dummy.details}/>
 				</div>
 			<h3 className="text-titleColor font-bold text-2xl mt-2 mb-2">개인 프로젝트</h3>
 			<div className="flex gap-[0.7rem] flex-wrap">

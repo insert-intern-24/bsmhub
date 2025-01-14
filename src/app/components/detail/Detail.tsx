@@ -1,29 +1,9 @@
-interface DetailProps {
-  value: string;
+import type { Content, Detail as DetailType } from '@models/collection.d.ts';
+
+interface DetailProps extends Content {
   edit?: boolean;
-  address?: string;
-  certified?: boolean;
+  symbol : Pick<DetailType, "symbol">
 }
-
-interface DetailLicenseProps extends DetailProps {
-  symbol: "license";
-  certified: boolean;
-}
-
-interface DetailPrizeProps extends DetailProps {
-  symbol: "prize";
-}
-
-interface DetailLinkProps extends DetailProps {
-  symbol: "link";
-  address: string;
-}
-
-interface DetailNullProps extends DetailProps {
-  symbol: null;
-}
-
-type WholeDetailProps = DetailLicenseProps | DetailPrizeProps | DetailLinkProps | DetailNullProps;
 
 const symbolName = {
   license: "id_card",
@@ -31,7 +11,7 @@ const symbolName = {
   prize: "emoji_events",
 };
 
-function Detail({ symbol, value, certified, address }: WholeDetailProps) {
+function Detail({symbol=null, value, certified=false, address=null }: DetailProps) {
   return (
     <div className={`w-full flex text-detailColor justify-between select-none`}>
       <div className="flex items-center gap-1">
@@ -43,7 +23,7 @@ function Detail({ symbol, value, certified, address }: WholeDetailProps) {
         )}
 
         {/* 텍스트 넣는 곳이 여기에요~~ */}
-        {symbol == "link" ? (
+        {symbol === "link" ? (
           <a href={address}>{value}</a>
         ) : (
           <span className="text-14px">{value}</span>

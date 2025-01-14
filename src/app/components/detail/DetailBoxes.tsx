@@ -1,27 +1,23 @@
 import React from 'react';
 import DetailBox from '@components/detail/DetailBox';
+import { Details, DetailBoxType } from '@models/collection';
 
-interface ContentItem {
-  name: string
-	symbol: 'link' | 'license' | 'prize' | null;
-	details: { value: string; certified?: boolean; edit?: boolean; address?: string }[];
+interface DetailBoxesType extends Details {
+  type : DetailBoxType
 }
 
-interface Contents {
-  contents: ContentItem[];
-}
-
-const DetailBoxes = ({contents}:Contents) => {
+const DetailBoxes = ({details, type = "general"} : DetailBoxesType) => {
   return (
     <>
-      {contents.map((item, index) => (
+      {details.map((detail, index) => (
         <DetailBox
           key={index}
-          name={item.name}
-          symbol={item.symbol}
-          length={item.details.length}
-          details={item.details}
-        />
+          label={detail.label}
+          symbol={detail.symbol}
+          length={detail.contents.length}
+          contents={detail.contents}
+          type={type}
+          />
       ))}
     </>
   );
