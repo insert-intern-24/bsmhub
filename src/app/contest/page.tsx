@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import CollectionList from '@/app/components/contest/CollectionList';
 import ContestPanel from '@/app/components/contest/CollectionPanel';
-import dummy from '@/app/contest/dummy.json';
+import dummyData from '@/app/contest/dummy.json';
 import { Collection, Project } from '@models/collection';
 import type { Collections } from '@models/collection';
 const dummy: Collections = dummyData;
