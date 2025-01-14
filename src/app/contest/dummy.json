@@ -1,31 +1,209 @@
-{
-  "title": "상반기 AI캠프 해커톤",
-  "startDate": "2024.03.01(금)",
-  "endDate": "2024.03.05(화)",
-  "description": "AI 기술을 활용한 혁신적인 아이디어를 발굴하고 구현하는 해커톤입니다.",
-  "contents": [
-    {
-      "symbol": "license",
-      "details": [
-        {
-          "value": "Software Engineer Certification",
-        },
-        {
-          "value": "Project Manager Certification",
-        }
-      ]
-    },
-    {
-      "symbol": "prize",
-      "details": [
-        {
-          "value": "Software Engineer Certification",
-        },
-        {
-          "value": "Project Manager Certification",
-        
-        }
-      ]
+[
+  {
+    "type": "collection",
+    "id": 0,
+    "title": "상반기 AI캠프 해커톤",
+    "description": "AI 기술을 활용한 혁신적인 아이디어를 발굴하고 구현하는 해커톤입니다.",
+    "thumbnail": "",
+    "startDate": "2024.03.01(금)",
+    "endDate": "2024.03.05(화)",
+    "details": [
+      {
+        "label": "소개",
+        "contents": [
+          {
+            "value": "AI 기술을 활용한 혁신적인 아이디어를 발굴하고 구현하는 해커톤입니다."
+          }
+        ]
+      },
+      {
+        "label": "심사위원",
+        "symbol": "license",
+        "contents": [
+          { "value": "김철수 교수" },
+          { "value": "박영희 박사" },
+          { "value": "이승민 AI 엔지니어" }
+        ]
+      },
+      {
+        "label": "수상작품",
+        "symbol": "prize",
+        "contents": [
+          { "value": "대상: 실시간 번역 AI를 활용한 글로벌 채팅 플랫폼" },
+          { "value": "최우수상: AI 기반 스마트 농업 관리 시스템" },
+          { "value": "장려상: AI로 최적화된 개인 맞춤형 운동 플랜 생성 앱" }
+        ]
+      }
+    ],
+    "info": {
+      "target": "1학년",
+      "pax": 200,
+      "views": 1500
     }
-  ]
-}
+  },
+  {
+    "type": "collection",
+    "id": 1,
+    "title": "하반기 AI캠프 해커톤",
+    "description": "최신 AI 트렌드와 기술을 접목한 프로젝트 개발 대회입니다.",
+    "thumbnail": "",
+    "startDate": "2024.09.15(월)",
+    "endDate": "2024.09.20(토)",
+    "details": [
+      {
+        "label": "소개",
+        "contents": [
+          {
+            "value": "최신 AI 트렌드와 기술을 접목한 프로젝트 개발 대회입니다."
+          }
+        ]
+      },
+      {
+        "label": "심사위원",
+        "symbol": "license",
+        "contents": [
+          { "value": "정현우 CTO" },
+          { "value": "김하나 데이터 과학자" },
+          { "value": "이민호 AI 디자이너" }
+        ]
+      },
+      {
+        "label": "수상작품",
+        "symbol": "prize",
+        "contents": [
+          { "value": "대상: AI 기반 의료 영상 진단 보조 시스템" },
+          { "value": "최우수상: 자율주행차 경로 최적화 AI 솔루션" },
+          { "value": "창의상: AI로 작곡된 개인화 음악 생성 서비스" }
+        ]
+      }
+    ],
+    "info": {
+      "target": "1학년",
+      "pax": 150,
+      "views": 2000
+    }
+  },
+  {
+    "type": "collection",
+    "id": 2,
+    "title": "2024 빅데이터 챌린지",
+    "description": "대규모 데이터를 분석하고 시각화하여 인사이트를 도출하는 대회입니다.",
+    "thumbnail": "",
+    "startDate": "2024.06.10(월)",
+    "endDate": "2024.06.17(월)",
+    "details": [
+      {
+        "label": "소개",
+        "contents": [
+          {
+            "value": "대규모 데이터를 분석하고 시각화하여 인사이트를 도출하는 대회입니다."
+          }
+        ]
+      },
+      {
+        "label": "심사위원",
+        "symbol": "license",
+        "contents": [
+          { "value": "송지훈 박사" },
+          { "value": "한유리 데이터 분석가" },
+          { "value": "권혁준 머신러닝 전문가" }
+        ]
+      },
+      {
+        "label": "수상작품",
+        "symbol": "prize",
+        "contents": [
+          { "value": "대상: 도시 교통 데이터 분석을 통한 교통 체증 완화 솔루션" },
+          { "value": "최우수상: 기후 데이터 분석으로 농업 생산성 향상 모델 개발" }
+        ]
+      }
+    ],
+    "info": {
+      "target": "1학년",
+      "pax": 100,
+      "views": 1200
+    }
+  },
+  {
+    "type": "collection",
+    "id": 3,
+    "title": "2024 스마트 IoT 경진대회",
+    "description": "IoT 기술을 활용해 스마트한 솔루션을 개발하는 경진대회입니다.",
+    "thumbnail": "",
+    "startDate": "2024.08.20(화)",
+    "endDate": "2024.08.30(금)",
+    "details": [
+      {
+        "label": "소개",
+        "contents": [
+          {
+            "value": "IoT 기술을 활용해 스마트한 솔루션을 개발하는 경진대회입니다."
+          }
+        ]
+      },
+      {
+        "label": "심사위원",
+        "symbol": "license",
+        "contents": [
+          { "value": "안재현 IoT 전문가" },
+          { "value": "김지수 하드웨어 엔지니어" },
+          { "value": "박나연 소프트웨어 개발자" }
+        ]
+      },
+      {
+        "label": "수상작품",
+        "symbol": "prize",
+        "contents": [
+          { "value": "대상: IoT 기반 스마트 가전 제어 시스템" },
+          { "value": "혁신상: IoT를 활용한 재난 경보 시스템" }
+        ]
+      }
+    ],
+    "info": {
+      "target": "1학년",
+      "pax": 120,
+      "views": 1700
+    }
+  },
+  {
+    "type": "collection",
+    "id": 4,
+    "title": "2024 스타트업 아이디어톤",
+    "description": "참신한 스타트업 아이디어를 발굴하고 실현 가능성을 검증하는 아이디어톤입니다.",
+    "thumbnail": "",
+    "startDate": "2024.11.10(토)",
+    "endDate": "2024.11.15(목)",
+    "details": [
+      {
+        "label": "소개",
+        "contents": [
+          {
+            "value": "참신한 스타트업 아이디어를 발굴하고 실현 가능성을 검증하는 아이디어톤입니다."
+          }
+        ]
+      },
+      {
+        "label": "심사위원",
+        "symbol": "license",
+        "contents": [
+          { "value": "유재석 창업 전문가" },
+          { "value": "이하나 투자 컨설턴트" },
+          { "value": "홍길동 스타트업 CEO" }
+        ]
+      },
+      {
+        "label": "수상작품",
+        "symbol": "prize",
+        "contents": [
+          { "value": "대상: 공유 전기 자전거를 위한 AI 기반 최적 경로 제안 앱" },
+          { "value": "아이디어상: 지역 상권 활성화를 위한 AR 쇼핑 플랫폼" }
+        ]
+      }
+    ],
+    "info": {
+      "target": "1학년",
+      "pax": 80,
+      "views": 1000
+    }
+  }
+]

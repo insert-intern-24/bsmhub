@@ -1,9 +1,9 @@
 {
-  "contents": [
+  "details": [
     {
-      "name": "자격증",
+      "label": "자격증",
       "symbol": "license",
-      "details": [
+      "contents": [
         {
           "value": "Software Engineer Certification",
           "certified": true
@@ -15,9 +15,9 @@
       ]
     },
     {
-      "name": "수상내역",
+      "label": "수상내역",
       "symbol": "prize",
-      "details": [
+      "contents": [
         {
           "value": "Employee of the Year"
         },
@@ -27,9 +27,9 @@
       ]
     },
     {
-      "name": "링크",
+      "label": "링크",
       "symbol": "link",
-      "details": [
+      "contents": [
         {
           "value": "Visit GitHub",
           "address": "https://github.com/user"
@@ -41,9 +41,9 @@
       ]
     },
     {
-      "name": "링크",
+      "label": "링크",
       "symbol": "link",
-      "details": [
+      "contents": [
         {
           "value": "Visit GitHub",
           "address": "https://github.com/user"
