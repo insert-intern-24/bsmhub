@@ -13,14 +13,14 @@ body:
     attributes:
       label: ✅ 작업할 내용
       description: 할 일을 체크박스 형태로 작성해주세요.
-      placeholder: - [ ] 이 형식으로 작성해주세용.
+      placeholder: 체크박스 형식으로 작성해주세용.
     validations:
       required: true
   - type: textarea
     attributes:
       label: 🙏 유의사항
       description: 개발시 유의해야 할 내용을 작성해주세요.
-      placeholder: - [ ] 이 형식으로 작성해주세용.
+      placeholder: 체크박스 형식으로 작성해주세용.
     validations:
       required: true
   - type: textarea
