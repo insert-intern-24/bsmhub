@@ -21,7 +21,7 @@ body:
       required: true
   - type: textarea
     attributes:
-      label: 📄 관련 스크린샷
+      label: 📷 관련 스크린샷
       description: 버그가 발생했을 때의 상황을 알려주세요.
       placeholder: |
         스크린샷을 넣어주세요.
