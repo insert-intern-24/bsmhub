@@ -11,7 +11,7 @@ export interface Detail {
 }
 
 export interface Details {
-  details : Detail[]
+  details? : Detail[] | null
 }
 
 export interface Collection {
@@ -23,7 +23,7 @@ export interface Collection {
   // Data는 아직 database에 입력된 date의 종류를 기술하지 않았기 때문에 우선 string으로 작업함.
   startDate: string,
   endDate?: string | null,
-  details?: Details | null
+  details: Details
   info : CollectionInformation
 }
 
@@ -41,7 +41,7 @@ export interface Project {
   thumbnail?: string | null,
   statement: "개발전" | "개발중" | "개발완료" | "서비스중",
   category: string
-  details?: Details[] | null
+  details: Details
 }
 
 export type Collections = (Collection | Project)[]

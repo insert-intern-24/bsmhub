@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { Collection } from '@models/collection';
 
 interface ContestItemProps extends Pick<Collection, "id" | "title" | "startDate" | "endDate" | "thumbnail"> {
-  onClick: (id: number) => number;
+  onClick: (id: number) => void;
   selected: boolean;
 }
 

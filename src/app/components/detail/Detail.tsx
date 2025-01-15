@@ -2,7 +2,7 @@ import type { Content, Detail as DetailType } from '@models/collection.d.ts';
 
 interface DetailProps extends Content {
   edit?: boolean;
-  symbol : Pick<DetailType, "symbol">
+  symbol?: DetailType["symbol"]
 }
 
 const symbolName = {
@@ -18,12 +18,12 @@ function Detail({symbol=null, value, certified=false, address=null }: DetailProp
         {/* symbol이 있을 경우 아이콘을 렌더링 */}
         {!!symbol && (
           <i className="material-symbols-outlined text-xs">
-            {symbolName[symbol]}
+            {symbolName[symbol as keyof typeof symbolName]}
           </i>
         )}
 
         {/* 텍스트 넣는 곳이 여기에요~~ */}
-        {symbol === "link" ? (
+        {symbol === "link" && address ? (
           <a href={address}>{value}</a>
         ) : (
           <span className="text-14px">{value}</span>

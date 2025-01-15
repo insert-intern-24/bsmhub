@@ -19,9 +19,9 @@ function DetailBox({ label, symbol, length = 0, contents, type = "general" }: De
 					key={index} 
 					symbol={symbol} 
 					value={content.value} 
-					certified={content.certified ?? false}
+					certified={content.certified}
 					edit={false}
-					address={content.address ?? ""}
+					address={content.address}
 				/>
 			))}
 		</div>

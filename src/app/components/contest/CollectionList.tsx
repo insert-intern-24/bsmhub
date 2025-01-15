@@ -4,7 +4,7 @@ import type { Collections } from '@models/collection';
 
 interface CollectionListProps {
   collections : Collections;
-  onClick: (id: number) => number;
+  onClick: (id: number) => void;
   selectedCollectionId : number | null;
 }
 

@@ -9,7 +9,7 @@ interface DetailBoxesType extends Details {
 const DetailBoxes = ({details, type = "general"} : DetailBoxesType) => {
   return (
     <>
-      {details.map((detail, index) => (
+      {(details ?? []).map((detail, index) => (
         <DetailBox
           key={index}
           label={detail.label}

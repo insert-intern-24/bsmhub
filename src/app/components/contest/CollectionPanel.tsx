@@ -29,7 +29,7 @@ function CollectionPanel({ collection }: CollectionPanelProps) {
         </header>
         <hr className="w-full h-[1px] bg-strokeColor my-6" />
         <main className="flex flex-col gap-8">
-          <DetailBoxes details={collection.details} type="collection" />
+          <DetailBoxes details={Array.isArray(collection.details) ? collection.details : []} type="collection" />
         </main>
       </div>
     </aside>
