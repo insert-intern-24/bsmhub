@@ -9,26 +9,18 @@ body:
       placeholder: 자세하게 적을수록 좋습니다!
     validations:
       required: true
-  - type: checkboxes
+  - type: textarea
     attributes:
       label: ✅ 작업할 내용
       description: 할 일을 체크박스 형태로 작성해주세요.
-      options:
-        - label: 첫 번째 작업
-          required: false
-        - label: 두 번째 작업
-          required: false
+      placeholder: 체크박스 형식으로 작성해주세용.
     validations:
       required: true
-  - type: checkboxes
+  - type: textarea
     attributes:
       label: 🙏 유의사항
       description: 개발시 유의해야 할 내용을 작성해주세요.
-      options:
-        - label: 첫 번째 유의사항
-          required: false
-        - label: 두 번째 유의사항
-          required: false
+      placeholder: 체크박스 형식으로 작성해주세용.
     validations:
       required: true
   - type: textarea
