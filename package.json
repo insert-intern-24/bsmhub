@@ -6,12 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prepare": "husky"
   },
   "dependencies": {
-    "@tailwindcss/line-clamp": "^0.4.4",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.11",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "google-one-tap": "^1.0.6",
     "next": "15.0.2",
     "react": "19.0.0-rc-02c0e824-20241028",
@@ -23,8 +24,16 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "15.0.2",
+    "husky": "^9.1.7",
+    "jira-prepare-commit-msg": "^1.7.2",
     "postcss": "^8",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
+  },
+  "jira-prepare-commit-msg": {
+    "jiraTicketPattern": "([A-Z0-9]+-\\d+)",
+    "allowEmptyCommitMessage": false,
+    "ignoredBranchesPattern": "^(master|main|dev|develop|development|release)$",
+    "ignoreBranchesMissingTickets": false
   }
 }
