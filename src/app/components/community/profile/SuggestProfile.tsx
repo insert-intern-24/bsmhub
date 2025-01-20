@@ -4,11 +4,11 @@ import timeline from '@public/images/icon/timeline.svg';
 import Profile from '@/app/components/community/profile/Profile';
 
 export default function SuggestProfile() {
-  const profiles = Array(6).fill(null);
+  const profiles = Array(7).fill(null);
 
   return (
     <>
-      <div className="flex px-1 flex-col justify-center items-start gap-[0.625rem] self-stretch">
+      <div className="w-full flex px-1 flex-col justify-center items-start gap-[0.625rem] self-stretch max-w-full overflow-auto scrollbar-none">
         <div className="flex items-center gap-[0.625rem]">
           <Image
             src={timeline}
