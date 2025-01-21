@@ -8,7 +8,7 @@ export default function SuggestProfile() {
 
   return (
     <>
-      <div className="w-full flex px-1 flex-col justify-center items-start gap-[0.625rem] self-stretch max-w-full overflow-auto scrollbar-none">
+      <div className="w-full flex px-1 flex-col justify-center items-start gap-[0.625rem] self-stretch ">
         <div className="flex items-center gap-[0.625rem]">
           <Image
             src={timeline}
@@ -20,7 +20,7 @@ export default function SuggestProfile() {
             Recommend Profiles
           </span>
         </div>
-        <div className="flex items-start gap-2">
+        <div className="flex items-start gap-2 max-w-full overflow-auto scrollbar-none">
           {profiles.map((_, index) => (
             <Profile key={index} />
           ))}
