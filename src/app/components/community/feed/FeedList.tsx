@@ -4,23 +4,29 @@ import { createClient } from '@/utils/supabase/server';
 
 export default async function FeedList() {
   const supabase = await createClient();
-  const { data: community_post, error } = await supabase
-    .from('community_post')
-    .select('*');
 
-  if (error) {
-    console.error(error);
-    return <div>Error loading posts</div>;
+  const [communityPostsResult, userProfilesResult] = await Promise.all([
+    supabase.from('community_posts').select('*'),
+    supabase.from('user_profiles').select('*'),
+  ]);
+
+  const { data: community_posts, error: communityPostsError } =
+    communityPostsResult;
+  const { data: user_profiles, error: userProfilesError } = userProfilesResult;
+
+  if (communityPostsError || userProfilesError) {
+    console.error(communityPostsError || userProfilesError);
+    return <div>Error loading posts or profiles</div>;
   } else {
-    console.log(community_post);
+    console.log(community_posts, user_profiles);
   }
 
   return (
     <>
-      {community_post?.map((post) => (
+      {community_posts?.map((post) => (
         <DefaultFeed
-          key={post.id}
-          name={post.user_id}
+          key={post.post_id}
+          name={post.profile_id}
           time={post.created_at}
           profileImage={'asdf'}
           text={post.context}
