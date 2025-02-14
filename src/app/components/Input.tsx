@@ -1,0 +1,40 @@
+const Input = ({
+  placeholder,
+  id,
+  type = 'text',
+}: {
+  placeholder: string;
+  id?: string;
+  type?: string;
+}) => {
+  return (
+    <input
+      id={id}
+      type={type}
+      className="bg-[#f5f5f7] py-4 px-2.5 w-full text-base"
+      placeholder={placeholder}
+    />
+  );
+};
+
+const InputWithLabel = ({
+  label,
+  placeholder,
+  id,
+  type = 'text',
+}: {
+  label: string;
+  placeholder: string;
+  id?: string;
+  type?: string;
+}) => {
+  return (
+    <div className="flex flex-col w-full">
+      <label htmlFor={id} className="text-lg">
+        {label}
+      </label>
+      <Input placeholder={placeholder} id={id} type={type} />
+    </div>
+  );
+};
+export { Input, InputWithLabel };
