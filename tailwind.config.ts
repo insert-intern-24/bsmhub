@@ -39,6 +39,9 @@ const config: Config = {
         followBlue: '#216BFF',
         moreGray: '#8E8E8E',
       },
+      backgroundImage: {
+        'contest-gradient': 'linear-gradient(180deg, rgba(47, 66, 205, 0.07) 0%, rgba(255, 255, 255, 0.07) 100%)',
+      },
     },
   },
   plugins: [require('@tailwindcss/line-clamp')],

@@ -20,7 +20,7 @@ export default function Tag() {
         <div
           key={index}
           onClick={() => handleClick(tag.name)}
-          className={`flex px-2 py-4 flex-col justify-center items-center gap-[0.625rem] cursor-pointer text-base font-normal leading-[0.5rem] font-pretendard ${
+          className={`flex px-2 py-4 flex-col justify-center items-center gap-[0.625rem] cursor-pointer text-base font-normal leading-[0.5rem]  ${
             selectedTag === tag.name
               ? 'bg-black text-white rounded-xl border border-black'
               : 'bg-white text-black rounded-xl border border-customGray'
