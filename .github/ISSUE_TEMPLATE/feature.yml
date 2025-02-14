@@ -1,0 +1,29 @@
+name: '✨ 새로운 기능'
+description: '새로운 기능을 개발해 보아요~'
+labels: '✨ Feature'
+body:
+  - type: textarea
+    attributes:
+      label: ✨ 개요
+      description: 새로운 기능에 대한 설명을 작성해 주세요.
+      placeholder: 자세하게 적을수록 좋습니다!
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: ✅ 작업할 내용
+      description: 할 일을 체크박스 형태로 작성해주세요.
+      placeholder: 체크박스 형식으로 작성해주세용.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 🙏 유의사항
+      description: 개발시 유의해야 할 내용을 작성해주세요.
+      placeholder: 체크박스 형식으로 작성해주세용.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 🙋🏻 덧붙일 말
+      description: 더 하고 싶은 말이 있다면 작성해 주세요!

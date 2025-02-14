@@ -1,0 +1,33 @@
+name: '🚨 버그 리포트'
+description: '버그가 발생했나요?'
+labels: '🚨 Bug'
+body:
+  - type: textarea
+    attributes:
+      label: 🚨 설명
+      description: 버그에 대한 설명을 작성해 주세요.
+      placeholder: 자세하게 적을수록 좋습니다.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 🔍 버그 경위
+      description: 버그가 발생한 경위를 자세하게 작성해 주세요.
+      placeholder: |
+        1. 회원가입을 한다.
+        2. 새로운 창으로 이동한다.
+        3. "로그인을 할 수 없습니다." 라는 메시지가 뜬다.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 📷 관련 스크린샷
+      description: 버그가 발생했을 때의 상황을 알려주세요.
+      placeholder: |
+        스크린샷을 넣어주세요.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 🙋🏻 덧붙일 말
+      description: 더 하고 싶은 말이 있다면 작성해 주세요.

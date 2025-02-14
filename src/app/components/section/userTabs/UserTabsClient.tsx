@@ -3,7 +3,7 @@
 import tabsType from '../../tabs';
 // import { headers } from 'next/headers';
 import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import UserTabsTemplate from './UserTabsTemplate';
 
@@ -11,14 +11,14 @@ const UserTabsClient = () => {
   const [tabName, setTabName] = useState(
     (useSearchParams().get('tab') || 'home') as tabsType,
   );
+  useEffect(() => {
+    const serverRenderElement = document.querySelector(
+      '.serverRender',
+    ) as HTMLElement;
+    if (serverRenderElement) serverRenderElement.style.display = 'none';
+  }, []);
   return (
     <>
-      <script>
-        {`
-        const serverRenderElement = document.querySelector('.serverRender').style.display = 'none';
-        console.log(serverRenderElement);
-      `}
-      </script>
       <UserTabsTemplate tabName={tabName} setTabName={setTabName} />
     </>
   );
