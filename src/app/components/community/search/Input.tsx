@@ -10,7 +10,7 @@ export default function Input() {
         <input
           type="text"
           placeholder="검색"
-          className="flex-1 bg-customGray text-descriptionColor font-pretendard text-base font-normal leading-none outline-none"
+          className="flex-1 bg-customGray text-descriptionColor  text-base font-normal leading-none outline-none"
         />
       </div>
     </>

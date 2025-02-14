@@ -1,19 +1,25 @@
-import React from "react";
-import DetailBox from "@components/detail/DetailBox";
-import dummyData from "../../user/dummy.json";
+import React from 'react';
+import DetailBox from '@components/detail/DetailBox';
+import { Details, DetailBoxType } from '@models/collection';
 
-const DetailBoxes = () => {
+interface DetailBoxesType extends Details {
+  type : DetailBoxType
+}
+
+const DetailBoxes = ({details, type = "general"} : DetailBoxesType) => {
   return (
-    <div className="w-full h-fit flex flex-wrap gap-[0.7rem]">
-      {dummyData.map((item, index) => (
+    <>
+      {(details ?? []).map((detail, index) => (
         <DetailBox
           key={index}
-          symbol={item.symbol as "link" | "license" | "prize"}
-          length={item.details.length}
-          data={item.details}
-        />
+          label={detail.label}
+          symbol={detail.symbol}
+          length={detail.contents.length}
+          contents={detail.contents}
+          type={type}
+          />
       ))}
-    </div>
+    </>
   );
 };
 
