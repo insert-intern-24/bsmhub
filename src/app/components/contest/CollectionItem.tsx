@@ -7,6 +7,7 @@ interface ContestItemProps extends Pick<Collection, "id" | "title" | "startDate"
 }
 
 function CollectionItem({ id, title, startDate, endDate = null , thumbnail = null, onClick, selected = false }: ContestItemProps) {
+  console.log(thumbnail);
   return (
     <div
       className={`w-fit h-fit border-solid border-[#E8E8EF] border-[1px] rounded-[5px] cursor-pointer ${selected && "selected"}`}
