@@ -26,7 +26,7 @@ const UserTemplate = () => {
               width={14}
               height={14}
             />
-            <span className="font-bold">Pick</span>
+            <span className="font-bold text-white">Pick</span>
           </button>
         </div>
       </section>

@@ -1,0 +1,17 @@
+name: '🙌 개선하기'
+description: '개선할 점을 자세하게 작성해 주세요!'
+labels: '🙌 Improvement'
+body:
+  - type: textarea
+    attributes:
+      label: 🙌 개선 사항
+      description: 개선 사항을 작성해 주세요.
+      placeholder: 자세하게 적을수록 좋습니다!
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 💻 코드
+      description: 관련 코드가 있다면 복붙해 주세요.
+    validations:
+      required: false

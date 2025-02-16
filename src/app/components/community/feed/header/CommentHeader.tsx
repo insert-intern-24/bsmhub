@@ -28,14 +28,14 @@ export default function CommentHeader({
           height={`${44 / 16}rem`}
         />
         <div className="flex items-center gap-1">
-          <span className="text-black font-pretendard text-base font-bold leading-none">
+          <span className="text-black  text-base font-bold leading-none">
             {name}
           </span>
           <span className="text-descriptionColor font-pretendard text-xs font-normal leading-none">
             {formattedTime}
           </span>
         </div>
-        <span className="text-followBlue font-pretendard text-sm font-normal leading-none">
+        <span className="text-followBlue  text-sm font-normal leading-none">
           Follow
         </span>
       </div>

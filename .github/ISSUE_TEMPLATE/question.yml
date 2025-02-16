@@ -1,0 +1,10 @@
+name: '🙋🏻 질문하기'
+description: '질문이 있나요?'
+labels: '❓ Question'
+body:
+  - type: textarea
+    attributes:
+      label: ❓ 질문이 있어요.
+      description: 질문을 작성해 주세요.
+    validations:
+      required: true

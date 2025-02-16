@@ -24,14 +24,14 @@ export default function CardHeader({
         />
         <div className="flex flex-col justify-center items-start">
           <div className="flex items-center">
-            <span className="text-black font-pretendard text-sm font-bold leading-none">
+            <span className="text-black  text-sm font-bold leading-none">
               {profileName}
             </span>
-            <span className="text-descriptionColor font-pretendard text-sm font-normal leading-none">
+            <span className="text-descriptionColor  text-sm font-normal leading-none">
               {projectStatus}
             </span>
           </div>
-          <span className="text-descriptionColor font-pretendard text-xs font-normal leading-none">
+          <span className="text-descriptionColor  text-xs font-normal leading-none">
             {time}
           </span>
         </div>

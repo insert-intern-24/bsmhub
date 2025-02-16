@@ -24,10 +24,10 @@ export default function PostContent({
             width={(24 / 16) * 12}
             height={(24 / 16) * 12}
           />
-          <span className="text-black font-pretendard text-base font-bold leading-none">
+          <span className="text-black text-base font-bold leading-none">
             {projectName}
           </span>
-          <span className="text-descriptionColor font-pretendard text-base font-normal leading-none">
+          <span className="text-descriptionColor text-base font-normal leading-none">
             {projectDescription}
           </span>
         </div>

@@ -14,10 +14,12 @@
 	}
 } */
 
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Pretendard', sans-serif;
 }
 
 @font-face {
@@ -74,6 +76,10 @@ body {
   direction: ltr;
   -webkit-font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
+}
+
+.selected{
+  background: linear-gradient(180deg, rgba(0, 117, 251, 0.00) 92.07%, rgba(0, 117, 251, 0.10) 99.61%);
 }
 
 html {
