@@ -1,8 +1,8 @@
-"use client";
-import React, { useState } from "react";
-import Tag from "@/app/components/community/search/Tag";
-import Input from "@/app/components/community/search/Input";
-import PopularNew from "@/app/components/community/search/SortToggleBox";
+'use client';
+import React from 'react';
+import Tag from '@/app/components/community/search/Tag';
+import Input from '@/app/components/community/search/Input';
+import PopularNew from '@/app/components/community/search/SortToggleBox';
 
 export default function Search() {
   return (
