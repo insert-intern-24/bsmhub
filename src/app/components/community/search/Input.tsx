@@ -1,20 +1,11 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import search from '@public/images/icon/search.svg';
 import { createClient } from '@/utils/supabase/client';
 
 export default function Input() {
-  const [supabase, setSupabase] = useState<any>();
-
-  useEffect(() => {
-    const initializeSupabase = async () => {
-      const client = createClient();
-      setSupabase(client);
-    };
-
-    initializeSupabase();
-  }, []);
+  const supabase = createClient();
 
   const formatSearchKeyword = (keyword: string) => {
     return keyword.trim().split(/\s+/).join(' & ');
