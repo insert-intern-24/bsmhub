@@ -5,12 +5,10 @@ import { createClient } from '@/utils/supabase/server';
 export default async function FeedList() {
   const supabase = await createClient();
 
-  const [communityPostsResult] = await Promise.all([
-    supabase.schema('community').from('community_posts').select('*'),
-  ]);
-
-  const { data: community_posts, error: communityPostsError } =
-    communityPostsResult;
+  const { data: community_posts, error: communityPostsError } = await supabase
+    .schema('community')
+    .from('community_posts')
+    .select('*');
 
   if (communityPostsError) {
     console.error(communityPostsError);
