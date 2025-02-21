@@ -9,12 +9,23 @@ pipeline {
         NEXT_PUBLIC_SITE_URL = ''
     }
     stages {
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-                sh 'npm install --os=linux --cpu=x64 sharp'
-            }
-        }
+      stage("Install Dependencies") {
+          steps {
+              // Writes lock-file to cache based on the GIT_COMMIT hash
+              writeFile file: "next-lock.cache", text: "$GIT_COMMIT"
+      
+              cache(caches: [
+                  arbitraryFileCache(
+                      path: "node_modules",
+                      includes: "**/*",
+                      cacheValidityDecidingFile: "package-lock.json"
+                  )
+              ]) {
+                  sh "npm install"
+                  sh 'npm install --os=linux --cpu=x64 sharp'
+              }
+          }
+      }
 
         stage('Prepare for build') {
             steps {
@@ -34,12 +45,6 @@ pipeline {
                     };
                     export default nextConfig;" > next.config.ts
                 '''
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh 'npm run build'
             }
         }
 
@@ -66,10 +71,29 @@ pipeline {
                     echo "Found port: ${PORT}"
                     sh """
                         echo "PORT=${PORT}" >> .env.local
+                        echo "NEXT_PUBLIC_SITE_URL=10.3.0.127:${PORT}" >> .env.local
                     """
                 }
             }
         }
+
+        stage("Build") {
+          steps {
+              // Writes lock-file to cache based on the GIT_COMMIT hash
+              writeFile file: "next-lock.cache", text: "$GIT_COMMIT"
+      
+              cache(caches: [
+                  arbitraryFileCache(
+                      path: ".next/cache",
+                      includes: "**/*",
+                      cacheValidityDecidingFile: "next-lock.cache"
+                  )
+              ]) {
+                  // aka `next build`
+                  sh "npm run build"
+              }
+          }
+      }
 
         // stage('Setup Cloudflared') {
         //     steps {
@@ -104,7 +128,6 @@ pipeline {
             steps {
                 script {
                     sh """
-                        echo "NEXT_PUBLIC_SITE_URL=10.3.0.127:${PORT}" >> .env.local
                         pm2 delete bsmhub-${env.BRANCH_NAME} || true
                         PORT=${PORT} pm2 start npm --name bsmhub-${env.BRANCH_NAME} -- start
                         pm2 save
