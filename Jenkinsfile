@@ -46,9 +46,9 @@ pipeline {
         stage('Find Available Port') {
             steps {
                 script {
-                    // 포트를 찾고 직접 변수에 할당
-                    def foundPort = sh(
-                        script: '''
+                    // 전역 변수로 포트 저장
+                    PORT = sh(
+                        script: '''#!/bin/bash
                             for port in $(seq 3000 4000); do
                                 if ! netstat -tna | grep -q ":$port "; then
                                     echo "$port"
@@ -59,24 +59,13 @@ pipeline {
                         returnStdout: true
                     ).trim()
                     
-                    // 포트 설정 확인
-                    echo "Found available port: ${foundPort}"
-                    env.PORT = foundPort
-                    sh "echo 'Selected PORT is: ${env.PORT}'"
-                }
-            }
-        }
-
-        stage('Deploy with PM2') {
-            steps {
-                script {
-                    // PORT 환경변수 확인
-                    sh "echo 'Using PORT: ${env.PORT}'"
+                    // 환경 변수 설정
+                    env.PORT = PORT
                     
-                    // PM2 실행
+                    // 설정된 포트 확인
+                    echo "Found port: ${PORT}"
                     sh """
-                        PORT=${env.PORT} pm2 delete bsmhub-${env.BRANCH_NAME} || true
-                        PORT=${env.PORT} pm2 start npm --name bsmhub-${env.BRANCH_NAME} -- start
+                        echo "PORT=${PORT}" >> .env.local
                     """
                 }
             }
@@ -85,17 +74,12 @@ pipeline {
         stage('Setup Cloudflared') {
             steps {
                 script {
-                    // PORT 환경변수 확인
-                    sh "echo 'Cloudflared using PORT: ${env.PORT}'"
-                    
-                    sh "pm2 delete cloudflared-${env.BRANCH_NAME} || true"
-                    
                     sh """
-                        PORT=${env.PORT} pm2 start cloudflared --name cloudflared-${env.BRANCH_NAME} -- tunnel --url http://localhost:${env.PORT}
+                        pm2 delete cloudflared-${env.BRANCH_NAME} || true
+                        pm2 start cloudflared --name cloudflared-${env.BRANCH_NAME} -- tunnel --url http://localhost:${PORT}
                         sleep 5
                     """
                     
-                    // 로그에서 URL 추출
                     def tunnelUrl = sh(
                         script: """
                             pm2 logs cloudflared-${env.BRANCH_NAME} --nostream --lines 50 | grep -o 'https://.*\\.trycloudflare\\.com' | tail -n 1
@@ -108,7 +92,21 @@ pipeline {
                     
                     sh """
                         echo "NEXT_PUBLIC_SITE_URL=${env.NEXT_PUBLIC_SITE_URL}" >> .env.local
-                        pm2 reload bsmhub-${env.BRANCH_NAME} -- --port ${env.PORT} --update-env
+                    """
+                    echo "Cloudflare URL: ${tunnelUrl}"
+                    echo "Cloudflare URLEnv: ${env.TUNNEL_URL}"
+
+                }
+            }
+        }
+
+        stage('Deploy with PM2') {
+            steps {
+                script {
+                    sh """
+                        pm2 delete bsmhub-${env.BRANCH_NAME} || true
+                        PORT=${PORT} pm2 start npm --name bsmhub-${env.BRANCH_NAME} -- start
+                        pm2 save
                     """
                 }
             }
