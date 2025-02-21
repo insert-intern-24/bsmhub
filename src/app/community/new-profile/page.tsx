@@ -1,5 +1,3 @@
-'use client';
-
 import Background from '@/app/components/layout/Background';
 import ProfileEditForm from '@/app/components/community/profile/ProfileEditForm';
 

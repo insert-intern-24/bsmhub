@@ -1,30 +1,17 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client';
 import { useMemo, useState } from 'react';
+import getProfileBySession from '@/services/profile/getProfileBySession';
 
 const MakeProfileOverlay = () => {
   const pathname = usePathname();
   const [isHide, setHide] = useState(true);
-  useMemo(() => {
-    (async () => {
-      const supabase = createClient();
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      const { data: profile } = await supabase
-        .schema('community')
-        .from('profile_permission')
-        .select('*, profile_id!inner(*)')
-        .eq('student_id', session?.user?.id)
-        .eq('profile_id.isTeam', false);
-      return profile;
-    })().then((result) => {
-      if (result?.length == 0) {
-        setHide(false);
-      }
-    });
+  useMemo(async () => {
+    const result = await getProfileBySession();
+    if (result?.length == 0) {
+      setHide(false);
+    }
   }, []);
   if (pathname === '/community/new-profile') return null; // 이미 새 프로필 만들기 페이지에 있는 경우 제외
 
