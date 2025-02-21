@@ -7,6 +7,114 @@ export type Json =
   | Json[];
 
 export type Database = {
+  collection: {
+    Tables: {
+      collection_items: {
+        Row: {
+          collection_id: number;
+          created_at: string;
+          item_address: number;
+          item_type: Database['public']['Enums']['collection_item_type'];
+        };
+        Insert: {
+          collection_id: number;
+          created_at?: string;
+          item_address: number;
+          item_type?: Database['public']['Enums']['collection_item_type'];
+        };
+        Update: {
+          collection_id?: number;
+          created_at?: string;
+          item_address?: number;
+          item_type?: Database['public']['Enums']['collection_item_type'];
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'collection_items_collection_id_fkey';
+            columns: ['collection_id'];
+            referencedRelation: 'collections';
+            referencedColumns: ['collection_id'];
+          },
+        ];
+      };
+      collections: {
+        Row: {
+          collection_id: number;
+          collection_name: string;
+          created_at: string;
+          description: string | null;
+          image_url: string;
+          is_competition: boolean;
+          owner: string;
+          view: number;
+          visibility: Database['collection']['Enums']['visibility'];
+        };
+        Insert: {
+          collection_id?: number;
+          collection_name: string;
+          created_at?: string;
+          description?: string | null;
+          image_url: string;
+          is_competition?: boolean;
+          owner?: string;
+          view?: number;
+          visibility?: Database['collection']['Enums']['visibility'];
+        };
+        Update: {
+          collection_id?: number;
+          collection_name?: string;
+          created_at?: string;
+          description?: string | null;
+          image_url?: string;
+          is_competition?: boolean;
+          owner?: string;
+          view?: number;
+          visibility?: Database['collection']['Enums']['visibility'];
+        };
+        Relationships: [];
+      };
+      competition: {
+        Row: {
+          collection_id: number;
+          is_official: boolean | null;
+          pax: number | null;
+          target: string;
+        };
+        Insert: {
+          collection_id?: number;
+          is_official?: boolean | null;
+          pax?: number | null;
+          target: string;
+        };
+        Update: {
+          collection_id?: number;
+          is_official?: boolean | null;
+          pax?: number | null;
+          target?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'competition_collection_id_fkey';
+            columns: ['collection_id'];
+            referencedRelation: 'collections';
+            referencedColumns: ['collection_id'];
+          },
+        ];
+      };
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      [_ in never]: never;
+    };
+    Enums: {
+      visibility: 'public' | 'partially public' | 'private';
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
   community: {
     Tables: {
       community_posts: {
@@ -48,6 +156,7 @@ export type Database = {
           created_at: string;
           email: string | null;
           isTeam: boolean;
+          link: string[] | null;
           owner: string | null;
           profile_id: string;
           profile_name: string;
@@ -56,6 +165,7 @@ export type Database = {
           created_at?: string;
           email?: string | null;
           isTeam: boolean;
+          link?: string[] | null;
           owner?: string | null;
           profile_id?: string;
           profile_name: string;
@@ -64,6 +174,7 @@ export type Database = {
           created_at?: string;
           email?: string | null;
           isTeam?: boolean;
+          link?: string[] | null;
           owner?: string | null;
           profile_id?: string;
           profile_name?: string;
@@ -83,14 +194,140 @@ export type Database = {
           profile_id?: string;
           student_id?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: 'profile_permission_profile_id_fkey';
-            columns: ['profile_id'];
-            referencedRelation: 'profile';
-            referencedColumns: ['profile_id'];
-          },
-        ];
+        Relationships: [];
+      };
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      [_ in never]: never;
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
+  enum: {
+    Tables: {
+      certificates: {
+        Row: {
+          certificate_id: number;
+          certificate_name: string;
+          is_software: boolean;
+        };
+        Insert: {
+          certificate_id?: number;
+          certificate_name: string;
+          is_software: boolean;
+        };
+        Update: {
+          certificate_id?: number;
+          certificate_name?: string;
+          is_software?: boolean;
+        };
+        Relationships: [];
+      };
+      companies: {
+        Row: {
+          company_id: number;
+          company_name: string;
+        };
+        Insert: {
+          company_id?: number;
+          company_name: string;
+        };
+        Update: {
+          company_id?: number;
+          company_name?: string;
+        };
+        Relationships: [];
+      };
+      competitions: {
+        Row: {
+          competition_duration: unknown | null;
+          competition_id: number;
+          competition_name: string;
+        };
+        Insert: {
+          competition_duration?: unknown | null;
+          competition_id?: number;
+          competition_name: string;
+        };
+        Update: {
+          competition_duration?: unknown | null;
+          competition_id?: number;
+          competition_name?: string;
+        };
+        Relationships: [];
+      };
+      job_positions: {
+        Row: {
+          position_id: number;
+          position_name: string;
+        };
+        Insert: {
+          position_id?: number;
+          position_name: string;
+        };
+        Update: {
+          position_id?: number;
+          position_name?: string;
+        };
+        Relationships: [];
+      };
+      jobs: {
+        Row: {
+          job_id: number;
+          job_name: string;
+        };
+        Insert: {
+          job_id?: number;
+          job_name: string;
+        };
+        Update: {
+          job_id?: number;
+          job_name?: string;
+        };
+        Relationships: [];
+      };
+      skills: {
+        Row: {
+          language: boolean;
+          skill_id: number;
+          skill_name: string;
+        };
+        Insert: {
+          language: boolean;
+          skill_id?: number;
+          skill_name: string;
+        };
+        Update: {
+          language?: boolean;
+          skill_id?: number;
+          skill_name?: string;
+        };
+        Relationships: [];
+      };
+      universities: {
+        Row: {
+          university_department: string;
+          university_id: number;
+          university_name: string;
+        };
+        Insert: {
+          university_department: string;
+          university_id?: number;
+          university_name: string;
+        };
+        Update: {
+          university_department?: string;
+          university_id?: number;
+          university_name?: string;
+        };
+        Relationships: [];
       };
     };
     Views: {
@@ -148,6 +385,168 @@ export type Database = {
           password: string;
         }[];
       };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
+  profile: {
+    Tables: {
+      profile: {
+        Row: {
+          created_at: string;
+          email: string | null;
+          isTeam: boolean;
+          link: string[] | null;
+          owner: string | null;
+          profile_id: string;
+          profile_name: string;
+        };
+        Insert: {
+          created_at?: string;
+          email?: string | null;
+          isTeam: boolean;
+          link?: string[] | null;
+          owner?: string | null;
+          profile_id?: string;
+          profile_name: string;
+        };
+        Update: {
+          created_at?: string;
+          email?: string | null;
+          isTeam?: boolean;
+          link?: string[] | null;
+          owner?: string | null;
+          profile_id?: string;
+          profile_name?: string;
+        };
+        Relationships: [];
+      };
+      profile_competitions: {
+        Row: {
+          competition_id: number;
+          prize: string;
+          profile_id: string | null;
+        };
+        Insert: {
+          competition_id?: number;
+          prize: string;
+          profile_id?: string | null;
+        };
+        Update: {
+          competition_id?: number;
+          prize?: string;
+          profile_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'profile_competitions_profile_id_fkey';
+            columns: ['profile_id'];
+            referencedRelation: 'profile';
+            referencedColumns: ['profile_id'];
+          },
+        ];
+      };
+      profile_introduce: {
+        Row: {
+          introduce: string;
+          profile_id: string;
+        };
+        Insert: {
+          introduce: string;
+          profile_id?: string;
+        };
+        Update: {
+          introduce?: string;
+          profile_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'profile_introduce_profile_id_fkey';
+            columns: ['profile_id'];
+            referencedRelation: 'profile';
+            referencedColumns: ['profile_id'];
+          },
+        ];
+      };
+      profile_link: {
+        Row: {
+          alt: string;
+          link: string;
+          profile_id: string;
+        };
+        Insert: {
+          alt: string;
+          link: string;
+          profile_id?: string;
+        };
+        Update: {
+          alt?: string;
+          link?: string;
+          profile_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'profile_link_profile_id_fkey';
+            columns: ['profile_id'];
+            referencedRelation: 'profile';
+            referencedColumns: ['profile_id'];
+          },
+        ];
+      };
+      profile_permission: {
+        Row: {
+          profile_id: string;
+          student_id: string;
+        };
+        Insert: {
+          profile_id: string;
+          student_id?: string;
+        };
+        Update: {
+          profile_id?: string;
+          student_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'profile_permission_profile_id_fkey';
+            columns: ['profile_id'];
+            referencedRelation: 'profile';
+            referencedColumns: ['profile_id'];
+          },
+        ];
+      };
+      profile_skills: {
+        Row: {
+          profile_id: string;
+          skill_id: number;
+        };
+        Insert: {
+          profile_id?: string;
+          skill_id?: number;
+        };
+        Update: {
+          profile_id?: string;
+          skill_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'profile_skills_profile_id_fkey';
+            columns: ['profile_id'];
+            referencedRelation: 'profile';
+            referencedColumns: ['profile_id'];
+          },
+        ];
+      };
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      [_ in never]: never;
     };
     Enums: {
       [_ in never]: never;
@@ -354,7 +753,8 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      [_ in never]: never;
+      collection_item_type: 'collection' | 'project';
+      visibility: 'public' | 'partially_public' | 'private';
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -691,57 +1091,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      certificates: {
-        Row: {
-          certificate_id: number;
-          certificate_name: string;
-          is_software: boolean;
-        };
-        Insert: {
-          certificate_id?: number;
-          certificate_name: string;
-          is_software: boolean;
-        };
-        Update: {
-          certificate_id?: number;
-          certificate_name?: string;
-          is_software?: boolean;
-        };
-        Relationships: [];
-      };
-      companies: {
-        Row: {
-          company_id: number;
-          company_name: string;
-        };
-        Insert: {
-          company_id?: number;
-          company_name: string;
-        };
-        Update: {
-          company_id?: number;
-          company_name?: string;
-        };
-        Relationships: [];
-      };
-      competitions: {
-        Row: {
-          competition_duration: unknown | null;
-          competition_id: number;
-          competition_name: string;
-        };
-        Insert: {
-          competition_duration?: unknown | null;
-          competition_id?: number;
-          competition_name: string;
-        };
-        Update: {
-          competition_duration?: unknown | null;
-          competition_id?: number;
-          competition_name?: string;
-        };
-        Relationships: [];
-      };
       courses: {
         Row: {
           course_id: number;
@@ -799,18 +1148,6 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: 'dream_job_company_id_fkey';
-            columns: ['company_id'];
-            referencedRelation: 'companies';
-            referencedColumns: ['company_id'];
-          },
-          {
-            foreignKeyName: 'dream_job_job_id_fkey';
-            columns: ['job_id'];
-            referencedRelation: 'jobs';
-            referencedColumns: ['job_id'];
-          },
-          {
             foreignKeyName: 'dream_job_student_id_fkey';
             columns: ['student_id'];
             referencedRelation: 'student';
@@ -857,28 +1194,10 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: 'employment_companies_company_id_fkey';
-            columns: ['company_id'];
-            referencedRelation: 'companies';
-            referencedColumns: ['company_id'];
-          },
-          {
-            foreignKeyName: 'employment_companies_job_id_fkey';
-            columns: ['job_id'];
-            referencedRelation: 'jobs';
-            referencedColumns: ['job_id'];
-          },
-          {
             foreignKeyName: 'employment_companies_military_service_status_id_fkey';
             columns: ['military_service_status_id'];
             referencedRelation: 'military_service_statuses';
             referencedColumns: ['military_service_status_id'];
-          },
-          {
-            foreignKeyName: 'employment_companies_position_id_fkey';
-            columns: ['position_id'];
-            referencedRelation: 'job_positions';
-            referencedColumns: ['position_id'];
           },
           {
             foreignKeyName: 'employment_companies_student_id_fkey';
@@ -915,72 +1234,12 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: 'field_training_company_id_fkey';
-            columns: ['company_id'];
-            referencedRelation: 'companies';
-            referencedColumns: ['company_id'];
-          },
-          {
-            foreignKeyName: 'field_training_job_id_fkey';
-            columns: ['job_id'];
-            referencedRelation: 'jobs';
-            referencedColumns: ['job_id'];
-          },
-          {
             foreignKeyName: 'field_training_student_id_fkey';
             columns: ['student_id'];
             referencedRelation: 'student';
             referencedColumns: ['student_id'];
           },
         ];
-      };
-      job_positions: {
-        Row: {
-          position_id: number;
-          position_name: string;
-        };
-        Insert: {
-          position_id?: number;
-          position_name: string;
-        };
-        Update: {
-          position_id?: number;
-          position_name?: string;
-        };
-        Relationships: [];
-      };
-      jobs: {
-        Row: {
-          job_id: number;
-          job_name: string;
-        };
-        Insert: {
-          job_id?: number;
-          job_name: string;
-        };
-        Update: {
-          job_id?: number;
-          job_name?: string;
-        };
-        Relationships: [];
-      };
-      links: {
-        Row: {
-          instead_link: string | null;
-          link: string;
-          link_id: number;
-        };
-        Insert: {
-          instead_link?: string | null;
-          link: string;
-          link_id?: number;
-        };
-        Update: {
-          instead_link?: string | null;
-          link?: string;
-          link_id?: number;
-        };
-        Relationships: [];
       };
       middle_schools: {
         Row: {
@@ -1045,24 +1304,6 @@ export type Database = {
             referencedColumns: ['student_id'];
           },
         ];
-      };
-      skills: {
-        Row: {
-          language: boolean;
-          skill_id: number;
-          skill_name: string;
-        };
-        Insert: {
-          language: boolean;
-          skill_id?: number;
-          skill_name: string;
-        };
-        Update: {
-          language?: boolean;
-          skill_id?: number;
-          skill_name?: string;
-        };
-        Relationships: [];
       };
       student: {
         Row: {
@@ -1147,12 +1388,6 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: 'student_certificates_certificate_id_fkey';
-            columns: ['certificate_id'];
-            referencedRelation: 'certificates';
-            referencedColumns: ['certificate_id'];
-          },
-          {
             foreignKeyName: 'student_certificates_student_id_fkey';
             columns: ['student_id'];
             referencedRelation: 'student';
@@ -1177,12 +1412,6 @@ export type Database = {
           student_id?: string;
         };
         Relationships: [
-          {
-            foreignKeyName: 'student_competitions_competition_id_fkey';
-            columns: ['competition_id'];
-            referencedRelation: 'competitions';
-            referencedColumns: ['competition_id'];
-          },
           {
             foreignKeyName: 'student_competitions_student_id_fkey2';
             columns: ['student_id'];
@@ -1219,28 +1448,6 @@ export type Database = {
           },
         ];
       };
-      student_introduce: {
-        Row: {
-          introduction: string | null;
-          student_id: string;
-        };
-        Insert: {
-          introduction?: string | null;
-          student_id: string;
-        };
-        Update: {
-          introduction?: string | null;
-          student_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'student_introduce_student_id_fkey';
-            columns: ['student_id'];
-            referencedRelation: 'student';
-            referencedColumns: ['student_id'];
-          },
-        ];
-      };
       student_jobs: {
         Row: {
           job_id: number;
@@ -1256,41 +1463,7 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: 'student_jobs_job_id_fkey';
-            columns: ['job_id'];
-            referencedRelation: 'jobs';
-            referencedColumns: ['job_id'];
-          },
-          {
             foreignKeyName: 'student_jobs_student_id_fkey';
-            columns: ['student_id'];
-            referencedRelation: 'student';
-            referencedColumns: ['student_id'];
-          },
-        ];
-      };
-      student_links: {
-        Row: {
-          link_id: number;
-          student_id: string;
-        };
-        Insert: {
-          link_id: number;
-          student_id: string;
-        };
-        Update: {
-          link_id?: number;
-          student_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'student_links_link_id_fkey';
-            columns: ['link_id'];
-            referencedRelation: 'links';
-            referencedColumns: ['link_id'];
-          },
-          {
-            foreignKeyName: 'student_links_student_id_fkey';
             columns: ['student_id'];
             referencedRelation: 'student';
             referencedColumns: ['student_id'];
@@ -1334,34 +1507,6 @@ export type Database = {
           },
         ];
       };
-      student_skills: {
-        Row: {
-          skill_id: number;
-          student_id: string;
-        };
-        Insert: {
-          skill_id?: number;
-          student_id: string;
-        };
-        Update: {
-          skill_id?: number;
-          student_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'student_skills_skill_id_fkey';
-            columns: ['skill_id'];
-            referencedRelation: 'skills';
-            referencedColumns: ['skill_id'];
-          },
-          {
-            foreignKeyName: 'student_skills_student_id_fkey';
-            columns: ['student_id'];
-            referencedRelation: 'student';
-            referencedColumns: ['student_id'];
-          },
-        ];
-      };
       student_universities: {
         Row: {
           created_at: string;
@@ -1385,31 +1530,7 @@ export type Database = {
             referencedRelation: 'student';
             referencedColumns: ['student_id'];
           },
-          {
-            foreignKeyName: 'student_universities_university_id_fkey';
-            columns: ['university_id'];
-            referencedRelation: 'universities';
-            referencedColumns: ['university_id'];
-          },
         ];
-      };
-      universities: {
-        Row: {
-          university_department: string;
-          university_id: number;
-          university_name: string;
-        };
-        Insert: {
-          university_department: string;
-          university_id?: number;
-          university_name: string;
-        };
-        Update: {
-          university_department?: string;
-          university_id?: number;
-          university_name?: string;
-        };
-        Relationships: [];
       };
     };
     Views: {
