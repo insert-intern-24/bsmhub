@@ -20,14 +20,17 @@ const ProfileEditForm = ({
     const formData = new FormData(e.target as HTMLFormElement);
     if (profile_id == '') {
       const userID = await getUserIdBySession();
-      if (userID)
-        createNewProfile({
+      if (userID) {
+        const result = await createNewProfile({
           profile_name: formData.get('profile_name') as string,
           isTeam: isTeam,
           email: formData.get('email') as string,
           owner: userID,
         });
-      else console.error('로그인 상태 아님');
+        if (result === 0) {
+          alert('프로필 생성 성공');
+        }
+      } else console.error('로그인 상태 아님');
     } else {
       const profile = await getProfileById(profile_id);
       console.log(profile);

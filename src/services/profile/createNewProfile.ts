@@ -17,8 +17,9 @@ const createNewProfile = async (
       .from('profile_permission')
       .insert({ profile_id: profile[0].profile_id });
     console.log('프로필 생성 성공');
+    return 0;
   } else {
-    console.error('프로필 생성 실패. 중복프로필여부 확인요망');
+    throw '프로필 생성 실패. 중복프로필여부 확인요망';
   }
 };
 
