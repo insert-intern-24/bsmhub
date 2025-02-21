@@ -1,20 +1,32 @@
 import React from 'react';
-import NotificationFeed from './NotificationFeed';
 import DefaultFeed from './DefaultFeed';
+import { createClient } from '@/utils/supabase/server';
 
-export default function FeedList() {
+export default async function FeedList() {
+  const supabase = await createClient();
+
+  const { data: community_posts, error: communityPostsError } = await supabase
+    .schema('community')
+    .from('community_posts')
+    .select('*');
+
+  if (communityPostsError) {
+    console.error(communityPostsError);
+    return <div>Error loading posts or profiles</div>;
+  } else {
+    console.log(community_posts);
+  }
+
   return (
     <>
-      <NotificationFeed
-        profileName={''}
-        projectStatus={''}
-        time={undefined}
-        profileImage={''}
-        projectName={''}
-        projectDescription={''}
-        contentImages={[]}
-      />
-      <DefaultFeed name={''} time={undefined} profileImage={''} text={''} />
+      {community_posts?.map((post) => (
+        <DefaultFeed
+          key={post.post_id}
+          profile_id={post.profile_id}
+          time={post.created_at}
+          text={post.context}
+        />
+      ))}
     </>
   );
 }
