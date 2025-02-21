@@ -4,6 +4,7 @@ pipeline {
     stage('Install Dependencies') {
       steps {
         sh 'npm install'
+        sh 'npm install --os=linux --cpu=x64 sharp'
       }
     }
 
@@ -11,13 +12,13 @@ pipeline {
       steps {
         sh '''echo "import type { NextConfig } from \'next\';
 const nextConfig: NextConfig = {
-  /* config options here */
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+Â  /* config options here */
+Â  typescript: {
+Â  Â  ignoreBuildErrors: true,
+Â  },
+Â  eslint: {
+Â  Â  ignoreDuringBuilds: true,
+Â  },
 };
 
 
