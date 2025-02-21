@@ -1,18 +1,28 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import getProfileBySession from '@/services/profile/getProfileBySession';
 
 const MakeProfileOverlay = () => {
   const pathname = usePathname();
   const [isHide, setHide] = useState(true);
-  useMemo(async () => {
-    const result = await getProfileBySession();
-    if (result?.length == 0) {
-      setHide(false);
-    }
+
+  useEffect(() => {
+    const checkProfile = async () => {
+      try {
+        const result = await getProfileBySession();
+        if (!result) {
+          setHide(false);
+        }
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      }
+    };
+
+    checkProfile();
   }, []);
+
   if (pathname === '/community/new-profile') return null; // 이미 새 프로필 만들기 페이지에 있는 경우 제외
 
   return !isHide ? (
