@@ -68,7 +68,7 @@ pipeline {
         stage('Deploy to Remote Server') {
             steps {
                 script {
-                    def imageTag = "${env.REGISTRY}/${env.IMAGE_NAME}:${env.BRANCH_NAME}"
+                    def imageTag = "localhost:5000/${env.IMAGE_NAME}:${env.BRANCH_NAME}"
                     def remote = [:]
                     remote.name = 'deploy-server'
                     remote.host = env.DEPLOY_SERVER
