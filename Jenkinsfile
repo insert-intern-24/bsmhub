@@ -3,17 +3,12 @@ pipeline {
     environment {
         REGISTRY = "10.3.0.130:5000"
         IMAGE_NAME = "bsmhub"
-        SUPABASE_KEY = credentials('NEXT_PUBLIC_SUPABASE_ANON_KEY')
-        GOOGLE_CLIENT = credentials('NEXT_PUBLIC_GOOGLE_CLIENT_ID')
         NEXT_PUBLIC_SUPABASE_URL="https://bsmhubsp.obtuse.kr"
         CONTAINER_NAME = "bsmhub-${env.BRANCH_NAME}"
         DEPLOY_SERVER = "10.3.0.130"
-        DEPLOY_CREDS = credentials('DEPLOY_SERVER_CREDS')
         REPO_OWNER = "insert-intern-24"
         REPO_NAME = "bsmhub"
-        GITHUB_APP = credentials('GITHUB_APP_CREDENTIALS')
         GITHUB_APP_ID = '1155937'
-        GITHUB_APP_INSTALLATION_ID = '61564072'
     }
     stages {
         stage('Create GitHub Deployment') {
@@ -21,26 +16,28 @@ pipeline {
                 expression { env.CHANGE_ID != null }
             }
             steps {
-                script {
-                    // GitHub App 토큰 생성 (Pipeline Utility Steps 플러그인 사용)
-                    def privateKey = readFile(GITHUB_APP_KEY)
-                    def token = githubAppToken(
-                        privateKey: privateKey,
-                        appId: env.GITHUB_APP_ID,
-                        apiUri: 'https://api.github.com'
-                    )
+                withCredentials([file(credentialsId: 'GITHUB_APP_CREDENTIALS', variable: 'GITHUB_APP_KEY')]) {
+                    script {
+                        // GitHub App 토큰 생성
+                        def privateKey = readFile(GITHUB_APP_KEY)
+                        def token = githubAppToken(
+                            privateKey: privateKey,
+                            appId: env.GITHUB_APP_ID,
+                            apiUri: 'https://api.github.com'
+                        )
 
-                    // GitHub API 플러그인으로 deployment 생성
-                    def github = GitHub.connectToEnterpriseWithOAuth('https://api.github.com', token)
-                    def repo = github.getRepository("${REPO_OWNER}/${REPO_NAME}")
-                    
-                    def deployment = repo.createDeployment(env.BRANCH_NAME)
-                        .environment('preview')
-                        .autoMerge(false)
-                        .create()
+                        // GitHub API 플러그인으로 deployment 생성
+                        def github = GitHub.connectToEnterpriseWithOAuth('https://api.github.com', token)
+                        def repo = github.getRepository("${REPO_OWNER}/${REPO_NAME}")
+                        
+                        def deployment = repo.createDeployment(env.BRANCH_NAME)
+                            .environment('preview')
+                            .autoMerge(false)
+                            .create()
 
-                    env.DEPLOYMENT_ID = deployment.getId()
-                    env.INSTALLATION_TOKEN = token
+                        env.DEPLOYMENT_ID = deployment.getId()
+                        env.INSTALLATION_TOKEN = token
+                    }
                 }
             }
         }
@@ -74,14 +71,19 @@ pipeline {
 
         stage('Create env file') {
             steps {
-                script {
-                    writeFile file: '.env.local', text: """
-                        NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_KEY}
-                        NEXT_PUBLIC_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT}
-                        NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-                        NEXT_PUBLIC_SITE_URL=http://10.3.0.130:${PORT}
-                    """.stripIndent()
-                    sh "cat .env.local"
+                withCredentials([
+                    string(credentialsId: 'NEXT_PUBLIC_SUPABASE_ANON_KEY', variable: 'SUPABASE_KEY'),
+                    string(credentialsId: 'NEXT_PUBLIC_GOOGLE_CLIENT_ID', variable: 'GOOGLE_CLIENT')
+                ]) {
+                    script {
+                        writeFile file: '.env.local', text: """
+                            NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_KEY}
+                            NEXT_PUBLIC_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT}
+                            NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+                            NEXT_PUBLIC_SITE_URL=http://${DEPLOY_SERVER}:${PORT}
+                        """.stripIndent()
+                        sh "cat .env.local"
+                    }
                 }
             }
         }
@@ -99,30 +101,36 @@ pipeline {
 
         stage('Deploy to Remote Server') {
             steps {
-                script {
-                    def imageTag = "localhost:5000/${env.IMAGE_NAME}:${env.BRANCH_NAME}"
-                    def remote = [:]
-                    remote.name = 'deploy-server'
-                    remote.host = env.DEPLOY_SERVER
-                    remote.allowAnyHosts = true
-                    remote.user = DEPLOY_CREDS_USR
-                    remote.password = DEPLOY_CREDS_PSW
-                    
-                    // Copy env file to remote server
-                    sshPut remote: remote, from: '.env.local', into: '/tmp/'
-                    
-                    // Execute deployment commands on remote server
-                    sshCommand remote: remote, command: """
-                        docker rm -f ${env.CONTAINER_NAME} || true
-                        docker pull ${imageTag}
-                        docker run -d \\
-                            --name ${env.CONTAINER_NAME} \\
-                            -p ${PORT}:3000 \\
-                            --restart unless-stopped \\
-                            --env-file /tmp/.env.local \\
-                            ${imageTag}
-                        rm /tmp/.env.local
-                    """
+                withCredentials([usernamePassword(
+                    credentialsId: 'DEPLOY_SERVER_CREDS',
+                    usernameVariable: 'DEPLOY_USER',
+                    passwordVariable: 'DEPLOY_PASS'
+                )]) {
+                    script {
+                        def imageTag = "localhost:5000/${env.IMAGE_NAME}:${env.BRANCH_NAME}"
+                        def remote = [:]
+                        remote.name = 'deploy-server'
+                        remote.host = env.DEPLOY_SERVER
+                        remote.allowAnyHosts = true
+                        remote.user = DEPLOY_USER
+                        remote.password = DEPLOY_PASS
+                        
+                        // Copy env file to remote server
+                        sshPut remote: remote, from: '.env.local', into: '/tmp/'
+                        
+                        // Execute deployment commands on remote server
+                        sshCommand remote: remote, command: """
+                            docker rm -f ${env.CONTAINER_NAME} || true
+                            docker pull ${imageTag}
+                            docker run -d \\
+                                --name ${env.CONTAINER_NAME} \\
+                                -p ${PORT}:3000 \\
+                                --restart unless-stopped \\
+                                --env-file /tmp/.env.local \\
+                                ${imageTag}
+                            rm /tmp/.env.local
+                        """
+                    }
                 }
             }
         }
