@@ -1,6 +1,5 @@
 import Detail from './components/detail/Detail';
-import MyCollection from './components/collection/MyCollection';
-import CreateCollection from './components/collection/CreateCollectionForm';
+import Chat from './components/chat/Chat';
 // import Description from './components/shared/Description';
 
 export default function Home() {
@@ -16,8 +15,7 @@ export default function Home() {
           edit={true}
           address="https://goolgle.com"
         />
-        <CreateCollection />
-        <MyCollection />
+        <Chat />
       </div>
     </>
   );
