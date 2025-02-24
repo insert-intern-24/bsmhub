@@ -9,8 +9,7 @@ pipeline {
         NEXT_PUBLIC_SUPABASE_URL="https://bsmhubsp.obtuse.kr"
         CONTAINER_NAME = "bsmhub-${env.BRANCH_NAME}"
         DEPLOY_SERVER = "10.3.0.130"
-        DEPLOY_USER = credentials('DEPLOY_SERVER_USER')
-        DEPLOY_USER_PSW = credentials('DEPLOY_USER_PSW')
+        DEPLOY_CREDS = credentials('DEPLOY_SERVER_CREDS')
     }
     stages {
         stage('Find Available Port') {
@@ -20,8 +19,8 @@ pipeline {
                     remote.name = 'deploy-server'
                     remote.host = env.DEPLOY_SERVER
                     remote.allowAnyHosts = true
-                    remote.user = env.DEPLOY_USER_USR
-                    remote.password = env.DEPLOY_USER_PSW
+                    remote.user = DEPLOY_CREDS_USR
+                    remote.password = DEPLOY_CREDS_PSW
                     
                     // 원격 서버에서 사용 가능한 포트 찾기
                     PORT = sshCommand(
@@ -74,8 +73,8 @@ pipeline {
                     remote.name = 'deploy-server'
                     remote.host = env.DEPLOY_SERVER
                     remote.allowAnyHosts = true
-                    remote.user = env.DEPLOY_USER_USR
-                    remote.password = env.DEPLOY_USER_PSW
+                    remote.user = DEPLOY_CREDS_USR
+                    remote.password = DEPLOY_CREDS_PSW
                     
                     // Copy env file to remote server
                     sshPut remote: remote, from: '.env.local', into: '/tmp/'
