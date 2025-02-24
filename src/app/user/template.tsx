@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Image from 'next/image';
 import UserTabs from '@/app/components/section/userTabs/UserTabsServer';
 import UserTabsClient from '@/app/components/section/userTabs/UserTabsClient';
@@ -31,10 +31,9 @@ const UserTemplate = () => {
         </div>
       </section>
       {/* 홈/프로젝트/게시물에 대한 section */}
-      <div className="serverRender" suppressHydrationWarning>
-        <UserTabs />
-      </div>
-      <UserTabsClient />
+      <Suspense fallback={<UserTabs />}>
+        <UserTabsClient />
+      </Suspense>
     </>
   );
 };
