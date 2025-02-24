@@ -14,24 +14,6 @@ pipeline {
         GITHUB_APP = credentials('GITHUB_APP_CREDENTIALS')
     }
     stages {
-        stage('Initialize') {
-            steps {
-                script {
-                    githubOps = load 'vars/githubOperations.groovy'
-                }
-            }
-        }
-        stage('Create GitHub Deployment') {
-            when {
-                expression { env.CHANGE_ID != null }
-            }
-            steps {
-                script {
-                    // Call shared method for creating deployment
-                    DEPLOYMENT_ID = githubOps.createDeployment(env.BRANCH_NAME, REPO_OWNER, REPO_NAME, GITHUB_APP)
-                }
-            }
-        }
         stage('Find Available Port') {
             steps {
                 script {
@@ -111,18 +93,6 @@ pipeline {
                             ${imageTag}
                         rm /tmp/.env.local
                     """
-                }
-            }
-        }
-
-        stage('Update Deployment Status') {
-            when {
-                expression { env.CHANGE_ID != null && DEPLOYMENT_ID != null }
-            }
-            steps {
-                script {
-                    // Call shared method for updating deployment status
-                    githubOps.updateDeploymentStatus(DEPLOYMENT_ID, REPO_OWNER, REPO_NAME, GITHUB_APP, DEPLOY_SERVER, PORT)
                 }
             }
         }
