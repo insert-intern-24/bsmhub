@@ -20,15 +20,15 @@ pipeline {
                     // 추가: 동적 시작 시간 생성 (UTC 기준)
                     def startedAt = new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone('UTC'))
                     def checkRunPayload = groovy.json.JsonOutput.toJson([
-                        name: "자동 미리보기 배포",
+                        name: '자동 미리보기 배포',
                         head_sha: env.GIT_COMMIT,
-                        status: "in_progress",
-                        external_id: "42",
+                        status: 'in_progress',
+                        external_id: '42',
                         started_at: startedAt,
                         output: [
-                            title: "Check run from Jenkins!",
-                            summary: "This is a check run which has been generated from Jenkins as GitHub App",
-                            text: "...and that is awesome"
+                            title: 'Check run from Jenkins!',
+                            summary: 'This is a check run which has been generated from Jenkins as GitHub App',
+                            text: '...and that is awesome'
                         ]
                     ])
                     sh """
@@ -167,14 +167,14 @@ pipeline {
                     // Check run 상태 업데이트 추가
                     def completedAt = new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone('UTC'))
                     def checkRunCompletePayload = groovy.json.JsonOutput.toJson([
-                        name: "자동 미리보기 배포",
-                        status: "completed",
-                        conclusion: "success",
+                        name: '자동 미리보기 배포',
+                        status: 'completed',
+                        conclusion: 'success',
                         completed_at: completedAt,
                         output: [
-                            title: "Check run completed!",
-                            summary: "The check run has been completed successfully.",
-                            text: "Deployment and preview are available."
+                            title: 'Check run completed!',
+                            summary: 'The check run has been completed successfully.',
+                            text: 'Deployment and preview are available.'
                         ]
                     ])
                     sh """
@@ -182,7 +182,7 @@ pipeline {
                         -H "Content-Type: application/json" \\
                         -H "Accept: application/vnd.github.antiope-preview+json" \\
                         -H "authorization: Bearer \$GITHUB_APP_PSW" \\
-                        -d '${checkRunCompletePayload}' https://api.github.com/repos/\$REPO_OWNER/\$REPO_NAME/check-runs
+                        -d '${checkRunCompletePayload}' https://api.github.com/repos/\$REPO_OWNER/\$REPO_NAME/check-runs/\$GIT_COMMIT
                     """
                 }
             }
