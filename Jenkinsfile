@@ -16,16 +16,10 @@ pipeline {
                 expression { env.CHANGE_ID != null }
             }
             steps {
-                withCredentials([file(credentialsId: 'GITHUB_APP_CREDENTIALS', variable: 'GITHUB_APP_KEY')]) {
+                withCredentials([gitHubApp(appCredentialsId: 'GITHUB_APP_CREDENTIALS')]) {
                     script {
-                        // GitHub App 토큰 생성
-                        def privateKey = readFile(GITHUB_APP_KEY)
-                        def token = githubAppToken(
-                            privateKey: privateKey,
-                            appId: env.GITHUB_APP_ID,
-                            apiUri: 'https://api.github.com'
-                        )
-
+                        def token = githubAppToken()
+                        
                         // GitHub API 플러그인으로 deployment 생성
                         def github = GitHub.connectToEnterpriseWithOAuth('https://api.github.com', token)
                         def repo = github.getRepository("${REPO_OWNER}/${REPO_NAME}")
