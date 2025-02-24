@@ -31,12 +31,14 @@ pipeline {
                             text: '...and that is awesome'
                         ]
                     ])
-                    sh """
+                    def response = sh(script: """
                         curl -H "Content-Type: application/json" \\
                             -H "Accept: application/vnd.github.antiope-preview+json" \\
                             -H "authorization: Bearer \$GITHUB_APP_PSW" \\
                             -d '${checkRunPayload}' https://api.github.com/repos/\$REPO_OWNER/\$REPO_NAME/check-runs
-                    """
+                    """, returnStdout: true).trim()
+                    def jsonResponse = new groovy.json.JsonSlurper().parseText(response)
+                    CHECK_RUN_ID = jsonResponse.id
                 }
             }
         }
@@ -158,7 +160,7 @@ pipeline {
                         -H "Content-Type: application/json" \\
                         -H "Accept: application/vnd.github.antiope-preview+json" \\
                         -H "authorization: Bearer \$GITHUB_APP_PSW" \\
-                        -d '${checkRunCompletePayload}' https://api.github.com/repos/\$REPO_OWNER/\$REPO_NAME/check-runs/\$GIT_COMMIT
+                        -d '${checkRunCompletePayload}' https://api.github.com/repos/\$REPO_OWNER/\$REPO_NAME/check-runs/\$CHECK_RUN_ID
                     """
                 }
             }

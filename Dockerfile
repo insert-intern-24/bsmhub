@@ -23,7 +23,7 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
 # Sharp 설치 및 프로덕션 의존성 설치
-RUN npm install --platform=linuxmusl --arch=x64 sharp
+# RUN npm install --platform=linuxmusl --arch=x64 sharp
 
 # 포트 설정 및 실행
 ENV PORT=3000
