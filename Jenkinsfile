@@ -1,5 +1,8 @@
 import org.kohsuke.github.GitHubBuilder
 
+// Load shared GitHub operations
+def githubOps = load 'vars/githubOperations.groovy'
+
 pipeline {
     agent any
     environment {
@@ -22,18 +25,8 @@ pipeline {
             }
             steps {
                 script {
-                    def github = new GitHubBuilder()
-                        .withEndpoint('https://api.github.com')
-                        .withOAuthToken(GITHUB_APP)
-                        .build()
-                    def repo = github.getRepository("${REPO_OWNER}/${REPO_NAME}")
-                    
-                    def deployment = repo.createDeployment(env.BRANCH_NAME)
-                        .environment('preview')
-                        .autoMerge(false)
-                        .create()
-
-                    DEPLOYMENT_ID = deployment.getId()
+                    // Call shared method for creating deployment
+                    DEPLOYMENT_ID = githubOps.createDeployment(env.BRANCH_NAME, REPO_OWNER, REPO_NAME, GITHUB_APP)
                 }
             }
         }
@@ -126,17 +119,8 @@ pipeline {
             }
             steps {
                 script {
-                    def github = new GitHubBuilder()
-                        .withEndpoint('https://api.github.com')
-                        .withOAuthToken(GITHUB_APP)
-                        .build()
-                    def repo = github.getRepository("${REPO_OWNER}/${REPO_NAME}")
-                    
-                    repo.createDeploymentStatus(DEPLOYMENT_ID)
-                        .state('success')
-                        .targetUrl("http://${env.DEPLOY_SERVER}:${PORT}")
-                        .description('Deployment finished successfully!')
-                        .create()
+                    // Call shared method for updating deployment status
+                    githubOps.updateDeploymentStatus(DEPLOYMENT_ID, REPO_OWNER, REPO_NAME, GITHUB_APP, DEPLOY_SERVER, PORT)
                 }
             }
         }
