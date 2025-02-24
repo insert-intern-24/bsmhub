@@ -5,7 +5,6 @@ pipeline {
         IMAGE_NAME = "bsmhub"
         SUPABASE_KEY = credentials('NEXT_PUBLIC_SUPABASE_ANON_KEY')
         GOOGLE_CLIENT = credentials('NEXT_PUBLIC_GOOGLE_CLIENT_ID')
-        PORT = ''
         NEXT_PUBLIC_SUPABASE_URL="https://bsmhubsp.obtuse.kr"
         CONTAINER_NAME = "bsmhub-${env.BRANCH_NAME}"
         DEPLOY_SERVER = "10.3.0.130"
@@ -23,7 +22,7 @@ pipeline {
                     remote.password = DEPLOY_CREDS_PSW
                     
                     // PORT 설정 방식 변경
-                    def foundPort = sshCommand(
+                    PORT = sshCommand(
                         remote: remote,
                         command: '''
                             for port in $(seq 4000 4999); do
@@ -35,13 +34,7 @@ pipeline {
                         '''
                     ).trim()
                     
-                    env.setProperty('PORT', foundPort)
-                    echo "Found port: ${foundPort}"
-                    echo "Environment PORT: ${env.PORT}"
-                    
-                    if (env.PORT != foundPort) {
-                        error "PORT variable (${env.PORT}) does not match found port (${foundPort})"
-                    }
+                    echo "Found port: ${PORT}"
                 }
             }
         }
@@ -53,8 +46,9 @@ pipeline {
                         NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_KEY}
                         NEXT_PUBLIC_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT}
                         NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-                        NEXT_PUBLIC_SITE_URL=http://10.3.0.130:${env.PORT}
+                        NEXT_PUBLIC_SITE_URL=http://10.3.0.130:${PORT}
                     """.stripIndent()
+                    sh "cat .env.local"
                 }
             }
         }
@@ -89,7 +83,7 @@ pipeline {
                         docker pull ${imageTag}
                         docker run -d \\
                             --name ${env.CONTAINER_NAME} \\
-                            -p ${env.PORT}:3000 \\
+                            -p ${PORT}:3000 \\
                             --restart unless-stopped \\
                             --env-file /tmp/.env.local \\
                             ${imageTag}
