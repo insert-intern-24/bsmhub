@@ -36,21 +36,23 @@ pipeline {
                     ).trim()
                     
                     env.PORT = PORT
-                    echo "Found port on remote server: ${PORT}"
+                    echo "Found port on remote server: ${env.PORT}"
                 }
             }
         }
 
         stage('Create env file') {
             steps {
-                sh '''
-                    cat << EOF > .env.local
-                    NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_KEY}
-                    NEXT_PUBLIC_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT}
-                    NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-                    NEXT_PUBLIC_SITE_URL=http://10.3.0.130:${PORT}
-                    EOF
-                '''
+                script {
+                    sh """
+                        cat << EOF > .env.local
+                        NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_KEY}
+                        NEXT_PUBLIC_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT}
+                        NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+                        NEXT_PUBLIC_SITE_URL=http://10.3.0.130:${env.PORT}
+                        EOF
+                    """
+                }
             }
         }
 
