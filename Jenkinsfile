@@ -12,6 +12,9 @@ pipeline {
         REPO_OWNER = "insert-intern-24"
         REPO_NAME = "bsmhub"
         GITHUB_APP = credentials('GITHUB_APP_CREDENTIALS')
+        GITHUB_APP_KEY = credentials('GITHUB_APP_PRIVATE_KEY')
+        GITHUB_APP_ID = '1155937'
+        GITHUB_APP_INSTALLATION_ID = '61564072'
     }
     stages {
         stage('Find Available Port') {
@@ -77,12 +80,12 @@ pipeline {
                         node -e "
                             const jwt = require('jsonwebtoken');
                             const fs = require('fs');
-                            const privateKey = fs.readFileSync('${GITHUB_APP_PRIVATE_KEY}');
+                            const privateKey = fs.readFileSync('${GITHUB_APP_KEY}');
                             console.log(jwt.sign(
                                 {
                                     iat: Math.floor(Date.now() / 1000) - 60,
                                     exp: Math.floor(Date.now() / 1000) + (10 * 60),
-                                    iss: '${GITHUB_APP_ID}'
+                                    iss: '${env.GITHUB_APP_ID}'
                                 },
                                 privateKey,
                                 { algorithm: 'RS256' }
