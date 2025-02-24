@@ -5,7 +5,7 @@ pipeline {
         IMAGE_NAME = "bsmhub"
         SUPABASE_KEY = credentials('NEXT_PUBLIC_SUPABASE_ANON_KEY')
         GOOGLE_CLIENT = credentials('NEXT_PUBLIC_GOOGLE_CLIENT_ID')
-        PORT = ''
+        PORT = '3000'
         NEXT_PUBLIC_SUPABASE_URL="https://bsmhubsp.obtuse.kr"
         CONTAINER_NAME = "bsmhub-${env.BRANCH_NAME}"
         DEPLOY_SERVER = "10.3.0.130"
@@ -23,7 +23,7 @@ pipeline {
                     remote.password = DEPLOY_CREDS_PSW
                     
                     // 원격 서버에서 사용 가능한 포트 찾기
-                    PORT = sshCommand(
+                    def foundPort = sshCommand(
                         remote: remote,
                         command: '''
                             for port in $(seq 4000 4999); do
@@ -35,8 +35,24 @@ pipeline {
                         '''
                     ).trim()
                     
-                    env.PORT = PORT
-                    echo "Found port on remote server: ${env.PORT}"
+                    // 환경 변수 설정
+                    sh "echo ${foundPort} > .port"
+                    env.PORT = readFile('.port').trim()
+                    
+                    // 설정된 PORT 확인
+                    echo "Verified PORT value: ${env.PORT}"
+                    sh "rm .port"
+                }
+            }
+        }
+
+        stage('Verify Port') {
+            steps {
+                script {
+                    echo "Double checking PORT value: ${env.PORT}"
+                    if (env.PORT == null || env.PORT == '') {
+                        error "PORT is not set correctly!"
+                    }
                 }
             }
         }
@@ -44,14 +60,12 @@ pipeline {
         stage('Create env file') {
             steps {
                 script {
-                    sh """
-                        cat << EOF > .env.local
+                    writeFile file: '.env.local', text: """
                         NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_KEY}
                         NEXT_PUBLIC_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT}
                         NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
                         NEXT_PUBLIC_SITE_URL=http://10.3.0.130:${env.PORT}
-                        EOF
-                    """
+                    """.stripIndent()
                 }
             }
         }
@@ -86,7 +100,7 @@ pipeline {
                         docker pull ${imageTag}
                         docker run -d \\
                             --name ${env.CONTAINER_NAME} \\
-                            -p ${PORT}:3000 \\
+                            -p ${env.PORT}:3000 \\
                             --restart unless-stopped \\
                             --env-file /tmp/.env.local \\
                             ${imageTag}
