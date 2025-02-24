@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import Input from './Input';
 import CheckBox from './CheckBox';
 import createNewPCollection from '../../../services/collection/createNewCollection';
+import Button from './Button';
 
 export default function CreateCollectionForm() {
   async function handleSubmit(formData: FormData) {
@@ -29,7 +30,9 @@ export default function CreateCollectionForm() {
       action={handleSubmit}
       className="w-[63.25rem] p-16 flex flex-col gap-12 bg-white rounded-[0.5rem]"
     >
-      <h1 className="text-xl font-semibold text-titleColor">새 컬렉션 추가</h1>
+      <h1 className="text-[1.5rem] font-semibold text-titleColor">
+        새 컬렉션 추가
+      </h1>
       <div className="flex flex-col gap-3">
         <Input
           name="collection_name"
@@ -43,12 +46,7 @@ export default function CreateCollectionForm() {
         />
         <CheckBox name="visibility" label="공개로 설정" />
       </div>
-      <button
-        type="submit"
-        className="w-full bg-titleColor py-2 text-white font-semibold rounded-full"
-      >
-        추가하기
-      </button>
+      <Button text="추가하기" />
     </form>
   );
 }
