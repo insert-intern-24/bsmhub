@@ -5,7 +5,7 @@ pipeline {
         IMAGE_NAME = "bsmhub"
         SUPABASE_KEY = credentials('NEXT_PUBLIC_SUPABASE_ANON_KEY')
         GOOGLE_CLIENT = credentials('NEXT_PUBLIC_GOOGLE_CLIENT_ID')
-        PORT = '3000'
+        PORT = ''
         NEXT_PUBLIC_SUPABASE_URL="https://bsmhubsp.obtuse.kr"
         CONTAINER_NAME = "bsmhub-${env.BRANCH_NAME}"
         DEPLOY_SERVER = "10.3.0.130"
@@ -22,7 +22,7 @@ pipeline {
                     remote.user = DEPLOY_CREDS_USR
                     remote.password = DEPLOY_CREDS_PSW
                     
-                    // 원격 서버에서 사용 가능한 포트 찾기
+                    // PORT 설정 방식 변경
                     def foundPort = sshCommand(
                         remote: remote,
                         command: '''
@@ -35,23 +35,12 @@ pipeline {
                         '''
                     ).trim()
                     
-                    // 환경 변수 설정
-                    sh "echo ${foundPort} > .port"
-                    env.PORT = readFile('.port').trim()
+                    env.setProperty('PORT', foundPort)
+                    echo "Found port: ${foundPort}"
+                    echo "Environment PORT: ${env.PORT}"
                     
-                    // 설정된 PORT 확인
-                    echo "Verified PORT value: ${env.PORT}"
-                    sh "rm .port"
-                }
-            }
-        }
-
-        stage('Verify Port') {
-            steps {
-                script {
-                    echo "Double checking PORT value: ${env.PORT}"
-                    if (env.PORT == null || env.PORT == '') {
-                        error "PORT is not set correctly!"
+                    if (env.PORT != foundPort) {
+                        error "PORT variable (${env.PORT}) does not match found port (${foundPort})"
                     }
                 }
             }
