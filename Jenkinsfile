@@ -1,8 +1,3 @@
-import org.kohsuke.github.GitHubBuilder
-
-// Load shared GitHub operations
-def githubOps = load 'vars/githubOperations.groovy'
-
 pipeline {
     agent any
     environment {
@@ -19,6 +14,13 @@ pipeline {
         GITHUB_APP = credentials('GITHUB_APP_CREDENTIALS')
     }
     stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    githubOps = load 'vars/githubOperations.groovy'
+                }
+            }
+        }
         stage('Create GitHub Deployment') {
             when {
                 expression { env.CHANGE_ID != null }
