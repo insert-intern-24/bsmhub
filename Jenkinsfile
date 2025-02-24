@@ -12,11 +12,38 @@ pipeline {
         REPO_OWNER = "insert-intern-24"
         REPO_NAME = "bsmhub"
         GITHUB_APP = credentials('GITHUB_APP_CREDENTIALS')
-        GITHUB_APP_KEY = credentials('GITHUB_APP_CREDENTIALS')
         GITHUB_APP_ID = '1155937'
         GITHUB_APP_INSTALLATION_ID = '61564072'
     }
     stages {
+        stage('Create GitHub Deployment') {
+            when {
+                expression { env.CHANGE_ID != null }
+            }
+            steps {
+                script {
+                    // GitHub App 토큰 생성 (Pipeline Utility Steps 플러그인 사용)
+                    def privateKey = readFile(GITHUB_APP_KEY)
+                    def token = githubAppToken(
+                        privateKey: privateKey,
+                        appId: env.GITHUB_APP_ID,
+                        apiUri: 'https://api.github.com'
+                    )
+
+                    // GitHub API 플러그인으로 deployment 생성
+                    def github = GitHub.connectToEnterpriseWithOAuth('https://api.github.com', token)
+                    def repo = github.getRepository("${REPO_OWNER}/${REPO_NAME}")
+                    
+                    def deployment = repo.createDeployment(env.BRANCH_NAME)
+                        .environment('preview')
+                        .autoMerge(false)
+                        .create()
+
+                    env.DEPLOYMENT_ID = deployment.getId()
+                    env.INSTALLATION_TOKEN = token
+                }
+            }
+        }
         stage('Find Available Port') {
             steps {
                 script {
@@ -69,58 +96,6 @@ pipeline {
             }
         }
 
-        stage('Create GitHub Deployment') {
-            when {
-                expression { env.CHANGE_ID != null }
-            }
-            steps {
-                script {
-                    // JWT 토큰 생성
-                    def token = sh(script: """
-                        node -e "
-                            const jwt = require('jsonwebtoken');
-                            const fs = require('fs');
-                            const privateKey = fs.readFileSync('${GITHUB_APP_KEY}');
-                            console.log(jwt.sign(
-                                {
-                                    iat: Math.floor(Date.now() / 1000) - 60,
-                                    exp: Math.floor(Date.now() / 1000) + (10 * 60),
-                                    iss: '${env.GITHUB_APP_ID}'
-                                },
-                                privateKey,
-                                { algorithm: 'RS256' }
-                            ));
-                        "
-                    """, returnStdout: true).trim()
-
-                    // Installation 토큰 얻기
-                    INSTALLATION_TOKEN = sh(script: """
-                        curl -X POST \
-                            -H "Authorization: Bearer ${token}" \
-                            -H "Accept: application/vnd.github.v3+json" \
-                            https://api.github.com/app/installations/${GITHUB_APP_INSTALLATION_ID}/access_tokens \
-                            | jq -r .token
-                    """, returnStdout: true).trim()
-
-                    // Deployment 생성
-                    def deployment = sh(script: """
-                        curl -X POST \
-                            -H "Authorization: Bearer ${INSTALLATION_TOKEN}" \
-                            -H "Accept: application/vnd.github.ant-man-preview+json" \
-                            https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/deployments \
-                            -d '{
-                                "ref": "${env.BRANCH_NAME}",
-                                "environment": "preview",
-                                "auto_merge": false,
-                                "required_contexts": []
-                            }'
-                    """, returnStdout: true)
-                    
-                    def deploymentId = sh(script: "echo '${deployment}' | jq .id", returnStdout: true).trim()
-                    env.DEPLOYMENT_ID = deploymentId
-                }
-            }
-        }
 
         stage('Deploy to Remote Server') {
             steps {
@@ -158,19 +133,14 @@ pipeline {
             }
             steps {
                 script {
-                    // Installation 토큰으로 deployment 상태 업데이트
-                    sh """
-                        curl -X POST \
-                            -H "Authorization: Bearer ${INSTALLATION_TOKEN}" \
-                            -H "Accept: application/vnd.github.ant-man-preview+json" \
-                            https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/deployments/${env.DEPLOYMENT_ID}/statuses \
-                            -d '{
-                                "state": "success",
-                                "environment_url": "http://${env.DEPLOY_SERVER}:${PORT}",
-                                "log_url": "${env.BUILD_URL}",
-                                "description": "Deployment finished successfully!"
-                            }'
-                    """
+                    def github = GitHub.connectToEnterpriseWithOAuth('https://api.github.com', env.INSTALLATION_TOKEN)
+                    def repo = github.getRepository("${REPO_OWNER}/${REPO_NAME}")
+                    
+                    repo.createDeploymentStatus(env.DEPLOYMENT_ID)
+                        .state('success')
+                        .targetUrl("http://${env.DEPLOY_SERVER}:${PORT}")
+                        .description('Deployment finished successfully!')
+                        .create()
                 }
             }
         }
