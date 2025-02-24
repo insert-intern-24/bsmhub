@@ -44,15 +44,15 @@ pipeline {
         stage('Find Available Port') {
             steps {
                 script {
-                    PORT = sh '''
+                    PORT = sh(script: '''
                             for port in $(seq 4000 4999); do
                                 if ! netstat -tna | grep -q ":$port "; then
                                     echo "$port"
                                     exit 0
                                 fi
                             done
-                        '''
-                    .trim()
+                            echo "4000"  # Fallback port if none found
+                        ''', returnStdout: true).trim()
 
                     echo "Found port: ${PORT}"
                 }
