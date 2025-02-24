@@ -7,7 +7,7 @@ pipeline {
         GOOGLE_CLIENT = credentials('NEXT_PUBLIC_GOOGLE_CLIENT_ID')
         NEXT_PUBLIC_SUPABASE_URL = 'https://bsmhubsp.obtuse.kr'
         CONTAINER_NAME = "bsmhub-${env.BRANCH_NAME}"
-        DEPLOY_SERVER = '10.3.0.130'
+        DEPLOY_SERVER = '10.3.0.127'
         DEPLOY_CREDS = credentials('DEPLOY_SERVER_CREDS')
         REPO_OWNER = 'insert-intern-24'
         REPO_NAME = 'bsmhub'
@@ -44,17 +44,7 @@ pipeline {
         stage('Find Available Port') {
             steps {
                 script {
-                    def remote = [:]
-                    remote.name = 'deploy-server'
-                    remote.host = env.DEPLOY_SERVER
-                    remote.allowAnyHosts = true
-                    remote.user = DEPLOY_CREDS_USR
-                    remote.password = DEPLOY_CREDS_PSW
-
-                    // PORT 설정 방식 변경
-                    PORT = sshCommand(
-                        remote: remote,
-                        command: '''
+                    PORT = sh '''
                             for port in $(seq 4000 4999); do
                                 if ! netstat -tna | grep -q ":$port "; then
                                     echo "$port"
@@ -62,7 +52,7 @@ pipeline {
                                 fi
                             done
                         '''
-                    ).trim()
+                    .trim()
 
                     echo "Found port: ${PORT}"
                 }
@@ -91,7 +81,7 @@ pipeline {
                 script {
                     def comment = """🚀 배포 준비중
                         |
-                        |✨ 프리뷰: http://${env.DEPLOY_SERVER}:${PORT}
+                        | 예상포트 : `${PORT}`
                         |""".stripMargin()
                     def payload = groovy.json.JsonOutput.toJson([body: comment])
                     sh """
@@ -110,7 +100,6 @@ pipeline {
                 script {
                     def imageTag = "${env.REGISTRY}/${env.IMAGE_NAME}:${env.BRANCH_NAME}"
                     sh "docker build -t ${imageTag} ."
-                    sh "docker push ${imageTag}"
                 }
             }
         }
@@ -118,28 +107,15 @@ pipeline {
         stage('Deploy to Remote Server') {
             steps {
                 script {
-                    def imageTag = "localhost:5000/${env.IMAGE_NAME}:${env.BRANCH_NAME}"
-                    def remote = [:]
-                    remote.name = 'deploy-server'
-                    remote.host = env.DEPLOY_SERVER
-                    remote.allowAnyHosts = true
-                    remote.user = DEPLOY_CREDS_USR
-                    remote.password = DEPLOY_CREDS_PSW
-
-                    // Copy env file to remote server
-                    sshPut remote: remote, from: '.env.local', into: '/tmp/'
-
-                    // Execute deployment commands on remote server
-                    sshCommand remote: remote, command: """
+                    def imageTag = "${env.REGISTRY}/${env.IMAGE_NAME}:${env.BRANCH_NAME}"
+                    sh """
                         docker rm -f ${env.CONTAINER_NAME} || true
-                        docker pull ${imageTag}
                         docker run -d \\
                             --name ${env.CONTAINER_NAME} \\
                             -p ${PORT}:3000 \\
                             --restart unless-stopped \\
-                            --env-file /tmp/.env.local \\
+                            --env-file .env.local \\
                             ${imageTag}
-                        rm /tmp/.env.local
                     """
                 }
             }
