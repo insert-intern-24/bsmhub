@@ -12,7 +12,7 @@ pipeline {
         REPO_OWNER = "insert-intern-24"
         REPO_NAME = "bsmhub"
         GITHUB_APP = credentials('GITHUB_APP_CREDENTIALS')
-        GITHUB_APP_KEY = credentials('GITHUB_APP_PRIVATE_KEY')
+        GITHUB_APP_KEY = credentials('GITHUB_APP_CREDENTIALS')
         GITHUB_APP_ID = '1155937'
         GITHUB_APP_INSTALLATION_ID = '61564072'
     }
