@@ -9,6 +9,9 @@ pipeline {
         CONTAINER_NAME = "bsmhub-${env.BRANCH_NAME}"
         DEPLOY_SERVER = "10.3.0.130"
         DEPLOY_CREDS = credentials('DEPLOY_SERVER_CREDS')
+        REPO_OWNER = "insert-intern-24"
+        REPO_NAME = "bsmhub"
+        GITHUB_APP = credentials('GITHUB_APP_CREDENTIALS')
     }
     stages {
         stage('Find Available Port') {
@@ -63,6 +66,59 @@ pipeline {
             }
         }
 
+        stage('Create GitHub Deployment') {
+            when {
+                expression { env.CHANGE_ID != null }
+            }
+            steps {
+                script {
+                    // JWT 토큰 생성
+                    def token = sh(script: """
+                        node -e "
+                            const jwt = require('jsonwebtoken');
+                            const fs = require('fs');
+                            const privateKey = fs.readFileSync('${GITHUB_APP_PRIVATE_KEY}');
+                            console.log(jwt.sign(
+                                {
+                                    iat: Math.floor(Date.now() / 1000) - 60,
+                                    exp: Math.floor(Date.now() / 1000) + (10 * 60),
+                                    iss: '${GITHUB_APP_ID}'
+                                },
+                                privateKey,
+                                { algorithm: 'RS256' }
+                            ));
+                        "
+                    """, returnStdout: true).trim()
+
+                    // Installation 토큰 얻기
+                    INSTALLATION_TOKEN = sh(script: """
+                        curl -X POST \
+                            -H "Authorization: Bearer ${token}" \
+                            -H "Accept: application/vnd.github.v3+json" \
+                            https://api.github.com/app/installations/${GITHUB_APP_INSTALLATION_ID}/access_tokens \
+                            | jq -r .token
+                    """, returnStdout: true).trim()
+
+                    // Deployment 생성
+                    def deployment = sh(script: """
+                        curl -X POST \
+                            -H "Authorization: Bearer ${INSTALLATION_TOKEN}" \
+                            -H "Accept: application/vnd.github.ant-man-preview+json" \
+                            https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/deployments \
+                            -d '{
+                                "ref": "${env.BRANCH_NAME}",
+                                "environment": "preview",
+                                "auto_merge": false,
+                                "required_contexts": []
+                            }'
+                    """, returnStdout: true)
+                    
+                    def deploymentId = sh(script: "echo '${deployment}' | jq .id", returnStdout: true).trim()
+                    env.DEPLOYMENT_ID = deploymentId
+                }
+            }
+        }
+
         stage('Deploy to Remote Server') {
             steps {
                 script {
@@ -88,6 +144,51 @@ pipeline {
                             --env-file /tmp/.env.local \\
                             ${imageTag}
                         rm /tmp/.env.local
+                    """
+                }
+            }
+        }
+
+        stage('Update Deployment Status') {
+            when {
+                expression { env.CHANGE_ID != null && env.DEPLOYMENT_ID != null }
+            }
+            steps {
+                script {
+                    // Installation 토큰으로 deployment 상태 업데이트
+                    sh """
+                        curl -X POST \
+                            -H "Authorization: Bearer ${INSTALLATION_TOKEN}" \
+                            -H "Accept: application/vnd.github.ant-man-preview+json" \
+                            https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/deployments/${env.DEPLOYMENT_ID}/statuses \
+                            -d '{
+                                "state": "success",
+                                "environment_url": "http://${env.DEPLOY_SERVER}:${PORT}",
+                                "log_url": "${env.BUILD_URL}",
+                                "description": "Deployment finished successfully!"
+                            }'
+                    """
+                }
+            }
+        }
+
+        stage('Update PR') {
+            when {
+                expression { env.CHANGE_ID != null } // PR인 경우에만 실행
+            }
+            steps {
+                script {
+                    def comment = """🚀 배포 완료!
+                        |
+                        |✨ 프리뷰: http://${env.DEPLOY_SERVER}:${PORT}
+                        |""".stripMargin()
+                    
+                    sh """
+                        curl -X POST \
+                        -H "Authorization: Bearer ${INSTALLATION_TOKEN}" \
+                        -H "Accept: application/vnd.github.v3+json" \
+                        https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${env.CHANGE_ID}/comments \
+                        -d '{"body": "${comment}"}'
                     """
                 }
             }
