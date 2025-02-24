@@ -85,7 +85,7 @@ pipeline {
                         docker pull ${imageTag}
                         docker run -d \\
                             --name ${env.CONTAINER_NAME} \\
-                            -p ${env.PORT}:3000 \\
+                            -p ${PORT}:3000 \\
                             --restart unless-stopped \\
                             --env-file /tmp/.env.local \\
                             ${imageTag}
