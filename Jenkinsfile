@@ -14,35 +14,6 @@ pipeline {
         GITHUB_APP = credentials('GITHUB_APP_CREDENTIALS')
     }
     stages {
-        stage('Check run') {
-            steps {
-                script {
-                    // 추가: 동적 시작 시간 생성 (UTC 기준)
-                    def startedAt = new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone('UTC'))
-                    def checkRunPayload = groovy.json.JsonOutput.toJson([
-                        name: '자동 미리보기 배포',
-                        head_sha: env.GIT_COMMIT,
-                        status: 'in_progress',
-                        external_id: '42',
-                        started_at: startedAt,
-                        output: [
-                            title: 'Check run from Jenkins!',
-                            summary: 'This is a check run which has been generated from Jenkins as GitHub App',
-                            text: '...and that is awesome'
-                        ]
-                    ])
-                    def response = sh(script: """
-                        curl -H "Content-Type: application/json" \\
-                            -H "Accept: application/vnd.github.antiope-preview+json" \\
-                            -H "authorization: Bearer \$GITHUB_APP_PSW" \\
-                            -d '${checkRunPayload}' https://api.github.com/repos/\$REPO_OWNER/\$REPO_NAME/check-runs
-                    """, returnStdout: true).trim()
-                    def jsonResponse = new groovy.json.JsonSlurper().parseText(response)
-                    CHECK_RUN_ID = jsonResponse.id
-                }
-            }
-        }
-
         stage('Find Available Port') {
             steps {
                 script {
@@ -131,7 +102,9 @@ pipeline {
                 script {
                     def comment = """🚀 배포 완료!
                         |
-                        |✨ 프리뷰: http://${env.DEPLOY_SERVER}:${PORT}
+                        |✨ 개발서버 프리뷰: http://${env.DEPLOY_SERVER}:${PORT}
+                        |
+                        | Cloudflare WARP VPN을 통한 내부망 접근 필수, Google One Tab Login 사용 불가능
                         |""".stripMargin()
                     def payload = groovy.json.JsonOutput.toJson([body: comment])
                     sh """
@@ -140,27 +113,6 @@ pipeline {
                         -H "Accept: application/vnd.github.v3+json" \\
                         https://api.github.com/repos/\$REPO_OWNER/\$REPO_NAME/issues/\$CHANGE_ID/comments \\
                         -d '${payload}'
-                    """
-
-                    // Check run 상태 업데이트 추가
-                    def completedAt = new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone('UTC'))
-                    def checkRunCompletePayload = groovy.json.JsonOutput.toJson([
-                        name: '자동 미리보기 배포',
-                        status: 'completed',
-                        conclusion: 'success',
-                        completed_at: completedAt,
-                        output: [
-                            title: 'Check run completed!',
-                            summary: 'The check run has been completed successfully.',
-                            text: 'Deployment and preview are available.'
-                        ]
-                    ])
-                    sh """
-                        curl -X PATCH \\
-                        -H "Content-Type: application/json" \\
-                        -H "Accept: application/vnd.github.antiope-preview+json" \\
-                        -H "authorization: Bearer \$GITHUB_APP_PSW" \\
-                        -d '${checkRunCompletePayload}' https://api.github.com/repos/\$REPO_OWNER/\$REPO_NAME/check-runs/\$CHECK_RUN_ID
                     """
                 }
             }
