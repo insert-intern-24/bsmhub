@@ -1,3 +1,5 @@
+import org.kohsuke.github.GitHubBuilder
+
 pipeline {
     agent any
     environment {
@@ -12,7 +14,6 @@ pipeline {
         REPO_OWNER = "insert-intern-24"
         REPO_NAME = "bsmhub"
         GITHUB_APP = credentials('GITHUB_APP_CREDENTIALS')
-        GITHUB_APP_ID = '1155937'
     }
     stages {
         stage('Create GitHub Deployment') {
@@ -21,8 +22,10 @@ pipeline {
             }
             steps {
                 script {
-                    // GitHub API 플러그인으로 deployment 생성
-                    def github = GitHub.connectToEnterpriseWithOAuth('https://api.github.com', GITHUB_APP)
+                    def github = new GitHubBuilder()
+                        .withEndpoint('https://api.github.com')
+                        .withOAuthToken(GITHUB_APP)
+                        .build()
                     def repo = github.getRepository("${REPO_OWNER}/${REPO_NAME}")
                     
                     def deployment = repo.createDeployment(env.BRANCH_NAME)
@@ -123,7 +126,10 @@ pipeline {
             }
             steps {
                 script {
-                    def github = GitHub.connectToEnterpriseWithOAuth('https://api.github.com', GITHUB_APP)
+                    def github = new GitHubBuilder()
+                        .withEndpoint('https://api.github.com')
+                        .withOAuthToken(GITHUB_APP)
+                        .build()
                     def repo = github.getRepository("${REPO_OWNER}/${REPO_NAME}")
                     
                     repo.createDeploymentStatus(DEPLOYMENT_ID)
