@@ -37,7 +37,7 @@ const MyCollection: React.FC = () => {
   useEffect(() => {
     async function fetchCollections() {
       try {
-        const profileId = await getProfileBySession();
+        const profileId = (await getProfileBySession())?.profile_id;
         if (!profileId) {
           console.error('프로필을 찾을 수 없습니다.');
           return;
