@@ -16,13 +16,13 @@ export default function Header() {
                 <Link href="/project">프로젝트</Link>
               </li>
               <li>
-                <Link href="">전공동아리</Link>
-              </li>
-              <li>
-                <Link href="">일반동아리</Link>
+                <Link href="">동아리</Link>
               </li>
               <li>
                 <Link href="">포트폴리오</Link>
+              </li>
+              <li>
+                <Link href="/community">커뮤니티</Link>
               </li>
             </ul>
           </nav>

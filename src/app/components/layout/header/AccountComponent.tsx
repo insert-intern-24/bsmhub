@@ -4,6 +4,7 @@ import { createClient } from '@/utils/supabase/client';
 import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
 import OneTapComponent from '../../auth/GoogleOneTab';
+import MakeProfileOverlay from '../overlay/MakeProfile';
 
 const openLoginPopup = () => {
   // login popup
@@ -47,6 +48,7 @@ function UserProfile(user: User) {
         alt="Profile Image"
         className="h-7 rounded-full"
       />
+      <MakeProfileOverlay />
     </>
   );
 }
