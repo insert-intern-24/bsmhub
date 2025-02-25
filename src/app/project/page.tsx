@@ -1,6 +1,7 @@
 import React from 'react';
 import Filter from '../components/project/filter/Filter';
 import Pagination from '../components/project/pagination/Pagination';
+import TotalList from '../components/project/totallist/TotalList';
 
 export default function page() {
   return (
@@ -10,6 +11,7 @@ export default function page() {
           프로젝트 모아보기
         </span>
         <Filter />
+        <TotalList />
         <Pagination />
       </div>
     </>
