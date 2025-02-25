@@ -30,7 +30,12 @@ export default async function Select() {
             {index === 0 ? (
               <SelectBox options={options} />
             ) : (
-              <SelectBox data={data} />
+              <SelectBox
+                data={data.map((item) => ({
+                  id: item.category_id,
+                  name: item.category_name,
+                }))}
+              />
             )}
           </div>
         ))}
