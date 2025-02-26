@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import SelectBox from './SelectBox';
 
@@ -12,18 +12,37 @@ const options = [
   { id: 4, text: '기획중' },
 ];
 
-export default async function Select() {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .schema('project')
-    .from('project_category')
-    .select('*');
+interface ProjectCategory {
+  category_id: number;
+  category_name: string;
+}
+
+export default function Select() {
+  const [data, setData] = useState<ProjectCategory[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .schema('project')
+        .from('project_category')
+        .select('*');
+
+      if (error) {
+        console.error(error);
+        setError(error.message);
+      } else {
+        console.log(data);
+        setData(data);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   if (error) {
-    console.error(error);
-    return <div>error</div>;
-  } else {
-    console.log(data);
+    return <div>{error}</div>;
   }
 
   return (
