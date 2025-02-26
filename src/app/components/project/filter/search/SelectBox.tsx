@@ -25,6 +25,12 @@ export default function SelectBox({ options, data }: SelectBoxProps) {
     setIsOpen(false);
   };
 
+  const uniqueData = data
+    ? Array.from(new Set(data.map((item) => item.name))).map((name) =>
+        data.find((item) => item.name === name),
+      )
+    : [];
+
   return (
     <div className="relative w-[13rem]">
       <div
@@ -52,14 +58,14 @@ export default function SelectBox({ options, data }: SelectBoxProps) {
                 {option.text}
               </div>
             ))}
-          {data &&
-            data.map((item) => (
+          {uniqueData &&
+            uniqueData.map((item) => (
               <div
-                key={item.id}
+                key={item?.id}
                 className="p-2 cursor-pointer hover:bg-gray-200 text-[#8A949E] text-[17px] font-normal leading-[25.5px] tracking-[0px] flex-1"
-                onClick={() => handleOptionClick(item.name)}
+                onClick={() => handleOptionClick(item?.name || '')}
               >
-                {item.name}
+                {item?.name}
               </div>
             ))}
         </div>
