@@ -18,19 +18,16 @@ export default async function ProjectCard() {
     console.log(projects);
   }
 
+  const options = [
+    { id: 1, text: '개발중' },
+    { id: 2, text: '서비스 중' },
+    { id: 3, text: '개발완료' },
+    { id: 4, text: '기획중' },
+  ];
+
   const getStatusText = (status: number) => {
-    switch (status) {
-      case 1:
-        return '개발중';
-      case 2:
-        return '서비스 중';
-      case 3:
-        return '개발완료';
-      case 4:
-        return '기획중';
-      default:
-        return '알 수 없음';
-    }
+    const option = options.find((option) => option.id === status);
+    return option ? option.text : '알 수 없음';
   };
 
   return (

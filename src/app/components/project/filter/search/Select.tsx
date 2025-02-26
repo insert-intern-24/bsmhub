@@ -5,7 +5,12 @@ import SelectBox from './SelectBox';
 
 const topics = [{ name: '생애주기' }, { name: '개발주제' }];
 
-const options = [{ 1: '개발중', 2: '서비스중', 3: '개발완료', 4: '기획중' }];
+const options = [
+  { id: 1, text: '개발중' },
+  { id: 2, text: '서비스 중' },
+  { id: 3, text: '개발완료' },
+  { id: 4, text: '기획중' },
+];
 
 export default async function Select() {
   const supabase = await createClient();
