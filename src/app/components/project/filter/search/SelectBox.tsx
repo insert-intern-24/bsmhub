@@ -1,7 +1,8 @@
 import React from 'react';
 
 interface Option {
-  [key: number]: string;
+  id: number;
+  text: string;
 }
 
 interface DataItem {
@@ -24,14 +25,14 @@ export default function SelectBox({ options, data }: SelectBoxProps) {
       >
         <option value="">전체</option>
         {options &&
-          options.map((option, index) => (
-            <option key={index} value={Object.keys(option)[0]}>
-              {Object.values(option)[0]}
+          options.map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.text}
             </option>
           ))}
         {data &&
-          data.map((item, index) => (
-            <option key={index} value={item.id}>
+          data.map((item) => (
+            <option key={item.id} value={item.id}>
               {item.name}
             </option>
           ))}
