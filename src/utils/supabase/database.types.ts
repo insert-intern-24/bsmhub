@@ -7,6 +7,74 @@ export type Json =
   | Json[];
 
 export type Database = {
+  chat: {
+    Tables: {
+      chat_messages: {
+        Row: {
+          content: string;
+          conversation_id: string | null;
+          created_at: string | null;
+          message_id: number;
+          sender_profile_id: string;
+        };
+        Insert: {
+          content: string;
+          conversation_id?: string | null;
+          created_at?: string | null;
+          message_id?: number;
+          sender_profile_id: string;
+        };
+        Update: {
+          content?: string;
+          conversation_id?: string | null;
+          created_at?: string | null;
+          message_id?: number;
+          sender_profile_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'chat_messages_conversation_id_fkey';
+            columns: ['conversation_id'];
+            referencedRelation: 'conversations';
+            referencedColumns: ['conversation_id'];
+          },
+        ];
+      };
+      conversations: {
+        Row: {
+          conversation_id: string;
+          last_message: string | null;
+          participant_ids: string[];
+          updated_at: string | null;
+        };
+        Insert: {
+          conversation_id?: string;
+          last_message?: string | null;
+          participant_ids: string[];
+          updated_at?: string | null;
+        };
+        Update: {
+          conversation_id?: string;
+          last_message?: string | null;
+          participant_ids?: string[];
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      [_ in never]: never;
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
   collection: {
     Tables: {
       collection_items: {
@@ -744,7 +812,27 @@ export type Database = {
   };
   public: {
     Tables: {
-      [_ in never]: never;
+      conversations: {
+        Row: {
+          conversation_id: string;
+          last_message: string | null;
+          participant_ids: string[];
+          updated_at: string | null;
+        };
+        Insert: {
+          conversation_id?: string;
+          last_message?: string | null;
+          participant_ids: string[];
+          updated_at?: string | null;
+        };
+        Update: {
+          conversation_id?: string;
+          last_message?: string | null;
+          participant_ids?: string[];
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;

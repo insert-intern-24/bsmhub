@@ -1,5 +1,4 @@
 import Detail from './components/detail/Detail';
-import Chat from './components/chat/Chat';
 // import Description from './components/shared/Description';
 
 export default function Home() {
@@ -15,7 +14,6 @@ export default function Home() {
           edit={true}
           address="https://goolgle.com"
         />
-        <Chat />
       </div>
     </>
   );

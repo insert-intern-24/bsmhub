@@ -8,7 +8,7 @@ const createNewPCollection = async (
 ) => {
   const supabase = await createClient();
 
-  const profileId = await getProfileBySession();
+  const profileId = (await getProfileBySession())?.profile_id;
   if (!profileId) {
     throw new Error('사용자의 프로필 정보를 찾을 수 없습니다.');
   }
