@@ -1,7 +1,6 @@
 import React from 'react';
 import divider from '@public/images/icon/divider.svg';
 import Image from 'next/image';
-import dropdwon from '@public/images/icon/dropdown.svg';
 
 export default function TotalFilter() {
   return (
@@ -13,7 +12,16 @@ export default function TotalFilter() {
           </span>
           <div className="flex px-1 items-center gap-[0.5rem] rounded bg-white">
             <span>12개</span>
-            <Image src={dropdwon} alt="dropdwon" width={18} height={18} />
+            <span
+              className="material-symbols-outlined"
+              style={{
+                fontVariationSettings:
+                  "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 14",
+                fontSize: '1.5rem',
+              }}
+            >
+              keyboard_arrow_down
+            </span>
           </div>
         </div>
         <Image src={divider} alt="divider" width={1} height={16} />

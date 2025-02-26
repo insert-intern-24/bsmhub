@@ -1,9 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import leftArrow from '@public/images/icon/left-arrow.svg';
 import paginationStomic from '@public/images/icon/paginationAtomic.svg';
-import RightArrow from '@public/images/icon/right-arrow.svg';
 
 export default function Pagination() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -17,7 +15,16 @@ export default function Pagination() {
       <div className="flex items-center self-stretch justify-center">
         <div className="flex items-center gap-2 max-h-10">
           <div className="flex pt-0 pr-2 pb-0 pl-1 justify-center items-center rounded-md">
-            <Image src={leftArrow} alt="leftArrow" width={18} height={18} />
+            <span
+              className="material-symbols-outlined"
+              style={{
+                fontVariationSettings:
+                  "'FILL' 1, 'wght' 100, 'GRAD' 0, 'opsz' 14",
+                fontSize: '1rem',
+              }}
+            >
+              arrow_back_ios
+            </span>
             <span className="text-textDisabled text-center text-base font-normal leading-[150%] tracking-normal">
               이전
             </span>
@@ -54,9 +61,18 @@ export default function Pagination() {
           </div>
           <div className="flex pt-0 pr-2 pb-0 pl-1 justify-center items-center rounded-md">
             <span className="text-textDisabled text-center text-base font-normal leading-[150%] tracking-normal">
-              이후
+              다음
             </span>
-            <Image src={RightArrow} alt="RightArrow" width={18} height={18} />
+            <span
+              className="material-symbols-outlined"
+              style={{
+                fontVariationSettings:
+                  "'FILL' 1, 'wght' 100, 'GRAD' 0, 'opsz' 14",
+                fontSize: '1rem',
+              }}
+            >
+              arrow_forward_ios
+            </span>
           </div>
         </div>
       </div>

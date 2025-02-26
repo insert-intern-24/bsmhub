@@ -1,6 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
-import search from '@public/images/icon/search.svg';
 
 export default function Input() {
   return (
@@ -15,7 +13,15 @@ export default function Input() {
             placeholder="검색어를 입력해주세요."
             className="flex-1 text-textDisabled text-base font-normal leading-[150%] tracking-normal"
           />
-          <Image src={search} alt="search" width={18} height={18} />
+          <span
+            className="material-symbols-outlined"
+            style={{
+              fontVariationSettings:
+                "'FILL' 1, 'wght' 200, 'GRAD' 0, 'opsz' 18",
+            }}
+          >
+            search
+          </span>
         </div>
         <button className="flex min-w-20 px-4 justify-center items-center gap-1 rounded-[3.125rem] bg-black min-h-[3rem]">
           <span className="flex-1 text-white text-center text-base font-normal leading-[150%] tracking-normal">
