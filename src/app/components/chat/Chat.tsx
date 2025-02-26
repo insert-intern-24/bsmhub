@@ -24,7 +24,7 @@ function Chat() {
             height={(22 * 12) / 16}
           />
         </motion.div>
-        <h3 className="text-titleColor font-semibold text-[1.125rem] leading-5">
+        <h3 className="text-titleColor font-semibold text-lg leading-5">
           커피챗
         </h3>
         <p className="text-[0.875rem] text-detailColor leading-3">Online</p>
