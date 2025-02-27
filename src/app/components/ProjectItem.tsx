@@ -29,7 +29,7 @@ function ProjectItem({
         </span>
         <p className="text-[#1462FF] mt-5 text-14">{category}</p>
         <h5 className="text-titleColor font-bold text-2xl">{title}</h5>
-        <p className="text-descriptionColor text-4">{description}</p>
+        <p className="text-descriptionColor text-4 max-w-[20.21rem] truncate">{description}</p>
       </div>
     </div>
   );
