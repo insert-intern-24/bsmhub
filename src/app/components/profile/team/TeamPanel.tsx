@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import TeamInformation from '@components/information/Information';
+import TeamInformation from '@/app/components/Information';
 import DetailBoxes from '@components/detail/DetailBoxes';
 import Hr from '@components/Hr';
 import dummy from './dummy.json';

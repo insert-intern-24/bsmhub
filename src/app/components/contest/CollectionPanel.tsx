@@ -1,5 +1,5 @@
 import React from 'react';
-import ContestInformation from '@components/information/Information';
+import ContestInformation from '@/app/components/Information';
 import Hr from '@components/Hr';
 import DetailBoxes from '../detail/DetailBoxes';
 import { Collection } from '@models/collection';
@@ -28,9 +28,14 @@ function CollectionPanel({ collection }: CollectionPanelProps) {
             <ContestInformation name="조회수" value={collection.info.views} />
           </div>
         </header>
-        <Hr/>
+        <Hr />
         <main className="flex flex-col gap-8">
-          <DetailBoxes details={Array.isArray(collection.details) ? collection.details : []} type="collection" />
+          <DetailBoxes
+            details={
+              Array.isArray(collection.details) ? collection.details : []
+            }
+            type="collection"
+          />
         </main>
       </div>
     </aside>
