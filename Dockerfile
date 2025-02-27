@@ -6,7 +6,7 @@ COPY package*.json ./
 RUN npm ci
 RUN npm install --platform=linuxmusl --arch=x64 sharp
 COPY . .
-RUN echo 'import type { NextConfig } from "next"; const nextConfig: NextConfig = {typescript: {ignoreBuildErrors: true,},eslint: {ignoreDuringBuilds: true,},output: "standalone",};export default nextConfig;' > ./next.config.ts
+RUN echo 'import type { NextConfig } from "next"; const nextConfig: NextConfig = {typescript: {ignoreBuildErrors: true,},eslint: {ignoreDuringBuilds: true,},output: "standalone",images: { domains: ["lh3.googleusercontent.com"] },};export default nextConfig;' > ./next.config.ts
 RUN npm run build
 
 # Production Stage
