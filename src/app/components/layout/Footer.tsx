@@ -18,7 +18,7 @@ export default function Footer() {
 						<a href="">Privacy Policy</a>
 					</div>
           <div className='flex gap-2 justify-end'>
-            <Image src="images/logo/insert.svg" alt="insert-logo" width={22} height={20}/>
+            <Image src="/images/logo/insert.svg" alt="insert-logo" width={22} height={20}/>
             <span>Powered by INSERT</span>
           </div>
 				</div>

@@ -1,20 +1,23 @@
 import TabButton from '@components/TabButton';
 import tabsType from '../../tabs';
+import { userDataType } from '@/app/models/user';
 
 import UserHome from '@components/section/UserHome';
 import UserProjects from '@components/section/UserProjects';
 import UserPosts from '@components/section/UserPosts';
 
-const tabComponents: { [key: string]: JSX.Element } = {
-  home: <UserHome />,
-  project: <UserProjects />,
+const tabComponents = (userData: userDataType): { [key: string]: JSX.Element } => ({
+  home: <UserHome userData={userData} />,
+  project: <UserProjects userData={userData} />,
   posts: <UserPosts />,
-};
+});
 
 const UserTabsTemplate: React.FC<{
   tabName: tabsType;
   setTabName?: React.Dispatch<React.SetStateAction<tabsType>>;
-}> = ({ tabName, setTabName }) => {
+  userData: userDataType;
+}> = ({ tabName, setTabName, userData }) => {
+
   return (
     <>
       <section>
@@ -39,7 +42,7 @@ const UserTabsTemplate: React.FC<{
         </nav>
       </section>
       <section>
-        <div>{tabComponents[tabName]}</div>
+        <>{tabComponents(userData)[tabName]}</>
       </section>
     </>
   );
