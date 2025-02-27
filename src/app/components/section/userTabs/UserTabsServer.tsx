@@ -13,8 +13,7 @@ const UserTabs = async ({ userData }: { userData: userDataType}) => {
     <>
       <UserTabsTemplate 
         tabName={initialTab} 
-        profile={userData.profile}
-        projects={userData.projects}
+        userData={userData}
       />
     </>
   );
