@@ -24,7 +24,7 @@ function Detail({symbol=null, value, certified=false, address=null }: DetailProp
 
         {/* 텍스트 넣는 곳이 여기에요~~ */}
         {symbol === "link" && address ? (
-          <a href={address}>{value}</a>
+          <a href={address}>{value ? value:address}</a>
         ) : (
           <span className="text-14px">{value}</span>
         )}
