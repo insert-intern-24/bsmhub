@@ -2,17 +2,12 @@ import React from 'react';
 import DetailBoxes from '@components/detail/DetailBoxes';
 import ProjectItem from '@components/ProjectItem';
 import { userDataType } from '@/app/models/user';
+import { StatusTag } from '@/app/models/project';
 
 
 const UserHome = ({ userData }: { userData: userDataType }) => {
-  const StatusTag: Record<number, string> = {
-	1: "개발중",
-	2: "서비스 중",
-	3: "개발완료",
-	4: "기획중"
-  }
 
-  return (	
+  return (
 	<div>
       <div className="w-full max-h-32 text-titleColor mt-1 mb-7">{userData?.markdown}</div>
 	  <div className="w-full h-fit flex flex-wrap gap-[0.7rem]">

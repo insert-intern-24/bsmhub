@@ -1,16 +1,11 @@
 import { userDataType } from '@/app/models/user';
 import ProjectItem from '@components/ProjectItem';
+import { StatusTag } from '@/app/models/project';
 
 type TabNamesType = '전체' | '개인' | '협업';
 const tabNames: TabNamesType[] = ['전체', '개인', '협업'];
 
 const UserHome = ({ userData }: { userData: userDataType}) => {
-  const StatusTag: Record<number, string> = {
-    1: "개발중",
-    2: "서비스 중",
-    3: "개발완료",
-    4: "기획중"
-  }
 
   return (
     <div className="p-4">
