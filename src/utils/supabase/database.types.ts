@@ -542,17 +542,17 @@ export type Database = {
       };
       profile_link: {
         Row: {
-          alt: string;
+          alt: string | null;
           link: string;
           profile_id: string;
         };
         Insert: {
-          alt: string;
+          alt?: string | null;
           link: string;
           profile_id?: string;
         };
         Update: {
-          alt?: string;
+          alt?: string | null;
           link?: string;
           profile_id?: string;
         };
@@ -611,7 +611,48 @@ export type Database = {
       };
     };
     Views: {
-      [_ in never]: never;
+      v_profile_certificates: {
+        Row: {
+          certificate_id: number | null;
+          certificate_name: string | null;
+          is_software: boolean | null;
+          profile_id: string | null;
+        };
+        Relationships: [];
+      };
+      v_profile_competitions: {
+        Row: {
+          competition_duration: unknown | null;
+          competition_id: number | null;
+          competition_name: string | null;
+          prize: string | null;
+          profile_id: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'profile_competitions_profile_id_fkey';
+            columns: ['profile_id'];
+            referencedRelation: 'profile';
+            referencedColumns: ['profile_id'];
+          },
+        ];
+      };
+      v_profile_skills: {
+        Row: {
+          language: boolean | null;
+          profile_id: string | null;
+          skill_id: number | null;
+          skill_name: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'profile_skills_profile_id_fkey';
+            columns: ['profile_id'];
+            referencedRelation: 'profile';
+            referencedColumns: ['profile_id'];
+          },
+        ];
+      };
     };
     Functions: {
       [_ in never]: never;
@@ -1620,6 +1661,23 @@ export type Database = {
           },
         ];
       };
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      [_ in never]: never;
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
+  view: {
+    Tables: {
+      [_ in never]: never;
     };
     Views: {
       [_ in never]: never;
