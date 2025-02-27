@@ -1,5 +1,5 @@
 import React from 'react';
-import ContestInformation from './ContestInformation';
+import ContestInformation from '@components/information/Information';
 import DetailBoxes from '../detail/DetailBoxes';
 import { Collection } from '@models/collection';
 

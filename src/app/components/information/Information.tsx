@@ -1,6 +1,6 @@
 import React from 'react';
 
-function ContestInformation({ name, value }: { name: string; value: string | number }) {
+function Information({ name, value }: { name: string; value: string | number }) {
   return (
     <div className="flex justify-between">
       <span className="text-detailColor">{name}</span>
@@ -9,4 +9,4 @@ function ContestInformation({ name, value }: { name: string; value: string | num
   );
 }
 
-export default ContestInformation;
+export default Information;
