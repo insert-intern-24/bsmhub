@@ -12,7 +12,7 @@ import getCategories from '@/services/project/getCategories';
 import getProfileMarkdown from '@/services/profile/getProfileMarkdown';
 import getDetails from '@/services/profile/getDetails';
 
-const UserTemplate = async ({ uuid }: { uuid: string }) => {
+const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
   const profile = await getProfileById(uuid) as profileType;
   
   let projects: projectType[] = [];
@@ -80,4 +80,4 @@ const UserTemplate = async ({ uuid }: { uuid: string }) => {
   );
 };
 
-export default UserTemplate;
+export default ProfileTemplate;
