@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import Image from 'next/image';
-import UserTabs from '@/app/components/profile/user/userTabs/UserTabsServer';
-import UserTabsClient from '@/app/components/profile/user/userTabs/UserTabsClient';
+import UserTabs from '@components/profile/user/userTabs/UserTabsServer';
+import UserTabsClient from '@components/profile/user/userTabs/UserTabsClient';
 import getProfileById from '@/services/profile/getProfileById';
 import getProject from '@/services/project/getProject';
 import { profileType } from '@models/profile';
@@ -10,10 +10,11 @@ import { Details } from '@models/collection';
 import getCategories from '@/services/project/getCategories';
 import getProfileMarkdown from '@/services/profile/getProfileMarkdown';
 import getDetails from '@/services/profile/getDetails';
+import TeamHome from '@components/profile/team/TeamHome';
 
 const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
   const profile = (await getProfileById(uuid)) as profileType;
-
+  
   let projects: projectType[] = [];
   let categories: categoryType[] = [];
   let markdown: string | null = null;
@@ -32,7 +33,7 @@ const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
   }
 
   // props 로 쉽게 넘기기 위해 userData 객체로 모았음
-  const userData = {
+  const UserData = {
     profile,
     projects,
     categories,
@@ -52,12 +53,12 @@ const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
               width={90}
               height={90}
             />
-            <div className="flex justify-between items-center mt-3">
+            <div className="flex items-center justify-between mt-3">
               <div>
                 <p className="text-2xl font-threat text-titleColor">
                   {profile?.profile_name}
                 </p>
-                <p className="text-detailColor text-base">1학년 2반 이준호</p>
+                <p className="text-base text-detailColor">1학년 2반 이준호</p>
               </div>
               <button className="w-[13.75rem] flex gap-1 items-center justify-center bg-black px-5 py-2 rounded-3xl">
                 <Image
@@ -71,12 +72,15 @@ const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
             </div>
           </section>
           {/* 홈/프로젝트/게시물에 대한 section */}
-          <Suspense fallback={<UserTabs userData={userData} />}>
-            <UserTabsClient userData={userData} />
+          <Suspense fallback={<UserTabs userData={UserData} />}>
+            <UserTabsClient userData={UserData} />
           </Suspense>
         </>
       ) : (
-        <>{/* 팀에 대한 코드 */}</>
+        <>
+          {/* 팀에 대한 코드 */}
+          <TeamHome />
+        </>
       )}
     </>
   );
