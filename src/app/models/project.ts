@@ -3,6 +3,11 @@ import { Database } from "@/utils/supabase/database.types";
 export type projectType = Database['project']['Tables']['projects']['Row'];
 export type categoryType = Database['project']['Tables']['project_category']['Row'];
 
+export interface ProjectItemsPropsType {
+  projects: projectType[];
+  categories: categoryType[];
+};
+
 export const StatusTag: Record<number, string> = {
   1: "개발중",
   2: "서비스 중",
