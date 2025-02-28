@@ -2,9 +2,9 @@ import TabButton from '@components/TabButton';
 import tabsType from '../../../tabs';
 import { userDataType } from '@/app/models/user';
 
-import UserHome from '@components/section/UserHome';
-import UserProjects from '@components/section/UserProjects';
-import UserPosts from '@components/section/UserPosts';
+import UserHome from '@components/profile/user/UserHome';
+import UserProjects from '@components/profile/user/UserProjects';
+import UserPosts from '@components/profile/user/UserPosts';
 
 const tabComponents = (
   userData: userDataType,
