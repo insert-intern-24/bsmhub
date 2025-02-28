@@ -34,7 +34,7 @@ function CollectionPanel({ collection }: CollectionPanelProps) {
             details={
               Array.isArray(collection.details) ? collection.details : []
             }
-            type="collection"
+            type="col"
           />
         </main>
       </div>

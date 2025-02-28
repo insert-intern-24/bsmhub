@@ -1,11 +1,11 @@
-import { userDataType } from '@/app/models/user';
+import { userDataType } from '@models/user';
 import ProjectItem from '@components/ProjectItem';
-import { StatusTag } from '@/app/models/project';
+import { StatusTag } from '@models/project';
 
 type TabNamesType = '전체' | '개인' | '협업';
 const tabNames: TabNamesType[] = ['전체', '개인', '협업'];
 
-const UserHome = ({ userData }: { userData: userDataType}) => {
+const UserProjects = ({ userData }: { userData: userDataType}) => {
 
   return (
     <div className="p-4">
@@ -39,4 +39,4 @@ const UserHome = ({ userData }: { userData: userDataType}) => {
   );
 };
 
-export default UserHome;
+export default UserProjects;

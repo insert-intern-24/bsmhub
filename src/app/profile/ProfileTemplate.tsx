@@ -1,20 +1,19 @@
 import React, { Suspense } from 'react';
 import Image from 'next/image';
-import UserTabs from '@/app/components/section/userTabs/UserTabsServer';
-import UserTabsClient from '@/app/components/section/userTabs/UserTabsClient';
+import UserTabs from '@/app/components/profile/user/userTabs/UserTabsServer';
+import UserTabsClient from '@/app/components/profile/user/userTabs/UserTabsClient';
 import getProfileById from '@/services/profile/getProfileById';
 import getProject from '@/services/project/getProject';
-
-import { profileType } from '../models/profile';
-import { categoryType, projectType } from '../models/project';
-import { Details } from '../models/collection'
+import { profileType } from '@models/profile';
+import { categoryType, projectType } from '@models/project';
+import { Details } from '@models/collection';
 import getCategories from '@/services/project/getCategories';
 import getProfileMarkdown from '@/services/profile/getProfileMarkdown';
 import getDetails from '@/services/profile/getDetails';
 
 const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
-  const profile = await getProfileById(uuid) as profileType;
-  
+  const profile = (await getProfileById(uuid)) as profileType;
+
   let projects: projectType[] = [];
   let categories: categoryType[] = [];
   let markdown: string | null = null;
@@ -23,9 +22,11 @@ const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
   // profile id 있는지 확인 후 user 인지 유효성 검사
   if (!profile?.isTeam && profile?.profile_id) {
     const fetchedProjects = await getProject(profile.profile_id as string);
-    
-    projects = fetchedProjects.map(item => item.projects);
-    categories = (await getCategories(projects)).map(item => item.project_category);
+
+    projects = fetchedProjects.map((item) => item.projects);
+    categories = (await getCategories(projects)).map(
+      (item) => item.project_category,
+    );
     markdown = await getProfileMarkdown(profile.profile_id);
     details = await getDetails(profile.profile_id);
   }
@@ -36,7 +37,7 @@ const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
     projects,
     categories,
     markdown,
-    details
+    details,
   };
 
   return (
@@ -53,7 +54,9 @@ const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
             />
             <div className="flex justify-between items-center mt-3">
               <div>
-                <p className="text-2xl font-threat text-titleColor">{profile?.profile_name}</p>
+                <p className="text-2xl font-threat text-titleColor">
+                  {profile?.profile_name}
+                </p>
                 <p className="text-detailColor text-base">1학년 2반 이준호</p>
               </div>
               <button className="w-[13.75rem] flex gap-1 items-center justify-center bg-black px-5 py-2 rounded-3xl">
@@ -72,9 +75,8 @@ const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
             <UserTabsClient userData={userData} />
           </Suspense>
         </>
-        ) : (
-        <>{/* 팀에 대한 코드 */}
-        </>
+      ) : (
+        <>{/* 팀에 대한 코드 */}</>
       )}
     </>
   );
