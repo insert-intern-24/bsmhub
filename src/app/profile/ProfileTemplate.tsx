@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import Image from 'next/image';
-import UserTabs from '@/app/components/profile/user/userTabs/UserTabsServer';
-import UserTabsClient from '@/app/components/profile/user/userTabs/UserTabsClient';
+import UserTabs from '@components/profile/user/userTabs/UserTabsServer';
+import UserTabsClient from '@components/profile/user/userTabs/UserTabsClient';
 import getProfileById from '@/services/profile/getProfileById';
 import getProject from '@/services/project/getProject';
 import { profileType } from '@models/profile';
@@ -10,6 +10,7 @@ import { Details } from '@models/collection';
 import getCategories from '@/services/project/getCategories';
 import getProfileMarkdown from '@/services/profile/getProfileMarkdown';
 import getDetails from '@/services/profile/getDetails';
+import TeamHome from '@components/profile/team/TeamHome';
 
 const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
   const profile = (await getProfileById(uuid)) as profileType;
@@ -76,7 +77,10 @@ const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
           </Suspense>
         </>
       ) : (
-        <>{/* 팀에 대한 코드 */}</>
+        <>
+          {/* 팀에 대한 코드 */}
+          <TeamHome />
+        </>
       )}
     </>
   );
