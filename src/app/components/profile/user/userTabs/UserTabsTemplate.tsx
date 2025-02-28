@@ -13,7 +13,7 @@ const tabComponents = (
   home: <UserHome userData={userData} />,
   project: <UserProjects userData={userData} />,
   posts: <UserPosts />,
-  collections: <UserCollections />,
+  collections: <UserCollections userData={userData} />,
 });
 
 const UserTabsTemplate: React.FC<{

@@ -7,19 +7,20 @@ interface ContestItemProps extends Pick<Collection, "id" | "title" | "startDate"
 }
 
 function CollectionItem({ id, title, startDate, endDate = null , thumbnail = null, onClick, selected = false }: ContestItemProps) {
-  console.log(thumbnail);
+  const imageSrc = thumbnail || "/images/contest/Project.png";
+
   return (
     <div
       className={`w-fit h-fit border-solid border-[#E8E8EF] border-[1px] rounded-[5px] cursor-pointer ${selected && "selected"}`}
       onClick={() => onClick(id)}
     >
       <Image
-        src="/images/contest/Project.png"
+        src={imageSrc as string}
         alt="contest1"
-        width={(340 * 12) / 16}
+        width={250}
         height={(200 * 12) / 16}
       />
-      <div className="w-full h-20 flex flex-col justify-center mx-3">
+      <div className="w-fit h-20 flex flex-col justify-center mx-3">
         <div className="text-titleColor text-base font-semibold leading-5">
           {title}
         </div>

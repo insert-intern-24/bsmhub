@@ -1,6 +1,6 @@
 import { profileType } from '@models/profile';
 import { categoryType, projectType } from '@models/project';
-import { Details } from './collection';
+import { Collection, Details } from './collection';
 
 export interface UserDataType {
   profile: profileType;
@@ -8,4 +8,5 @@ export interface UserDataType {
   categories: categoryType[];
   markdown: string | null;
   details: Details | null;
+  collections: Collection[];
 }

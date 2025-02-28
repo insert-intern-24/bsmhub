@@ -1,3 +1,5 @@
+import { Database } from "@/utils/supabase/database.types"
+
 export interface Content {
   value: string | null,
   certified?: boolean | null, // 인증되었는가를 표시함
@@ -14,18 +16,20 @@ export interface Details {
   details? : Detail[] | null
 }
 
-export interface Collection {
-  type: "collection"
-  id: number,
-  title: string,
-  description: string,
-  thumbnail?: string | null,
-  // Data는 아직 database에 입력된 date의 종류를 기술하지 않았기 때문에 우선 string으로 작업함.
-  startDate: string,
-  endDate?: string | null,
-  details: Details
-  info : CollectionInformation
-}
+// export interface Collection {
+//   type: "collection"
+//   id: number,
+//   title: string,
+//   description: string,
+//   thumbnail?: string | null,
+//   // Data는 아직 database에 입력된 date의 종류를 기술하지 않았기 때문에 우선 string으로 작업함.
+//   startDate: string,
+//   endDate?: string | null,
+//   details: Details
+//   info : CollectionInformation
+// }
+
+export type Collection = Database['collection']['Tables']['collections']['Row']
 
 export interface CollectionInformation {
   target: string, // 대상
