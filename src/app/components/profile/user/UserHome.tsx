@@ -1,8 +1,7 @@
 import React from 'react';
 import DetailBoxes from '@components/detail/DetailBoxes';
-import ProjectItem from '@components/ProjectItem';
+import ProjectItems from '@components/ProjectItems';
 import { UserDataType } from '@models/user';
-import { StatusTag } from '@models/project';
 
 const UserHome = ({ userData }: { userData: UserDataType }) => {
   return (
@@ -17,19 +16,7 @@ const UserHome = ({ userData }: { userData: UserDataType }) => {
         개인 프로젝트
       </h3>
       <div className="flex gap-[0.7rem] flex-wrap">
-        {userData?.projects.map((project) => (
-          <ProjectItem
-            key={project.project_id}
-            tag={StatusTag[project.status]}
-            category={
-              userData.categories.find(
-                (c) => c.category_id === project.category_id,
-              )?.category_name || ''
-            }
-            title={project.project_name}
-            description={project.description}
-          />
-        ))}
+        <ProjectItems categories={ userData.categories } projects={ userData.projects }/>
       </div>
     </div>
   );

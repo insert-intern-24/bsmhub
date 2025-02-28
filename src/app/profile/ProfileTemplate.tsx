@@ -79,7 +79,7 @@ const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
       ) : (
         <>
           {/* 팀에 대한 코드 */}
-          <TeamHome />
+          <TeamHome userData={UserData}/>
         </>
       )}
     </>

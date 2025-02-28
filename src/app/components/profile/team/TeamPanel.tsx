@@ -5,9 +5,7 @@ import DetailBoxes from '@components/detail/DetailBoxes';
 import Hr from '@components/Hr';
 import { UserDataType } from '@models/user';
 
-type TeamPanelProps = Pick<UserDataType, 'profile' | 'details' | 'markdown'>;
-
-const TeamPanel = (TeamPanelProps: TeamPanelProps) => {
+const TeamPanel = (TeamPanelProps: Pick<UserDataType, 'profile' | 'details' | 'markdown'>) => {
   const { profile, details, markdown } = TeamPanelProps;
   return (
     <aside className="max-w-[16.25rem] min-w-[16.25rem] w-full">
