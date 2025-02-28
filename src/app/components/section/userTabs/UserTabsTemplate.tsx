@@ -1,14 +1,12 @@
 import TabButton from '@components/TabButton';
-import tabsType from '../../../tabs';
+import tabsType from '../../tabs';
 import { userDataType } from '@/app/models/user';
 
 import UserHome from '@components/section/UserHome';
 import UserProjects from '@components/section/UserProjects';
 import UserPosts from '@components/section/UserPosts';
 
-const tabComponents = (
-  userData: userDataType,
-): { [key: string]: JSX.Element } => ({
+const tabComponents = (userData: userDataType): { [key: string]: JSX.Element } => ({
   home: <UserHome userData={userData} />,
   project: <UserProjects userData={userData} />,
   posts: <UserPosts />,
@@ -19,6 +17,7 @@ const UserTabsTemplate: React.FC<{
   setTabName?: React.Dispatch<React.SetStateAction<tabsType>>;
   userData: userDataType;
 }> = ({ tabName, setTabName, userData }) => {
+
   return (
     <>
       <section>

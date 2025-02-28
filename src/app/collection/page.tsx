@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import CollectionList from '@/app/components/collection/CollectionList';
-import ContestPanel from '@/app/components/collection/CollectionPanel';
+import CollectionList from '@/app/components/contest/CollectionList';
+import ContestPanel from '@/app/components/contest/CollectionPanel';
 import dummyData from '@/app/collection/dummy.json';
 import { Project,Collections,Collection } from '@models/collection';
 const dummy = dummyData as Collections;
