@@ -1,6 +1,6 @@
-import { userDataType } from '@/app/models/user';
+import { userDataType } from '@models/user';
 import ProjectItem from '@components/ProjectItem';
-import { StatusTag } from '@/app/models/project';
+import { StatusTag } from '@models/project';
 
 type TabNamesType = '전체' | '개인' | '협업';
 const tabNames: TabNamesType[] = ['전체', '개인', '협업'];
