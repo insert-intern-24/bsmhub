@@ -1,12 +1,19 @@
-import { createClient } from '@/utils/supabase/server';
-import { redirect } from 'next/navigation';
+'use client';
 
-const Logout = async () => {
-  const supabase = await createClient();
+import OverlayBg from '@/app/components/layout/overlay/OverlayBg';
+import { useEffect } from 'react';
 
-  supabase.auth.signOut().then(() => {
-    console.log('Signed out');
-  });
-  return redirect('/');
+const LogoutPage = () => {
+  useEffect(() => {
+    window.location.href = '/';
+  }, []);
+  return (
+    <OverlayBg>
+      <div className="bg-white py-5 px-8 rounded-lg">
+        <h1 className="text-xl font-bold">로그아웃 중...</h1>
+      </div>
+    </OverlayBg>
+  );
 };
-export default Logout;
+
+export default LogoutPage;
