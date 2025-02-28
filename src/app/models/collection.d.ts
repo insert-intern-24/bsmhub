@@ -46,4 +46,4 @@ export interface Project {
 
 export type Collections = (Collection | Project)[]
 
-export type DetailBoxType = "collection" | "project" | "general" | undefined
+export type DetailBoxType = "col" | "row"

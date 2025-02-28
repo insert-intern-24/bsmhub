@@ -49,6 +49,7 @@ const config: Config = {
     require('@tailwindcss/line-clamp'),
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@tailwindcss/typography'),
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('tailwind-scrollbar'),
   ],
 };

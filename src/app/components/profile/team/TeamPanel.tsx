@@ -39,7 +39,7 @@ const TeamPanel = () => {
             <main className="flex flex-col gap-8">
               <DetailBoxes
                 details={Array.isArray(dummy.details) ? dummy.details : []}
-                type="collection"
+                type="col"
               />
             </main>
           </section>
