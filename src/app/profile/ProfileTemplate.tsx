@@ -5,29 +5,25 @@ import UserTabsClient from '@components/profile/user/userTabs/UserTabsClient';
 import getProfileById from '@/services/profile/getProfileById';
 import getProject from '@/services/project/getProject';
 import { profileType } from '@models/profile';
-import { categoryType, projectType } from '@models/project';
+import { ProjectItemsPropsType } from '@models/project';
 import { Details } from '@models/collection';
-import getCategories from '@/services/project/getCategories';
 import getProfileMarkdown from '@/services/profile/getProfileMarkdown';
 import getDetails from '@/services/profile/getDetails';
 import TeamHome from '@components/profile/team/TeamHome';
 
 const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
   const profile = (await getProfileById(uuid)) as profileType;
-  
-  let projects: projectType[] = [];
-  let categories: categoryType[] = [];
+
+  let projects: ProjectItemsPropsType[] = [];
   let markdown: string | null = null;
   let details: Details | null = null;
 
   // profile id 있는지 확인 후 user 인지 유효성 검사
   if (!profile?.isTeam && profile?.profile_id) {
     const fetchedProjects = await getProject(profile.profile_id as string);
+    console.log(JSON.stringify(fetchedProjects, null, 2));
 
     projects = fetchedProjects.map((item) => item.projects);
-    categories = (await getCategories(projects)).map(
-      (item) => item.project_category,
-    );
     markdown = await getProfileMarkdown(profile.profile_id);
     details = await getDetails(profile.profile_id);
   }
@@ -36,7 +32,6 @@ const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
   const UserData = {
     profile,
     projects,
-    categories,
     markdown,
     details,
   };
@@ -79,7 +74,7 @@ const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
       ) : (
         <>
           {/* 팀에 대한 코드 */}
-          <TeamHome userData={UserData}/>
+          <TeamHome userData={UserData} />
         </>
       )}
     </>

@@ -28,11 +28,7 @@ const UserProjects = ({ userData }: { userData: UserDataType }) => {
           <ProjectItem
             key={project.project_id}
             tag={StatusTag[project.status]}
-            category={
-              userData.categories.find(
-                (c) => c.category_id === project.category_id,
-              )?.category_name || ''
-            }
+            category={project.category_id.category_name}
             title={project.project_name}
             description={project.description}
           />
