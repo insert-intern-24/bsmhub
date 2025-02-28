@@ -853,23 +853,57 @@ export type Database = {
   };
   public: {
     Tables: {
+      chat_messages: {
+        Row: {
+          content: string;
+          conversation_id: string | null;
+          created_at: string | null;
+          message_id: number;
+          sender_profile_id: string;
+        };
+        Insert: {
+          content: string;
+          conversation_id?: string | null;
+          created_at?: string | null;
+          message_id?: number;
+          sender_profile_id: string;
+        };
+        Update: {
+          content?: string;
+          conversation_id?: string | null;
+          created_at?: string | null;
+          message_id?: number;
+          sender_profile_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'chat_messages_conversation_id_fkey';
+            columns: ['conversation_id'];
+            referencedRelation: 'conversations';
+            referencedColumns: ['conversation_id'];
+          },
+        ];
+      };
       conversations: {
         Row: {
           conversation_id: string;
           last_message: string | null;
           participant_ids: string[];
+          unread_user_ids: string[];
           updated_at: string | null;
         };
         Insert: {
           conversation_id?: string;
           last_message?: string | null;
           participant_ids: string[];
+          unread_user_ids?: string[];
           updated_at?: string | null;
         };
         Update: {
           conversation_id?: string;
           last_message?: string | null;
           participant_ids?: string[];
+          unread_user_ids?: string[];
           updated_at?: string | null;
         };
         Relationships: [];
