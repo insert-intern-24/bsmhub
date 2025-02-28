@@ -84,7 +84,7 @@ const getDetails = async (profile_id: string): Promise<Details | null> => {
         symbol: 'link',
         contents: 
           link_Datas.map(item => ({
-            value: item.alt ?? "",
+            value: item.alt ?? null,
             address: item.link
           }))
       },
@@ -93,7 +93,7 @@ const getDetails = async (profile_id: string): Promise<Details | null> => {
         symbol: 'license',
         contents:
           certificate_Datas.map(item => ({
-            value: item.certificate_name ?? "",
+            value: item.certificate_name ?? null,
             certified: false
           }))
       },
@@ -102,7 +102,7 @@ const getDetails = async (profile_id: string): Promise<Details | null> => {
         symbol: 'prize',
         contents:
           competition_Datas.map(item => ({
-            value: `${item.competition_name ?? ""} ${item.prize ?? ""}`
+            value: `${item.competition_name ?? null} ${item.prize ?? null}`
           }))
       },
       {
@@ -110,7 +110,7 @@ const getDetails = async (profile_id: string): Promise<Details | null> => {
         symbol: 'stack',
         contents:
           skill_Datas.map(item => ({
-            value: item.skill_name ?? ""
+            value: item.skill_name ?? null
           }))
       }
     ]
