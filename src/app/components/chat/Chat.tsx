@@ -10,37 +10,49 @@ import getProfileBySession from '@/services/profile/getProfileBySession';
 import getProfileById from '@/services/profile/getProfileById';
 import profile from '@public/images/profile/default.svg';
 import { Database } from '@/utils/supabase/database.types';
-import { useUserStore } from './chatStore';
+import { useUserStore, useChatStore } from './chatStore';
 
 function Chat() {
-  // chatState: 0 - 접힌 상태, 1 - 대화 리스트 펼친 상태, 2 - 대화중인 상태
-  const [chatState, setChatState] = useState(0);
+  // 로컬 상태: 대화 목록, 상대방 프로필 정보, 내 프로필 ID
   const [conversations, setConversations] = useState<
     Database['public']['Tables']['conversations']['Row'][]
   >([]);
   const [conversationProfiles, setConversationProfiles] = useState<
     Record<string, string>
   >({});
-  const [selectedConversationId, setSelectedConversationId] = useState<
-    string | null
-  >(null);
-  const { username } = useUserStore();
   const [myProfileId, setMyProfileId] = useState('');
+
+  // 전역 상태: chatState와 activeConversationId
+  const {
+    chatState,
+    activeConversationId,
+    setChatState,
+    setActiveConversationId,
+  } = useChatStore();
+  const { username } = useUserStore();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // 내 프로필 정보 가져오기
         const profileData = await getProfileBySession();
         if (profileData?.profile_id) {
           setMyProfileId(profileData.profile_id);
+          // 내 프로필이 포함된 대화 목록 가져오기
           const convos = await getConversationsForProfile(
             profileData.profile_id,
           );
-          setConversations(convos || []);
+          // last_message와 updated_at 값이 없는 대화는 제외
+          const filteredConvos = convos.filter(
+            (c) => c.last_message && c.updated_at,
+          );
+          setConversations(filteredConvos);
 
+          // 각 대화의 상대방 프로필 정보 가져오기
           const profilesMap: Record<string, string> = {};
           await Promise.all(
-            convos.map(async (conversation) => {
+            filteredConvos.map(async (conversation) => {
+              // participant_ids에서 내 프로필 ID를 제외한 상대방 ID 선택
               const participantId = conversation.participant_ids.filter(
                 (id) => id !== profileData.profile_id,
               )[0];
@@ -56,31 +68,29 @@ function Chat() {
       }
     };
     fetchData();
-  }, []);
+  }, [activeConversationId]);
 
-  // 화살표 클릭 핸들러
   const handleArrowClick = () => {
     if (chatState === 2) {
-      // 대화중 상태면 리스트로 돌아감
+      // 대화창 상태에서 리스트로 돌아가기
       setChatState(1);
-      setSelectedConversationId(null);
+      setActiveConversationId(null);
     } else if (chatState === 1) {
-      // 리스트 펼친 상태면 접힘
+      // 리스트가 열려있으면 접기
       setChatState(0);
     } else if (chatState === 0) {
-      // 접힌 상태면 리스트 펼침
+      // 접힌 상태이면 리스트 열기
       setChatState(1);
     }
   };
 
-  // 대화 프로필 클릭 핸들러 (대화창 열기)
+  // 대화 프로필 클릭 시: 활성 대화 ID와 chatState를 전역 상태로 업데이트
   const handleChatProfileClick = (conversationId: string) => {
-    setSelectedConversationId(conversationId);
+    setActiveConversationId(conversationId);
     setChatState(2);
   };
 
-  // chatState에 따른 화살표 회전 값
-  // 0일때: 180도, 1일때: 0도, 2일때: 90도
+  // chatState에 따른 화살표 회전: 0 → 180°, 1 → 0°, 2 → 90°
   const arrowRotation = chatState === 0 ? 180 : chatState === 1 ? 0 : 90;
 
   return (
@@ -128,7 +138,7 @@ function Chat() {
         )}
       </div>
       <AnimatePresence>
-        {/* 대화 리스트 */}
+        {/* 대화 리스트 영역 */}
         {chatState === 1 && (
           <motion.div
             key="chatProfiles"
@@ -143,7 +153,7 @@ function Chat() {
               // DB에 저장된 최근 메시지와 전송 시간을 그대로 사용
               const lastMsg = conversation.last_message || '메시지 없음';
               const sentTime = conversation.updated_at || '';
-              // unread_user_ids에 내 profile_id가 포함되면 읽지 않은 메시지로 판단
+              // unread_user_ids에 내 프로필 ID가 포함되어 있으면 읽지 않은 대화로 판단
               const isUnread =
                 conversation.unread_user_ids.includes(myProfileId);
               return (
@@ -167,7 +177,7 @@ function Chat() {
             })}
           </motion.div>
         )}
-        {/* 대화창 */}
+        {/* 대화창 영역 */}
         {chatState === 2 && (
           <motion.div
             key="conversation"
@@ -177,7 +187,7 @@ function Chat() {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="mt-6 max-h-[30rem]"
           >
-            <Conversation conversationId={selectedConversationId || ''} />
+            <Conversation conversationId={activeConversationId || ''} />
           </motion.div>
         )}
       </AnimatePresence>
