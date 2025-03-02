@@ -13,10 +13,10 @@ export default function InputStory() {
     } = await supabase.auth.getSession();
 
     const { data: profile_permission, error } = await supabase
-      .schema('community')
+      .schema('profile')
       .from('profile_permission')
       .select('*, profile_id!inner(*)')
-      .eq('student_id', session?.user?.id)
+      .eq('student_id', session?.user?.id as string)
       .eq('profile_id.isTeam', false);
 
     if (error) {
@@ -32,7 +32,7 @@ export default function InputStory() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const story = formData.get('story');
+    const story = formData.get('story') as string;
     console.log(story);
 
     const profile_permission = await fetchSessionAndPermissions();
