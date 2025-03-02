@@ -1,5 +1,5 @@
 export interface Content {
-  value: string,
+  value: string | null,
   certified?: boolean | null, // 인증되었는가를 표시함
   address?: string | null // content > value를 클릭할때 이동할 주소
 }
@@ -46,4 +46,4 @@ export interface Project {
 
 export type Collections = (Collection | Project)[]
 
-export type DetailBoxType = "collection" | "project" | "general" | undefined
+export type DetailBoxType = "col" | "row"

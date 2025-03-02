@@ -20,7 +20,7 @@ export default async function DefaultFeed({
 
   const { data: communityProfileData, error: communityProfileError } =
     await supabase
-      .schema('community')
+      .schema('profile')
       .from('profile')
       .select('*')
       .eq('profile_id', profile_id);
@@ -37,7 +37,8 @@ export default async function DefaultFeed({
       <CommentHeader
         name={communityProfileData && communityProfileData[0]?.profile_name}
         time={time}
-        profileImage={communityProfileData && communityProfileData[0]?.profile}
+        // profileImage={communityProfileData && communityProfileData[0]?.profile}
+        profileImage={''} // TODO: profile image 컬럼 추가
       />
       <CommentText mdxSource={mdxSource} text={text} />
       <CommentReaction />

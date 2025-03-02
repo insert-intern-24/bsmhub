@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import TabButton from '@components/TabButton';
-import tabsType from '../tabs';
+import tabsType from '../../tabs';
 
 interface TabStateProps {
   initialTab: tabsType;

@@ -1,9 +1,11 @@
+import { UserDataType } from '@models/user';
 import ProjectItem from '@components/ProjectItem';
+import { StatusTag } from '@models/project';
 
 type TabNamesType = '전체' | '개인' | '협업';
 const tabNames: TabNamesType[] = ['전체', '개인', '협업'];
 
-const UserHome = () => {
+const UserProjects = ({ userData }: { userData: UserDataType }) => {
   return (
     <div className="p-4">
       <div className="flex gap-[0.6rem] mb-2">
@@ -22,13 +24,13 @@ const UserHome = () => {
         </select>
       </div>
       <div className="flex gap-[1.25rem] flex-wrap">
-        {[...Array(7)].map((_, index) => (
+        {userData?.projects.map((project) => (
           <ProjectItem
-            key={index}
-            tag="개발완료"
-            category="Desktop Utility"
-            title="SANDDOET-App"
-            description="산뜻 - AI 추천 RSS로 정보 습득이 쉬워지는 순간!"
+            key={project.project_id}
+            tag={StatusTag[project.status]}
+            category={project.category_id.category_name}
+            title={project.project_name}
+            description={project.description}
           />
         ))}
       </div>
@@ -36,4 +38,4 @@ const UserHome = () => {
   );
 };
 
-export default UserHome;
+export default UserProjects;
