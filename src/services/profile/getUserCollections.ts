@@ -8,6 +8,7 @@ const getUserCollections = async (profile_id: string) => {
     .from('collections')
     .select('*')
     .eq('owner', profile_id)
+    .eq('visibility', 'public')
 
   if ( error ) {
     console.error('유저 컬렉션 조회 중 오류')
