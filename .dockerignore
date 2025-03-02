@@ -7,4 +7,3 @@ node_modules
 .prettier*
 Dockerfile
 .dockerignore
-next.config.ts

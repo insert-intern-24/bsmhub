@@ -1,16 +1,16 @@
-import { Database } from "@/utils/supabase/database.types";
+import { Database } from '@/utils/supabase/database.types';
+import { MergeDeep } from 'type-fest';
 
-export type projectType = Database['project']['Tables']['projects']['Row'];
-export type categoryType = Database['project']['Tables']['project_category']['Row'];
-
-export interface ProjectItemsPropsType {
-  projects: projectType[];
-  categories: categoryType[];
-};
+export type ProjectItemsPropsType = MergeDeep<
+  Database['project']['Tables']['projects']['Row'],
+  {
+    category_id: Database['project']['Tables']['project_category']['Row'];
+  }
+>;
 
 export const StatusTag: Record<number, string> = {
-  1: "개발중",
-  2: "서비스 중",
-  3: "개발완료",
-  4: "기획중"
-}
+  1: '개발중',
+  2: '서비스 중',
+  3: '개발완료',
+  4: '기획중',
+};

@@ -16,7 +16,7 @@ const UserHome = ({ userData }: { userData: UserDataType }) => {
         개인 프로젝트
       </h3>
       <div className="flex gap-[0.7rem] flex-wrap">
-        <ProjectItems categories={ userData.categories } projects={ userData.projects }/>
+        <ProjectItems projects={ userData.projects }/>
       </div>
     </div>
   );
