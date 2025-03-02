@@ -111,6 +111,7 @@ export type Database = {
           collection_name: string
           created_at: string
           description: string | null
+          ended_at: string | null
           image_url: string
           is_competition: boolean
           owner: string
@@ -122,6 +123,7 @@ export type Database = {
           collection_name: string
           created_at?: string
           description?: string | null
+          ended_at?: string | null
           image_url: string
           is_competition?: boolean
           owner?: string
@@ -133,6 +135,7 @@ export type Database = {
           collection_name?: string
           created_at?: string
           description?: string | null
+          ended_at?: string | null
           image_url?: string
           is_competition?: boolean
           owner?: string
@@ -889,18 +892,21 @@ export type Database = {
           conversation_id: string
           last_message: string | null
           participant_ids: string[]
+          unread_user_ids: string[]
           updated_at: string | null
         }
         Insert: {
           conversation_id?: string
           last_message?: string | null
           participant_ids: string[]
+          unread_user_ids?: string[]
           updated_at?: string | null
         }
         Update: {
           conversation_id?: string
           last_message?: string | null
           participant_ids?: string[]
+          unread_user_ids?: string[]
           updated_at?: string | null
         }
         Relationships: []
