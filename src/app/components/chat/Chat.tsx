@@ -11,9 +11,10 @@ import getProfileById from '@/services/profile/getProfileById';
 import profile from '@public/images/profile/default.svg';
 import { Database } from '@/utils/supabase/database.types';
 import { useUserStore, useChatStore } from './chatStore';
+import { subscribeConversations } from '@/services/chat/subscribeConversations';
 
 function Chat() {
-  // 로컬 상태: 대화 목록, 상대방 프로필 정보, 내 프로필 ID
+  // 로컬 상태: 대화 목록, 상대 프로필 정보, 내 프로필 ID
   const [conversations, setConversations] = useState<
     Database['public']['Tables']['conversations']['Row'][]
   >([]);
@@ -22,7 +23,7 @@ function Chat() {
   >({});
   const [myProfileId, setMyProfileId] = useState('');
 
-  // 전역 상태: chatState와 activeConversationId
+  // 전역 상태: chatState와 activeConversationId (Zustand)
   const {
     chatState,
     activeConversationId,
@@ -31,10 +32,10 @@ function Chat() {
   } = useChatStore();
   const { username } = useUserStore();
 
+  // 초기 데이터 가져오기
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 내 프로필 정보 가져오기
         const profileData = await getProfileBySession();
         if (profileData?.profile_id) {
           setMyProfileId(profileData.profile_id);
@@ -52,7 +53,6 @@ function Chat() {
           const profilesMap: Record<string, string> = {};
           await Promise.all(
             filteredConvos.map(async (conversation) => {
-              // participant_ids에서 내 프로필 ID를 제외한 상대방 ID 선택
               const participantId = conversation.participant_ids.filter(
                 (id) => id !== profileData.profile_id,
               )[0];
@@ -68,18 +68,43 @@ function Chat() {
       }
     };
     fetchData();
-  }, [activeConversationId]);
+  }, []);
 
+  // conversations 테이블 업데이트 실시간 구독 (리얼타임)
+  useEffect(() => {
+    const subscription = subscribeConversations((updatedConversation) => {
+      setConversations((prev) => {
+        const index = prev.findIndex(
+          (conv) =>
+            conv.conversation_id === updatedConversation.conversation_id,
+        );
+        if (index !== -1) {
+          // 기존 대화를 업데이트
+          const newConvos = [...prev];
+          newConvos[index] = updatedConversation;
+          return newConvos;
+        } else {
+          // 새로운 대화가 있다면 추가할 수도 있음.
+          return prev;
+        }
+      });
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  // 헤더의 화살표 클릭 핸들러 (전역 상태 업데이트)
   const handleArrowClick = () => {
     if (chatState === 2) {
-      // 대화창 상태에서 리스트로 돌아가기
+      // 대화창 상태 → 리스트로 돌아가기
       setChatState(1);
       setActiveConversationId(null);
     } else if (chatState === 1) {
-      // 리스트가 열려있으면 접기
+      // 리스트 펼침 → 접힘
       setChatState(0);
     } else if (chatState === 0) {
-      // 접힌 상태이면 리스트 열기
+      // 접힘 → 리스트 펼침
       setChatState(1);
     }
   };
@@ -150,10 +175,8 @@ function Chat() {
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {conversations.map((conversation) => {
-              // DB에 저장된 최근 메시지와 전송 시간을 그대로 사용
               const lastMsg = conversation.last_message || '메시지 없음';
               const sentTime = conversation.updated_at || '';
-              // unread_user_ids에 내 프로필 ID가 포함되어 있으면 읽지 않은 대화로 판단
               const isUnread =
                 conversation.unread_user_ids.includes(myProfileId);
               return (

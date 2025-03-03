@@ -18,7 +18,7 @@ interface ConversationProps {
   conversationId: string;
 }
 
-// 메시지의 타임스탬프를 포맷하는 함수
+// 메시지 타임스탬프 포맷 함수
 function getFormattedTimestamp(dateString: string): string {
   const date = new Date(dateString);
   const today = new Date();
@@ -27,13 +27,13 @@ function getFormattedTimestamp(dateString: string): string {
     date.getMonth() === today.getMonth() &&
     date.getDate() === today.getDate()
   ) {
-    // 오늘: 시간만 표시 (예: "9:40")
+    // 오늘이면 시간만 (예: "9:40")
     return format(date, 'H:mm', { locale: ko });
   } else if (date.getFullYear() === today.getFullYear()) {
-    // 올해지만 오늘이 아닌 경우: "M월 d일" (예: "3월 1일")
+    // 올해이면 "M월 d일" (예: "3월 1일")
     return format(date, 'M월 d일', { locale: ko });
   } else {
-    // 1년 이상 전: "yyyy년 M월 d일" (예: "2025년 3월 1일")
+    // 1년 이상 전이면 "yyyy년 M월 d일"
     return format(date, 'yyyy년 M월 d일', { locale: ko });
   }
 }
@@ -45,27 +45,22 @@ function Conversation({ conversationId }: ConversationProps) {
   const [myProfileId, setMyProfileId] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // 상대방 프로필 가져오기
+  // 프로필 정보 한 번에 가져오기 (파트너와 내 프로필)
   useEffect(() => {
-    async function fetchProfile() {
-      const profile = await getPartnerProfile(conversationId);
-      setUsername(profile?.profile_name || '알 수 없음');
-    }
-    fetchProfile();
-  }, [conversationId, setUsername]);
-
-  // 내 프로필 ID 가져오기
-  useEffect(() => {
-    async function fetchMyProfile() {
-      const profileData = await getProfileBySession();
-      if (profileData?.profile_id) {
-        setMyProfileId(profileData.profile_id);
+    async function fetchProfiles() {
+      const [partnerProfile, myProfileData] = await Promise.all([
+        getPartnerProfile(conversationId),
+        getProfileBySession(),
+      ]);
+      setUsername(partnerProfile?.profile_name || '알 수 없음');
+      if (myProfileData?.profile_id) {
+        setMyProfileId(myProfileData.profile_id);
       }
     }
-    fetchMyProfile();
-  }, []);
+    fetchProfiles();
+  }, [conversationId, setUsername]);
 
-  // 기존 메시지 가져오기 + 실시간 구독
+  // 기존 메시지와 실시간 구독
   useEffect(() => {
     async function fetchHistory() {
       const historyMessages = await getChatMessages(conversationId);
@@ -77,7 +72,7 @@ function Conversation({ conversationId }: ConversationProps) {
       conversationId,
       (newMsg: ChatMessage) => {
         setMessages((prev) => {
-          // 중복 메시지가 없을 때만 추가
+          // 중복 메시지 체크
           if (prev.find((msg) => msg.message_id === newMsg.message_id)) {
             return prev;
           }
@@ -85,13 +80,12 @@ function Conversation({ conversationId }: ConversationProps) {
         });
       },
     );
-
     return () => {
       subscription.unsubscribe();
     };
   }, [conversationId]);
 
-  // 메시지가 업데이트되면 스크롤을 맨 아래로 이동
+  // 메시지 업데이트 시 스크롤 맨 아래로 이동
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -114,11 +108,10 @@ function Conversation({ conversationId }: ConversationProps) {
     }
   };
 
-  // 메시지 렌더링 시, 인접 메시지 간의 시간 차이가 20분 이상인 경우 시간 표시 엘리먼트를 추가
+  // 인접 메시지 간 시간 차이가 20분 이상이면 타임스탬프 표시
   const renderedMessages: JSX.Element[] = [];
   for (let i = 0; i < messages.length; i++) {
     const msg = messages[i];
-    // 첫 메시지거나 이전 메시지와의 시간 차이가 20분 이상인 경우 타임스탬프 표시
     if (
       i === 0 ||
       differenceInMinutes(
@@ -138,8 +131,8 @@ function Conversation({ conversationId }: ConversationProps) {
     const isMine = msg.sender_profile_id === myProfileId;
     renderedMessages.push(
       <div
-        className={`w-full flex ${isMine ? 'justify-end' : 'justify-start'}`}
         key={msg.message_id}
+        className={`w-full flex ${isMine ? 'justify-end' : 'justify-start'}`}
       >
         <div
           className={`px-3 py-2 rounded-3xl max-w-[80%] w-fit ${
@@ -154,7 +147,7 @@ function Conversation({ conversationId }: ConversationProps) {
 
   return (
     <div className="h-full p-4 flex flex-col">
-      <div className="overflow-y-auto space-y-[0.1rem]">
+      <div className="flex-1 min-h-0 overflow-y-auto space-y-[0.1rem]">
         {renderedMessages}
         <div ref={messagesEndRef} />
       </div>
