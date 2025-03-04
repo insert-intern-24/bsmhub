@@ -13,6 +13,7 @@ import subscribeChatMessages, {
   ChatMessage,
 } from '@/services/chat/subscribeChatMessages';
 import { getChatMessages } from '@/services/chat/getChatMessages';
+import { markConversationAsRead } from '@/services/chat/markConversationAsRead';
 
 interface ConversationProps {
   conversationId: string;
@@ -45,7 +46,7 @@ function Conversation({ conversationId }: ConversationProps) {
   const [myProfileId, setMyProfileId] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // 프로필 정보 한 번에 가져오기 (파트너와 내 프로필)
+  // 파트너와 내 프로필 정보를 한 번에 가져오기
   useEffect(() => {
     async function fetchProfiles() {
       const [partnerProfile, myProfileData] = await Promise.all([
@@ -60,7 +61,14 @@ function Conversation({ conversationId }: ConversationProps) {
     fetchProfiles();
   }, [conversationId, setUsername]);
 
-  // 기존 메시지와 실시간 구독
+  // 대화 읽음 처리: conversationId, myProfileId, messages가 바뀔 때마다 실행
+  useEffect(() => {
+    if (conversationId && myProfileId) {
+      markConversationAsRead(conversationId, myProfileId);
+    }
+  }, [conversationId, myProfileId, messages]);
+
+  // 기존 메시지 로드와 실시간 구독
   useEffect(() => {
     async function fetchHistory() {
       const historyMessages = await getChatMessages(conversationId);
@@ -72,7 +80,7 @@ function Conversation({ conversationId }: ConversationProps) {
       conversationId,
       (newMsg: ChatMessage) => {
         setMessages((prev) => {
-          // 중복 메시지 체크
+          // 중복 체크
           if (prev.find((msg) => msg.message_id === newMsg.message_id)) {
             return prev;
           }
@@ -85,7 +93,7 @@ function Conversation({ conversationId }: ConversationProps) {
     };
   }, [conversationId]);
 
-  // 메시지 업데이트 시 스크롤 맨 아래로 이동
+  // 스크롤: 메시지가 업데이트될 때마다 맨 아래로 이동
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -108,7 +116,7 @@ function Conversation({ conversationId }: ConversationProps) {
     }
   };
 
-  // 인접 메시지 간 시간 차이가 20분 이상이면 타임스탬프 표시
+  // 인접 메시지 간의 시간 차이가 20분 이상이면 타임스탬프 표시
   const renderedMessages: JSX.Element[] = [];
   for (let i = 0; i < messages.length; i++) {
     const msg = messages[i];
