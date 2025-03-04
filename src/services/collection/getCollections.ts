@@ -14,7 +14,7 @@ const getCollections = async () => {
     .eq('visibility', 'public')
 
     if (error) {
-      console.error('컬렉션 조회 중 오류', error);
+      console.error('컬렉션 조회 중 오류');
       return [];
     }
 
