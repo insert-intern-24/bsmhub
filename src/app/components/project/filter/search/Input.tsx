@@ -1,6 +1,13 @@
 import React from 'react';
+import { SearchQuery } from '@/app/models/projectSearch';
 
-export default function Input() {
+export default function Input({
+  inputQuery = '',
+  setSearchQuery,
+}: {
+  inputQuery?: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<SearchQuery>>;
+}) {
   return (
     <>
       <div className="flex items-center gap-3 self-stretch">
@@ -12,6 +19,12 @@ export default function Input() {
             type="text"
             placeholder="검색어를 입력해주세요."
             className="flex-1 text-textDisabled text-base font-normal leading-[150%] tracking-normal"
+            value={inputQuery}
+            onChange={(e) =>
+              setSearchQuery((prev) => {
+                return { ...prev, inputQuery: e.target.value };
+              })
+            }
           />
           <span
             className="material-symbols-outlined"

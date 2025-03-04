@@ -1,25 +1,27 @@
-'use client';
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
-import SelectBox from './SelectBox';
+import SelectBox, { Option } from './SelectBox';
+import { SearchQuery } from '@/app/models/projectSearch';
 
-const topics = [{ name: '생애주기' }, { name: '개발주제' }];
-
-const options = [
-  { id: 1, text: '개발중' },
-  { id: 2, text: '서비스 중' },
-  { id: 3, text: '개발완료' },
-  { id: 4, text: '기획중' },
+const topics = [
+  { id: 'status', name: '생애주기' },
+  { id: 'category_id', name: '개발주제' },
 ];
 
-interface ProjectCategory {
-  category_id: number;
-  category_name: string;
-}
+const options = [
+  { text: '개발중', id: 'status', value: 1 },
+  { text: '서비스 중', id: 'status', value: 2 },
+  { text: '개발완료', id: 'status', value: 3 },
+  { text: '기획중', id: 'status', value: 4 },
+];
 
-export default function Select() {
-  const [data, setData] = useState<ProjectCategory[]>([]);
+export default function Select({
+  setSearchQuery,
+}: {
+  setSearchQuery: React.Dispatch<React.SetStateAction<SearchQuery>>;
+}) {
   const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<Option[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,7 +36,12 @@ export default function Select() {
         setError(error.message);
       } else {
         console.log(data);
-        setData(data);
+        const formattedData = data.map((item) => ({
+          text: item.category_name,
+          id: 'category_id',
+          value: item.category_id,
+        }));
+        setData(formattedData);
       }
     };
 
@@ -52,14 +59,9 @@ export default function Select() {
           <div key={index} className="flex items-center gap-3">
             <span>{topic.name}</span>
             {index === 0 ? (
-              <SelectBox options={options} />
+              <SelectBox options={options} setSearchQuery={setSearchQuery} />
             ) : (
-              <SelectBox
-                data={data.map((item) => ({
-                  id: item.category_id,
-                  name: item.category_name,
-                }))}
-              />
+              <SelectBox options={data} setSearchQuery={setSearchQuery} />
             )}
           </div>
         ))}

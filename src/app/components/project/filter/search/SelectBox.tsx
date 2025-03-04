@@ -1,35 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { SearchQuery } from '@/app/models/projectSearch';
 
-interface Option {
-  id: number;
+export interface Option {
   text: string;
-}
-
-interface DataItem {
-  id: number;
-  name: string;
+  id: string;
+  value: number;
 }
 
 interface SelectBoxProps {
   options?: Option[];
-  data?: DataItem[];
+  setSearchQuery: React.Dispatch<React.SetStateAction<SearchQuery>>;
 }
 
-export default function SelectBox({ options, data }: SelectBoxProps) {
+const removeDuplicateOptions = (options: Option[]): Option[] => {
+  const uniqueOptions = new Map<string, Option>();
+  options.forEach((option) => {
+    if (!uniqueOptions.has(option.text)) {
+      uniqueOptions.set(option.text, option);
+    }
+  });
+  return Array.from(uniqueOptions.values());
+};
+
+export default function SelectBox({ options, setSearchQuery }: SelectBoxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>('전체');
+  const [uniqueOptions, setUniqueOptions] = useState<Option[]>([]);
+
+  useEffect(() => {
+    if (options) {
+      setUniqueOptions(removeDuplicateOptions(options));
+    }
+  }, [options]);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
-  const handleOptionClick = (value: string) => {
-    setSelectedValue(value);
+  const handleOptionClick = (text: string, id: string, value: number) => {
+    setSelectedValue(text);
+    setSearchQuery((prev) => {
+      if (
+        prev.selectedTags &&
+        prev.selectedTags?.map((tag) => tag.name).includes(text)
+      ) {
+        return {
+          ...prev,
+          selectedTags: prev.selectedTags.filter((tag) => tag.name !== text),
+        };
+      } else {
+        return {
+          ...prev,
+          selectedTags: [
+            ...(prev.selectedTags || []),
+            { name: text, id: id, value: value },
+          ],
+        };
+      }
+    });
     setIsOpen(false);
   };
-
-  const uniqueData = data
-    ? Array.from(new Set(data.map((item) => item.name))).map((name) =>
-        data.find((item) => item.name === name),
-      )
-    : [];
 
   return (
     <div className="relative w-[13rem]">
@@ -42,30 +69,16 @@ export default function SelectBox({ options, data }: SelectBoxProps) {
       </div>
       {isOpen && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-[#D8D8D8] rounded-3xl">
-          <div
-            className="p-2 cursor-pointer hover:bg-gray-200 text-[#8A949E] text-[17px] font-normal leading-[25.5px] tracking-[0px] flex-1"
-            onClick={() => handleOptionClick('전체')}
-          >
-            전체
-          </div>
-          {options &&
-            options.map((option) => (
+          {uniqueOptions &&
+            uniqueOptions.map((option) => (
               <div
-                key={option.id}
+                key={option.value}
                 className="p-2 cursor-pointer hover:bg-gray-200 text-[#8A949E] text-[17px] font-normal leading-[25.5px] tracking-[0px] flex-1"
-                onClick={() => handleOptionClick(option.text)}
+                onClick={() =>
+                  handleOptionClick(option.text, option.id, option.value)
+                }
               >
                 {option.text}
-              </div>
-            ))}
-          {uniqueData &&
-            uniqueData.map((item) => (
-              <div
-                key={item?.id}
-                className="p-2 cursor-pointer hover:bg-gray-200 text-[#8A949E] text-[17px] font-normal leading-[25.5px] tracking-[0px] flex-1"
-                onClick={() => handleOptionClick(item?.name || '')}
-              >
-                {item?.name}
               </div>
             ))}
         </div>
