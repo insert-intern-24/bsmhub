@@ -1,23 +1,9 @@
 import React from 'react';
-import { createClient } from '@/utils/supabase/server';
 import Image from 'next/image';
 import ProjectImage from '@public/images/icon/Project_Image.svg';
+import { Projects } from '@/app/models/projectSearch';
 
-export default async function ProjectCard() {
-  const supabase = await createClient();
-
-  const { data: projects, error: projectsError } = await supabase
-    .schema('project')
-    .from('projects')
-    .select('*, category_id!inner(*)');
-
-  if (projectsError) {
-    console.error(projectsError);
-    return <div>not found projects</div>;
-  } else {
-    console.log(projects);
-  }
-
+export default function ProjectCard({ projects }: { projects: Projects }) {
   const options = [
     { id: 1, text: '개발중' },
     { id: 2, text: '서비스 중' },
