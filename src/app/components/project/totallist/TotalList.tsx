@@ -1,14 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Total from './total/Total';
 import ProjectCard from './list/ProjectCard';
-import { Projects } from '@/app/models/projectSearch';
+import Pagination from './pagination/Pagination';
+import { Projects, Newest } from '@/app/models/projectSearch';
 
-export default function TotalList({ projects }: { projects: Projects }) {
+export default function TotalList({
+  projects,
+  setSort,
+}: {
+  projects: Projects;
+  setSort: React.Dispatch<React.SetStateAction<Newest>>;
+}) {
+  const [currentPage, setCurrentPage] = useState(1);
   return (
     <>
       <div className="flex flex-col items-start gap-6 self-stretch">
-        <Total />
-        <ProjectCard projects={projects} />
+        <Total projects={projects} setSort={setSort} />
+        <ProjectCard
+          projects={projects.slice((currentPage - 1) * 12, currentPage * 12)}
+        />
+        <Pagination
+          projects={projects}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
     </>
   );
