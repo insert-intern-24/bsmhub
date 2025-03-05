@@ -37,7 +37,7 @@ export default function ProjectCard({ projects }: { projects: Projects }) {
               <span className="text-black self-stretch text-2xl font-bold leading-none">
                 {project.project_name}
               </span>
-              <span className="text-[#5E5E5E] text-base font-normal leading-none">
+              <span className="text-descriptionColor text-base font-normal leading-none">
                 {project.description}
               </span>
             </div>
