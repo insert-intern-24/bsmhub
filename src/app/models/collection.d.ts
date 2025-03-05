@@ -20,7 +20,7 @@ export interface Details {
 export type Collection = MergeDeep<
   Database['collection']['Tables']['collections']['Row'],
   {
-    competition?: Database['collection']['Tables']['competition']['Row'][] | null;
+    competition?: Database['collection']['Tables']['competition']['Row'] | null;
   }
 >
 

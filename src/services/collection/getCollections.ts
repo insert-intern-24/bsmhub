@@ -21,7 +21,7 @@ const getCollections = async () => {
 
     const formattedData = data.map((item) => ({
       ...item,
-      competition: (item.competition as unknown) as Competition
+      competition: (item.competition as unknown) as Competition 
     }))
 
     console.log(formattedData)
