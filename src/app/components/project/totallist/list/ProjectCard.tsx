@@ -2,18 +2,11 @@ import React from 'react';
 import Image from 'next/image';
 import ProjectImage from '@public/images/icon/Project_Image.svg';
 import { Projects } from '@/app/models/projectSearch';
+import { StatusTag } from '@/app/models/project';
 
 export default function ProjectCard({ projects }: { projects: Projects }) {
-  const options = [
-    { id: 1, text: '개발중' },
-    { id: 2, text: '서비스 중' },
-    { id: 3, text: '개발완료' },
-    { id: 4, text: '기획중' },
-  ];
-
   const getStatusText = (status: number) => {
-    const option = options.find((option) => option.id === status);
-    return option ? option.text : '알 수 없음';
+    return StatusTag[status] || '알 수 없음';
   };
 
   return (
