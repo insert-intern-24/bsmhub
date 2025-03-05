@@ -171,7 +171,7 @@ function Chat() {
             animate={{ height: 'auto' }}
             exit={{ height: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="mt-6 space-y-4 overflow-y-auto max-h-[30rem] hide-scrollbar"
+            className="mt-6 space-y-4 overflow-y-auto max-h-[20rem] hide-scrollbar min-h-[20rem]"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {conversations.map((conversation) => {
