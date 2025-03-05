@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import Total from './total/Total';
 import ProjectCard from './list/ProjectCard';
 import Pagination from './pagination/Pagination';
-import { Projects, Newest } from '@/app/models/projectSearch';
+import { Projects, Sort } from '@/app/models/projectSearch';
 
 export default function TotalList({
   projects,
   setSort,
 }: {
   projects: Projects;
-  setSort: React.Dispatch<React.SetStateAction<Newest>>;
+  setSort: React.Dispatch<React.SetStateAction<Sort>>;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   return (

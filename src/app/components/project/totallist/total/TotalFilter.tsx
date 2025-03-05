@@ -1,13 +1,13 @@
 import React from 'react';
-import { Newest } from '@/app/models/projectSearch';
+import { Sort } from '@/app/models/projectSearch';
 
 export default function TotalFilter({
   setSort,
 }: {
-  setSort: React.Dispatch<React.SetStateAction<Newest>>;
+  setSort: React.Dispatch<React.SetStateAction<Sort>>;
 }) {
   const handleSortChange = () => {
-    setSort('newest');
+    setSort('Sort');
   };
 
   return (

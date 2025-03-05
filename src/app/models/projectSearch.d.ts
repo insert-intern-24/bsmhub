@@ -21,4 +21,4 @@ export type Project = MergeDeep<
 
 export type Projects = Project[];
 
-export type Newest = 'newest';
+export type Sort = 'Sort';

@@ -5,7 +5,7 @@ import {
   SearchQuery,
   Projects,
   Topics,
-  Newest,
+  Sort,
 } from '@/app/models/projectSearch';
 import { createClient } from '@/utils/supabase/client';
 
@@ -14,7 +14,7 @@ export default function Filter({
   sort,
 }: {
   setProjects: React.Dispatch<React.SetStateAction<Projects>>;
-  sort: Newest;
+  sort: Sort;
 }) {
   const [searchQuery, setSearchQuery] = useState<SearchQuery>({});
 
@@ -46,7 +46,7 @@ export default function Filter({
         }
       }
 
-      if (sort === 'newest') {
+      if (sort === 'Sort') {
         query = query.order('created_at', { ascending: false });
       }
 

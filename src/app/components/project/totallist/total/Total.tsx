@@ -1,13 +1,13 @@
 import React from 'react';
 import TotalFilter from './TotalFilter';
-import { Projects, Newest } from '@/app/models/projectSearch';
+import { Projects, Sort } from '@/app/models/projectSearch';
 
 export default function Total({
   projects,
   setSort,
 }: {
   projects: Projects;
-  setSort: React.Dispatch<React.SetStateAction<Newest>>;
+  setSort: React.Dispatch<React.SetStateAction<Sort>>;
 }) {
   return (
     <>
