@@ -38,6 +38,7 @@ const config: Config = {
         customGray2: '#F2F2F2',
         followBlue: '#216BFF',
         moreGray: '#8E8E8E',
+        itemBlue: '#1462FF',
       },
       backgroundImage: {
         'contest-gradient': 'linear-gradient(180deg, rgba(47, 66, 205, 0.07) 0%, rgba(255, 255, 255, 0.07) 100%)',

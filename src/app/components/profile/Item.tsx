@@ -34,11 +34,11 @@ const StudentItem = () => {
             />
           </span>
           <div className="mt-1 flex flex-row gap-[0.7rem] items-center">
-            <h5 className="text-[#171719] text-lg font-bold">ASDFASDF</h5>
-            <h5 className="text-[#1462FF] text-sm font-semibold">팔로우</h5>
+            <h5 className="text-titleColor text-lg font-bold">ASDFASDF</h5>
+            <h5 className="text-itemBlue text-sm font-semibold">팔로우</h5>
           </div>
-          <span className="text-[#5E5E5E] text-sm">Lorem ipsum dolor sit amet, cadipiscingt.</span>
-          <span className="text-[#858587] text-sm">백엔드 개발자 희망</span>
+          <span className="text-descriptionColor text-sm">Lorem ipsum dolor sit amet, cadipiscingt.</span>
+          <span className="text-detailColor text-sm">백엔드 개발자 희망</span>
           <div className="flex gap-1 mt-2"> {/* tag 같은거 */}
             {tags.map((tag, index) => (
               <FilterTag 
@@ -51,7 +51,7 @@ const StudentItem = () => {
       </div>
       <div 
         className="flex items-center pl-[1.46rem] w-full h-8 bg-[#F9FAFB] border border-[#E8E8EF] rounded-[3px] mt-1.5 text-sm">
-        진행 중 프로젝트 / <span className="text-[#1462FF] ml-[4.5px]">IOJ(Insert Online Judge)</span>
+        진행 중 프로젝트 / <span className="text-itemBlue ml-[4.5px]">IOJ(Insert Online Judge)</span>
       </div>
     </div>
   )
