@@ -1,4 +1,5 @@
 'use client';
+import { Competition } from "@/app/models/collection";
 import { createClient } from "@/utils/supabase/client";
 
 const getCollections = async () => {
@@ -18,9 +19,14 @@ const getCollections = async () => {
       return [];
     }
 
-    console.log(data)
+    const formattedData = data.map((item) => ({
+      ...item,
+      competition: (item.competition as unknown) as Competition
+    }))
 
-    return data || [];
+    console.log(formattedData)
+
+    return formattedData || [];
 }
 
 export default getCollections

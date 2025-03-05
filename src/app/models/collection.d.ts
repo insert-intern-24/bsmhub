@@ -24,6 +24,8 @@ export type Collection = MergeDeep<
   }
 >
 
+export type Competition = Database['collection']['Tables']['competition']['Row'] | null;
+
 export interface CollectionInformation {
   target: string, // 대상
   pax: number, // 인원수
