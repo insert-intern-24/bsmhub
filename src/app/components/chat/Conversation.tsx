@@ -28,13 +28,10 @@ function getFormattedTimestamp(dateString: string): string {
     date.getMonth() === today.getMonth() &&
     date.getDate() === today.getDate()
   ) {
-    // 오늘이면 시간만 (예: "9:40")
     return format(date, 'H:mm', { locale: ko });
   } else if (date.getFullYear() === today.getFullYear()) {
-    // 올해이면 "M월 d일" (예: "3월 1일")
     return format(date, 'M월 d일', { locale: ko });
   } else {
-    // 1년 이상 전이면 "yyyy년 M월 d일"
     return format(date, 'yyyy년 M월 d일', { locale: ko });
   }
 }
@@ -45,6 +42,7 @@ function Conversation({ conversationId }: ConversationProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [myProfileId, setMyProfileId] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   // 파트너와 내 프로필 정보를 한 번에 가져오기
   useEffect(() => {
@@ -61,7 +59,7 @@ function Conversation({ conversationId }: ConversationProps) {
     fetchProfiles();
   }, [conversationId, setUsername]);
 
-  // 대화 읽음 처리: conversationId, myProfileId, messages가 바뀔 때마다 실행
+  // 대화 읽음 처리: conversationId, myProfileId, messages가 변경될 때마다 실행
   useEffect(() => {
     if (conversationId && myProfileId) {
       markConversationAsRead(conversationId, myProfileId);
@@ -80,7 +78,6 @@ function Conversation({ conversationId }: ConversationProps) {
       conversationId,
       (newMsg: ChatMessage) => {
         setMessages((prev) => {
-          // 중복 체크
           if (prev.find((msg) => msg.message_id === newMsg.message_id)) {
             return prev;
           }
@@ -93,10 +90,32 @@ function Conversation({ conversationId }: ConversationProps) {
     };
   }, [conversationId]);
 
-  // 스크롤: 메시지가 업데이트될 때마다 맨 아래로 이동
+  // 메시지 업데이트 시 스크롤 맨 아래로 이동
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // textarea auto-resize: 최소 높이 30px, 최대 높이 160px 적용
+  useEffect(() => {
+    const MIN_HEIGHT = 30;
+    const MAX_HEIGHT = 60;
+    if (textAreaRef.current) {
+      // 먼저 최소 높이로 리셋해서 정확한 scrollHeight를 얻음
+      textAreaRef.current.style.height = `${MIN_HEIGHT}px`;
+      const newHeight = textAreaRef.current.scrollHeight;
+      let finalHeight = newHeight;
+      if (newHeight < MIN_HEIGHT) {
+        finalHeight = MIN_HEIGHT;
+        textAreaRef.current.style.overflowY = 'hidden';
+      } else if (newHeight > MAX_HEIGHT) {
+        finalHeight = MAX_HEIGHT;
+        textAreaRef.current.style.overflowY = 'auto';
+      } else {
+        textAreaRef.current.style.overflowY = 'hidden';
+      }
+      textAreaRef.current.style.height = `${finalHeight}px`;
+    }
+  }, [message]);
 
   const handleSend = async () => {
     if (!message.trim()) return;
@@ -154,28 +173,36 @@ function Conversation({ conversationId }: ConversationProps) {
   }
 
   return (
-    <div className="max-h-[20rem] px-4 flex flex-col">
-      <div className="overflow-y-auto space-y-[0.1rem] pb-2">
+    <div className="max-h-[20rem] flex flex-col px-4">
+      {/* 메시지 영역 */}
+      <div className="flex-1 overflow-y-auto space-y-[0.1rem] pb-2">
         {renderedMessages}
         <div ref={messagesEndRef} />
       </div>
 
       {/* 메시지 입력 영역 */}
-      <div className="flex gap-3 items-center">
+      <div className="flex gap-3 items-start">
         <Image
           src={more}
           alt="더보기"
           width={(10 * 12) / 16}
           height={(10 * 12) / 16}
+          className="mt-2"
         />
-        <input
-          type="text"
+        <textarea
+          ref={textAreaRef}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleSend();
+            }
+          }}
           placeholder="메시지를 입력하세요"
-          className="flex-1 h-10 bg-[#F5F5F7] rounded-full px-4"
+          className="flex-1 bg-[#F5F5F7] rounded-full px-4 py-2 resize-none overflow-hidden"
         />
-        <button onClick={handleSend}>
+        <button onClick={handleSend} className="mt-2">
           <Image
             src={send}
             alt="전송"
