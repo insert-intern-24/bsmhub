@@ -5,7 +5,7 @@ import { UserDataType } from '@models/user';
 import UserHome from '@components/profile/user/UserHome';
 import UserProjects from '@components/profile/user/UserProjects';
 import UserPosts from '@components/profile/user/UserPosts';
-import UserCollections from '../UserCollections';
+import UserCollections from '@components/profile/user/UserCollections';
 
 const tabComponents = (
   userData: UserDataType,
