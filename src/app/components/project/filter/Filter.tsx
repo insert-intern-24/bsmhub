@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Search from './search/Search';
 import Tag from './tag/Tag';
-import { SearchQuery, Projects, Topics } from '@/app/models/projectSearch';
+import {
+  SearchQuery,
+  Projects,
+  Topics,
+  Newest,
+} from '@/app/models/projectSearch';
 import { createClient } from '@/utils/supabase/client';
 
 export default function Filter({
   setProjects,
+  sort,
 }: {
   setProjects: React.Dispatch<React.SetStateAction<Projects>>;
+  sort: Newest;
 }) {
   const [searchQuery, setSearchQuery] = useState<SearchQuery>({});
 
@@ -31,15 +38,16 @@ export default function Filter({
           .filter((tag: Topics) => tag.id === 'status')
           .map((tag: Topics) => tag.value);
 
-        if (categoryTags.length > 0 && statusTags.length > 0) {
-          query = query
-            .in('category_id', categoryTags)
-            .in('status', statusTags);
-        } else if (categoryTags.length > 0) {
+        if (categoryTags.length > 0) {
           query = query.in('category_id', categoryTags);
-        } else if (statusTags.length > 0) {
+        }
+        if (statusTags.length > 0) {
           query = query.in('status', statusTags);
         }
+      }
+
+      if (sort === 'newest') {
+        query = query.order('created_at', { ascending: false });
       }
 
       const { data, error } = await query;
@@ -53,7 +61,7 @@ export default function Filter({
     };
 
     fetchProjects();
-  }, [searchQuery]);
+  }, [searchQuery, sort]);
 
   return (
     <>
