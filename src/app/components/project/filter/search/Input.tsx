@@ -18,7 +18,7 @@ export default function Input({
           <input
             type="text"
             placeholder="검색어를 입력해주세요."
-            className="flex-1 text-textDisabled text-base font-normal leading-[150%] tracking-normal"
+            className="flex-1 text-textDisabled text-base font-normal leading-[150%] tracking-normal outline-none"
             value={inputQuery}
             onChange={(e) =>
               setSearchQuery((prev) => {
