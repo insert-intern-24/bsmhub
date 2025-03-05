@@ -80,6 +80,7 @@ function Conversation({ conversationId }: ConversationProps) {
       conversationId,
       (newMsg: ChatMessage) => {
         setMessages((prev) => {
+          // 중복 체크
           if (prev.find((msg) => msg.message_id === newMsg.message_id)) {
             return prev;
           }
@@ -92,7 +93,7 @@ function Conversation({ conversationId }: ConversationProps) {
     };
   }, [conversationId]);
 
-  // 메시지 업데이트 시 스크롤 맨 아래로 이동
+  // 스크롤: 메시지가 업데이트될 때마다 맨 아래로 이동
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -153,44 +154,35 @@ function Conversation({ conversationId }: ConversationProps) {
   }
 
   return (
-    <div className="h-full flex flex-col">
-      {/* 메시지 영역 */}
-      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-[0.1rem]">
+    <div className="max-h-[20rem] px-4 flex flex-col">
+      <div className="overflow-y-auto space-y-[0.1rem] pb-2">
         {renderedMessages}
         <div ref={messagesEndRef} />
       </div>
 
       {/* 메시지 입력 영역 */}
-      <div className="px-4 py-2">
-        <div className="flex gap-3 items-center">
+      <div className="flex gap-3 items-center">
+        <Image
+          src={more}
+          alt="더보기"
+          width={(10 * 12) / 16}
+          height={(10 * 12) / 16}
+        />
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="메시지를 입력하세요"
+          className="flex-1 h-10 bg-[#F5F5F7] rounded-full px-4"
+        />
+        <button onClick={handleSend}>
           <Image
-            src={more}
-            alt="더보기"
-            width={(10 * 12) / 16}
-            height={(10 * 12) / 16}
+            src={send}
+            alt="전송"
+            width={(24 * 12) / 16}
+            height={(24 * 12) / 16}
           />
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                handleSend();
-              }
-            }}
-            placeholder="메시지를 입력하세요"
-            className="flex-1 h-10 bg-[#F5F5F7] rounded-full px-4"
-          />
-          <button onClick={handleSend}>
-            <Image
-              src={send}
-              alt="전송"
-              width={(24 * 12) / 16}
-              height={(24 * 12) / 16}
-            />
-          </button>
-        </div>
+        </button>
       </div>
     </div>
   );
