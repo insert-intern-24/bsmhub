@@ -1,4 +1,4 @@
-import { Database } from "@/utils/supabase/database.types";
+import { Database } from '@/utils/supabase/database.types';
 import { MergeDeep } from 'type-fest';
 
 export interface Content {
@@ -21,6 +21,7 @@ export type Collection = MergeDeep<
   Database['collection']['Tables']['collections']['Row'],
   {
     competition?: Database['collection']['Tables']['competition']['Row'] | null;
+    details?: Details | null; 
   }
 >
 

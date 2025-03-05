@@ -2,7 +2,7 @@ import React from 'react';
 import ContestInformation from '@/app/components/Information';
 import Hr from '@components/Hr';
 import DetailBoxes from '../detail/DetailBoxes';
-import { Collection } from '@models/collection';
+import { Collection, Detail } from '@models/collection';
 import { formatEndDate } from '@/utils/date';
 import { formatDate } from '@/utils/date';
 
@@ -35,9 +35,7 @@ function CollectionPanel({ collection }: CollectionPanelProps) {
         <Hr />
         <main className="flex flex-col gap-8">
         <DetailBoxes
-          details={
-            Array.isArray(collection.details) ? collection.details : []
-          }
+          details={collection?.details as Detail[]}
           type="col"
         />
         </main>
