@@ -6,7 +6,7 @@ import getProfileById from '@/services/profile/getProfileById';
 import getProject from '@/services/project/getProject';
 import { profileType } from '@models/profile';
 import { ProjectItemsPropsType } from '@models/project';
-import { Details } from '@models/collection';
+import { Details, Collection } from '@models/collection';
 import getProfileMarkdown from '@/services/profile/getProfileMarkdown';
 import getDetails from '@/services/profile/getDetails';
 import TeamHome from '@components/profile/team/TeamHome';
@@ -23,7 +23,6 @@ const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
   // profile id 있는지 확인 후 user 인지 유효성 검사
   if (!profile?.isTeam && profile?.profile_id) {
     const fetchedProjects = await getProject(profile.profile_id as string);
-    console.log(JSON.stringify(fetchedProjects, null, 2));
 
     projects = fetchedProjects.map((item) => item.projects);
     markdown = await getProfileMarkdown(profile.profile_id);
