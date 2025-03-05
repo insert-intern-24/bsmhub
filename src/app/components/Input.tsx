@@ -35,7 +35,7 @@ const InputWithLabel = ({
 }) => {
   return (
     <div className="flex flex-col w-full">
-      <label htmlFor={id} className="text-lg">
+      <label htmlFor={id} className="text-sm">
         {label}
       </label>
       <Input placeholder={placeholder} id={id} type={type} name={name} />
