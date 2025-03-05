@@ -12,11 +12,26 @@ export default function Pagination({
 }) {
   const pageLength = Math.ceil(projects.length / 12);
 
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < pageLength) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   return (
     <>
       <div className="flex items-center self-stretch justify-center">
         <div className="flex items-center gap-2 max-h-10">
-          <div className="flex pt-0 pr-2 pb-0 pl-1 justify-center items-center rounded-md">
+          <div
+            className="flex pt-0 pr-2 pb-0 pl-1 justify-center items-center rounded-md cursor-pointer"
+            onClick={handlePreviousPage}
+          >
             <span
               className="material-symbols-outlined"
               style={{
@@ -55,7 +70,10 @@ export default function Pagination({
                 </div>
               );
             })}
-          <div className="flex pt-0 pr-2 pb-0 pl-1 justify-center items-center rounded-md">
+          <div
+            className="flex pt-0 pr-2 pb-0 pl-1 justify-center items-center rounded-md cursor-pointer"
+            onClick={handleNextPage}
+          >
             <span className="text-textDisabled text-center text-base font-normal leading-[150%] tracking-normal">
               다음
             </span>
