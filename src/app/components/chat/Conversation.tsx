@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { format, differenceInMinutes } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -17,9 +17,9 @@ import { markConversationAsRead } from '@/services/chat/markConversationAsRead';
 
 interface ConversationProps {
   conversationId: string;
+  initialMessages?: ChatMessage[];
 }
 
-// 메시지 타임스탬프 포맷 함수
 function getFormattedTimestamp(dateString: string): string {
   const date = new Date(dateString);
   const today = new Date();
@@ -36,16 +36,27 @@ function getFormattedTimestamp(dateString: string): string {
   }
 }
 
-function Conversation({ conversationId }: ConversationProps) {
+const Conversation: React.FC<ConversationProps> = ({
+  conversationId,
+  initialMessages = [],
+}) => {
   const { setUsername } = useUserStore();
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [myProfileId, setMyProfileId] = useState('');
-  const [isComposing, setIsComposing] = useState(false);
+  const [message, setMessage] = useState<string>('');
+  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
+  const [myProfileId, setMyProfileId] = useState<string>('');
+  const [offset, setOffset] = useState<number>(initialMessages.length);
+  const limit = 20;
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isComposing, setIsComposing] = useState<boolean>(false);
+  const [shouldScrollToBottom, setShouldScrollToBottom] =
+    useState<boolean>(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  // 파트너와 내 프로필 정보를 한 번에 가져오기
+  // 프로필 정보 로드
   useEffect(() => {
     async function fetchProfiles() {
       const [partnerProfile, myProfileData] = await Promise.all([
@@ -60,21 +71,75 @@ function Conversation({ conversationId }: ConversationProps) {
     fetchProfiles();
   }, [conversationId, setUsername]);
 
-  // 대화 읽음 처리: conversationId, myProfileId, messages가 변경될 때마다 실행
+  // 마운트 시 스크롤을 맨 아래로 이동
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+  }, []);
+
+  // 읽음 처리
   useEffect(() => {
     if (conversationId && myProfileId) {
       markConversationAsRead(conversationId, myProfileId);
     }
   }, [conversationId, myProfileId, messages]);
 
-  // 기존 메시지 로드와 실시간 구독
+  // 초기 메시지 로드 (프리패칭된 값이 있으면 사용)
   useEffect(() => {
-    async function fetchHistory() {
-      const historyMessages = await getChatMessages(conversationId);
-      setMessages(historyMessages);
-    }
-    fetchHistory();
+    const fetchInitialMessages = async () => {
+      if (offset === 0) {
+        const initial = await getChatMessages(conversationId, 0, limit);
+        setMessages(initial);
+        setOffset(initial.length);
+        if (initial.length < limit) {
+          setHasMore(false);
+        }
+      }
+    };
 
+    fetchInitialMessages();
+  }, [conversationId, offset, limit]);
+
+  // 무한 스크롤: 이전 메시지 로드 (prepend)
+  const loadMessages = useCallback(async () => {
+    if (isLoading || !hasMore) return;
+    setIsLoading(true);
+    const container = containerRef.current;
+    if (!container) return;
+    // 현재 스크롤 위치 기록
+    const prevScrollHeight = container.scrollHeight;
+    const prevScrollTop = container.scrollTop;
+    const olderMessages = await getChatMessages(conversationId, offset, limit);
+    if (olderMessages.length < limit) {
+      setHasMore(false);
+    }
+    setMessages((prev) => [...olderMessages, ...prev]);
+    setOffset((prev) => prev + olderMessages.length);
+    setIsLoading(false);
+    // 새로 추가된 높이만큼 scrollTop 보정하여 기존 스크롤 위치 유지
+    setTimeout(() => {
+      if (container) {
+        const newScrollHeight = container.scrollHeight;
+        container.scrollTop =
+          prevScrollTop + (newScrollHeight - prevScrollHeight);
+      }
+    }, 0);
+  }, [conversationId, offset, limit, isLoading, hasMore]);
+
+  // 무한 스크롤 이벤트 등록
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !hasMore) return;
+    const handleScroll = () => {
+      if (container.scrollTop < 50 && hasMore && !isLoading) {
+        loadMessages();
+      }
+    };
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [hasMore, isLoading, loadMessages]);
+
+  // 실시간 구독: 새 메시지 append (새 메시지 전송 시 스크롤 아래 이동)
+  useEffect(() => {
     const subscription = subscribeChatMessages(
       conversationId,
       (newMsg: ChatMessage) => {
@@ -82,21 +147,26 @@ function Conversation({ conversationId }: ConversationProps) {
           if (prev.find((msg) => msg.message_id === newMsg.message_id)) {
             return prev;
           }
+          setShouldScrollToBottom(true);
           return [...prev, newMsg];
         });
       },
     );
+    // Make sure the cleanup doesn't return a Promise
     return () => {
       subscription.unsubscribe();
     };
   }, [conversationId]);
 
-  // 메시지 업데이트 시 스크롤을 맨 아래로 이동
+  // 새 메시지 append 시 스크롤 맨 아래로 이동
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    if (shouldScrollToBottom) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      setShouldScrollToBottom(false);
+    }
+  }, [messages, shouldScrollToBottom]);
 
-  // textarea auto-resize: 최소 30px, 최대 60px 적용
+  // textarea auto-resize: 최소 30px, 최대 60px
   useEffect(() => {
     const MIN_HEIGHT = 30;
     const MAX_HEIGHT = 60;
@@ -124,13 +194,13 @@ function Conversation({ conversationId }: ConversationProps) {
       console.error('Sender profile ID is missing.');
       return;
     }
-    // 전송 전에 입력창과 textarea 높이 초기화
+    setShouldScrollToBottom(true);
     setMessage('');
     if (textAreaRef.current) {
       textAreaRef.current.value = '';
       textAreaRef.current.style.height = '30px';
     }
-    const newMsg = await sendChatMessage(
+    const newMsg: ChatMessage | null = await sendChatMessage(
       conversationId,
       myProfileId,
       currentMessage,
@@ -145,7 +215,6 @@ function Conversation({ conversationId }: ConversationProps) {
     }
   };
 
-  // 인접 메시지 간의 시간 차이가 20분 이상이면 타임스탬프 표시
   const renderedMessages: JSX.Element[] = [];
   for (let i = 0; i < messages.length; i++) {
     const msg = messages[i];
@@ -186,13 +255,13 @@ function Conversation({ conversationId }: ConversationProps) {
     <div className="max-h-[20rem] flex flex-col px-4">
       {/* 메시지 영역 */}
       <div
+        ref={containerRef}
         className="flex-1 overflow-y-auto space-y-[0.1rem] pb-2"
         style={{ whiteSpace: 'pre-wrap' }}
       >
         {renderedMessages}
         <div ref={messagesEndRef} />
       </div>
-
       {/* 메시지 입력 영역 */}
       <div className="flex gap-3 items-start">
         <Image
@@ -209,8 +278,7 @@ function Conversation({ conversationId }: ConversationProps) {
           onCompositionStart={() => setIsComposing(true)}
           onCompositionEnd={(e) => {
             setIsComposing(false);
-            // compositionEnd 시에도 최종 값 반영
-            setMessage((e.target as HTMLTextAreaElement).value);
+            setMessage(e.currentTarget.value);
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey && !isComposing) {
@@ -220,7 +288,7 @@ function Conversation({ conversationId }: ConversationProps) {
           }}
           placeholder="메시지를 입력하세요"
           className="flex-1 bg-[#F5F5F7] rounded-full px-4 py-2 resize-none overflow-hidden"
-          style={{ height: '30px' }} // 초기 높이 30px
+          style={{ height: '30px' }}
         />
         <button onClick={handleSend} className="mt-2">
           <Image
@@ -233,6 +301,6 @@ function Conversation({ conversationId }: ConversationProps) {
       </div>
     </div>
   );
-}
+};
 
 export default Conversation;

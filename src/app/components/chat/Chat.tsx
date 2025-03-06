@@ -12,18 +12,22 @@ import profile from '@public/images/profile/default.svg';
 import { Database } from '@/utils/supabase/database.types';
 import { useUserStore, useChatStore } from './chatStore';
 import { subscribeConversations } from '@/services/chat/subscribeConversations';
+import { getChatMessages } from '@/services/chat/getChatMessages';
 
-function Chat() {
-  // 로컬 상태: 대화 목록, 상대 프로필 정보, 내 프로필 ID
+const Chat: React.FC = () => {
+  // 로컬 상태: 대화 목록, 상대 프로필 정보, 내 프로필 ID, 프리패칭 메시지
   const [conversations, setConversations] = useState<
     Database['public']['Tables']['conversations']['Row'][]
   >([]);
   const [conversationProfiles, setConversationProfiles] = useState<
     Record<string, string>
   >({});
-  const [myProfileId, setMyProfileId] = useState('');
+  const [myProfileId, setMyProfileId] = useState<string>('');
+  const [prefetchedMessages, setPrefetchedMessages] = useState<
+    Record<string, Database['public']['Tables']['chat_messages']['Row'][]>
+  >({});
 
-  // 전역 상태: chatState와 activeConversationId (Zustand)
+  // 전역 상태
   const {
     chatState,
     activeConversationId,
@@ -32,36 +36,54 @@ function Chat() {
   } = useChatStore();
   const { username } = useUserStore();
 
-  // 초기 데이터 가져오기
+  // 초기 데이터 및 프리패칭
   useEffect(() => {
     const fetchData = async () => {
       try {
         const profileData = await getProfileBySession();
         if (profileData?.profile_id) {
           setMyProfileId(profileData.profile_id);
-          // 내 프로필이 포함된 대화 목록 가져오기
           const convos = await getConversationsForProfile(
             profileData.profile_id,
           );
-          // last_message와 updated_at 값이 없는 대화는 제외
+          // last_message와 updated_at 값이 있는 대화만 사용
           const filteredConvos = convos.filter(
             (c) => c.last_message && c.updated_at,
           );
           setConversations(filteredConvos);
 
-          // 각 대화의 상대방 프로필 정보 가져오기
+          // 상대 프로필 정보 로드
           const profilesMap: Record<string, string> = {};
           await Promise.all(
             filteredConvos.map(async (conversation) => {
-              const participantId = conversation.participant_ids.filter(
+              const participantId = conversation.participant_ids.find(
                 (id) => id !== profileData.profile_id,
-              )[0];
-              const participantProfile = await getProfileById(participantId);
-              profilesMap[conversation.conversation_id] =
-                participantProfile?.profile_name || '알 수 없음';
+              );
+              if (participantId) {
+                const participantProfile = await getProfileById(participantId);
+                profilesMap[conversation.conversation_id] =
+                  participantProfile?.profile_name || '알 수 없음';
+              }
             }),
           );
           setConversationProfiles(profilesMap);
+
+          // 각 대화의 최신 메시지(최근 20개)를 미리 프리패칭
+          const messagesMap: Record<
+            string,
+            Database['public']['Tables']['chat_messages']['Row'][]
+          > = {};
+          await Promise.all(
+            filteredConvos.map(async (conversation) => {
+              const msgs = await getChatMessages(
+                conversation.conversation_id,
+                0,
+                20,
+              );
+              messagesMap[conversation.conversation_id] = msgs;
+            }),
+          );
+          setPrefetchedMessages(messagesMap);
         }
       } catch (error) {
         console.error('Error fetching conversations:', error);
@@ -70,7 +92,7 @@ function Chat() {
     fetchData();
   }, []);
 
-  // conversations 테이블 업데이트 실시간 구독 (리얼타임)
+  // 실시간 구독: conversations 테이블 업데이트 (INSERT, UPDATE)
   useEffect(() => {
     const subscription = subscribeConversations((updatedConversation) => {
       setConversations((prev) => {
@@ -79,43 +101,37 @@ function Chat() {
             conv.conversation_id === updatedConversation.conversation_id,
         );
         if (index !== -1) {
-          // 기존 대화를 업데이트
           const newConvos = [...prev];
           newConvos[index] = updatedConversation;
           return newConvos;
         } else {
-          // 새로운 대화가 있다면 추가할 수도 있음.
-          return prev;
+          // 새로운 대화도 추가
+          return [updatedConversation, ...prev];
         }
       });
     });
+    // Return the unsubscribe function directly
     return () => {
       subscription.unsubscribe();
     };
   }, []);
 
-  // 헤더의 화살표 클릭 핸들러 (전역 상태 업데이트)
   const handleArrowClick = () => {
     if (chatState === 2) {
-      // 대화창 상태 → 리스트로 돌아가기
       setChatState(1);
       setActiveConversationId(null);
     } else if (chatState === 1) {
-      // 리스트 펼침 → 접힘
       setChatState(0);
     } else if (chatState === 0) {
-      // 접힘 → 리스트 펼침
       setChatState(1);
     }
   };
 
-  // 대화 프로필 클릭 시: 활성 대화 ID와 chatState를 전역 상태로 업데이트
   const handleChatProfileClick = (conversationId: string) => {
     setActiveConversationId(conversationId);
     setChatState(2);
   };
 
-  // chatState에 따른 화살표 회전: 0 → 180°, 1 → 0°, 2 → 90°
   const arrowRotation = chatState === 0 ? 180 : chatState === 1 ? 0 : 90;
 
   return (
@@ -163,7 +179,6 @@ function Chat() {
         )}
       </div>
       <AnimatePresence>
-        {/* 대화 리스트 영역 */}
         {chatState === 1 && (
           <motion.div
             key="chatProfiles"
@@ -200,7 +215,6 @@ function Chat() {
             })}
           </motion.div>
         )}
-        {/* 대화창 영역 */}
         {chatState === 2 && (
           <motion.div
             key="conversation"
@@ -210,12 +224,18 @@ function Chat() {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="mt-6 max-h-[30rem]"
           >
-            <Conversation conversationId={activeConversationId || ''} />
+            {/* 미리 프리패칭된 메시지를 initialMessages prop으로 전달 */}
+            <Conversation
+              conversationId={activeConversationId || ''}
+              initialMessages={
+                prefetchedMessages[activeConversationId || ''] || []
+              }
+            />
           </motion.div>
         )}
       </AnimatePresence>
     </div>
   );
-}
+};
 
 export default Chat;
