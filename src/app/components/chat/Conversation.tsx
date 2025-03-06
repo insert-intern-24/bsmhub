@@ -41,6 +41,7 @@ function Conversation({ conversationId }: ConversationProps) {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [myProfileId, setMyProfileId] = useState('');
+  const [isComposing, setIsComposing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -90,17 +91,16 @@ function Conversation({ conversationId }: ConversationProps) {
     };
   }, [conversationId]);
 
-  // 메시지 업데이트 시 스크롤 맨 아래로 이동
+  // 메시지 업데이트 시 스크롤을 맨 아래로 이동
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // textarea auto-resize: 최소 높이 30px, 최대 높이 160px 적용
+  // textarea auto-resize: 최소 30px, 최대 60px 적용
   useEffect(() => {
     const MIN_HEIGHT = 30;
     const MAX_HEIGHT = 60;
     if (textAreaRef.current) {
-      // 먼저 최소 높이로 리셋해서 정확한 scrollHeight를 얻음
       textAreaRef.current.style.height = `${MIN_HEIGHT}px`;
       const newHeight = textAreaRef.current.scrollHeight;
       let finalHeight = newHeight;
@@ -118,12 +118,23 @@ function Conversation({ conversationId }: ConversationProps) {
   }, [message]);
 
   const handleSend = async () => {
-    if (!message.trim()) return;
+    const currentMessage = message.trim();
+    if (!currentMessage || isComposing) return;
     if (!myProfileId) {
       console.error('Sender profile ID is missing.');
       return;
     }
-    const newMsg = await sendChatMessage(conversationId, myProfileId, message);
+    // 전송 전에 입력창과 textarea 높이 초기화
+    setMessage('');
+    if (textAreaRef.current) {
+      textAreaRef.current.value = '';
+      textAreaRef.current.style.height = '30px';
+    }
+    const newMsg = await sendChatMessage(
+      conversationId,
+      myProfileId,
+      currentMessage,
+    );
     if (newMsg) {
       setMessages((prev) => {
         if (prev.find((msg) => msg.message_id === newMsg.message_id)) {
@@ -131,7 +142,6 @@ function Conversation({ conversationId }: ConversationProps) {
         }
         return [...prev, newMsg];
       });
-      setMessage('');
     }
   };
 
@@ -175,7 +185,10 @@ function Conversation({ conversationId }: ConversationProps) {
   return (
     <div className="max-h-[20rem] flex flex-col px-4">
       {/* 메시지 영역 */}
-      <div className="flex-1 overflow-y-auto space-y-[0.1rem] pb-2">
+      <div
+        className="flex-1 overflow-y-auto space-y-[0.1rem] pb-2"
+        style={{ whiteSpace: 'pre-wrap' }}
+      >
         {renderedMessages}
         <div ref={messagesEndRef} />
       </div>
@@ -193,14 +206,21 @@ function Conversation({ conversationId }: ConversationProps) {
           ref={textAreaRef}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={(e) => {
+            setIsComposing(false);
+            // compositionEnd 시에도 최종 값 반영
+            setMessage((e.target as HTMLTextAreaElement).value);
+          }}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
+            if (e.key === 'Enter' && !e.shiftKey && !isComposing) {
               e.preventDefault();
               handleSend();
             }
           }}
           placeholder="메시지를 입력하세요"
           className="flex-1 bg-[#F5F5F7] rounded-full px-4 py-2 resize-none overflow-hidden"
+          style={{ height: '30px' }} // 초기 높이 30px
         />
         <button onClick={handleSend} className="mt-2">
           <Image
