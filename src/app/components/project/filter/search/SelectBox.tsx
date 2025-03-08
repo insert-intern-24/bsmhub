@@ -42,7 +42,7 @@ export default function SelectBox({ options, setSearchQuery }: SelectBoxProps) {
   };
 
   return (
-    <div className="relative w-[13rem]">
+    <div className="w-[13rem]">
       <div
         className="flex items-center justify-between p-2 border border-[#D8D8D8] rounded-3xl cursor-pointer"
         onClick={toggleDropdown}
@@ -51,7 +51,7 @@ export default function SelectBox({ options, setSearchQuery }: SelectBoxProps) {
         <span className="ml-2">&#9662;</span>
       </div>
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-[#D8D8D8] rounded-3xl">
+        <div className="z-10 w-full mt-1 bg-white border border-[#D8D8D8] rounded-3xl relative">
           {/* icon, children, onClick */}
           {options && (
             <Dropdown
