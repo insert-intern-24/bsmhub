@@ -11,7 +11,7 @@ export default function ProjectCard({ projects }: { projects: Projects }) {
 
   return (
     <>
-      <div className="flex items-start content-start gap-5 self-stretch flex-wrap">
+      <div className="flex items-start content-start gap-5 self-stretch flex-wrap min-h-[56.9rem]">
         {projects.map((project) => (
           <div
             key={project.project_id}
