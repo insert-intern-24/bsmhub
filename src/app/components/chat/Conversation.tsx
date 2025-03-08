@@ -152,7 +152,6 @@ const Conversation: React.FC<ConversationProps> = ({
         });
       },
     );
-    // Make sure the cleanup doesn't return a Promise
     return () => {
       subscription.unsubscribe();
     };

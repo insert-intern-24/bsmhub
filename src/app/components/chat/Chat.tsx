@@ -110,7 +110,6 @@ const Chat: React.FC = () => {
         }
       });
     });
-    // Return the unsubscribe function directly
     return () => {
       subscription.unsubscribe();
     };
