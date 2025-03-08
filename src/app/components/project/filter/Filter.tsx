@@ -12,9 +12,11 @@ import { createClient } from '@/utils/supabase/client';
 export default function Filter({
   setProjects,
   sort,
+  setCurrentPage,
 }: {
   setProjects: React.Dispatch<React.SetStateAction<Projects>>;
   sort: Sort;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const [searchQuery, setSearchQuery] = useState<SearchQuery>({});
 
@@ -61,6 +63,7 @@ export default function Filter({
     };
 
     fetchProjects();
+    setCurrentPage(1);
   }, [searchQuery, sort]);
 
   return (

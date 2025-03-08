@@ -7,6 +7,7 @@ import { Projects, Sort } from '../models/projectSearch';
 export default function Page() {
   const [projects, setProjects] = useState<Projects>([]);
   const [sort, setSort] = useState<Sort>('Sort');
+  const [currentPage, setCurrentPage] = useState(1);
 
   return (
     <>
@@ -15,8 +16,17 @@ export default function Page() {
           <span className="text-black text-[1.75rem] font-bold leading-none">
             프로젝트 모아보기
           </span>
-          <Filter setProjects={setProjects} sort={sort} />
-          <TotalList projects={projects} setSort={setSort} />
+          <Filter
+            setProjects={setProjects}
+            sort={sort}
+            setCurrentPage={setCurrentPage}
+          />
+          <TotalList
+            projects={projects}
+            setSort={setSort}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </div>
       </div>
     </>
