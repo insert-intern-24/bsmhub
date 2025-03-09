@@ -68,7 +68,7 @@ export default function Filter({
 
   return (
     <>
-      <div className="w-[86.625rem] flex p-10 flex-col items-start gap-6 self-stretch rounded-xl border border-[#DADADA] bg-white">
+      <div className="w-full flex p-10 flex-col items-start gap-6 self-stretch rounded-xl border border-[#DADADA] bg-white">
         <Search setSearchQuery={setSearchQuery} searchQuery={searchQuery} />
         <Tag searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       </div>

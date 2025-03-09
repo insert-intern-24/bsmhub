@@ -12,12 +12,14 @@ export default function Search({
 }) {
   return (
     <>
-      <div className="flex pb-6 flex-col items-start gap-4 self-stretch border-b border-[#D6E0EB]">
-        <Select setSearchQuery={setSearchQuery} />
-        <Input
-          inputQuery={searchQuery.inputQuery}
-          setSearchQuery={setSearchQuery}
-        />
+      <div className="flex pb-6 flex-col items-start self-stretch border-b border-[#D6E0EB] gap-6 w-full">
+        <div className="flex flex-col gap-4 w-full">
+          <Select setSearchQuery={setSearchQuery} />
+          <Input
+            inputQuery={searchQuery.inputQuery}
+            setSearchQuery={setSearchQuery}
+          />
+        </div>
       </div>
     </>
   );

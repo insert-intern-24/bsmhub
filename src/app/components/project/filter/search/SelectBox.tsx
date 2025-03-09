@@ -42,16 +42,25 @@ export default function SelectBox({ options, setSearchQuery }: SelectBoxProps) {
   };
 
   return (
-    <div className="w-[13rem]">
+    <div className="w-[13rem] select-none">
       <div
-        className="flex items-center justify-between p-2 border border-[#D8D8D8] rounded-3xl cursor-pointer"
+        className="flex items-center justify-between p-2 border border-[#D8D8D8] rounded-3xl cursor-pointer select-none"
         onClick={toggleDropdown}
       >
         {selectedValue}
-        <span className="ml-2">&#9662;</span>
+        <span
+          className="material-symbols-outlined"
+          style={{
+            fontVariationSettings: "'FILL' 1, 'wght' 100, 'GRAD' 0, 'opsz' 14",
+            fontSize: '1.25rem',
+            userSelect: 'none',
+          }}
+        >
+          keyboard_arrow_down
+        </span>
       </div>
       {isOpen && (
-        <div className="z-10 w-full mt-1 bg-white border border-[#D8D8D8] rounded-3xl relative">
+        <div className="z-10 w-full mt-1 bg-white border border-[#D8D8D8] rounded-3xl relative select-none">
           {/* icon, children, onClick */}
           {options && (
             <Dropdown

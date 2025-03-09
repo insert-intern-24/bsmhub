@@ -11,11 +11,11 @@ export default function ProjectCard({ projects }: { projects: Projects }) {
 
   return (
     <>
-      <div className="flex items-start content-start gap-5 self-stretch flex-wrap min-h-[56.9rem]">
+      <div className="flex items-start content-start gap-5 self-stretch flex-wrap min-h-[56.9rem] w-full">
         {projects.map((project) => (
           <div
             key={project.project_id}
-            className="flex flex-col items-start gap-2 w-[20.6875rem]"
+            className="flex flex-col items-start gap-2 w-[20.186rem]"
           >
             <div className="relative">
               <Image

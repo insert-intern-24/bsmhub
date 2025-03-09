@@ -57,7 +57,9 @@ export default function Select({
       <div className="flex items-start gap-6">
         {topics.map((topic, index) => (
           <div key={index} className="flex items-center gap-3">
-            <span>{topic.name}</span>
+            <span className="text-textBasic text-base font-bold leading-[150%] tracking-normal select-none">
+              {topic.name}
+            </span>
             {index === 0 ? (
               <SelectBox options={options} setSearchQuery={setSearchQuery} />
             ) : (

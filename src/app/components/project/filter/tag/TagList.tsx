@@ -27,7 +27,7 @@ export default function TagList({
             key={index}
             className="flex px-3 py-2 justify-center items-center gap-[0.5rem] rounded-full border border-[#CDD1D5] bg-white"
           >
-            <span className="text-black text-base font-normal leading-[150%] tracking-normal">
+            <span className="text-black text-base font-normal leading-[150%] tracking-normal select-none">
               {tag.name}
             </span>
             <Image
@@ -36,7 +36,7 @@ export default function TagList({
               width={14}
               height={14}
               onClick={() => handleDelete(tag)}
-              className="cursor-pointer"
+              className="cursor-pointer select-none"
             />
           </div>
         ))}

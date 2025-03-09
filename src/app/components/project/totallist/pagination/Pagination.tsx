@@ -38,11 +38,12 @@ export default function Pagination({
                 fontVariationSettings:
                   "'FILL' 1, 'wght' 100, 'GRAD' 0, 'opsz' 14",
                 fontSize: '1rem',
+                userSelect: 'none',
               }}
             >
               arrow_back_ios
             </span>
-            <span className="text-textDisabled text-center text-base font-normal leading-[150%] tracking-normal">
+            <span className="text-textDisabled text-center text-base font-normal leading-[150%] tracking-normal select-none">
               이전
             </span>
           </div>
@@ -54,7 +55,7 @@ export default function Pagination({
                 <div
                   key={index}
                   onClick={() => setCurrentPage(index + 1)}
-                  className={`flex min-w-10 h-10 justify-center items-center rounded-md cursor-pointer ${
+                  className={`flex min-w-10 h-10 justify-center items-center rounded-md cursor-pointer select-none ${
                     currentPage === index + 1
                       ? 'bg-black text-white'
                       : 'bg-white text-black'
@@ -74,7 +75,7 @@ export default function Pagination({
             className="flex pt-0 pr-2 pb-0 pl-1 justify-center items-center rounded-md cursor-pointer"
             onClick={handleNextPage}
           >
-            <span className="text-textDisabled text-center text-base font-normal leading-[150%] tracking-normal">
+            <span className="text-textDisabled text-center text-base font-normal leading-[150%] tracking-normal select-none">
               다음
             </span>
             <span
@@ -83,6 +84,7 @@ export default function Pagination({
                 fontVariationSettings:
                   "'FILL' 1, 'wght' 100, 'GRAD' 0, 'opsz' 14",
                 fontSize: '1rem',
+                userSelect: 'none',
               }}
             >
               arrow_forward_ios

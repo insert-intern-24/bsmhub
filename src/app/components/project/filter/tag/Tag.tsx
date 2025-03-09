@@ -21,7 +21,7 @@ export default function Tag({
   return (
     <>
       <div className="flex items-center gap-4 self-stretch">
-        <span className="text-black text-base font-bold leading-[150%] tracking-normal">
+        <span className="text-black text-base font-bold leading-[150%] tracking-normal select-none">
           선택된 필터{' '}
           <span className="text-[#0B50D0]">
             {searchQuery.selectedTags?.length || 0}
@@ -32,7 +32,13 @@ export default function Tag({
             className="flex p-3 justify-center items-start rounded-full border border-[#CDD1D5] bg-white"
             onClick={handleReset}
           >
-            <Image src={reset} alt="reset" width={15} height={15} />
+            <Image
+              src={reset}
+              alt="reset"
+              width={15}
+              height={15}
+              className="select-none"
+            />
           </div>
           <TagList
             tags={searchQuery.selectedTags}
