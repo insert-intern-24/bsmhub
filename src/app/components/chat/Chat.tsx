@@ -177,7 +177,7 @@ const Chat: React.FC = () => {
           </>
         )}
       </div>
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {chatState === 1 && (
           <motion.div
             key="chatProfiles"
@@ -185,45 +185,47 @@ const Chat: React.FC = () => {
             animate={{ height: 'auto' }}
             exit={{ height: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="mt-6 space-y-4 overflow-y-auto max-h-[20rem] hide-scrollbar min-h-[20rem]"
+            className="mt-6 space-y-4 overflow-y-auto hide-scrollbar"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {conversations.map((conversation) => {
-              const lastMsg = conversation.last_message || '메시지 없음';
-              const sentTime = conversation.updated_at || '';
-              const isUnread =
-                conversation.unread_user_ids.includes(myProfileId);
-              return (
-                <div
-                  key={conversation.conversation_id}
-                  onClick={() =>
-                    handleChatProfileClick(conversation.conversation_id)
-                  }
-                >
-                  <ChatProfile
-                    username={
-                      conversationProfiles[conversation.conversation_id] ||
-                      '알 수 없음'
+            <div className="min-h-[20rem]">
+              {conversations.map((conversation) => {
+                const lastMsg = conversation.last_message || '메시지 없음';
+                const sentTime = conversation.updated_at || '';
+                const isUnread =
+                  conversation.unread_user_ids.includes(myProfileId);
+                return (
+                  <div
+                    key={conversation.conversation_id}
+                    onClick={() =>
+                      handleChatProfileClick(conversation.conversation_id)
                     }
-                    lastMessage={lastMsg}
-                    at={sentTime}
-                    isUnread={isUnread}
-                  />
-                </div>
-              );
-            })}
+                  >
+                    <ChatProfile
+                      username={
+                        conversationProfiles[conversation.conversation_id] ||
+                        '알 수 없음'
+                      }
+                      lastMessage={lastMsg}
+                      at={sentTime}
+                      isUnread={isUnread}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </motion.div>
         )}
         {chatState === 2 && (
+          // Conversation 컨테이너를 절대 위치로 배치하여, 기존 화면 위에 덮도록 함
           <motion.div
             key="conversation"
-            initial={{ height: 0 }}
-            animate={{ height: 'auto' }}
-            exit={{ height: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="mt-6 max-h-[30rem]"
+            className="absolute top-0 left-0 w-full h-full"
           >
-            {/* 미리 프리패칭된 메시지를 initialMessages prop으로 전달 */}
             <Conversation
               conversationId={activeConversationId || ''}
               initialMessages={
