@@ -17,7 +17,7 @@ export default function TotalList({
 }) {
   return (
     <>
-      <div className="flex flex-col items-start gap-6 self-stretch w-full">
+      <div className="flex flex-col items-start gap-6 self-stretch min-w-[83rem]">
         <Total projects={projects} setSort={setSort} />
         <ProjectCard
           projects={projects.slice((currentPage - 1) * 12, currentPage * 12)}
