@@ -6,10 +6,11 @@ import getProfileById from '@/services/profile/getProfileById';
 import getProject from '@/services/project/getProject';
 import { profileType } from '@models/profile';
 import { ProjectItemsPropsType } from '@models/project';
-import { Details } from '@models/collection';
+import { Details, Collection } from '@models/collection';
 import getProfileMarkdown from '@/services/profile/getProfileMarkdown';
 import getDetails from '@/services/profile/getDetails';
 import TeamHome from '@components/profile/team/TeamHome';
+import getUserCollections from '@/services/profile/getUserCollections';
 
 const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
   const profile = (await getProfileById(uuid)) as profileType;
@@ -17,15 +18,16 @@ const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
   let projects: ProjectItemsPropsType[] = [];
   let markdown: string | null = null;
   let details: Details | null = null;
+  let collections: Collection[] = [];
 
   // profile id 있는지 확인 후 user 인지 유효성 검사
   if (!profile?.isTeam && profile?.profile_id) {
     const fetchedProjects = await getProject(profile.profile_id as string);
-    console.log(JSON.stringify(fetchedProjects, null, 2));
 
     projects = fetchedProjects.map((item) => item.projects);
     markdown = await getProfileMarkdown(profile.profile_id);
     details = await getDetails(profile.profile_id);
+    collections = await getUserCollections(profile.profile_id)
   }
 
   // props 로 쉽게 넘기기 위해 userData 객체로 모았음
@@ -34,6 +36,7 @@ const ProfileTemplate = async ({ uuid }: { uuid: string }) => {
     projects,
     markdown,
     details,
+    collections
   };
 
   return (

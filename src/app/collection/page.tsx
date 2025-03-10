@@ -1,22 +1,33 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CollectionList from '@/app/components/collection/CollectionList';
 import ContestPanel from '@/app/components/collection/CollectionPanel';
-import dummyData from '@/app/collection/dummy.json';
-import { Project,Collections,Collection } from '@models/collection';
-const dummy = dummyData as Collections;
+import { Collection } from '@models/collection';
+import getCollections from '@/services/collection/getCollections';
 
 function CollectionPage() {
+  const [collections, setCollections] = useState<Collection[]>([]);
+
+  useEffect(() => {
+    const fetchCollections = async () => {
+      const data = await getCollections();
+
+      setCollections(data);
+    }
+
+    fetchCollections();
+  }, [])
+
   const [selectedCollectionId, setSelectedCollectionId] = useState<number | null>(null);
-  const searchCollection = ((id : number) : Collection | Project | undefined  => {
-    return dummy.find(collection => collection.id === id && collection.type === "collection");
+  const searchCollection = ((id : number) : Collection | undefined  => {
+    return collections.find(collection => collection.collection_id === id);
   })
 
   return (
     <div className="flex">
       {selectedCollectionId != null && <ContestPanel collection={searchCollection(selectedCollectionId) as Collection}/>}
       <CollectionList
-        collections={dummy}
+        collections={collections}
         onClick={(id: number) => setSelectedCollectionId(id)}
         selectedCollectionId={selectedCollectionId}
       />

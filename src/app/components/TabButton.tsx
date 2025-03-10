@@ -6,7 +6,7 @@ interface TabButtonProps {
   tab: tabsType;
   currentTab: tabsType;
   setTabName?: React.Dispatch<
-    React.SetStateAction<'home' | 'project' | 'posts'>
+    React.SetStateAction<'home' | 'project' | 'posts' | 'collections'>
   >;
 }
 
@@ -14,6 +14,7 @@ const tabName = {
   home: '홈',
   project: '프로젝트',
   posts: '게시물',
+  collections: '컬렉션'
 };
 
 const TabButton: React.FC<TabButtonProps> = ({
