@@ -60,7 +60,7 @@ export default function SelectBox({ options, setSearchQuery }: SelectBoxProps) {
         </span>
       </div>
       {isOpen && (
-        <div className="z-10 w-full mt-1 bg-white border border-[#D8D8D8] rounded-3xl relative select-none">
+        <div className=" w-full bg-white rounded-3xl select-none relative z-10">
           {/* icon, children, onClick */}
           {options && (
             <Dropdown
