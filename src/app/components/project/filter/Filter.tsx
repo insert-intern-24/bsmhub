@@ -29,7 +29,7 @@ export default function Filter({
         .select('*, category_id!inner(*)');
 
       if (searchQuery.inputQuery) {
-        query = query.textSearch('project_name', searchQuery.inputQuery);
+        query = query.ilike('project_name', `%${searchQuery.inputQuery}%`);
       }
       if (searchQuery.selectedTags) {
         const categoryTags = searchQuery.selectedTags
