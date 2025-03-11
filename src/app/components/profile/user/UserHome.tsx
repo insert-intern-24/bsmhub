@@ -9,10 +9,10 @@ const UserHome = ({ userData }: { userData: UserDataType }) => {
       <div className="w-full mt-1 max-h-32 text-titleColor mb-7">
         {userData?.markdown}
       </div>
-      <div className="w-full h-fit flex flex-wrap gap-[0.7rem]">
+      <div className="w-full h-fit flex flex-wrap gap-[0.7rem] bg-[#FCFCFC] pt-2">
         <DetailBoxes type="row" details={userData?.details?.details} />
       </div>
-      <h3 className="mt-2 mb-2 text-2xl font-bold text-titleColor">
+      <h3 className="mt-4 mb-2 text-2xl font-bold text-titleColor">
         개인 프로젝트
       </h3>
       <div className="flex gap-[0.7rem] flex-wrap">

@@ -17,7 +17,7 @@ const DetailBoxes = ({details, type} : DetailBoxesType) => {
           length={detail.contents.length}
           contents={detail.contents}
           type={type}
-          />
+        />
       ))}
     </>
   );

@@ -1,30 +1,34 @@
 import Image from 'next/image';
 import { Collection } from '@models/collection';
+import { formatDate, formatEndDate } from '@/utils/date';
 
-interface ContestItemProps extends Pick<Collection, "id" | "title" | "startDate" | "endDate" | "thumbnail"> {
+interface ContestItemProps extends Pick<Collection, "collection_id" | "collection_name" | "created_at" | "ended_at" | "image_url"> {
   onClick: (id: number) => void;
   selected: boolean;
 }
 
-function CollectionItem({ id, title, startDate, endDate = null , thumbnail = null, onClick, selected = false }: ContestItemProps) {
-  console.log(thumbnail);
+function CollectionItem({ collection_id, collection_name, created_at, ended_at, image_url, onClick, selected = false }: ContestItemProps) {
+  const imageSrc = (image_url || "/images/contest/Project.png") as string;
+  const createdAt = formatDate(created_at);
+  const endedAt = formatEndDate(ended_at);
+
   return (
     <div
       className={`w-fit h-fit border-solid border-[#E8E8EF] border-[1px] rounded-[5px] cursor-pointer ${selected && "selected"}`}
-      onClick={() => onClick(id)}
+      onClick={() => onClick(collection_id)}
     >
       <Image
-        src="/images/contest/Project.png"
-        alt="contest1"
+        src={imageSrc}
+        alt="collection_image"
         width={(340 * 12) / 16}
         height={(200 * 12) / 16}
       />
-      <div className="w-full h-20 flex flex-col justify-center mx-3">
+      <div className="w-fit h-20 flex flex-col justify-center mx-3">
         <div className="text-titleColor text-base font-semibold leading-5">
-          {title}
+          {collection_name}
         </div>
         <div className="text-detailColor text-xs leading-4">
-          {startDate} ~ {endDate}
+          {createdAt}{endedAt}
         </div>
       </div>
     </div>

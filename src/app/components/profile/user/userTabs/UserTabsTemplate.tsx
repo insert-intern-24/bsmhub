@@ -5,6 +5,7 @@ import { UserDataType } from '@models/user';
 import UserHome from '@components/profile/user/UserHome';
 import UserProjects from '@components/profile/user/UserProjects';
 import UserPosts from '@components/profile/user/UserPosts';
+import UserCollections from '@components/profile/user/UserCollections';
 
 const tabComponents = (
   userData: UserDataType,
@@ -12,6 +13,7 @@ const tabComponents = (
   home: <UserHome userData={userData} />,
   project: <UserProjects userData={userData} />,
   posts: <UserPosts />,
+  collections: <UserCollections userData={userData} />,
 });
 
 const UserTabsTemplate: React.FC<{
@@ -19,26 +21,21 @@ const UserTabsTemplate: React.FC<{
   setTabName?: React.Dispatch<React.SetStateAction<tabsType>>;
   userData: UserDataType;
 }> = ({ tabName, setTabName, userData }) => {
+  const tabs = ['home', 'project', 'posts', 'collections'] as const;
+
   return (
     <>
       <section>
         <nav className="border-strokeColor border-b-[1px]">
           <ul className="flex">
-            <TabButton
-              tab="home"
-              currentTab={tabName}
-              setTabName={setTabName}
-            />
-            <TabButton
-              tab="project"
-              currentTab={tabName}
-              setTabName={setTabName}
-            />
-            <TabButton
-              tab="posts"
-              currentTab={tabName}
-              setTabName={setTabName}
-            />
+            {tabs.map((tab, index) => (
+              <TabButton 
+                key={index}
+                tab={tab}
+                currentTab={tabName}
+                setTabName={setTabName}
+              />
+            ))}
           </ul>
         </nav>
       </section>
