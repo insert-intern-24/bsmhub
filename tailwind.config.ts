@@ -40,7 +40,7 @@ const config: Config = {
         moreGray: '#8E8E8E',
         textBasic: '#1E2124',
         textDisabled: '#8A949E',
-        itemBlue: '#1462FF',\
+        itemBlue: '#1462FF',
       },
       backgroundImage: {
         'contest-gradient':
