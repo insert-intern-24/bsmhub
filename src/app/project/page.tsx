@@ -12,7 +12,7 @@ export default function Page() {
   return (
     <>
       <div className="flex justify-center items-center">
-        <div className="max-w-[94.5rem] inline-flex pt-10 pr-16 pb-10 pl-16 flex-col gap-[1.125rem] bg-white bottom-0 mt-24">
+        <div className="container mx-auto pt-10 pr-16 pb-10 pl-16 flex flex-col gap-[1.125rem] bg-white mt-24 md:max-w-[94.5rem] md:pr-16 md:pl-16 md:gap-[1.125rem]">
           <span className="text-black text-[1.75rem] font-bold leading-none">
             프로젝트 모아보기
           </span>

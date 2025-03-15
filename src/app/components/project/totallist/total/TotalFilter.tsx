@@ -12,7 +12,7 @@ export default function TotalFilter({
 
   return (
     <>
-      <div className="flex items-center gap-3 bg-white">
+      <div className="flex flex-col md:flex-row items-center gap-3 bg-white">
         <div className="flex items-center gap-3 bg-white">
           <span className="text-black text-base font-bold leading-[150%] tracking-normal">
             정렬기준
