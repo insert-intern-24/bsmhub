@@ -11,7 +11,7 @@ export default function Total({
 }) {
   return (
     <>
-      <div className="flex flex-col md:flex-row items-center gap-6 self-stretch flex-wrap justify-between bg-white ">
+      <div className="flex flex-col md:flex-row items-center gap-6 w-full justify-between bg-white">
         <span className="flex-1 text-black text-xl font-bold leading-[150%] tracking-normal">
           검색결과 <span className="text-[#0B50D0]">{projects.length}</span>개
         </span>

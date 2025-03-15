@@ -17,7 +17,7 @@ export default function TotalList({
 }) {
   return (
     <>
-      <div className="flex flex-col items-start gap-6 self-stretch w-full sm:w-[83rem]">
+      <div className="flex flex-col items-start gap-6 self-stretch w-full">
         <Total projects={projects} setSort={setSort} />
         <ProjectItems
           projects={projects.slice((currentPage - 1) * 12, currentPage * 12)}
