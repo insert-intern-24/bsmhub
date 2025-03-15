@@ -20,7 +20,7 @@ function ProjectItem({
   const imageUrl = url || defaultImg;
 
   return (
-    <div className="w-full sm:w-[20.185rem] h-fit">
+    <div className="w-full sm:w-[19.813rem] h-fit">
       <div className="w-full bg-[#F1F1F1] rounded-2xl overflow-hidden">
         <Image className="rounded-2xl" src={imageUrl} alt="Project Image" />
       </div>
