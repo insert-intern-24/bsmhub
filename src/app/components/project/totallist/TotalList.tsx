@@ -1,8 +1,8 @@
 import React from 'react';
 import Total from './total/Total';
-import ProjectCard from './list/ProjectCard';
 import Pagination from './pagination/Pagination';
 import { Projects, Sort } from '@/app/models/projectSearch';
+import ProjectItems from '../../ProjectItems';
 
 export default function TotalList({
   projects,
@@ -19,7 +19,7 @@ export default function TotalList({
     <>
       <div className="flex flex-col items-start gap-6 self-stretch min-w-[83rem]">
         <Total projects={projects} setSort={setSort} />
-        <ProjectCard
+        <ProjectItems
           projects={projects.slice((currentPage - 1) * 12, currentPage * 12)}
         />
         <Pagination
