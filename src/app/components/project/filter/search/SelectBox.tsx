@@ -42,7 +42,7 @@ export default function SelectBox({ options, setSearchQuery }: SelectBoxProps) {
   };
 
   return (
-    <div className="w-[13rem] select-none">
+    <div className="w-full sm:w-[13rem] select-none">
       <div
         className="flex items-center justify-between p-2 border border-[#D8D8D8] rounded-3xl cursor-pointer select-none"
         onClick={toggleDropdown}
