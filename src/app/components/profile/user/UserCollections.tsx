@@ -15,7 +15,7 @@ const UserCollections = ({ userData }: { userData: UserDataType }) => {
           ended_at={collection.ended_at}
           image_url={collection.image_url}
           onClick={() => {
-            alert("1");
+            window.location.href = `collection/${collection.collection_id}`
           }}
           selected={false}
         />
