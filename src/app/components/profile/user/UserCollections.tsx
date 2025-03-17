@@ -5,7 +5,7 @@ import CollectionItem from '../../collection/CollectionItem';
 const UserCollections = ({ userData }: { userData: UserDataType }) => {
 
   return (
-    <div className="flex justify-around w-full flex-wrap">
+    <div className="flex flex-wrap gap-[0.87rem]">
       {userData?.collections.map((collection) => (
         <CollectionItem 
           key={collection.collection_id}

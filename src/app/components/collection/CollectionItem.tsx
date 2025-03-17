@@ -14,16 +14,18 @@ function CollectionItem({ collection_id, collection_name, created_at, ended_at, 
 
   return (
     <div
-      className={`w-fit h-fit border-solid border-[#E8E8EF] border-[1px] rounded-[5px] cursor-pointer ${selected && "selected"}`}
+      className={`w-full sm:w-[21rem] h-fit border-solid border-[#E8E8EF] border-[1px] rounded-[5px] cursor-pointer ${selected && "selected"} overflow-hidden`}
       onClick={() => onClick(collection_id)}
     >
-      <Image
-        src={imageSrc}
-        alt="collection_image"
-        width={(340 * 12) / 16}
-        height={(200 * 12) / 16}
-      />
-      <div className="w-fit h-20 flex flex-col justify-center mx-3">
+      <div className="w-full sm:w-[21rem] h-[12.5rem] relative">
+        <Image
+          src={imageSrc}
+          alt="collection_image"
+          className="object-cover"
+          fill
+        />
+      </div>
+      <div className="w-full h-20 flex flex-col justify-center mx-3">
         <div className="text-titleColor text-base font-semibold leading-5">
           {collection_name}
         </div>

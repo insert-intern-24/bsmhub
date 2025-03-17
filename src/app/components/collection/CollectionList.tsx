@@ -12,7 +12,7 @@ function CollectionList({ collections, onClick, selectedCollectionId }: Collecti
 
   return (
     <div className="w-full p-8">
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-6">
         {collections.map((collection) => (
           <CollectionItem
             key={collection.collection_id}
