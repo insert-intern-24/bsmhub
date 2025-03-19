@@ -6,7 +6,7 @@ interface DetailBoxesType extends Details {
   type : DetailBoxType
 }
 
-const DetailBoxes = ({details, type = "general"} : DetailBoxesType) => {
+const DetailBoxes = ({details, type} : DetailBoxesType) => {
   return (
     <>
       {(details ?? []).map((detail, index) => (
@@ -17,7 +17,7 @@ const DetailBoxes = ({details, type = "general"} : DetailBoxesType) => {
           length={detail.contents.length}
           contents={detail.contents}
           type={type}
-          />
+        />
       ))}
     </>
   );

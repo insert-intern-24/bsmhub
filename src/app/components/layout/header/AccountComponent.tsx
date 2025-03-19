@@ -1,61 +1,76 @@
 'use client';
 
-import { createClient } from '@/utils/supabase/client';
-import { useState, useEffect } from 'react';
-import { User } from '@supabase/supabase-js';
-import OneTapComponent from '../../auth/GoogleOneTab';
 import MakeProfileOverlay from '../overlay/MakeProfile';
+import { createClient } from '@/utils/supabase/client';
+import OneTapComponent from '../../auth/GoogleOneTab';
+import { User } from '@supabase/supabase-js';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Dropdown from '@components/Dropdown';
+import Image from 'next/image';
 
-const openLoginPopup = () => {
-  // login popup
-  const popup = window.open(
-    `${window.location.origin}/auth/login`,
-    '_blank',
-    'popup,scrollbars=yes,resizable=yes,width=500,height=800',
-  );
-
-  popup?.focus();
-
-  // close popup
-  window.addEventListener('message', (event) => {
-    if (event.origin !== window.location.origin) return;
-
-    if (event.data === 'success') {
-      popup?.close();
-      window.location.reload();
-    }
-  });
-};
-const AccountComponent = () => {
-  const supabase = createClient();
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    supabase.auth.getUser().then((res) => {
-      setUser(res.data.user);
-    });
-  }, []);
-
-  return user ? UserProfile(user) : signInButton(setUser);
-};
-
-export default AccountComponent;
-function UserProfile(user: User) {
+const UserProfile = ({ user }: { user: User }) => {
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const router = useRouter();
   return (
-    <>
-      <img
-        src={user.user_metadata.avatar_url}
-        alt="Profile Image"
-        className="h-7 rounded-full"
-      />
+    <div className="relative">
+      <button
+        className="block"
+        onClick={() => setDropdownOpen(!isDropdownOpen)}
+      >
+        <Image
+          src={user.user_metadata.avatar_url}
+          alt="Profile Image"
+          width={21}
+          height={21}
+          className="rounded-full object-cover"
+        />
+      </button>
+      {isDropdownOpen && (
+        <Dropdown
+          items={[
+            {
+              icon: 'shield_person',
+              children: '계정설정',
+              onClick: () => {
+                router.push('/mypage');
+              },
+            },
+            {
+              icon: 'move_item',
+              children: '로그아웃',
+              onClick: () => {
+                router.push('/auth/logout');
+              },
+            },
+          ]}
+          setOverlayBg={setDropdownOpen}
+        />
+      )}
       <MakeProfileOverlay />
-    </>
+    </div>
   );
-}
+};
 
-function signInButton(
-  setUser: React.Dispatch<React.SetStateAction<User | null>>,
-) {
+const SignInButton = () => {
+  const openLoginPopup = () => {
+    const popup = window.open(
+      `${window.location.origin}/auth/login`,
+      '_blank',
+      'popup,scrollbars=yes,resizable=yes,width=500,height=800',
+    );
+
+    popup?.focus();
+
+    window.addEventListener('message', (event) => {
+      if (event.origin !== window.location.origin) return;
+
+      if (event.data === 'success') {
+        popup?.close();
+      }
+    });
+  };
+
   return (
     <>
       <button
@@ -64,7 +79,32 @@ function signInButton(
       >
         sign in
       </button>
-      <OneTapComponent setUser={setUser} />
+      <OneTapComponent />
     </>
   );
-}
+};
+
+const AccountComponent = () => {
+  const supabase = createClient();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then((res) => {
+      setUser(res.data.user);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, []);
+
+  return user ? <UserProfile user={user} /> : <SignInButton />;
+};
+
+export default AccountComponent;

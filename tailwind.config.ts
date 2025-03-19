@@ -38,9 +38,13 @@ const config: Config = {
         customGray2: '#F2F2F2',
         followBlue: '#216BFF',
         moreGray: '#8E8E8E',
+        textBasic: '#1E2124',
+        textDisabled: '#8A949E',
+        itemBlue: '#1462FF',
       },
       backgroundImage: {
-        'contest-gradient': 'linear-gradient(180deg, rgba(47, 66, 205, 0.07) 0%, rgba(255, 255, 255, 0.07) 100%)',
+        'contest-gradient':
+          'linear-gradient(180deg, rgba(47, 66, 205, 0.07) 0%, rgba(255, 255, 255, 0.07) 100%)',
       },
     },
   },
@@ -49,6 +53,7 @@ const config: Config = {
     require('@tailwindcss/line-clamp'),
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@tailwindcss/typography'),
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('tailwind-scrollbar'),
   ],
 };

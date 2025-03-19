@@ -1,4 +1,4 @@
-import Detail from './components/detail/Detail';
+import Detail from '@components/detail/Detail';
 // import Description from './components/shared/Description';
 
 export default function Home() {

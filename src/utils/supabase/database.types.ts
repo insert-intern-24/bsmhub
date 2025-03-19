@@ -111,6 +111,7 @@ export type Database = {
           collection_name: string;
           created_at: string;
           description: string | null;
+          ended_at: string | null;
           image_url: string;
           is_competition: boolean;
           owner: string;
@@ -122,6 +123,7 @@ export type Database = {
           collection_name: string;
           created_at?: string;
           description?: string | null;
+          ended_at?: string | null;
           image_url: string;
           is_competition?: boolean;
           owner?: string;
@@ -133,6 +135,7 @@ export type Database = {
           collection_name?: string;
           created_at?: string;
           description?: string | null;
+          ended_at?: string | null;
           image_url?: string;
           is_competition?: boolean;
           owner?: string;
@@ -163,6 +166,56 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: 'competition_collection_id_fkey';
+            columns: ['collection_id'];
+            referencedRelation: 'collections';
+            referencedColumns: ['collection_id'];
+          },
+        ];
+      };
+      competition_awards: {
+        Row: {
+          award_name: string;
+          collection_id: number;
+          competition_award_id: number;
+        };
+        Insert: {
+          award_name: string;
+          collection_id: number;
+          competition_award_id?: number;
+        };
+        Update: {
+          award_name?: string;
+          collection_id?: number;
+          competition_award_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'collection_award_collection_id_fkey';
+            columns: ['collection_id'];
+            referencedRelation: 'collections';
+            referencedColumns: ['collection_id'];
+          },
+        ];
+      };
+      competition_jurors: {
+        Row: {
+          collection_id: number;
+          competition_juror_id: number;
+          juror_name: string | null;
+        };
+        Insert: {
+          collection_id: number;
+          competition_juror_id?: number;
+          juror_name?: string | null;
+        };
+        Update: {
+          collection_id?: number;
+          competition_juror_id?: number;
+          juror_name?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'competition_jurors_collection_id_fkey';
             columns: ['collection_id'];
             referencedRelation: 'collections';
             referencedColumns: ['collection_id'];

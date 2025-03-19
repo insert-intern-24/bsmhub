@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image'; // Next.js Image 컴포넌트
 import defaultImg from '@public/images/project/default.png';
+
 interface ProjectItemProps {
   url?: string | null; // URL이 비어 있을 경우 처리
   tag: string;
@@ -19,8 +20,8 @@ function ProjectItem({
   const imageUrl = url || defaultImg;
 
   return (
-    <div className="w-full sm:w-fit h-fit">
-      <div className="w-full sm:w-[20.21rem] bg-[#F1F1F1] rounded-2xl overflow-hidden">
+    <div className="w-full sm:w-[20.185rem] h-fit">
+      <div className="w-full bg-[#F1F1F1] rounded-2xl overflow-hidden">
         <Image className="rounded-2xl" src={imageUrl} alt="Project Image" />
       </div>
       <div className="mt-[-26px]">
@@ -29,7 +30,9 @@ function ProjectItem({
         </span>
         <p className="text-[#1462FF] mt-5 text-14">{category}</p>
         <h5 className="text-titleColor font-bold text-2xl">{title}</h5>
-        <p className="text-descriptionColor text-4 max-w-[20.21rem] truncate">{description}</p>
+        <p className="text-descriptionColor text-4 max-w-[20.21rem] truncate">
+          {description}
+        </p>
       </div>
     </div>
   );

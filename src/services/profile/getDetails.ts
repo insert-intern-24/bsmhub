@@ -1,7 +1,8 @@
 'use server';
 import { createClient } from "@/utils/supabase/server";
+import { Details } from '@models/collection'
 
-const getDetails = async (profile_id: string) => {
+const getDetails = async (profile_id: string): Promise<Details | null> => {
   const supabase = await createClient();
 
   const getSkills = async (profile_id: string) => {
@@ -83,7 +84,7 @@ const getDetails = async (profile_id: string) => {
         symbol: 'link',
         contents: 
           link_Datas.map(item => ({
-            value: item.alt,
+            value: item.alt ?? null,
             address: item.link
           }))
       },
@@ -92,7 +93,7 @@ const getDetails = async (profile_id: string) => {
         symbol: 'license',
         contents:
           certificate_Datas.map(item => ({
-            value: item.certificate_name,
+            value: item.certificate_name ?? null,
             certified: false
           }))
       },
@@ -101,7 +102,7 @@ const getDetails = async (profile_id: string) => {
         symbol: 'prize',
         contents:
           competition_Datas.map(item => ({
-            value: `${item.competition_name} ${item.prize}`
+            value: `${item.competition_name ?? null} ${item.prize ?? null}`
           }))
       },
       {
@@ -109,7 +110,7 @@ const getDetails = async (profile_id: string) => {
         symbol: 'stack',
         contents:
           skill_Datas.map(item => ({
-            value: item.skill_name
+            value: item.skill_name ?? null
           }))
       }
     ]
