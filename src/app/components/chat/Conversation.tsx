@@ -251,7 +251,7 @@ const Conversation: React.FC<ConversationProps> = ({
   }
 
   return (
-    <div className="max-h-[20rem] flex flex-col px-4">
+    <div className="min-h-[20rem] max-h-[20rem] flex flex-col px-4">
       {/* 메시지 영역 */}
       <div
         ref={containerRef}
