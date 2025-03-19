@@ -5,7 +5,7 @@ import CollectionItem from '../../collection/CollectionItem';
 const UserCollections = ({ userData }: { userData: UserDataType }) => {
 
   return (
-    <div className="flex justify-around w-full flex-wrap">
+    <div className="flex flex-wrap gap-[0.87rem]">
       {userData?.collections.map((collection) => (
         <CollectionItem 
           key={collection.collection_id}
@@ -15,7 +15,7 @@ const UserCollections = ({ userData }: { userData: UserDataType }) => {
           ended_at={collection.ended_at}
           image_url={collection.image_url}
           onClick={() => {
-            alert("1");
+            window.location.href = `/collection/${collection.collection_id}`
           }}
           selected={false}
         />
