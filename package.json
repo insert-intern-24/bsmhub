@@ -36,7 +36,7 @@
     "typescript": "^5"
   },
   "jira-prepare-commit-msg": {
-    "jiraTicketPattern": "([A-Z0-9]+-\\d+)",
+    "jiraTicketPattern": "I25-\\d+",
     "allowEmptyCommitMessage": false,
     "ignoredBranchesPattern": "^(master|main|dev|develop|development|release)$",
     "ignoreBranchesMissingTickets": false
