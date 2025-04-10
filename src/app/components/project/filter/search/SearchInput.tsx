@@ -1,5 +1,5 @@
 import React from 'react';
-import { SearchQuery } from '@/app/models/projectSearch';
+import { SearchQuery } from '@/app/models/setSearch';
 
 export default function Input({
   inputQuery = '',

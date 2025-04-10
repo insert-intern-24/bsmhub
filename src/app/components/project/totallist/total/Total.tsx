@@ -1,12 +1,12 @@
 import React from 'react';
 import TotalFilter from './TotalFilter';
-import { Projects, Sort } from '@/app/models/projectSearch';
+import { Searchable, Sort } from '@/app/models/setSearch';
 
 export default function Total({
   projects,
   setSort,
 }: {
-  projects: Projects;
+  projects: Searchable[];
   setSort: React.Dispatch<React.SetStateAction<Sort>>;
 }) {
   return (

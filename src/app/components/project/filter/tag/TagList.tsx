@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import deleteIcon from '@public/images/icon/delete.svg';
-import { SearchQuery, Topics } from '@/app/models/projectSearch';
+import { SearchQuery, Topics } from '@/app/models/setSearch';
 
 export default function TagList({
   tags,
@@ -25,7 +25,7 @@ export default function TagList({
         {tags?.map((tag, index) => (
           <div
             key={index}
-            className="flex px-3 py-2 justify-center items-center gap-[0.5rem] rounded-full border border-[#CDD1D5] bg-white"
+            className="flex p-3 justify-center items-center gap-[0.5rem] rounded-full border border-[#CDD1D5] bg-white"
           >
             <span className="text-black text-base font-normal leading-[150%] tracking-normal select-none">
               {tag.name}

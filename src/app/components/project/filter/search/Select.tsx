@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import SelectBox, { Option } from './SelectBox';
-import { SearchQuery } from '@/app/models/projectSearch';
+import { SearchQuery } from '@/app/models/setSearch';
 
 const topics = [
   { id: 'status', name: '생애주기' },

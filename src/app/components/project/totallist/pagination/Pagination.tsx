@@ -1,12 +1,12 @@
 import React from 'react';
-import { Projects } from '@/app/models/projectSearch';
+import { Searchable } from '@/app/models/setSearch';
 
 export default function Pagination({
   projects,
   currentPage,
   setCurrentPage,
 }: {
-  projects: Projects;
+  projects: Searchable[];
   currentPage: number;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }) {

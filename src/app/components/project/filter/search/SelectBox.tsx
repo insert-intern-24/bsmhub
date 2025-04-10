@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SearchQuery } from '@/app/models/projectSearch';
+import { SearchQuery } from '@/app/models/setSearch';
 import Dropdown from '@/app/components/Dropdown';
 export interface Option {
   text: string;
@@ -44,7 +44,7 @@ export default function SelectBox({ options, setSearchQuery }: SelectBoxProps) {
   return (
     <div className="w-full sm:w-[13rem] select-none">
       <div
-        className="flex items-center justify-between p-2 border border-[#D8D8D8] rounded-3xl cursor-pointer select-none"
+        className="flex items-center justify-between p-3 border border-[#D8D8D8] rounded-3xl cursor-pointer select-none"
         onClick={toggleDropdown}
       >
         {selectedValue}

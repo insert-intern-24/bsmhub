@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sort } from '@/app/models/projectSearch';
+import { Sort } from '@/app/models/setSearch';
 
 export default function TotalFilter({
   setSort,

@@ -2,7 +2,7 @@ import React from 'react';
 import TagList from './TagList';
 import Image from 'next/image';
 import reset from '@public/images/icon/reset.svg';
-import { SearchQuery } from '@/app/models/projectSearch';
+import { SearchQuery } from '@/app/models/setSearch';
 
 export default function Tag({
   searchQuery,
