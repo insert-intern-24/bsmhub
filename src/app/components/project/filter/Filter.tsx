@@ -1,35 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import Search from './search/Search';
 import Tag from './tag/Tag';
-import {
-  SearchQuery,
-  Projects,
-  Topics,
-  Sort,
-} from '@/app/models/projectSearch';
+import { SearchQuery, Searchable, Topics, Sort } from '@/app/models/setSearch';
 import { createClient } from '@/utils/supabase/client';
 
 export default function Filter({
-  setProjects,
+  setSearch,
   sort,
   setCurrentPage,
+  type,
 }: {
-  setProjects: React.Dispatch<React.SetStateAction<Projects>>;
+  setSearch: React.Dispatch<React.SetStateAction<Searchable[]>>;
   sort: Sort;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  type: 'project' | 'team' | 'student';
 }) {
   const [searchQuery, setSearchQuery] = useState<SearchQuery>({});
 
   useEffect(() => {
     const fetchProjects = async () => {
       const supabase = createClient();
-      let query = supabase
-        .schema('project')
-        .from('projects')
-        .select('*, category_id!inner(*)');
+      let query;
+
+      if (type === 'project') {
+        query = supabase
+          .schema('project')
+          .from('projects')
+          .select('*, category_id!inner(*)');
+      } else if (type === 'team') {
+        query = supabase
+          .schema('profile')
+          .from('profile')
+          .select('*')
+          .eq('isTeam', true);
+      }
 
       if (searchQuery.inputQuery) {
-        query = query.ilike('project_name', `%${searchQuery.inputQuery}%`);
+        if (type === 'project') {
+          query = query?.ilike('project_name', `%${searchQuery.inputQuery}%`);
+        } else if (type === 'team') {
+          query = query?.ilike('profile_name', `%${searchQuery.inputQuery}%`);
+        }
       }
       if (searchQuery.selectedTags) {
         const categoryTags = searchQuery.selectedTags
@@ -41,15 +52,15 @@ export default function Filter({
           .map((tag: Topics) => tag.value);
 
         if (categoryTags.length > 0) {
-          query = query.in('category_id', categoryTags);
+          query = query?.in('category_id', categoryTags);
         }
         if (statusTags.length > 0) {
-          query = query.in('status', statusTags);
+          query = query?.in('status', statusTags);
         }
       }
 
       if (sort === 'Sort') {
-        query = query.order('created_at', { ascending: false });
+        query = query?.order('created_at', { ascending: false });
       }
 
       const { data, error } = await query;
@@ -58,13 +69,13 @@ export default function Filter({
         console.error('Error fetching search results:', error);
         return;
       } else {
-        setProjects(data);
+        setSearch(data);
       }
     };
 
     fetchProjects();
     setCurrentPage(1);
-  }, [searchQuery, sort]);
+  }, [searchQuery, sort, setSearch, setCurrentPage, type]);
 
   return (
     <>
