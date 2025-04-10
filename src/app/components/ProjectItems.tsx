@@ -6,7 +6,7 @@ import { UserDataType } from '@models/user';
 const ProjectItems = ({ projects }: Pick<UserDataType, 'projects'>) => {
   return (
     <>
-      <div className="flex items-start content-start gap-5 self-stretch flex-wrap h-full w-full">
+      <div className="flex items-start content-start gap-5 self-stretch flex-wrap h-full w-full sm:min-h-[56.9rem]">
         {projects.map((project) => (
           <ProjectItem
             key={project.project_id}
