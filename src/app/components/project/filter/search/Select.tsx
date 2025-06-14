@@ -27,7 +27,7 @@ export default function Select({
     const fetchData = async () => {
       const supabase = createClient();
       const { data, error } = await supabase
-        .schema('project')
+
         .from('project_category')
         .select('*');
 

@@ -19,11 +19,7 @@ export default async function DefaultFeed({
   const supabase = await createClient();
 
   const { data: communityProfileData, error: communityProfileError } =
-    await supabase
-      .schema('profile')
-      .from('profile')
-      .select('*')
-      .eq('profile_id', profile_id);
+    await supabase.from('profile').select('*').eq('profile_id', profile_id);
 
   if (communityProfileError) {
     console.error(communityProfileError);

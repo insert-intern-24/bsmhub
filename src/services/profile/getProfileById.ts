@@ -4,7 +4,7 @@ import { createClient } from '@/utils/supabase/server';
 const getProfileById = async (profile_id: string) => {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .schema('profile')
+
     .from('profile')
     .select('*')
     .eq('profile_id', profile_id);

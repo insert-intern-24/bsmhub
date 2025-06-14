@@ -23,10 +23,7 @@ export default function Filter({
   useEffect(() => {
     const fetchProjects = async () => {
       const supabase = createClient();
-      let query = supabase
-        .schema('project')
-        .from('projects')
-        .select('*, category_id!inner(*)');
+      let query = supabase.from('projects').select('*, category_id!inner(*)');
 
       if (searchQuery.inputQuery) {
         query = query.ilike('project_name', `%${searchQuery.inputQuery}%`);

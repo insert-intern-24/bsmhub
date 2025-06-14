@@ -11,7 +11,7 @@ const getProfileBySession = async () => {
     return;
   }
   const { data, error } = await supabase
-    .schema('profile')
+
     .from('profile_permission')
     .select('*, profile_id!inner(*)')
     .eq('student_id', user?.id)

@@ -4,7 +4,7 @@ import { createClient } from '@/utils/supabase/server';
 const getProject = async (profile_id: string) => {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .schema('project')
+
     .from('project_permissions')
     .select(
       `

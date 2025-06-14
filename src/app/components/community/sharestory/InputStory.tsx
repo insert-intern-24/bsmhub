@@ -13,7 +13,6 @@ export default function InputStory() {
     } = await supabase.auth.getSession();
 
     const { data: profile_permission, error } = await supabase
-      .schema('profile')
       .from('profile_permission')
       .select('*, profile_id!inner(*)')
       .eq('student_id', session?.user?.id as string)

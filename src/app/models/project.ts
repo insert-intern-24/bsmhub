@@ -1,10 +1,10 @@
-import { Database } from '@/utils/supabase/database.types';
+import { Tables } from '@/utils/supabase/database.types';
 import { MergeDeep } from 'type-fest';
 
 export type ProjectItemsPropsType = MergeDeep<
-  Database['project']['Tables']['projects']['Row'],
+  Tables<'projects'>,
   {
-    category_id: Database['project']['Tables']['project_category']['Row'];
+    category_id: Tables<'project_category'>;
   }
 >;
 

@@ -1,3 +1,3 @@
-import { Database } from '@/utils/supabase/database.types';
+import { Tables } from '@/utils/supabase/database.types';
 
-export type profileType = Database['community']['Tables']['profile']['Row'] | undefined;
+export type profileType = Tables<'profile'>;
