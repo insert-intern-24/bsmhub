@@ -7,7 +7,7 @@ import UserTabsTemplate from './UserTabsTemplate';
 
 const UserTabs = async ({ userData }: { userData: UserDataType }) => {
   const headersList = await headers();
-  const tabMatch = headersList.get('x-url')?.match(/tab=(home|project|posts)/);
+  const tabMatch = headersList.get('x-url')?.match(/tab=(home|project|posts|collections)/);
   const initialTab = (tabMatch ? tabMatch[1] : 'home') as tabsType;
   return (
     <>

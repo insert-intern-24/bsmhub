@@ -6,15 +6,17 @@ import { UserDataType } from '@models/user';
 const ProjectItems = ({ projects }: Pick<UserDataType, 'projects'>) => {
   return (
     <>
-      {projects.map((project) => (
-        <ProjectItem
-          key={project.project_id}
-          tag={StatusTag[project.status]}
-          category={project.category_id.category_name}
-          title={project.project_name}
-          description={project.description}
-        />
-      ))}
+      <div className="flex items-start content-start gap-5 self-stretch flex-wrap h-full w-full">
+        {projects.map((project) => (
+          <ProjectItem
+            key={project.project_id}
+            tag={StatusTag[project.status]}
+            category={project.category_id.category_name}
+            title={project.project_name}
+            description={project.description}
+          />
+        ))}
+      </div>
     </>
   );
 };

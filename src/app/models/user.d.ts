@@ -7,4 +7,5 @@ export interface UserDataType {
   projects: ProjectItemsPropsType[];
   markdown: string | null;
   details: Details | null;
+  collections: Collection[];
 }

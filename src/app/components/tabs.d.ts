@@ -1,2 +1,2 @@
-type tabsType = 'home' | 'project' | 'posts';
+type tabsType = 'home' | 'project' | 'posts' | 'collections';
 export default tabsType;

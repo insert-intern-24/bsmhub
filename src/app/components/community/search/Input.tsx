@@ -1,7 +1,5 @@
 'use client';
 import React from 'react';
-import Image from 'next/image';
-import search from '@public/images/icon/search.svg';
 import { createClient } from '@/utils/supabase/client';
 
 export default function Input() {
@@ -14,7 +12,14 @@ export default function Input() {
   return (
     <>
       <div className="flex px-3 py-2 items-center gap-[0.625rem] flex-1 rounded-[0.6875rem] bg-customGray">
-        <Image src={search} alt="search" width={18} height={18} />
+        <span
+          className="material-symbols-outlined"
+          style={{
+            fontVariationSettings: "'FILL' 1, 'wght' 200, 'GRAD' 0, 'opsz' 18",
+          }}
+        >
+          search
+        </span>
         <input
           type="text"
           placeholder="검색"
