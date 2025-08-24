@@ -41,6 +41,16 @@ const config: Config = {
         textBasic: '#1E2124',
         textDisabled: '#8A949E',
         itemBlue: '#1462FF',
+        // 아래가 새로운 기준
+        white: '#FFFFFF',
+        'light-gray-outline': '#F5F5F7',
+        'light-gray-footer-bg': '#EDEDED',
+        'light-gray': '#EAEAEC',
+        'gray-footer': '#1462FF', // 이미지 컬러값 기준
+        'gray-base': '#5E5E5E',
+        black: '#131313',
+        'blue-primary': '#1462FF',
+        'red-primary': '#FD462D',
       },
       backgroundImage: {
         'contest-gradient':
