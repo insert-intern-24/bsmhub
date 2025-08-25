@@ -12,7 +12,7 @@ const Header = () => {
   ];
 
   return (
-    <header className="flex-row justify-between items-center p-white-space-margin h-9">
+    <header className="flex-row justify-between items-center p-white-space-margin h-9 border-b border-[light-gray-outline]">
       <div className="flex-row items-center">
         <Image
           src="/icon/logo.svg"
