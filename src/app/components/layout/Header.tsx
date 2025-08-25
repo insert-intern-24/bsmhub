@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link';
-import { Label } from '../text';
+import { Label } from '../system/text';
 
 
 const Header = () => {

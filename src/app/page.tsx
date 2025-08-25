@@ -1,5 +1,5 @@
 // import Detail from '@components/detail/Detail';
-import { TitleEN, Title, Heading2, Heading, Body, Label2, Label, Caption } from '@/app/components/text';
+import { TitleEN, Title, Heading2, Heading, Body, Label2, Label, Caption } from '@/app/components/system/text';
 
 export default function Home() {
   return (
