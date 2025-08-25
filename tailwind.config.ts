@@ -26,22 +26,6 @@ const config: Config = {
         inner: '86.625rem',
       },
       colors: {
-        background: 'var(--background)',
-        foreground: 'var(--foreground)',
-        titleColor: '#171719',
-        descriptionColor: '#5E5E5E',
-        detailColor: '#858587',
-        strokeColor: '#F1F1F1',
-        footerTextColor: '#7E7E8C',
-        footerBgColor: '#EDEDED',
-        customGray: '#F5F5F7',
-        customGray2: '#F2F2F2',
-        followBlue: '#216BFF',
-        moreGray: '#8E8E8E',
-        textBasic: '#1E2124',
-        textDisabled: '#8A949E',
-        itemBlue: '#1462FF',
-        // 아래가 새로운 기준
         white: '#FFFFFF',
         'light-gray-outline': '#F5F5F7',
         'light-gray-footer-bg': '#EDEDED',
@@ -51,10 +35,6 @@ const config: Config = {
         black: '#131313',
         'blue-primary': '#1462FF',
         'red-primary': '#FD462D',
-      },
-      backgroundImage: {
-        'contest-gradient':
-          'linear-gradient(180deg, rgba(47, 66, 205, 0.07) 0%, rgba(255, 255, 255, 0.07) 100%)',
       },
     },
   },
