@@ -26,7 +26,8 @@ body {
   font-family: 'Threat';
   font-style: normal;
   font-weight: 400;
-  src: local('Threat'),
+  src:
+    local('Threat'),
     url('https://fonts.cdnfonts.com/s/95719/Threat-2OAeX.woff') format('woff');
 }
 
@@ -78,8 +79,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.selected{
-  background: linear-gradient(180deg, rgba(0, 117, 251, 0.00) 92.07%, rgba(0, 117, 251, 0.10) 99.61%);
+.selected {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 117, 251, 0) 92.07%,
+    rgba(0, 117, 251, 0.1) 99.61%
+  );
 }
 
 html {

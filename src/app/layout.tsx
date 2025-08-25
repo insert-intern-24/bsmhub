@@ -17,7 +17,10 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=favorite,home,search,settings" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=favorite,home,search,settings"
+          rel="stylesheet"
+        />
       </head>
       <body className="bg-[#F5F5F7]">
         <Header />

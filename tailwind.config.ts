@@ -47,19 +47,23 @@ const config: Config = {
     require('@tailwindcss/typography'),
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('tailwind-scrollbar'),
-      // flex-row, flex-col 시 display: flex 자동 적용
-  function ({ addUtilities }: { addUtilities: (utils: Record<string, CSSProperties>) => void }) {
-        addUtilities({
-          '.flex-row': {
-            display: 'flex',
-            flexDirection: 'row',
-          },
-          '.flex-col': {
-            display: 'flex',
-            flexDirection: 'column',
-          },
-        });
-      },
+    // flex-row, flex-col 시 display: flex 자동 적용
+    function ({
+      addUtilities,
+    }: {
+      addUtilities: (utils: Record<string, CSSProperties>) => void;
+    }) {
+      addUtilities({
+        '.flex-row': {
+          display: 'flex',
+          flexDirection: 'row',
+        },
+        '.flex-col': {
+          display: 'flex',
+          flexDirection: 'column',
+        },
+      });
+    },
   ],
 };
 export default config;
