@@ -62,6 +62,11 @@ const config: Config = {
           display: 'flex',
           flexDirection: 'column',
         },
+        '.flex-center': {
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        },
       });
     },
   ],
