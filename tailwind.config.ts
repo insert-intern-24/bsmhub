@@ -32,7 +32,7 @@ const config: Config = {
         'light-gray-outline': '#F5F5F7',
         'light-gray-footer-bg': '#EDEDED',
         'light-gray': '#EAEAEC',
-        'gray-footer': '#1462FF', // 이미지 컬러값 기준
+        'gray-footer': '#7E7E8C', 
         'gray-base': '#5E5E5E',
         black: '#131313',
         'blue-primary': '#1462FF',

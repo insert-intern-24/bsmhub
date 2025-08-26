@@ -1,4 +1,5 @@
 // src/app/layout.tsx
+import Footer from './components/layout/Footer';
 import './globals.css';
 import Header from '@components/layout/Header';
 // import Footer from '@components/layout/Footer';
@@ -27,6 +28,7 @@ export default function RootLayout({
         <main className="mt-14 w-full min-h-dvh">
           <div className="max-w-outer mx-auto">{children}</div>
         </main>
+        <Footer />
       </body>
     </html>
   );
