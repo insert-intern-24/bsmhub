@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import type { CSSProperties } from 'react';
 
 const config: Config = {
   content: [
@@ -14,6 +15,7 @@ const config: Config = {
       },
       padding: {
         '14px': '0.875rem',
+        'white-space-margin': '0 211px',
       },
       text: {
         '14px': '0.875rem',
@@ -30,7 +32,7 @@ const config: Config = {
         'light-gray-outline': '#F5F5F7',
         'light-gray-footer-bg': '#EDEDED',
         'light-gray': '#EAEAEC',
-        'gray-footer': '#1462FF', // 이미지 컬러값 기준
+        'gray-footer': '#7E7E8C',
         'gray-base': '#5E5E5E',
         black: '#131313',
         'blue-primary': '#1462FF',
@@ -45,6 +47,28 @@ const config: Config = {
     require('@tailwindcss/typography'),
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('tailwind-scrollbar'),
+    // flex-row, flex-col 시 display: flex 자동 적용
+    function ({
+      addUtilities,
+    }: {
+      addUtilities: (utils: Record<string, CSSProperties>) => void;
+    }) {
+      addUtilities({
+        '.flex-row': {
+          display: 'flex',
+          flexDirection: 'row',
+        },
+        '.flex-col': {
+          display: 'flex',
+          flexDirection: 'column',
+        },
+        '.flex-center': {
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        },
+      });
+    },
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@tailwindcss/aspect-ratio'),
   ],

@@ -1,21 +1,20 @@
 export const formatDate = (data: string): string => {
-
   const date = new Date(data);
-  
+
   const formattedDate = new Intl.DateTimeFormat('ko-KR', {
     year: 'numeric',
     month: 'numeric',
     day: 'numeric',
-    weekday: 'short'
+    weekday: 'short',
   }).format(date);
 
   const [year, month, day, weekday] = formattedDate.split('. ');
-  return `${year}.${month}.${day} ${weekday}`
+  return `${year}.${month}.${day} ${weekday}`;
 };
 
 export const formatEndDate = (data: string | null): string => {
-  if(!data) return '';
+  if (!data) return '';
 
   data = formatDate(data);
-  return data ? ` ~ ${data}`:'';
-}
+  return data ? ` ~ ${data}` : '';
+};
