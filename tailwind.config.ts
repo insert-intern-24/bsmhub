@@ -45,6 +45,8 @@ const config: Config = {
     require('@tailwindcss/typography'),
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('tailwind-scrollbar'),
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('@tailwindcss/aspect-ratio'),
   ],
 };
 export default config;
