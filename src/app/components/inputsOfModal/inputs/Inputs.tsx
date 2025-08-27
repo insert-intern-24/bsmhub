@@ -1,5 +1,4 @@
 import React from 'react';
-import { IconCalendarWeek } from '@tabler/icons-react';
 import { IconPencil } from '@tabler/icons-react';
 import { IconCheck } from '@tabler/icons-react';
 import { IconSearch } from '@tabler/icons-react';
@@ -29,7 +28,7 @@ function Inputs({
       case 'search':
         return <IconSearch size={20} className="text-gray-500" />;
       case 'date':
-        return <IconCalendarWeek size={20} className="text-gray-500" />;
+        return null;
       default:
         return null;
     }
