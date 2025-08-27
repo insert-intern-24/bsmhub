@@ -9,7 +9,7 @@ const DepartmentTag = ({department}: {department: number}) => {
 
   return (
     <div 
-      className='inline-flex justify-center items-center px-3 py-1
+      className='max-w-fit inline-flex w-auto justify-center items-center px-3 py-1
        bg-white text-gray-base outline-light-gray-outline border-[0.8px] rounded-full'
     >
       {mapDepartment[department] || '존재하지 않는 학과입니다.'}

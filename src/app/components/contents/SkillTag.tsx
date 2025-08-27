@@ -3,7 +3,7 @@ import Image from "next/image";
 
 interface TagProps {
   mode: 'default' | 'input' | 'cancel' | 'white'
-  value: string | null
+  value?: string | null
 }
 
 const Tag = ({ mode, value }: TagProps) => {
@@ -20,17 +20,17 @@ const Tag = ({ mode, value }: TagProps) => {
         {mode === 'cancel' && 
           <Image 
             src='/shared/cancel.svg' 
-            alt='cancel' 
+            alt='cancel icon' 
             width={6} 
             height={6}
-          />
+          /> 
         }
       </>
     )
 
   return (
     <div 
-      className={`min-w-16 inline-flex justify-center items-center gap-[0.3rem] px-3 py-1 rounded-full font-normal
+      className={`min-w-16 max-w-fit inline-flex justify-center items-center gap-[0.3rem] px-3 py-1 rounded-full font-normal
         ${mode === 'white' ? 'bg-white' : 'bg-light-gray-input'}`}
     >
       {children}
