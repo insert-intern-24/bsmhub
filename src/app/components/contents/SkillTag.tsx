@@ -1,3 +1,5 @@
+'use client';
+
 import React from "react";
 import Image from "next/image";
 
@@ -13,17 +15,26 @@ const Tag = ({ mode, value }: TagProps) => {
         type='text'
         placeholder='입력해 추가하기...'
         className='max-w-28 flex justify-center items-center outline-none placeholder-placeholder-gray bg-transparent font-normal'
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            // 여기에 입력해서 추가하는 기능 넣으면 될듯
+          }
+        }}
       />
     ) : (
       <>
         {value} 
         {mode === 'cancel' && 
-          <Image 
-            src='/shared/cancel.svg' 
-            alt='cancel icon' 
-            width={6} 
-            height={6}
-          /> 
+          <button onClick={() => {
+            // 여기에 삭제하는 기능 넣으면 될듯
+          }}>
+            <Image 
+              src='/shared/cancel.svg' 
+              alt='cancel icon' 
+              width={6} 
+              height={6}
+            /> 
+          </button>
         }
       </>
     )
