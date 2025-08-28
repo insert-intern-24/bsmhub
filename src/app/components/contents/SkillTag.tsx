@@ -6,9 +6,10 @@ import Image from "next/image";
 interface TagProps {
   mode: 'default' | 'input' | 'cancel' | 'white'
   value?: string | null
+  onClick?: () => void
 }
 
-const Tag = ({ mode, value }: TagProps) => {
+const SkillTag = ({ mode, value, onClick }: TagProps) => {
   const children = 
     mode === 'input' ? (
       <input
@@ -17,7 +18,7 @@ const Tag = ({ mode, value }: TagProps) => {
         className='max-w-28 flex justify-center items-center outline-none placeholder-placeholder-gray bg-transparent font-normal'
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
-            // 여기에 입력해서 추가하는 기능 넣으면 될듯
+            onClick?.()
           }
         }}
       />
@@ -25,9 +26,7 @@ const Tag = ({ mode, value }: TagProps) => {
       <>
         {value} 
         {mode === 'cancel' && 
-          <button onClick={() => {
-            // 여기에 삭제하는 기능 넣으면 될듯
-          }}>
+          <button onClick={() => onClick}>
             <Image 
               src='/shared/cancel.svg' 
               alt='cancel icon' 
@@ -49,4 +48,4 @@ const Tag = ({ mode, value }: TagProps) => {
   )
 }
 
-export default Tag;
+export default SkillTag;
