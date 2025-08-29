@@ -15,7 +15,7 @@ interface CardProps {
 const Card = ({ title, projectImage, author }: CardProps) => {
   return (
     <div className="w-fit flex flex-col gap-[0.375rem]">
-      <figure className="relative w-[21rem] h-[11.8125rem]">
+      <figure className="relative w-[21rem] h-[11.8125rem] rounded-[0.25rem] overflow-hidden">
         <Image
           src={projectImage}
           alt={`${title} 프로젝트 이미지`}
