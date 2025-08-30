@@ -6,13 +6,13 @@ interface CardProps {
   id: number;
   title: string;
   projectImage: string;
-  author: {
+  authors: {
     name: string;
     profileImage: string;
-  };
+  }[];
 }
 
-const Card = ({ title, projectImage, author }: CardProps) => {
+const Card = ({ title, projectImage, authors }: CardProps) => {
   return (
     <div className="w-fit flex flex-col gap-[0.375rem]">
       <figure className="relative w-[21rem] h-[11.8125rem] rounded-[0.25rem] overflow-hidden">
@@ -23,7 +23,7 @@ const Card = ({ title, projectImage, author }: CardProps) => {
           className="object-cover"
         />
       </figure>
-      <MetaInfo title={title} author={author} />
+      <MetaInfo title={title} authors={authors} />
     </div>
   );
 };
