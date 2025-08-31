@@ -1,43 +1,27 @@
 import React from 'react';
-import Image from 'next/image';
-import LongPortfolioProfile from './LongPortfolioProfile';
-import LongPortfolioHeader from './LongPortfolioHeader';
-
-interface Project {
-  title: string;
-  logo: string;
-  projectImage: string;
-}
-
-interface Profile {
-  name: string;
-  role: string;
-  bio: string;
-  status: string;
-  profile_image: string;
-}
-
-interface PortfolioCardProps {
-  profile: Profile;
-  projects: Project[];
-}
+import { PortfolioCardProps } from './types';
+import ProfileImage from './components/ProfileImage';
+import ProfileInfo from './components/ProfileInfo';
+import StatusBadge from './components/StatusBadge';
+import ProjectImages from './components/ProjectImages';
 
 const LongPortfolioCard = ({ profile, projects }: PortfolioCardProps) => {
   return (
     <div className="flex justify-center items-center w-fit h-fit rounded bg-white">
       <div className="flex flex-col justify-between items-center m-[1rem] gap-1">
         <div className="flex gap-[0.625rem]">
-          <div className="relative w-[3.75rem] h-[3.75rem]">
-            <Image
-              src={profile.profile_image}
-              alt={`${profile.name} 프로필`}
-              fill
-              className="rounded-full object-cover"
-            />
-          </div>
+          {/* Profile Image */}
+          <ProfileImage src={profile.profile_image} name={profile.name} size="small" />
+
           <div className="flex flex-col gap-2">
-            <LongPortfolioProfile profile={profile} />
-            <LongPortfolioHeader projects={projects} />
+            {/* Profile Info */}
+            <div className="relative w-full">
+              <ProfileInfo profile={profile} layout="horizontal" />
+              <StatusBadge status={profile.status} className="absolute top-0 right-0" />
+            </div>
+
+            {/* Project Images */}
+            <ProjectImages projects={projects} variant="long" />
           </div>
         </div>
       </div>
