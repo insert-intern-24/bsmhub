@@ -19,8 +19,11 @@ function Buttons({
     gray: 'bg-gray-500',
   };
 
-  const bgClass = bgColorMap[color as keyof typeof bgColorMap] || 'bg-black';
-
+  const allowedColors = Object.keys(bgColorMap) as Array<keyof typeof bgColorMap>;
+  const bgClass =
+    allowedColors.includes(color as keyof typeof bgColorMap)
+      ? bgColorMap[color as keyof typeof bgColorMap]
+      : bgColorMap.black;
   return (
     <button
       className={`flex w-full h-[3.25rem] py-2 px-[1.375rem] justify-center items-center gap-1 shrink-0 rounded-full ${bgClass} text-white text-base font-bold leading-5`}
