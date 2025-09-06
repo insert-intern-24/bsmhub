@@ -1,6 +1,6 @@
 import React from 'react';
-import Image from 'next/image';
 import { Caption, Label } from '../../system/text';
+import ProfileImage from '../portfolio/components/ProfileImage';
 
 interface MetaInfoProps {
   title: string;
@@ -18,12 +18,10 @@ const MetaInfo = ({ title, authors }: MetaInfoProps) => {
         {authors.length === 1 ? (
           // 작성자가 1명인 경우: 프로필 사진 + 이름
           <>
-            <Image
+            <ProfileImage
               src={authors[0].profileImage}
-              alt={`${authors[0].name} 프로필 이미지`}
-              width={(20 * 12) / 16}
-              height={(20 * 12) / 16}
-              className="rounded-full"
+              name={authors[0].name}
+              size="tiny"
             />
             <Caption>{authors[0].name}</Caption>
           </>
@@ -31,13 +29,12 @@ const MetaInfo = ({ title, authors }: MetaInfoProps) => {
           // 작성자가 여러명인 경우: 프로필 사진만 나열
           <div className="flex items-center -space-x-1">
             {authors.map((author, index) => (
-              <Image
+              <ProfileImage
                 key={index}
                 src={author.profileImage}
-                alt={`${author.name} 프로필 이미지`}
-                width={(20 * 12) / 16}
-                height={(20 * 12) / 16}
-                className="rounded-full"
+                name={author.name}
+                size="tiny"
+                className=""
                 style={{ zIndex: authors.length - index }}
               />
             ))}
