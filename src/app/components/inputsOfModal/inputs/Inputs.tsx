@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { IconPencil } from '@tabler/icons-react';
 import { IconCheck } from '@tabler/icons-react';
@@ -27,8 +28,6 @@ function Inputs({
         return <IconCheck size={20} className="text-gray-500" />;
       case 'search':
         return <IconSearch size={20} className="text-gray-500" />;
-      case 'date':
-        return null;
       default:
         return null;
     }
@@ -45,17 +44,29 @@ function Inputs({
         name={name}
         required={required}
         readOnly={type === 'lock'}
-        className={`flex w-full h-[3.3125rem] py-1 ${
-          ['lock', 'edit', 'search', 'date'].includes(type) ? 'pr-10' : 'px-2.5'
-        } pl-2.5 items-center gap-2.5 shrink-0 rounded-md text-gray-base text-base font-normal leading-6 tracking-[0.0057rem] ${
+        className={`w-full h-[3.3125rem] py-1 ${
+          ['lock', 'edit', 'search'].includes(type) ? 'pr-10' : 'px-2.5'
+        } pl-2.5 rounded-md text-gray-base text-base font-normal leading-6 tracking-[0.0057rem] ${
           type !== 'lock' ? 'bg-light-gray-outline' : ''
-        }`}
+        } ${type === 'date' ? 'date-input' : ''}`}
       />
       {renderIcon() && (
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
           {renderIcon()}
         </div>
       )}
+
+      <style jsx>{`
+        .date-input::-webkit-calendar-picker-indicator {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+        .date-input::-webkit-datetime-edit {
+          padding-right: 30px;
+        }
+      `}</style>
     </div>
   );
 }
