@@ -28,6 +28,7 @@ function Inputs({
         return <IconCheck size={20} className="text-gray-500" />;
       case 'search':
         return <IconSearch size={20} className="text-gray-500" />;
+<<<<<<< HEAD
       case 'date':
         return (
           <Image
@@ -38,6 +39,8 @@ function Inputs({
             className="text-gray-500"
           />
         );
+=======
+>>>>>>> 4b02dce (불필요한 renderIcon date 타입 case 제거 style 불필요한 요소 제거, type이 date일 때 html 기본 아이콘을 오른쪽으로 부착)
       default:
         return null;
     }
@@ -55,7 +58,11 @@ function Inputs({
         required={required}
         readOnly={type === 'lock'}
         className={`w-full h-[3.3125rem] py-1 ${
+<<<<<<< HEAD
           ['lock', 'edit', 'search', 'date'].includes(type) ? 'pr-10' : 'px-2.5'
+=======
+          ['lock', 'edit', 'search'].includes(type) ? 'pr-10' : 'px-2.5'
+>>>>>>> 4b02dce (불필요한 renderIcon date 타입 case 제거 style 불필요한 요소 제거, type이 date일 때 html 기본 아이콘을 오른쪽으로 부착)
         } pl-2.5 rounded-md text-gray-base text-base font-normal leading-6 tracking-[0.0057rem] ${
           type !== 'lock' ? 'bg-light-gray-outline' : ''
         } ${type === 'date' ? 'date-input' : ''}`}
@@ -68,6 +75,7 @@ function Inputs({
 
       <style jsx>{`
         .date-input::-webkit-calendar-picker-indicator {
+<<<<<<< HEAD
           opacity: 0;
           width: 28px;
           height: 28px;
@@ -76,6 +84,12 @@ function Inputs({
           top: 50%;
           transform: translateY(-50%);
           cursor: pointer;
+=======
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+>>>>>>> 4b02dce (불필요한 renderIcon date 타입 case 제거 style 불필요한 요소 제거, type이 date일 때 html 기본 아이콘을 오른쪽으로 부착)
         }
         .date-input::-webkit-datetime-edit {
           padding-right: 30px;
