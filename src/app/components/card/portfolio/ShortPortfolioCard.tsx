@@ -6,13 +6,22 @@ import ProfileInfo from './components/ProfileInfo';
 
 const ShortPortfolioCard = ({ profile }: PortfolioCardProps) => {
   return (
-    <div className="flex gap-[0.75rem] flex-col py-[1.375rem] px-[2rem] bg-white w-fit h-fit items-center rounded-2xl">
+    <div className="flex gap-[0.625rem] flex-col py-[1.375rem] px-[2rem] bg-white w-fit h-fit items-center rounded-2xl">
       {/* Profile Image */}
-      <ProfileImage src={profile.profile_image} name={profile.name} size="large" />
+      <ProfileImage
+        src={profile.profile_image}
+        name={profile.name}
+        size="large"
+      />
 
       {/* Profile Info */}
       <div className="flex flex-col items-center">
-        <ProfileInfo profile={profile} layout="vertical" showBio={false} useLabel={true} />
+        <ProfileInfo
+          profile={profile}
+          layout="vertical"
+          showBio={false}
+          useLabel={true}
+        />
       </div>
 
       {/* Bio */}

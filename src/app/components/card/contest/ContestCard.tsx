@@ -16,7 +16,6 @@ const ContestCard = ({
   startDate,
   endDate,
 }: ContestCardProps) => {
-
   return (
     <div className="flex-col w-fit h-fit rounded bg-white gap-[0.125rem]">
       {/* Image Section */}
@@ -25,7 +24,7 @@ const ContestCard = ({
       </div>
 
       {/* Content Section */}
-      <div className="px-3 py-2 flex-col gap-[0.375rem]">
+      <div className="px-3 py-2 flex-col gap-[0.275rem]">
         <Body2 className="text-black">{title}</Body2>
         <Caption className="text-gray-base">
           {formatPeriod(startDate, endDate)}

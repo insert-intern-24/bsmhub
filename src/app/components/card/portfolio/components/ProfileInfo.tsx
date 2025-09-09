@@ -17,7 +17,7 @@ const ProfileInfo = ({
 }: ProfileInfoProps) => {
   const containerClass =
     layout === 'vertical'
-      ? 'flex flex-col gap-[0.375rem]'
+      ? 'flex-center flex-col gap-[0.25rem]'
       : 'flex flex-col gap-1';
 
   const RoleComponent = useLabel ? Label : Caption;
