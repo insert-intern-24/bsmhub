@@ -9,9 +9,6 @@ import {
   Label,
   Caption,
 } from '@/app/components/system/text';
-import ProfileItem from './components/contents/ProfileItem';
-import Tag from './components/contents/SkillTag';
-import DepartmentTag from './components/contents/DepartmentTag';
 
 export default function Home() {
   return (
