@@ -1,7 +1,7 @@
 'use client';
 
+import { IconX } from "@tabler/icons-react";
 import React from "react";
-import Image from "next/image";
 
 interface TagProps {
   mode: 'default' | 'input' | 'cancel' | 'white'
@@ -15,7 +15,7 @@ const SkillTag = ({ mode, value, onClick }: TagProps) => {
       <input
         type='text'
         placeholder='입력해 추가하기...'
-        className='max-w-28 flex justify-center items-center outline-none placeholder-placeholder-gray bg-transparent font-normal'
+        className='max-w-28 flex-center outline-none placeholder-placeholder-gray bg-transparent font-normal'
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             onClick?.()
@@ -27,12 +27,10 @@ const SkillTag = ({ mode, value, onClick }: TagProps) => {
         {value} 
         {mode === 'cancel' && 
           <button onClick={() => onClick}>
-            <Image 
-              src='/shared/cancel.svg' 
-              alt='cancel icon' 
-              width={6} 
-              height={6}
-            /> 
+            <IconX 
+              width={10}
+              height={10}
+            />
           </button>
         }
       </>
@@ -40,7 +38,7 @@ const SkillTag = ({ mode, value, onClick }: TagProps) => {
 
   return (
     <div 
-      className={`min-w-16 max-w-fit inline-flex justify-center items-center gap-[0.3rem] px-3 py-1 rounded-full font-normal
+      className={`min-w-16 max-w-fit inline-flex-center gap-[0.3rem] px-3 py-1 rounded-full font-normal
         ${mode === 'white' ? 'bg-white' : 'bg-light-gray-input'}`}
     >
       {children}

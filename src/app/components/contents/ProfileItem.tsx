@@ -1,6 +1,6 @@
 import React from "react"
-import Image from "next/image"
 import Link from "next/link"
+import { IconLink } from "@tabler/icons-react"
 
 interface ItemProps {
   mode: 'competition' | 'certificate' | 'link'
@@ -10,25 +10,14 @@ interface ItemProps {
 
 const ProfileItem = ({ mode, value, url }: ItemProps) => {
   const Content = (
-    <div className='max-w-fit text-gray-base inline-flex text-sm font-normal'>
+    <div className='max-w-fit text-gray-base flex-center gap-0.5 text-sm font-normal'>
       {mode === 'link' && (
-        <Image 
-          src='/profile/link.svg' 
-          alt='link icon'
-          width={15}
-          height={15}
+        <IconLink 
+          width={10}
+          height={10}
         />
       )}
       {value}
-      {mode === 'certificate' && (
-        <Image 
-          src='/profile/certificate.svg' 
-          alt='certificate icon'
-          width={12}
-          height={12}
-          className='ml-1'
-        />
-      )}
     </div>
   )
 
