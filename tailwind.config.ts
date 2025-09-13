@@ -69,6 +69,11 @@ const config: Config = {
           justifyContent: 'space-between',
           alignItems: 'center',
         },
+        '.inline-flex-center' : {
+          display: 'inline-flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }
       });
     },
   ],
