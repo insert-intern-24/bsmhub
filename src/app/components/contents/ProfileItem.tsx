@@ -1,5 +1,6 @@
 import React from "react"
 import Image from "next/image"
+import Link from "next/link"
 
 interface ItemProps {
   mode: 'competition' | 'certificate' | 'link'
@@ -32,11 +33,11 @@ const ProfileItem = ({ mode, value, url }: ItemProps) => {
   )
 
   return url ? (
-    <a 
+    <Link
       href={url}
       target='_blank'
       className='outline-none border-none inline-flex max-w-fit'
-    >{Content}</a>
+    >{Content}</Link>
   ) : (
     Content
   )
