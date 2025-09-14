@@ -8,7 +8,7 @@ interface TeamLabelProps {
 const TeamLabel = ({ mode, value }: TeamLabelProps) => {
 
   return (
-    <div className='flex justify-between items-center'> 
+    <div className='flex-center'> 
       <div className='text-placeholder-gray'>
         {mode === 'project' ? '프로젝트 수 ' : '창립년도'}
       </div>
