@@ -68,6 +68,13 @@ const config: Config = {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+        },'.flex-x-center': {
+          display: 'flex',
+          justifyContent: 'space-between',
+        },
+        '.flex-y-center': {
+          display: 'flex',
+          alignItems: 'center',
         },
         '.inline-flex-center' : {
           display: 'inline-flex',
