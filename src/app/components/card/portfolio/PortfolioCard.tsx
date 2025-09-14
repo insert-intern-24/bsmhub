@@ -8,13 +8,13 @@ import ProjectImages from './components/ProjectImages';
 const PortfolioCard = ({ profile, projects }: PortfolioCardProps) => {
   return (
     <div
-      className="flex justify-center items-center w-fit h-fit rounded border-light-gray-outline"
+      className="flex-x-center w-fit h-fit rounded border-light-gray-outline"
       style={{
         background:
           'linear-gradient(180deg, #f9f9fb 26%, #fff 67.5%, #fff 100%)',
       }}
     >
-      <div className="w-[20.3125rem] h-[11.625rem] flex flex-col justify-between items-center m-[0.865rem] mb-[1rem]">
+  <div className="w-[20.3125rem] h-[11.625rem] flex-col flex-center m-[0.865rem] mb-[1rem]">
         {/* Project Images Header */}
         <ProjectImages projects={projects} variant="default" />
 

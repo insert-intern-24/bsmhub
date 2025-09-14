@@ -6,7 +6,7 @@ import ProfileInfo from './components/ProfileInfo';
 
 const ShortPortfolioCard = ({ profile }: PortfolioCardProps) => {
   return (
-    <div className="flex gap-[0.625rem] flex-col py-[1.375rem] px-[2rem] bg-white w-fit h-fit items-center rounded-2xl">
+  <div className="flex-col gap-[0.625rem] py-[1.375rem] px-[2rem] bg-white w-fit h-fit flex-y-center rounded-2xl">
       {/* Profile Image */}
       <ProfileImage
         src={profile.profile_image}
@@ -15,7 +15,7 @@ const ShortPortfolioCard = ({ profile }: PortfolioCardProps) => {
       />
 
       {/* Profile Info */}
-      <div className="flex flex-col items-center">
+  <div className="flex-col flex-y-center">
         <ProfileInfo
           profile={profile}
           layout="vertical"

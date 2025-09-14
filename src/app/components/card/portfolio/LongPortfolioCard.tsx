@@ -8,8 +8,8 @@ import ProjectImages from './components/ProjectImages';
 const LongPortfolioCard = ({ profile, projects }: PortfolioCardProps) => {
   return (
     <div className="flex-center w-fit h-fit rounded bg-white">
-      <div className="flex-col justify-between items-center m-[1rem] gap-1">
-        <div className="flex gap-[0.625rem]">
+      <div className="flex-col flex-center m-[1rem] gap-1">
+        <div className="flex-row gap-[0.625rem]">
           {/* Profile Image */}
           <ProfileImage src={profile.profile_image} name={profile.name} size="small" />
 
