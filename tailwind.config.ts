@@ -29,10 +29,12 @@ const config: Config = {
       },
       colors: {
         white: '#FFFFFF',
+        'light-gray-input': '#F5F5F7',
         'light-gray-outline': '#F5F5F7',
         'light-gray-footer-bg': '#EDEDED',
         'light-gray': '#EAEAEC',
-        'gray-footer': '#7E7E8C', 
+        'gray-footer': '#7E7E8C',
+        'placeholder-gray': '#858587',
         'gray-base': '#5E5E5E',
         black: '#131313',
         'blue-primary': '#1462FF',
@@ -74,6 +76,11 @@ const config: Config = {
           display: 'flex',
           alignItems: 'center',
         },
+        '.inline-flex-center' : {
+          display: 'inline-flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }
       });
     },
   ],
