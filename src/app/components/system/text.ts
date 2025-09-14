@@ -42,6 +42,14 @@ export const Body = styled.p`
   letter-spacing: 0.0057em;
 `;
 
+// Body2
+export const Body2 = styled.p`
+  ${tw`font-semibold`}
+  font-size: 1rem; // 16px
+  line-height: 1.375rem; // 22px
+  letter-spacing: 0.0057em;
+`;
+
 // Label2
 export const Label2 = styled.span`
   ${tw`font-medium`}
