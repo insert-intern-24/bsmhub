@@ -68,7 +68,8 @@ const config: Config = {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-        },'.flex-x-center': {
+        },
+        '.flex-x-center': {
           display: 'flex',
           justifyContent: 'space-between',
         },
@@ -76,11 +77,17 @@ const config: Config = {
           display: 'flex',
           alignItems: 'center',
         },
-        '.inline-flex-center' : {
+        '.inline-flex-center': {
           display: 'inline-flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-        }
+        },
+        '.flex-center-all': {
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
       });
     },
   ],
