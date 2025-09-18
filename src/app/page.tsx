@@ -28,6 +28,8 @@ export default function Home() {
         <Label2>Label2 Example</Label2>
         <Label>Label Example</Label>
         <Caption>Caption Example</Caption>
+
+
       </div>
     </>
   );

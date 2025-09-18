@@ -16,6 +16,7 @@
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/line-clamp": "^0.4.4",
     "date-fns": "^4.1.0",
+    "dayjs": "^1.11.18",
     "google-one-tap": "^1.0.6",
     "next": "^15.2.0",
     "next-mdx-remote": "^5.0.0",
