@@ -15,14 +15,14 @@ export default function Footer() {
               부산소프트웨어마이스터고 프로젝트의장
             </Heading>
           </Link>
-            <Link href="https://maps.app.goo.gl/4BsSV2Kr4PXQ6JYD8">
-          <Body className=''>
-              부산광역시 강서구 가락대로 1393 부산소프트웨어마이스터고등학교
-          </Body>
+          <Link href="https://maps.app.goo.gl/4BsSV2Kr4PXQ6JYD8">
+            <Body className=''>
+                부산광역시 강서구 가락대로 1393 부산소프트웨어마이스터고등학교
+            </Body>
             <Body>
               산학문의 (051) 000-0000
             </Body>
-            </Link>
+          </Link>
         </div>
         <div className='mobile:ml-auto'>
           <div className="flex gap-4 mb-2">
