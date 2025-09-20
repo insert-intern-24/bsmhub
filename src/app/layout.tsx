@@ -1,6 +1,7 @@
 // src/app/layout.tsx
 import Footer from './components/layout/Footer';
 import './globals.css';
+import './responsive.css'
 import Header from '@components/layout/Header';
 // import Footer from '@components/layout/Footer';
 
