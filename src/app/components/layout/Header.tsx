@@ -13,7 +13,7 @@ export const navigation = [
 const Header = () => {
 
   return (
-    <header className="p-white-space-margin flex-center h-14 border-b border-[light-gray-outline] responsive-header">
+    <header className="bg-white p-white-space-margin flex-center h-14 border-b border-[light-gray-outline] responsive-header">
       <div className="flex-row items-center">
         <Image
           src="/icon/logo.svg"
