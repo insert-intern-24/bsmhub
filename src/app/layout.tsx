@@ -26,8 +26,10 @@ export default function RootLayout({
       </head>
       <body className="bg-[#F5F5F7]">
         <Header />
-        <main className="mt-14 w-full min-h-dvh">
-          <div className="max-w-outer mx-auto">{children}</div>
+        <main className="w-full min-h-dvh p-white-space-margin pt-[8rem]">
+          <div className="w-full min-h-screen bg-white">
+            {children}
+          </div>
         </main>
         <Footer />
       </body>
