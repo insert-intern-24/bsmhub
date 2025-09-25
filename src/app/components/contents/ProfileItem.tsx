@@ -2,7 +2,7 @@ import React from "react"
 import Link from "next/link"
 import { IconLink } from "@tabler/icons-react"
 
-interface ItemProps {
+export interface ItemProps {
   mode: 'competition' | 'certificate' | 'link'
   value: string | null
   url?: string | null
