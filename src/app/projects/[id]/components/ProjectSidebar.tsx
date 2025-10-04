@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { IconPlayerPlayFilled, IconPlaylistAdd } from '@tabler/icons-react';
 import { Body, Body2, Label, Label2, TitleEN } from '@/app/components/system/text';
 import SkillTag from '@/app/components/contents/SkillTag';
-import type { Project, TeamMember } from './types';
+import type { ProjectDetailViewModel } from './types';
 
 const PLAY_BUTTON_BORDER_STYLE: CSSProperties = {
   background: 'linear-gradient(180deg, #282A2B 0%, white 100%)',
@@ -41,6 +41,52 @@ const PLAY_BUTTON_DEPTH_STYLE: CSSProperties = {
   zIndex: -1,
 };
 
+const FALLBACK_ICON = '/card/dummy-project-icon.png';
+const FALLBACK_PROFILE = '/card/dummy-profile.png';
+
+type ProjectSidebarProps = {
+  project: ProjectDetailViewModel;
+};
+
+const ProjectSidebar = ({ project }: ProjectSidebarProps) => (
+  <aside className="relative flex-shrink-0 w-[21.75rem] min-w-[21.75rem] border-r border-gray-200 px-[2.625rem]">
+    <ProjectIcon image={project.iconImage ?? FALLBACK_ICON} title={project.title} />
+    <div className="flex-col w-full gap-[1.625rem]">
+      <ProjectSummary title={project.title} description={project.shortDescription} />
+      <ProjectLink url={project.githubUrl} />
+      <ProjectTechnologies technologies={project.technologies} />
+      <ProjectTeam members={project.team} />
+    </div>
+  </aside>
+);
+
+const ProjectIcon = ({ image, title }: { image: string; title: string }) => (
+  <div className="absolute top-[-8rem] h-[7.5rem] w-[7.5rem]">
+    <Image src={image} alt={title} fill className="object-cover" />
+  </div>
+);
+
+const ProjectSummary = ({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) => (
+  <section className="flex-col w-full gap-[0.375rem]">
+    <TitleEN>{title}</TitleEN>
+    <Body className="text-detail">{description}</Body>
+    <ProjectActions />
+  </section>
+);
+
+const ProjectActions = () => (
+  <div className="flex w-full gap-1">
+    <PlayButton />
+    <AddToPlaylistButton />
+  </div>
+);
+
 const PlayButton = () => (
   <div className="relative flex-1">
     <div className="absolute inset-x-[0%] top-1/4 h-12" style={PLAY_BUTTON_DEPTH_STYLE} />
@@ -68,78 +114,58 @@ const AddToPlaylistButton = () => (
   </div>
 );
 
-const ProjectActions = () => (
-  <div className="flex w-full gap-1">
-    <PlayButton />
-    <AddToPlaylistButton />
-  </div>
+const ProjectLink = ({ url }: { url?: string | null }) => (
+  <section className="flex-col gap-[0.375rem]">
+    <Label>링크</Label>
+    <Label className="text-detail">{url ?? '등록된 링크가 없습니다.'}</Label>
+  </section>
 );
 
-const TeamMemberItem = ({ member }: { member: TeamMember }) => (
+const ProjectTechnologies = ({ technologies }: { technologies: string[] }) => (
+  <section className="flex-col gap-[0.375rem]">
+    <Label>기술스택</Label>
+    <div className="flex-row flex-wrap gap-2">
+      {technologies.length > 0 ? (
+        technologies.map((tech) => <SkillTag key={tech} mode="default" value={tech} />)
+      ) : (
+        <Label className="text-detail">기술 스택 정보가 없습니다.</Label>
+      )}
+    </div>
+  </section>
+);
+
+const ProjectTeam = ({ members }: { members: ProjectDetailViewModel['team'] }) => (
+  <section className="flex-col gap-[0.375rem]">
+    <Label>기여</Label>
+    <div className="flex-col gap-[0.5rem]">
+      {members.length > 0 ? (
+        members.map((member) => <TeamMemberItem key={member.id} member={member} />)
+      ) : (
+        <Label className="text-detail">참여자 정보가 없습니다.</Label>
+      )}
+    </div>
+  </section>
+);
+
+const TeamMemberItem = ({
+  member,
+}: {
+  member: ProjectDetailViewModel['team'][number];
+}) => (
   <article className="flex-row items-center gap-[0.375rem]">
     <div className="relative h-10 w-10 overflow-hidden rounded-full">
-      <Image src={member.profileImage} alt={member.name} fill className="object-cover" />
+      <Image
+        src={member.profileImage || FALLBACK_PROFILE}
+        alt={member.name}
+        fill
+        className="object-cover"
+      />
     </div>
     <div className="flex-col">
       <Label2 className="font-semibold">{member.name}</Label2>
       <Label className="text-gray-base">{member.role}</Label>
     </div>
   </article>
-);
-
-const ProjectTeam = ({ members }: { members: Project['team'] }) => (
-  <section className="flex-col gap-[0.375rem]">
-    <Label>기여</Label>
-    <div className="flex-col gap-[0.5rem]">
-      {members.map((member) => (
-        <TeamMemberItem key={member.id} member={member} />
-      ))}
-    </div>
-  </section>
-);
-
-const ProjectTechnologies = ({ technologies }: { technologies: Project['technologies'] }) => (
-  <section className="flex-col gap-[0.375rem]">
-    <Label>기술스택</Label>
-    <div className="flex-row flex-wrap gap-2">
-      {technologies.map((tech) => (
-        <SkillTag key={tech} mode="default" value={tech} />
-      ))}
-    </div>
-  </section>
-);
-
-const ProjectLink = ({ url }: { url: string }) => (
-  <section className="flex-col gap-[0.375rem]">
-    <Label>링크</Label>
-    <Label className="text-detail">{url}</Label>
-  </section>
-);
-
-const ProjectSummary = ({ project }: { project: Project }) => (
-  <section className="flex-col w-full gap-[0.375rem]">
-    <TitleEN>{project.title}</TitleEN>
-    <Body className="text-detail">{project.description}</Body>
-    <ProjectActions />
-  </section>
-);
-
-const ProjectIcon = ({ image, title }: { image: string; title: string }) => (
-  <div className="absolute top-[-8rem] h-[7.5rem] w-[7.5rem]">
-    <Image src={image} alt={title} fill className="object-cover" />
-  </div>
-);
-
-const ProjectSidebar = ({ project }: { project: Project }) => (
-  <aside className="relative flex-shrink-0 w-[21.75rem] min-w-[21.75rem] border-r border-gray-200 px-[2.625rem]">
-    <ProjectIcon image={project.iconImage} title={project.title} />
-    <div className="flex-col w-full gap-[1.625rem]">
-      <ProjectSummary project={project} />
-      <ProjectLink url={project.githubUrl} />
-      <ProjectTechnologies technologies={project.technologies} />
-      <ProjectTeam members={project.team} />
-    </div>
-  </aside>
 );
 
 export default ProjectSidebar;

@@ -1,29 +1,30 @@
-'use client';
-
+import { notFound } from 'next/navigation';
 import ProjectMainContent from './components/ProjectMainContent';
 import ProjectSidebar from './components/ProjectSidebar';
-import type { Project } from './components/types';
-import projectsData from '@/data/dummy-projects.json';
+import { getProjectDetailViewModel } from './services/project-service';
 
 type ProjectDetailPageProps = {
   params: { id: string };
 };
 
-const resolveProject = (id: string): Project => {
-  const numericId = Number(id);
-  const project = projectsData.find((candidate) => candidate.id === numericId);
+const ProjectDetailPage = async ({ params }: ProjectDetailPageProps) => {
+  const projectId = Number(params.id);
 
-  return project ?? projectsData[0];
-};
+  if (Number.isNaN(projectId)) {
+    notFound();
+  }
 
-const ProjectDetailPage = ({ params }: ProjectDetailPageProps) => {
-  const project = resolveProject(params.id);
+  const viewModel = await getProjectDetailViewModel(projectId);
+
+  if (!viewModel) {
+    notFound();
+  }
 
   return (
     <section className="max-w-outer mx-auto py-[4.5rem]">
       <div className="flex">
-        <ProjectSidebar project={project} />
-        <ProjectMainContent project={project} />
+        <ProjectSidebar project={viewModel} />
+        <ProjectMainContent project={viewModel} />
       </div>
     </section>
   );
