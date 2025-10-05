@@ -1,9 +1,4 @@
-import {
-  Body,
-  Body2,
-  Label,
-  TitleEN,
-} from '@/app/components/system/text';
+import { Body, Body2, Label, TitleEN } from '@/app/components/system/text';
 import SkillTag from '@/app/components/contents/SkillTag';
 import {
   PLAY_BUTTON_BORDER_STYLE,

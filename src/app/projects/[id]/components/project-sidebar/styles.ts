@@ -34,5 +34,8 @@ export const PLAY_BUTTON_DEPTH_STYLE: CSSProperties = {
   zIndex: -1,
 };
 
-export const FALLBACK_ICON = '/card/dummy-project-icon.png';
-export const FALLBACK_PROFILE = '/card/dummy-profile.png';
+const DEFAULT_ICON = process.env.NEXT_PUBLIC_PROJECT_DEFAULT_ICON ?? '/card/dummy-project-icon.png';
+
+export const FALLBACK_ICON = DEFAULT_ICON;
+export const FALLBACK_PROFILE =
+  process.env.NEXT_PUBLIC_PROJECT_FALLBACK_PROFILE ?? '/card/dummy-profile.png';

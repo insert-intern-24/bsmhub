@@ -1,5 +1,6 @@
 import {
   AnchorHTMLAttributes,
+  Children,
   DetailedHTMLProps,
   HTMLAttributes,
   ReactNode,
@@ -19,8 +20,9 @@ const iframeWrapperClass =
 
 const EMBED_ASPECT_RATIO = '16 / 9';
 
-const YOUTUBE_URL_PATTERN =
-  /(https?:\/\/(?:www\.)?(?:youtube\.com\/[^\s)]+|youtu\.be\/[^\s)]+))/gi;
+const DEFAULT_YOUTUBE_URL_PATTERN = String.raw`(https?:\/\/(?:www\.)?(?:youtube\.com\/[^\s)]+|youtu\.be\/[^\s)]+))`;
+
+const YOUTUBE_URL_PATTERN = DEFAULT_YOUTUBE_URL_PATTERN;
 
 interface ParagraphProps
   extends DetailedHTMLProps<
@@ -69,7 +71,7 @@ const YouTubeEmbed = ({ url, title }: YouTubeEmbedProps) => {
 
 const splitTextIntoSegments = (text: string): Segment[] => {
   const segments: Segment[] = [];
-  const regex = new RegExp(YOUTUBE_URL_PATTERN);
+  const regex = new RegExp(YOUTUBE_URL_PATTERN, 'gi');
   let lastIndex = 0;
   let match: RegExpExecArray | null;
 
@@ -92,69 +94,96 @@ const splitTextIntoSegments = (text: string): Segment[] => {
 };
 
 const Paragraph = ({ children, className, ...props }: ParagraphProps) => {
-  if (isValidElement(children) && children.type === YouTubeEmbed) {
-    return (
+  const combinedClassName = `mb-[0.875rem] whitespace-pre-wrap${
+    className ? ` ${className}` : ''
+  }`;
+  const childArray = Children.toArray(children);
+  const renderedNodes: ReactNode[] = [];
+  let inlineBuffer: ReactNode[] = [];
+  let wrapperIndex = 0;
+
+  const pushInlineBuffer = () => {
+    if (inlineBuffer.length === 0) {
+      return;
+    }
+
+    renderedNodes.push(
       <div
-        className={`mb-[0.875rem] whitespace-pre-wrap${
-          className ? ` ${className}` : ''
-        }`}
+        key={`paragraph-inline-${wrapperIndex}`}
+        className={combinedClassName}
         {...props}
       >
-        {children}
-      </div>
+        <Body>{inlineBuffer.length === 1 ? inlineBuffer[0] : inlineBuffer}</Body>
+      </div>,
     );
-  }
 
-  if (typeof children === 'string') {
-    const segments = splitTextIntoSegments(children);
+    wrapperIndex += 1;
+    inlineBuffer = [];
+  };
 
-    return (
-      <>
-        {segments.map((segment, index) => {
-          if (segment.kind === 'text') {
-            return (
-              <div
-                key={`paragraph-text-${index}`}
-                className={`mb-[0.875rem] whitespace-pre-wrap${
-                  className ? ` ${className}` : ''
-                }`}
-                {...props}
-              >
-                <Body>{segment.value}</Body>
-              </div>
-            );
-          }
-
-          return (
-            <YouTubeEmbed key={`paragraph-video-${index}`} url={segment.url} />
-          );
-        })}
-      </>
+  const pushEmbed = (node: ReactNode) => {
+    renderedNodes.push(
+      <div
+        key={`paragraph-embed-${wrapperIndex}`}
+        className={combinedClassName}
+        {...props}
+      >
+        {node}
+      </div>,
     );
-  }
 
-  return (
-    <div
-      className={`mb-[0.875rem] whitespace-pre-wrap${
-        className ? ` ${className}` : ''
-      }`}
-      {...props}
-    >
-      <Body>{children}</Body>
-    </div>
-  );
+    wrapperIndex += 1;
+  };
+
+  childArray.forEach((child) => {
+    if (typeof child === 'string') {
+      const segments = splitTextIntoSegments(child);
+
+      segments.forEach((segment) => {
+        if (segment.kind === 'text') {
+          inlineBuffer.push(segment.value);
+          return;
+        }
+
+        pushInlineBuffer();
+        pushEmbed(<YouTubeEmbed url={segment.url} />);
+      });
+
+      return;
+    }
+
+    if (isValidElement(child) && child.type === YouTubeEmbed) {
+      pushInlineBuffer();
+      pushEmbed(child);
+
+      return;
+    }
+
+    if (isValidElement(child) && child.type === Anchor) {
+      const { href, children: anchorChildren } = child.props as AnchorProps;
+
+      if (href && isYoutubeUrl(href)) {
+        pushInlineBuffer();
+        pushEmbed(
+          <YouTubeEmbed
+            url={href}
+            title={typeof anchorChildren === 'string' ? anchorChildren : undefined}
+          />,
+        );
+
+        return;
+      }
+    }
+
+    inlineBuffer.push(child);
+  });
+
+  pushInlineBuffer();
+
+  return <>{renderedNodes}</>;
 };
 
 const Anchor = ({ href, children, className, ...props }: AnchorProps) => {
-  if (href && isYoutubeUrl(href)) {
-    return (
-      <YouTubeEmbed
-        url={href}
-        title={typeof children === 'string' ? children : undefined}
-      />
-    );
-  }
-
   const { rel, target, ...rest } = props;
 
   return (

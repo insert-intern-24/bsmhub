@@ -10,8 +10,8 @@ const config: Config = {
   theme: {
     screens: {
       mobile: {
-        max: '900px'
-      }
+        max: '900px',
+      },
     },
     extend: {
       lineClamp: {
@@ -42,6 +42,7 @@ const config: Config = {
         'placeholder-gray': '#858587',
         'gray-base': '#5E5E5E',
         black: '#131313',
+        detail: '#858587',
         'blue-primary': '#1462FF',
         'red-primary': '#FD462D',
       },

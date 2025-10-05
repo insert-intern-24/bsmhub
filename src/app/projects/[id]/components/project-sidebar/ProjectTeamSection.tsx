@@ -6,7 +6,8 @@ import { Body, Label, Label2 } from '@/app/components/system/text';
 import type { ProjectDetailViewModel } from '../types';
 import { FALLBACK_PROFILE } from './styles';
 
-const MOBILE_MEDIA_QUERY = '(max-width: 900px)';
+const MOBILE_MEDIA_QUERY =
+  process.env.NEXT_PUBLIC_PROJECT_TEAM_MOBILE_QUERY ?? '(max-width: 900px)';
 
 const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(false);

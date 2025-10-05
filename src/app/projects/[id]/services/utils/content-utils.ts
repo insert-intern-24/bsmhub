@@ -8,19 +8,24 @@ export type ProjectMarkdownPayload = {
 export const parseMarkdownPayload = (
   payload: string | null,
 ): {
-  detailDescription: string;
+  detailDescription?: string;
   technologies: string[];
   githubUrl?: string;
   iconImage?: string;
 } => {
   if (!payload) {
-    return { detailDescription: '설명 정보가 없습니다.', technologies: [] };
+    return { technologies: [] };
   }
 
   try {
     const parsed = JSON.parse(payload) as ProjectMarkdownPayload;
+    const detail =
+      typeof parsed.detailDescription === 'string' && parsed.detailDescription.trim().length > 0
+        ? parsed.detailDescription
+        : undefined;
+
     return {
-      detailDescription: parsed.detailDescription ?? payload,
+      detailDescription: detail,
       technologies: parsed.technologies ?? [],
       githubUrl: parsed.githubUrl,
       iconImage: parsed.iconImage,
