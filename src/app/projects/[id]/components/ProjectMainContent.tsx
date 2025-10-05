@@ -27,18 +27,19 @@ const EMBED_ASPECT_RATIO = '16 / 9';
 const YOUTUBE_URL_PATTERN =
   /(https?:\/\/(?:www\.)?(?:youtube\.com\/[^\s)]+|youtu\.be\/[^\s)]+))/gi;
 
-type ParagraphProps = DetailedHTMLProps<
-  HTMLAttributes<HTMLParagraphElement>,
-  HTMLParagraphElement
-> & {
+interface ParagraphProps
+  extends DetailedHTMLProps<
+    HTMLAttributes<HTMLParagraphElement>,
+    HTMLParagraphElement
+  > {
   children: ReactNode;
   [key: string]: unknown;
-};
+}
 
-type AnchorProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
+interface AnchorProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   children: ReactNode;
   [key: string]: unknown;
-};
+}
 
 type Segment =
   | {
@@ -50,10 +51,10 @@ type Segment =
       url: string;
     };
 
-type YouTubeEmbedProps = {
+interface YouTubeEmbedProps {
   url: string;
   title?: string;
-};
+}
 
 const YouTubeEmbed = ({ url, title }: YouTubeEmbedProps) => {
   const embedUrl = normalizeYoutubeUrl(url);
@@ -71,11 +72,11 @@ const YouTubeEmbed = ({ url, title }: YouTubeEmbedProps) => {
   );
 };
 
-type VideoHeroProps = {
+interface VideoHeroProps {
   url?: string | null;
   title: string;
   fallbackImage: string;
-};
+}
 
 const VideoHero = ({ url, title, fallbackImage }: VideoHeroProps) => {
   if (url && isYoutubeUrl(url)) {
@@ -188,9 +189,9 @@ const markdownOptions: MarkdownToJSX.Options = {
   },
 };
 
-type ProjectMainContentProps = {
+interface ProjectMainContentProps {
   project: ProjectDetailViewModel;
-};
+}
 
 const ProjectMainContent = ({ project }: ProjectMainContentProps) => (
   <main className="flex-1 w-full px-[4.6875rem] mobile:px-0">
