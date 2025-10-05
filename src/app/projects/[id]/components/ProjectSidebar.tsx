@@ -49,7 +49,7 @@ type ProjectSidebarProps = {
 };
 
 const ProjectSidebar = ({ project }: ProjectSidebarProps) => (
-  <aside className="relative flex-shrink-0 w-[21.75rem] min-w-[21.75rem] border-r border-gray-200 px-[2.625rem]">
+  <aside className="relative flex-shrink-0 w-[21.75rem] min-w-[21.75rem] border-r border-gray-200 px-[2.625rem] mobile:w-full mobile:min-w-0 mobile:border-b mobile:border-r-0 mobile:px-0 mobile:pb-8">
     <ProjectIcon image={project.iconImage ?? FALLBACK_ICON} title={project.title} />
     <div className="flex-col w-full gap-[1.625rem]">
       <ProjectSummary title={project.title} description={project.shortDescription} />

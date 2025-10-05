@@ -26,8 +26,8 @@ export default function RootLayout({
       </head>
       <body className="bg-[#F5F5F7]">
         <Header />
-        <main className="w-full min-h-dvh p-white-space-margin pt-[8rem]">
-          <div className="w-full min-h-screen bg-white">
+        <main className="w-full min-h-dvh p-white-space-margin pt-[6.75rem] mobile:px-0">
+          <div className="w-full min-h-screen bg-white mobile:px-[0.6875rem]">
             {children}
           </div>
         </main>

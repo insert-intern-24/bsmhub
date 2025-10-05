@@ -2,13 +2,10 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Body, Heading } from '../system/text';
-import Navigator from './Navigator';
 
 export default function Footer() {
   return (
-    <>
-      <Navigator />
-      <footer className="p-white-space-margin py-10 bg-light-gray-footer-bg flex-center gap-[1.5rem] text-gray-footer responsive-footer">
+    <footer className="p-white-space-margin py-10 bg-light-gray-footer-bg flex-center gap-[1.5rem] text-gray-footer responsive-footer mobile:px-[0.6875rem]">
         <div className="flex flex-col mobile:mr-auto">
           <Link href="" className="text-xl mb-4">
             <Heading>
@@ -39,7 +36,6 @@ export default function Footer() {
             <span><Body>Powered by INSERT</Body></span>
           </div>
         </div>
-      </footer>
-    </>
+    </footer>
   );
 }

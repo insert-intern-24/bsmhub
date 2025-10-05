@@ -17,10 +17,12 @@ import {
 } from '../services/utils/content-utils';
 
 const iframeWrapperClass =
-  'relative mb-[0.875rem] h-[34.375rem] w-full overflow-hidden bg-black';
+  'relative mb-[0.875rem] w-full overflow-hidden bg-black';
 
 const imageWrapperClass =
-  'relative mb-[0.875rem] h-[34.375rem] w-full overflow-hidden bg-black';
+  'relative mb-[0.875rem] w-full overflow-hidden bg-black';
+
+const EMBED_ASPECT_RATIO = '16 / 9';
 
 const YOUTUBE_URL_PATTERN =
   /(https?:\/\/(?:www\.)?(?:youtube\.com\/[^\s)]+|youtu\.be\/[^\s)]+))/gi;
@@ -57,7 +59,7 @@ const YouTubeEmbed = ({ url, title }: YouTubeEmbedProps) => {
   const embedUrl = normalizeYoutubeUrl(url);
 
   return (
-    <div className={iframeWrapperClass}>
+    <div className={iframeWrapperClass} style={{ aspectRatio: EMBED_ASPECT_RATIO }}>
       <iframe
         src={embedUrl}
         title={title}
@@ -81,7 +83,7 @@ const VideoHero = ({ url, title, fallbackImage }: VideoHeroProps) => {
   }
 
   return (
-    <div className={imageWrapperClass}>
+    <div className={imageWrapperClass} style={{ aspectRatio: EMBED_ASPECT_RATIO }}>
       <Image src={fallbackImage} alt={title} fill className="object-cover" />
     </div>
   );
@@ -191,7 +193,7 @@ type ProjectMainContentProps = {
 };
 
 const ProjectMainContent = ({ project }: ProjectMainContentProps) => (
-  <main className="w-full px-[4.6875rem]">
+  <main className="flex-1 w-full px-[4.6875rem] mobile:px-0">
     <VideoHero
       url={project.youtubeUrl ?? undefined}
       title={project.title}
