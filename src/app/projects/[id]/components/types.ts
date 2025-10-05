@@ -42,7 +42,6 @@ export type ProjectDetailViewModel = {
   detailDescription: string;
   githubUrl?: string | null;
   iconImage: string;
-  youtubeUrl?: string | null;
   technologies: string[];
   team: Array<{
     id: string;

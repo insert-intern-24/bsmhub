@@ -1,7 +1,6 @@
 export type ProjectMarkdownPayload = {
   detailDescription?: string;
   technologies?: string[];
-  youtubeUrl?: string;
   githubUrl?: string;
   iconImage?: string;
 };
@@ -11,7 +10,6 @@ export const parseMarkdownPayload = (
 ): {
   detailDescription: string;
   technologies: string[];
-  youtubeUrl?: string;
   githubUrl?: string;
   iconImage?: string;
 } => {
@@ -24,7 +22,6 @@ export const parseMarkdownPayload = (
     return {
       detailDescription: parsed.detailDescription ?? payload,
       technologies: parsed.technologies ?? [],
-      youtubeUrl: parsed.youtubeUrl,
       githubUrl: parsed.githubUrl,
       iconImage: parsed.iconImage,
     };
