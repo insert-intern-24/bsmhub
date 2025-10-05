@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Body, Label, Label2 } from '@/app/components/system/text';

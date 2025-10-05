@@ -3,12 +3,13 @@ import ProjectMainContent from './components/ProjectMainContent';
 import ProjectSidebar from './components/ProjectSidebar';
 import { getProjectDetailViewModel } from './services/project-service';
 
-type ProjectDetailPageProps = {
-  params: { id: string };
-};
+interface ProjectDetailPageProps {
+  params: Promise<{ id: string }>;
+}
 
 const ProjectDetailPage = async ({ params }: ProjectDetailPageProps) => {
-  const projectId = Number(params.id);
+  const { id } = await params;
+  const projectId = Number(id);
 
   if (Number.isNaN(projectId)) {
     notFound();
