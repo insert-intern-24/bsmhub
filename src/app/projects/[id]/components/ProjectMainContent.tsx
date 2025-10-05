@@ -169,7 +169,7 @@ const Anchor = ({ href, children, className, ...props }: AnchorProps) => {
   return (
     <a
       href={href}
-      className={`text-blue-primary underline underline-offset-4${
+      className={`text-blue-primary underline underline-offset-4 text-[1rem] leading-[1.375rem] tracking-[0.0057em]${
         className ? ` ${className}` : ''
       }`}
       rel={rel ?? 'noopener noreferrer'}

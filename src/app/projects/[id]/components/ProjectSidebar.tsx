@@ -1,9 +1,15 @@
 'use client';
 
-import type { CSSProperties } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import Image from 'next/image';
 import { IconPlayerPlayFilled, IconPlaylistAdd } from '@tabler/icons-react';
-import { Body, Body2, Label, Label2, TitleEN } from '@/app/components/system/text';
+import {
+  Body,
+  Body2,
+  Label,
+  Label2,
+  TitleEN,
+} from '@/app/components/system/text';
 import SkillTag from '@/app/components/contents/SkillTag';
 import type { ProjectDetailViewModel } from './types';
 
@@ -49,10 +55,16 @@ type ProjectSidebarProps = {
 };
 
 const ProjectSidebar = ({ project }: ProjectSidebarProps) => (
-  <aside className="relative flex-shrink-0 w-[21.75rem] min-w-[21.75rem] border-r border-gray-200 px-[2.625rem] mobile:w-full mobile:min-w-0 mobile:border-b mobile:border-r-0 mobile:px-0 mobile:pb-8">
-    <ProjectIcon image={project.iconImage ?? FALLBACK_ICON} title={project.title} />
+  <aside className="relative flex-shrink-0 w-[21.75rem] min-w-[21.75rem] border-r border-gray-200 px-[2.625rem] mobile:w-full mobile:min-w-0 mobile:border-0 mobile:px-0 mobile:pb-8">
+    <ProjectIcon
+      image={project.iconImage ?? FALLBACK_ICON}
+      title={project.title}
+    />
     <div className="flex-col w-full gap-[1.625rem]">
-      <ProjectSummary title={project.title} description={project.shortDescription} />
+      <ProjectSummary
+        title={project.title}
+        description={project.shortDescription}
+      />
       <ProjectLink url={project.githubUrl} />
       <ProjectTechnologies technologies={project.technologies} />
       <ProjectTeam members={project.team} />
@@ -89,17 +101,35 @@ const ProjectActions = () => (
 
 const PlayButton = () => (
   <div className="relative flex-1">
-    <div className="absolute inset-x-[0%] top-1/4 h-12" style={PLAY_BUTTON_DEPTH_STYLE} />
+    <div
+      className="absolute inset-x-[0%] top-1/4 h-12"
+      style={PLAY_BUTTON_DEPTH_STYLE}
+    />
     <div
       className="relative flex h-10 items-center justify-center gap-1 overflow-hidden rounded-3xl"
       style={{ opacity: 0.8, backdropFilter: 'blur(33.5px)' }}
     >
-      <div className="absolute inset-0 rounded-3xl" style={PLAY_BUTTON_BORDER_STYLE}>
-        <div className="h-full w-full rounded-3xl" style={PLAY_BUTTON_FILL_STYLE} />
+      <div
+        className="absolute inset-0 rounded-3xl"
+        style={PLAY_BUTTON_BORDER_STYLE}
+      >
+        <div
+          className="h-full w-full rounded-3xl"
+          style={PLAY_BUTTON_FILL_STYLE}
+        />
       </div>
-      <div className="absolute inset-0 rounded-3xl" style={PLAY_BUTTON_SHEEN_STYLE} />
-      <div className="absolute left-0 right-0 top-0 h-1/3 rounded-3xl" style={PLAY_BUTTON_TOP_GLOW_STYLE} />
-      <div className="absolute bottom-0 left-0 right-0 h-1/3 rounded-3xl" style={PLAY_BUTTON_BOTTOM_GLOW_STYLE} />
+      <div
+        className="absolute inset-0 rounded-3xl"
+        style={PLAY_BUTTON_SHEEN_STYLE}
+      />
+      <div
+        className="absolute left-0 right-0 top-0 h-1/3 rounded-3xl"
+        style={PLAY_BUTTON_TOP_GLOW_STYLE}
+      />
+      <div
+        className="absolute bottom-0 left-0 right-0 h-1/3 rounded-3xl"
+        style={PLAY_BUTTON_BOTTOM_GLOW_STYLE}
+      />
       <div className="z-10 flex items-center justify-center gap-1">
         <IconPlayerPlayFilled size={(18 * 12) / 16} color="white" />
         <Body2 className="text-white">Play</Body2>
@@ -126,7 +156,9 @@ const ProjectTechnologies = ({ technologies }: { technologies: string[] }) => (
     <Label>기술스택</Label>
     <div className="flex-row flex-wrap gap-2">
       {technologies.length > 0 ? (
-        technologies.map((tech) => <SkillTag key={tech} mode="default" value={tech} />)
+        technologies.map((tech) => (
+          <SkillTag key={tech} mode="default" value={tech} />
+        ))
       ) : (
         <Label className="text-detail">기술 스택 정보가 없습니다.</Label>
       )}
@@ -134,18 +166,87 @@ const ProjectTechnologies = ({ technologies }: { technologies: string[] }) => (
   </section>
 );
 
-const ProjectTeam = ({ members }: { members: ProjectDetailViewModel['team'] }) => (
-  <section className="flex-col gap-[0.375rem]">
-    <Label>기여</Label>
-    <div className="flex-col gap-[0.5rem]">
-      {members.length > 0 ? (
-        members.map((member) => <TeamMemberItem key={member.id} member={member} />)
-      ) : (
-        <Label className="text-detail">참여자 정보가 없습니다.</Label>
+const MOBILE_MEDIA_QUERY = '(max-width: 900px)';
+
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQueryList = window.matchMedia(MOBILE_MEDIA_QUERY);
+
+    const handleChange = (event: MediaQueryListEvent | MediaQueryList) => {
+      setIsMobile(event.matches);
+    };
+
+    setIsMobile(mediaQueryList.matches);
+
+    if (typeof mediaQueryList.addEventListener === 'function') {
+      mediaQueryList.addEventListener('change', handleChange);
+
+      return () => {
+        mediaQueryList.removeEventListener('change', handleChange);
+      };
+    }
+
+    mediaQueryList.addListener(handleChange);
+
+    return () => {
+      mediaQueryList.removeListener(handleChange);
+    };
+  }, []);
+
+  return isMobile;
+};
+
+const ProjectTeam = ({
+  members,
+}: {
+  members: ProjectDetailViewModel['team'];
+}) => {
+  const [isGradientVisible, setIsGradientVisible] = useState(true);
+  const isMobile = useIsMobile();
+
+  const handleReveal = () => {
+    setIsGradientVisible(false);
+  };
+
+  const shouldFold = isMobile && members.length > 1 && isGradientVisible;
+  const visibleMembers = shouldFold ? members.slice(0, 1) : members;
+
+  return (
+    <section className="relative flex-col gap-[0.375rem]">
+      <Label>기여</Label>
+      <div className="relative overflow-hidden">
+        <div className="flex-col gap-[0.5rem] relative z-0">
+          {visibleMembers.length > 0 ? (
+            <>
+              <TeamMemberItem member={visibleMembers[0]} />
+              {visibleMembers.slice(1).map((member) => (
+                <TeamMemberItem key={member.id} member={member} />
+              ))}
+            </>
+          ) : (
+            <Label className="text-detail">참여자 정보가 없습니다.</Label>
+          )}
+        </div>
+      </div>
+      {shouldFold && (
+        <>
+          <div className="pointer-events-none absolute inset-0 z-10 hidden bg-gradient-to-b from-white/70 via-white/85 to-white mobile:block" />
+          <div className="absolute inset-x-0 bottom-0 z-20 hidden justify-center mobile:flex">
+            <button
+              type="button"
+              className="pointer-events-auto px-4 py-1"
+              onClick={handleReveal}
+            >
+              <Body className="text-gray-base">더보기</Body>
+            </button>
+          </div>
+        </>
       )}
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 const TeamMemberItem = ({
   member,
