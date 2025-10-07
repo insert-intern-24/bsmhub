@@ -18,4 +18,8 @@
     flex-direction: column;
     padding: 2.5rem;
   }
+
+  .responsive-main {
+    padding: 120px 0 0;
+  }
 }
