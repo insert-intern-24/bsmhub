@@ -12,9 +12,9 @@ interface MetaInfoProps {
 
 const MetaInfo = ({ title, authors }: MetaInfoProps) => {
   return (
-  <figcaption className="flex-x-center">
+    <figcaption className="flex-x-center">
       <Label className="text-gray-base">{title}</Label>
-  <div className="flex-y-center gap-1">
+      <div className="flex-y-center gap-1">
         {authors.length === 1 ? (
           // 작성자가 1명인 경우: 프로필 사진 + 이름
           <>
@@ -23,7 +23,7 @@ const MetaInfo = ({ title, authors }: MetaInfoProps) => {
               name={authors[0].name}
               size="tiny"
             />
-            <Caption>{authors[0].name}</Caption>
+            <Caption className="font-black">{authors[0].name}</Caption>
           </>
         ) : (
           // 작성자가 여러명인 경우: 프로필 사진만 나열
@@ -34,7 +34,6 @@ const MetaInfo = ({ title, authors }: MetaInfoProps) => {
                 src={author.profileImage}
                 name={author.name}
                 size="tiny"
-                className=""
                 style={{ zIndex: authors.length - index }}
               />
             ))}
