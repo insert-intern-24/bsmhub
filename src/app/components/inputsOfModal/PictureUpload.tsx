@@ -3,10 +3,10 @@
 import { useRef, useState } from 'react';
 
 interface PictureUploadProps {
-  ratio?: string; // "1:1", "3:4", "16:9" 등 자유롭게 입력 가능
+  aspectRatio?: string; // "1:1", "3:4", "16:9" 등 자유롭게 입력 가능
 }
 
-function PictureUpload({ ratio: ratio = '1:1' }: PictureUploadProps) {
+function PictureUpload({ aspectRatio = '1:1' }: PictureUploadProps) {
   const [preview, setPreview] = useState<string>();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -27,7 +27,7 @@ function PictureUpload({ ratio: ratio = '1:1' }: PictureUploadProps) {
   return (
     <label 
       className="overflow-hidden input-common flex-col justify-center cursor-pointer"
-      style={{ height: '5.875rem', width: getWidth(ratio) }}
+      style={{ height: '5.875rem', width: getWidth(aspectRatio) }}
     >
       {preview ? (
         <img src={preview} alt="업로드된 이미지" className="object-cover w-full h-full" />

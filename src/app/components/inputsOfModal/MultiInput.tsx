@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Inputs from './SingleInput';
+import PictureUpload from './PictureUpload';
 import { BaseInputProps } from './types/inputTypes';
 
 interface MultiInputItem extends BaseInputProps {
@@ -16,12 +17,16 @@ function MultiInput({ config }: MultiInputProps) {
   return (
     <div className='flex flex-row gap-2 w-full'>
       {config.map((input, index) => {
-        const { width, ...inputProps } = input;
+        const { width, type, ...inputProps } = input;
         const widthStyle = width ? { width: `${width}%` } : { flex: 1 };
         
         return (
           <div key={index} style={widthStyle}>
-            <Inputs {...inputProps} />
+            {type === 'picture' ? (
+              <PictureUpload aspectRatio={input.aspectRatio} />
+            ) : (
+              <Inputs type={type} {...inputProps} />
+            )}
           </div>
         );
       })}

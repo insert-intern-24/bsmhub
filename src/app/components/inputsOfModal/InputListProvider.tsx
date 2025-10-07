@@ -13,6 +13,7 @@ export type InputConfig = {
     placeholder?: string
     name?: string
     required?: boolean
+    aspectRatio?: string
   }>
   onlyOne?: boolean
 }
@@ -40,6 +41,7 @@ const InputListProvider = ({
     placeholder: input.placeholder,
     name: input.name,
     required: input.required,
+    aspectRatio: input.aspectRatio,
     value: ''
   })) as MultiInputItem[]
 

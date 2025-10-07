@@ -1,6 +1,7 @@
 // src/app/layout.tsx
 import Footer from './components/layout/Footer';
 import './globals.css';
+import './components/inputsOfModal/common/common.css';
 import Header from '@components/layout/Header';
 // import Footer from '@components/layout/Footer';
 
@@ -19,7 +20,7 @@ export default function RootLayout({
     <html lang="ko">
       <head>
         <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=favorite,home,search,settings"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=favorite,home,search,settings&display=optional"
           rel="stylesheet"
         />
       </head>
