@@ -34,7 +34,7 @@ const config: Config = {
         'light-gray-footer-bg': '#EDEDED',
         'light-gray': '#EAEAEC',
         'gray-footer': '#7E7E8C',
-        'placeholder-gray': '#858587',=
+        'placeholder-gray': '#858587',
         'gray-base': '#5E5E5E',
         black: '#131313',
         'blue-primary': '#1462FF',
@@ -80,7 +80,7 @@ const config: Config = {
           display: 'inline-flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-        }
+        },
       });
     },
     // eslint-disable-next-line @typescript-eslint/no-require-imports
