@@ -14,7 +14,7 @@ const PortfolioCard = ({ profile, projects }: PortfolioCardProps) => {
           'linear-gradient(180deg, #f9f9fb 26%, #fff 67.5%, #fff 100%)',
       }}
     >
-  <div className="w-[20.3125rem] h-[11.625rem] flex-col flex-center m-[0.865rem] mb-[1rem]">
+      <div className="w-[20.3125rem] h-[11.625rem] flex-col flex-center m-[0.865rem] mb-[1rem]">
         {/* Project Images Header */}
         <ProjectImages projects={projects} variant="default" />
 
