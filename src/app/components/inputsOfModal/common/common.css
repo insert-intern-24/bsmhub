@@ -1,0 +1,3 @@
+.input-common {
+  @apply w-full h-[3.3125rem] rounded-md cursor-pointer flex-center bg-light-gray-outline rounded-md;
+}

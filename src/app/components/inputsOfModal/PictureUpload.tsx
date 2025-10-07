@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useRef, useState, useEffect } from 'react';
-import Image from 'next/image';
 
 function PictureUpload() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -30,20 +29,19 @@ function PictureUpload() {
   return (
     <div className="inline-block h-[5.875rem]">
       <div
-        className="h-full aspect-1 flex flex-col items-center justify-center rounded-md bg-light-gray-outline cursor-pointer overflow-hidden relative"
+        className="h-full overflow-hidden input-common aspect-1 flex items-center justify-center"
         onClick={handleClick}
       >
         {imagePreview ? (
-          <div className="relative w-full h-full">
-            <Image
+          <div className="w-full h-full">
+            <img
               src={imagePreview}
               alt="업로드된 이미지"
-              fill
-              className="object-cover"
+              className="object-cover w-full h-full"
             />
           </div>
         ) : (
-          <span className="text-gray-500 text-sm font-normal">사진 업로드</span>
+          <span className="text-gray-500 text-body">사진 업로드</span>
         )}
         <input
           ref={fileInputRef}
@@ -55,6 +53,6 @@ function PictureUpload() {
       </div>
     </div>
   );
-}
+} 
 
 export default PictureUpload;
