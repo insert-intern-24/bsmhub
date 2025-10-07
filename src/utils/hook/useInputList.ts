@@ -1,11 +1,9 @@
 import { useReducer } from 'react'
 import { produce } from 'immer'
-import { BaseInputProps } from '@/app/components/inputsOfModal/types/inputTypes'
+import type { MultiInputItem } from '@components/modal/inputsOfModal/MultiInput'
 
-// MultiInput을 위한 타입
-export interface MultiInputItem extends BaseInputProps {
-  width?: number; // 퍼센트 값 (0-100)
-}
+// MultiInputItem은 MultiInput.tsx에서 import하여 재export
+export type { MultiInputItem }
 
 // 상태 관리를 위한 타입 정의 - 모든 input을 MultiInputItem 배열로 통일
 interface InputListState {

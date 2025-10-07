@@ -1,10 +1,10 @@
 // src/app/layout.tsx
 import Footer from './components/layout/Footer';
 import './globals.css';
-import './components/modal/inputs/common/common.css';
-import './components/modal/modal.css';
+import '@components/modal/inputsOfModal/common/common.css';
+import '@components/modal/modal.css';
 import Header from '@components/layout/Header';
-import { ModalProvider, Modal } from './components/modal';
+import { ModalProvider, Modal } from '@components/modal';
 // import Footer from '@components/layout/Footer';
 
 export const metadata = {

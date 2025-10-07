@@ -2,14 +2,14 @@
 
 import { useEffect } from "react";
 // import Detail from '@components/detail/Detail';
-import Buttons from "./components/modal/inputs/Buttons";
-import Inputs from "./components/modal/inputs/SingleInput";
-import PictureUpload from "./components/modal/inputs/PictureUploadButtons";
-import LabelInputs from "./components/modal/inputs/LabelOfInputs";
-import InputListProvider from "./components/modal/inputs/InputListProvider";
-import InputOfModal from "./components/modal/inputs/InputOfModal";
-import { FormConfig } from "./components/modal/inputs/types/inputTypes";
-import { useModal } from "./components/modal";
+import Buttons from "@components/modal/inputsOfModal/Buttons";
+import Inputs from "@components/modal/inputsOfModal/SingleInput";
+import PictureUpload from "@components/modal/inputsOfModal/PictureUpload";
+import LabelInputs from "@components/modal/inputsOfModal/LabelOfInputs";
+import InputListProvider from "@components/modal/inputsOfModal/InputListProvider";
+import InputOfModal from "@components/modal/inputsOfModal/InputOfModal";
+import { FormConfig } from "@components/modal/inputsOfModal/types/inputTypes";
+import { useModal } from "@components/modal";
 
 // 폼 설정 예제
 const sampleFormConfig: FormConfig = {
@@ -84,7 +84,7 @@ export default function Home() {
         <InputOfModal
           title="프로필 정보 입력"
           config={sampleFormConfig}
-          onSubmit={(data) => {
+          onSubmit={(data: Record<string, unknown>) => {
             console.log('폼 제출 데이터:', data);
             alert('폼이 제출되었습니다! 콘솔을 확인하세요.');
           }}
@@ -127,7 +127,7 @@ export default function Home() {
         <InputOfModal
           title="프로필 정보 입력"
           config={sampleFormConfig}
-          onSubmit={(data) => {
+          onSubmit={(data: Record<string, unknown>) => {
             console.log('폼 제출 데이터:', data);
             alert('폼이 제출되었습니다! 콘솔을 확인하세요.');
           }}
