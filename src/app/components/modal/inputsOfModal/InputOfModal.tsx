@@ -31,13 +31,13 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
 
   return (
     <form 
-      className="flex flex-col items-start w-[64rem] p-[4rem] gap-6"
+      className="flex-col items-start w-[64rem] p-[4rem] gap-6 bg-white rounded-[0.5rem]"
       onSubmit={handleSubmit(onFormSubmit)}
     >
       <Title className='mb-3'>{title}</Title>
 
       {config.fields.map((field) => (
-        <div key={field.fieldName} className="w-full flex flex-col gap-2">
+        <div key={field.fieldName} className="w-full flex-col gap-2">
           <LabelOfInputs 
             label={field.label}
             required={field.required}

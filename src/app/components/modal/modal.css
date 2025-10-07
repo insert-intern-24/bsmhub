@@ -19,7 +19,6 @@
 /* 모달 컨텐츠 컨테이너 */
 .modal-content {
   position: relative;
-  background: white;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
   max-width: 90vw;
