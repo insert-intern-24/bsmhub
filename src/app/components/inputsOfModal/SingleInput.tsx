@@ -7,6 +7,7 @@ import {
   IconCalendarWeekFilled,
 } from '@tabler/icons-react';
 import { BaseInputProps } from './types/inputTypes';
+import { type } from '../../../utils/supabase/database.types';
 
 const iconMap: Record<string, React.ReactNode> = {
   // lock: <IconPencil size={20} className='text-gray-base'/>,
@@ -50,7 +51,7 @@ function Inputs({
       `}
       />
       {iconMap[type] && (
-        <button>{iconMap[type]}</button>
+        <button type="button">{iconMap[type]}</button>
       )}
     </div>
   );

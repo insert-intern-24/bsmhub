@@ -13,9 +13,10 @@ interface InputOfModalProps {
   title?: string;
   config: FormConfig;
   onSubmit?: (data: Record<string, MultiInputItem[][]>) => void;
+  submitButtonText?: string;
 }
 
-const InputOfModal = ({ title = '입력 필드', config, onSubmit }: InputOfModalProps) => {
+const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '제출하기' }: InputOfModalProps) => {
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: config.fields.reduce((acc, field) => {
       acc[field.fieldName] = [];
@@ -73,7 +74,7 @@ const InputOfModal = ({ title = '입력 필드', config, onSubmit }: InputOfModa
       <div className="w-full mt-4">
         <Buttons 
           color="black"
-          text="제출"
+          text={submitButtonText}
           onClick={handleSubmit(onFormSubmit)}
         />
       </div>
