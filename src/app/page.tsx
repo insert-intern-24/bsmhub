@@ -1,13 +1,15 @@
 "use client"
 
+import { useEffect } from "react";
 // import Detail from '@components/detail/Detail';
-import Buttons from "./components/inputsOfModal/Buttons";
-import Inputs from "./components/inputsOfModal/SingleInput";
-import PictureUpload from "./components/inputsOfModal/PictureUpload";
-import LabelInputs from "./components/inputsOfModal/LabelOfInputs";
-import InputListProvider from "./components/inputsOfModal/InputListProvider";
-import InputOfModal from "./components/inputsOfModal/InputOfModal";
-import { FormConfig } from "./components/inputsOfModal/types/inputTypes";
+import Buttons from "./components/modal/inputs/Buttons";
+import Inputs from "./components/modal/inputs/SingleInput";
+import PictureUpload from "./components/modal/inputs/PictureUploadButtons";
+import LabelInputs from "./components/modal/inputs/LabelOfInputs";
+import InputListProvider from "./components/modal/inputs/InputListProvider";
+import InputOfModal from "./components/modal/inputs/InputOfModal";
+import { FormConfig } from "./components/modal/inputs/types/inputTypes";
+import { useModal } from "./components/modal";
 
 // 폼 설정 예제
 const sampleFormConfig: FormConfig = {
@@ -74,6 +76,23 @@ const sampleFormConfig: FormConfig = {
 };
 
 export default function Home() {
+  const { openModal } = useModal();
+
+  // 페이지 마운트 시 모달 자동 열기
+  useEffect(() => {
+    openModal(
+        <InputOfModal
+          title="프로필 정보 입력"
+          config={sampleFormConfig}
+          onSubmit={(data) => {
+            console.log('폼 제출 데이터:', data);
+            alert('폼이 제출되었습니다! 콘솔을 확인하세요.');
+          }}
+        />
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 최초 마운트 시에만 실행
+
   return (
     <div className="bg-white p-10">
       {/* 기존 컴포넌트 테스트 */}
