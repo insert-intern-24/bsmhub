@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import MetaInfo from './MetaInfo';
 
-interface CardProps {
+export interface CardProps {
   id: number;
   title: string;
   projectImage: string;
@@ -14,8 +14,8 @@ interface CardProps {
 
 const Card = ({ title, projectImage, authors }: CardProps) => {
   return (
-    <div className="w-fit flex-col gap-[0.375rem]">
-      <figure className="relative w-[24rem] h-[13rem] rounded-[0.25rem] overflow-hidden">
+    <div className="w-full min-w-[24rem] flex-col gap-[0.375rem]">
+      <figure className="relative aspect-video rounded-[0.25rem] overflow-hidden">
         <Image
           src={projectImage}
           alt={`${title} 프로젝트 이미지`}
