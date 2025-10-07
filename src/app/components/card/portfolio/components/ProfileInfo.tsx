@@ -1,6 +1,6 @@
 import React from 'react';
-import { Body2, Caption, Label } from '../../../system/text';
-import { Profile } from '../types';
+import { Body2, Caption, Label } from '@components/system/text';
+import { Profile } from '@components/card/portfolio/types';
 
 interface ProfileInfoProps {
   profile: Profile;

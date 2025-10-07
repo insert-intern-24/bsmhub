@@ -33,24 +33,23 @@ function Inputs({
   }, []);
 
   return (
-    <div className={`flex-row input-common px-2.5 ${type === 'lock' ? 'bg-white' : ''} transition-colors`}>
+    <div className={`flex-row input-common px-2.5 transition-colors`}>
       <input
-        ref={inputRef}
-        id={id}
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        name={name}
-        required={required}
-        readOnly={type === 'lock'}
-        className={`border-0! py-1 text-gray-base text-body outline-none input-common transition-colors
-        ${type === 'date' ? 'date-input' : ''}
-        ${type === 'lock' ? 'bg-white' : ''}
+      ref={inputRef}
+      id={id}
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      name={name}
+      required={required}
+      readOnly={type === 'lock'}
+      className={`!w-fit py-1 text-gray-base text-body outline-none transition-colors bg-light-gray-outline
+      ${type === 'date' ? 'date-input' : ''}
       `}
       />
       {iconMap[type] && (
-        <button>{iconMap[type]}</button>
+      <button>{iconMap[type]}</button>
       )}
     </div>
   );
