@@ -1,7 +1,7 @@
 // src/app/layout.tsx
 import Footer from './components/layout/Footer';
 import './globals.css';
-import './responsive.css'
+import './responsive.css';
 import Header from '@components/layout/Header';
 // import Footer from '@components/layout/Footer';
 
@@ -27,7 +27,7 @@ export default function RootLayout({
       <body className="bg-[#F5F5F7]">
         <Header />
         <main className="w-full min-h-dvh p-white-space-margin pt-[120px] responsive-main">
-          <div className="w-full min-h-screen bg-white">
+          <div className="w-full min-h-screen bg-white mobile:pb-12">
             {children}
           </div>
         </main>
