@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   IconPencil,
   IconCheck,
@@ -9,7 +9,7 @@ import {
 import { BaseInputProps } from './types/inputTypes';
 
 const iconMap: Record<string, React.ReactNode> = {
-  lock: <IconPencil size={20} className='text-gray-base'/>,
+  // lock: <IconPencil size={20} className='text-gray-base'/>,
   edit: <IconCheck size={20} className='text-gray-base'/>,
   search: <IconSearch size={20} className='text-gray-base'/>,
   date: <IconCalendarWeekFilled size={20} className='text-gray-base'/>,
@@ -24,10 +24,18 @@ function Inputs({
   required = false,
   id = '',
 }: BaseInputProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   return (
-    <div className={`flex-row input-common px-2.5 ${type === 'lock' ? 'bg-white' : ''}`}>
+    <div className={`flex-row input-common px-2.5 ${type === 'lock' ? 'bg-white' : ''} transition-colors`}>
       <input
+        ref={inputRef}
         id={id}
         type={type}
         placeholder={placeholder}
@@ -36,7 +44,7 @@ function Inputs({
         name={name}
         required={required}
         readOnly={type === 'lock'}
-        className={`border-0! py-1 text-gray-base text-body outline-none input-common
+        className={`border-0! py-1 text-gray-base text-body outline-none input-common transition-colors
         ${type === 'date' ? 'date-input' : ''}
         ${type === 'lock' ? 'bg-white' : ''}
       `}
