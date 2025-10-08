@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { IconSquareCheckFilled, IconSquareCheck } from '@tabler/icons-react';
 
-const Checkbox = () => {
-  const [checked, setChecked] = useState(false);
+interface CheckboxProps {
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
+  label?: string;
+}
 
+const Checkbox = ({ checked = false, onChange, label = '체크박스' }: CheckboxProps) => {
   return (
     <label
       className="flex flex-row items-center gap-2 cursor-pointer select-none"
-      onClick={() => setChecked(!checked)}
+      onClick={() => onChange?.(!checked)}
     >
       {checked ? (
         <IconSquareCheckFilled className="w-8" />
       ) : (
         <IconSquareCheck className="w-8" />
       )}{' '}
-      {'체크박스'}
+      {label}
     </label>
   );
 };

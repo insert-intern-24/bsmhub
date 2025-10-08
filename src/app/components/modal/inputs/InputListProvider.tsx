@@ -16,6 +16,8 @@ export type InputConfig = {
     aspectRatio?: string
   }>
   onlyOne?: boolean
+  white?: boolean // SkillTag용
+  multiInputConfig?: Array<{ placeholder?: string }> // Checkbox용
 }
 
 interface InputListProviderProps {
@@ -68,7 +70,7 @@ const InputListProvider = ({
 
   return (
     <div className={`flex-col gap-2 items-start ${className}`}>
-      {inputs.map((input, index) => {
+      {inputs.map((input: MultiInputItem[], index: number) => {
         const isLocked = activeIndex !== null && activeIndex !== index
         
         return (
@@ -78,7 +80,7 @@ const InputListProvider = ({
             onClick={() => dispatch({ type: 'SET_ACTIVE', index })}
           >
             <MultiInput 
-              config={input.map((item, subIndex) => ({
+              config={input.map((item: MultiInputItem, subIndex: number) => ({
                 ...item,
                 type: isLocked ? "lock" : item.type || "text",
                 onChange: (e: React.ChangeEvent<HTMLInputElement>) => dispatch({

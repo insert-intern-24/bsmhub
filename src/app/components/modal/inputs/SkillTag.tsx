@@ -3,7 +3,7 @@
 import { IconX } from "@tabler/icons-react";
 import { useRef, useEffect } from "react";
 import AutosizeInput from 'react-input-autosize';
-import '../modal/inputsOfModal/common/common.css';
+import './common/common.css';
 
 type WriteProps = {
   mode: 'write';

@@ -26,7 +26,7 @@ function PictureUpload({ aspectRatio = '1:1' }: PictureUploadProps) {
 
   return (
     <label 
-      className="overflow-hidden input-common flex-col justify-center cursor-pointer"
+      className="overflow-hidden input-common flex-col !justify-center cursor-pointer"
       style={{ height: '5.875rem', width: getWidth(aspectRatio) }}
     >
       {preview ? (
