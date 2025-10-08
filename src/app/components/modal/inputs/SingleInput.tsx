@@ -23,30 +23,31 @@ function Inputs({
   name,
   required = false,
   id = '',
+  readOnly = false,
 }: BaseInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (inputRef.current) {
+    if (inputRef.current && !readOnly) {
       inputRef.current.focus();
     }
-  }, []);
+  }, [readOnly]);
 
   return (
-    <div className={`flex-row input-common px-2.5 ${type === 'lock' ? 'bg-white' : ''} transition-colors`}>
+    <div className={`flex-row input-common px-2.5 ${readOnly ? 'bg-white' : ''} transition-colors`}>
       <input
         ref={inputRef}
         id={id}
-        type={type}
+        type={type === 'date' ? 'date' : 'text'}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
         name={name}
         required={required}
-        readOnly={type === 'lock'}
+        readOnly={readOnly}
         className={`w-full py-1 text-gray-base text-body outline-none transition-colors
         ${type === 'date' ? 'date-input' : ''}
-        ${type === 'lock' ? 'bg-white' : 'bg-light-gray-outline'}
+        ${readOnly ? 'bg-white cursor-default' : 'bg-light-gray-outline'}
       `}
       />
       {iconMap[type] && (

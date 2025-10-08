@@ -71,7 +71,7 @@ const InputListProvider = ({
   return (
     <div className={`flex-col gap-2 items-start ${className}`}>
       {inputs.map((input: MultiInputItem[], index: number) => {
-        const isLocked = activeIndex !== null && activeIndex !== index
+        const isReadOnly = activeIndex !== null && activeIndex !== index
         
         return (
           <div 
@@ -82,7 +82,7 @@ const InputListProvider = ({
             <MultiInput 
               config={input.map((item: MultiInputItem, subIndex: number) => ({
                 ...item,
-                type: isLocked ? "lock" : item.type || "text",
+                readOnly: isReadOnly,
                 onChange: (e: React.ChangeEvent<HTMLInputElement>) => dispatch({
                   type: 'UPDATE_VALUE',
                   index,

@@ -1,7 +1,7 @@
 import { ChangeEvent } from 'react';
 import { InputConfig } from '../InputListProvider';
 
-export type InputType = 'text' | 'lock' | 'date' | 'edit' | 'search' | 'picture' | 'checkbox' | 'skillTag';
+export type InputType = 'text' | 'date' | 'edit' | 'search' | 'picture' | 'checkbox' | 'skillTag';
 
 // 기본 Input Props (picture 제외)
 export interface BaseInputPropsCommon {
@@ -11,6 +11,7 @@ export interface BaseInputPropsCommon {
   name?: string;
   required?: boolean;
   id?: string;
+  readOnly?: boolean; // lock 대신 readOnly prop 사용
 }
 
 // picture 타입일 때
