@@ -41,6 +41,11 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
     <form 
       className="flex-col items-start w-[64rem] p-[4rem] gap-6 bg-white rounded-[0.5rem]"
       onSubmit={handleSubmit(onFormSubmit)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' && e.target instanceof HTMLInputElement) {
+          e.preventDefault();
+        }
+      }}
     >
       <Title className='mb-3'>{title}</Title>
 
