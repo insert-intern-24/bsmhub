@@ -71,7 +71,9 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
                 if (field.type === 'skillTag') {
                   return (
                     <SkillTagProvider
-                      onTagsChange={(tags: string[]) => onChange(tags.map(tag => [{ value: tag }]))}
+                      onTagsChange={(tags: string[]) => {
+                        onChange(tags.map(tag => [{ value: tag }]));
+                      }}
                       white={field.white}
                     />
                   );
@@ -82,7 +84,7 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
                   return (
                     <Checkbox
                       checked={!!value}
-                      onChange={(checked: boolean) => onChange(checked)}
+                      onChange={onChange}
                       label={field.checkboxLabel}
                     />
                   );
@@ -90,11 +92,12 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
                 
                 // Picture 컴포넌트
                 if (field.type === 'picture') {
+                  const pictureValue = typeof value === 'string' || value instanceof File || value === null ? value : null;
                   return (
                     <PictureUpload
                       aspectRatio={field.aspectRatio}
                       onFileChange={onChange}
-                      value={value}
+                      value={pictureValue}
                     />
                   );
                 }
