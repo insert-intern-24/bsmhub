@@ -15,8 +15,8 @@
 ## 설치 및 의존성
 
 ```typescript
-import InputOfModal from '@/app/components/inputsOfModal/InputOfModal'
-import { FormConfig } from '@/app/components/inputsOfModal/types/inputTypes'
+import InputOfModal from '@/app/components/modal/inputs/InputOfModal'
+import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes'
 ```
 
 ### 필요한 의존성
@@ -48,12 +48,39 @@ interface FormConfig {
 
 ### FormFieldConfig
 
+`FormFieldConfig`는 필드 타입에 따라 다른 구조를 가지는 **Discriminated Union**입니다:
+
 ```typescript
-interface FormFieldConfig {
-  label: string              // 필드 라벨 텍스트
-  required?: boolean         // 필수 입력 여부
-  fieldName: string          // React Hook Form의 필드명 (고유해야 함)
-  inputConfig: InputConfig   // InputListProvider의 설정
+type FormFieldConfig = 
+  | InputListFieldConfig 
+  | SkillTagFieldConfig 
+  | CheckboxFieldConfig
+
+// InputListProvider 필드
+interface InputListFieldConfig {
+  type: 'inputList'
+  label: string
+  fieldName: string
+  required?: boolean
+  inputConfig: InputConfig  // InputListProvider의 설정
+}
+
+// SkillTag 필드
+interface SkillTagFieldConfig {
+  type: 'skillTag'
+  label: string
+  fieldName: string
+  required?: boolean
+  white?: boolean           // 흰색 배경 여부
+  initialTags?: string[]    // 초기 태그 배열
+}
+
+// Checkbox 필드
+interface CheckboxFieldConfig {
+  type: 'checkbox'
+  label: string
+  fieldName: string
+  checkboxLabel?: string    // 체크박스 옆 텍스트
 }
 ```
 
@@ -79,12 +106,13 @@ type InputConfig = {
 ```tsx
 'use client'
 
-import InputOfModal from '@/app/components/inputsOfModal/InputOfModal'
-import { FormConfig } from '@/app/components/inputsOfModal/types/inputTypes'
+import InputOfModal from '@/app/components/modal/inputs/InputOfModal'
+import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes'
 
 const formConfig: FormConfig = {
   fields: [
     {
+      type: 'inputList',
       label: "이메일",
       required: true,
       fieldName: "email",
@@ -142,6 +170,7 @@ export default function MyPage() {
 const complexFormConfig: FormConfig = {
   fields: [
     {
+      type: 'inputList',
       label: "이메일",
       required: true,
       fieldName: "email",
@@ -153,6 +182,7 @@ const complexFormConfig: FormConfig = {
       }
     },
     {
+      type: 'inputList',
       label: "경력 사항",
       required: false,
       fieldName: "careers",
@@ -166,25 +196,17 @@ const complexFormConfig: FormConfig = {
       }
     },
     {
-      label: "수상 경력",
-      required: false,
-      fieldName: "awards",
-      inputConfig: {
-        inputs: [
-          { type: 'date', width: 30, placeholder: '수상일' },
-          { type: 'text', width: 70, placeholder: '수상 내용' }
-        ]
-      }
-    },
-    {
+      type: 'skillTag',
       label: "기술 스택",
       required: true,
       fieldName: "skills",
-      inputConfig: {
-        inputs: [
-          { type: 'text', placeholder: '기술명 입력' }
-        ]
-      }
+      white: false  // 회색 배경
+    },
+    {
+      type: 'checkbox',
+      label: "포트폴리오 공개",
+      fieldName: "isPublic",
+      checkboxLabel: "포트폴리오를 공개합니다"
     }
   ]
 }
@@ -233,7 +255,7 @@ const { control, handleSubmit, formState: { errors } } = useForm({
 
 ### 2. 필드 렌더링
 
-각 필드는 `Controller`로 감싸져서 React Hook Form과 연동됩니다:
+각 필드는 `Controller`로 감싸져서 React Hook Form과 연동됩니다. 필드 타입에 따라 다른 컴포넌트가 렌더링됩니다:
 
 ```tsx
 <Controller
@@ -247,13 +269,38 @@ const { control, handleSubmit, formState: { errors } } = useForm({
       return true
     }
   }}
-  render={({ field: { onChange } }) => (
-    <InputListProvider
-      config={field.inputConfig}
-      onInputsChange={onChange}
-      onlyOne={field.inputConfig.onlyOne}
-    />
-  )}
+  render={({ field: { onChange, value } }) => {
+    // SkillTag 필드
+    if (field.type === 'skillTag') {
+      return (
+        <SkillTagProvider
+          onTagsChange={(tags: string[]) => onChange(tags)}
+          white={field.white}
+          initialTags={field.initialTags}
+        />
+      )
+    }
+    
+    // Checkbox 필드
+    if (field.type === 'checkbox') {
+      return (
+        <Checkbox
+          checked={!!value}
+          onChange={(checked: boolean) => onChange(checked)}
+          label={field.checkboxLabel}
+        />
+      )
+    }
+    
+    // InputList 필드
+    return (
+      <InputListProvider
+        config={field.inputConfig}
+        onInputsChange={onChange}
+        onlyOne={field.inputConfig.onlyOne}
+      />
+    )
+  }}
 />
 ```
 
@@ -388,6 +435,185 @@ interface InputOfModalProps {
   submitButtonColor?: 'black' | 'blue' | 'gray'
   showCancelButton?: boolean
   onCancel?: () => void
+}
+```
+
+## 필드 타입별 상세 설명
+
+### InputList 필드 (`type: 'inputList'`)
+
+동적으로 입력 행을 추가/제거할 수 있는 필드입니다.
+
+```tsx
+{
+  type: 'inputList',
+  label: '경력 사항',
+  fieldName: 'careers',
+  required: false,
+  inputConfig: {
+    inputs: [
+      { type: 'date', width: 30, placeholder: '시작일' },
+      { type: 'text', width: 70, placeholder: '회사명' }
+    ],
+    onlyOne: false
+  }
+}
+```
+
+**제출 데이터 형식**: `MultiInputItem[][]`
+
+```typescript
+{
+  careers: [
+    [
+      { type: 'date', value: '2020-01-01', ... },
+      { type: 'text', value: '회사A', ... }
+    ],
+    [
+      { type: 'date', value: '2022-06-01', ... },
+      { type: 'text', value: '회사B', ... }
+    ]
+  ]
+}
+```
+
+### SkillTag 필드 (`type: 'skillTag'`)
+
+태그 형식으로 여러 값을 입력하는 필드입니다. 엔터로 태그를 추가하고, X 버튼으로 삭제할 수 있습니다.
+
+```tsx
+{
+  type: 'skillTag',
+  label: '기술 스택',
+  fieldName: 'skills',
+  required: true,
+  white: false,                    // 배경색 (false: 회색, true: 흰색)
+  initialTags: ['React', 'TypeScript']  // 초기 태그 (선택사항)
+}
+```
+
+**제출 데이터 형식**: `string[]`
+
+```typescript
+{
+  skills: ['React', 'TypeScript', 'Node.js']
+}
+```
+
+**특징**:
+- 엔터키로 태그 추가
+- X 버튼으로 개별 태그 삭제
+- 한글 입력 지원 (IME Composition 처리)
+- 자동 너비 조정 (react-input-autosize)
+
+### Checkbox 필드 (`type: 'checkbox'`)
+
+단일 체크박스 필드입니다.
+
+```tsx
+{
+  type: 'checkbox',
+  label: '공개 설정',
+  fieldName: 'isPublic',
+  checkboxLabel: '포트폴리오를 공개합니다'
+}
+```
+
+**제출 데이터 형식**: `boolean`
+
+```typescript
+{
+  isPublic: true
+}
+```
+
+## 실전 예제
+
+### 프로필 작성 폼
+
+```tsx
+'use client'
+
+import InputOfModal from '@/app/components/modal/inputs/InputOfModal'
+import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes'
+
+const profileConfig: FormConfig = {
+  fields: [
+    {
+      type: 'inputList',
+      label: '이름',
+      fieldName: 'name',
+      required: true,
+      inputConfig: {
+        inputs: [{ type: 'text', placeholder: '이름을 입력하세요' }],
+        onlyOne: true
+      }
+    },
+    {
+      type: 'inputList',
+      label: '이메일',
+      fieldName: 'email',
+      required: true,
+      inputConfig: {
+        inputs: [{ type: 'text', placeholder: 'email@example.com' }],
+        onlyOne: true
+      }
+    },
+    {
+      type: 'skillTag',
+      label: '기술 스택',
+      fieldName: 'skills',
+      required: true,
+      white: false
+    },
+    {
+      type: 'inputList',
+      label: '프로젝트 경험',
+      fieldName: 'projects',
+      required: false,
+      inputConfig: {
+        inputs: [
+          { type: 'text', width: 40, placeholder: '프로젝트명' },
+          { type: 'text', width: 30, placeholder: '역할' },
+          { type: 'date', width: 30, placeholder: '기간' }
+        ]
+      }
+    },
+    {
+      type: 'checkbox',
+      label: '공개 설정',
+      fieldName: 'isPublic',
+      checkboxLabel: '내 프로필을 공개합니다'
+    }
+  ]
+}
+
+export default function ProfilePage() {
+  const handleSubmit = (data: any) => {
+    console.log('제출 데이터:', data)
+    // data 구조:
+    // {
+    //   name: [[{ type: 'text', value: '홍길동', ... }]],
+    //   email: [[{ type: 'text', value: 'hong@example.com', ... }]],
+    //   skills: ['React', 'TypeScript', 'Next.js'],
+    //   projects: [
+    //     [
+    //       { type: 'text', value: '프로젝트A', ... },
+    //       { type: 'text', value: '프론트엔드', ... },
+    //       { type: 'date', value: '2023-01', ... }
+    //     ]
+    //   ],
+    //   isPublic: true
+    // }
+  }
+
+  return (
+    <InputOfModal
+      title="프로필 작성"
+      config={profileConfig}
+      onSubmit={handleSubmit}
+    />
+  )
 }
 ```
 
