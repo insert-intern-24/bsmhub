@@ -9,15 +9,31 @@ interface SkillTagProviderProps {
   className?: string;
   onTagsChange?: (tags: string[]) => void;
   readOnly?: boolean;
+  initialTags?: string[]; // 초기 태그 값
 }
 
 const SkillTagProvider = ({ 
   white = false, 
   className = '',
   onTagsChange,
-  readOnly = false
+  readOnly = false,
+  initialTags = []
 }: SkillTagProviderProps) => {
   const [{ inputs, activeIndex }, dispatch] = useInputList([{ value: '' }]);
+  
+  // 초기 태그 설정
+  React.useEffect(() => {
+    if (initialTags.length > 0) {
+      initialTags.forEach((tag, index) => {
+        if (index === 0) {
+          dispatch({ type: 'UPDATE_VALUE', index: 0, subIndex: 0, value: tag });
+        } else {
+          dispatch({ type: 'ADD_INPUT', multiInputConfig: [{ value: tag }] });
+        }
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 태그 값 추출
   const getValue = (index: number) => String(inputs[index]?.[0]?.value || '');
