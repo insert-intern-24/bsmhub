@@ -53,7 +53,12 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
                 validate: (value) => {
                   if (!field.required) return true;
                   
-                  // 배열 타입 검증 (InputList, SkillTag)
+                  // Checkbox 타입 검증
+                  if (field.type === 'checkbox' && !value) {
+                    return `${field.label}에 동의해주세요.`;
+                  }
+                  
+                  // 배열 타입 검증 (InputList, SkillTag, Picture)
                   if (Array.isArray(value) && value.length === 0) {
                     return `${field.label}은(는) 필수 항목입니다.`;
                   }

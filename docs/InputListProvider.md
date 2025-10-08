@@ -39,24 +39,37 @@ import InputListProvider from '@/app/components/modal/inputs/InputListProvider'
 ```typescript
 type InputConfig = {
   inputs: Array<{ 
-    type?: InputType          // 입력 필드 타입
+    type?: InputHTMLType      // 실제 HTML input type ('text', 'date', 'email' 등)
+    componentType?: InputType // 컴포넌트 구분 ('picture' 등)
+    mode?: InputMode          // 입력 모드 ('write', 'edit', 'read')
     width?: number            // 너비 (퍼센트)
     placeholder?: string      // placeholder 텍스트
     name?: string            // 필드 이름
     required?: boolean       // 필수 입력 여부
-    readOnly?: boolean       // 읽기 전용 여부
+    aspectRatio?: string     // picture 타입의 비율
+    icon?: 'check' | 'search' | 'calendar'  // 아이콘 타입
   }>
   onlyOne?: boolean          // 단일 입력만 허용 여부
 }
 ```
 
-### InputType
+### 타입 정의
 
 ```typescript
-type InputType = 'text' | 'date' | 'edit' | 'search' | 'picture' | ...
+// InputHTMLType: 실제 HTML input type
+type InputHTMLType = 'text' | 'date' | 'number' | 'email' | 'password' | 'tel' | 'url'
+
+// InputType: 컴포넌트 구분용
+type InputType = 'text' | 'date' | 'edit' | 'search' | 'picture' | 'checkbox' | 'skillTag'
+
+// InputMode: 입력 상태
+type InputMode = 'write' | 'edit' | 'read'
 ```
 
-**참고**: 읽기 전용 상태는 `type`이 아닌 `readOnly` prop으로 제어됩니다.
+**참고**: 
+- 읽기 전용 상태는 `mode: 'read'`로 설정
+- 비활성 입력은 자동으로 `mode: 'read'`로 전환
+- `type`은 실제 HTML input type, `componentType`은 컴포넌트 구분용
 
 ## 사용 예제
 
@@ -94,10 +107,12 @@ const config = {
       type: 'text',
       placeholder: '프로젝트명',
       width: 60,
-      required: true
+      required: true,
+      icon: 'check'
     },
     {
       type: 'date',
+      icon: 'calendar',
       placeholder: '시작일',
       width: 40
     }

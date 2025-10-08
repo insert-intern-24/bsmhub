@@ -55,6 +55,7 @@ type FormFieldConfig =
   | InputListFieldConfig 
   | SkillTagFieldConfig 
   | CheckboxFieldConfig
+  | PictureFieldConfig
 
 // InputListProvider 필드
 interface InputListFieldConfig {
@@ -72,7 +73,6 @@ interface SkillTagFieldConfig {
   fieldName: string
   required?: boolean
   white?: boolean           // 흰색 배경 여부
-  initialTags?: string[]    // 초기 태그 배열
 }
 
 // Checkbox 필드
@@ -82,6 +82,16 @@ interface CheckboxFieldConfig {
   fieldName: string
   checkboxLabel?: string    // 체크박스 옆 텍스트
 }
+
+// Picture 필드
+interface PictureFieldConfig {
+  type: 'picture'
+  label: string
+  fieldName: string
+  required?: boolean
+  aspectRatio?: string      // 비율 (예: '1:1', '16:9')
+  multiple?: boolean        // 여러 이미지 업로드 가능 여부
+}
 ```
 
 ### InputConfig
@@ -89,14 +99,24 @@ interface CheckboxFieldConfig {
 ```typescript
 type InputConfig = {
   inputs: Array<{ 
-    type?: InputType          // 입력 필드 타입
+    type?: InputHTMLType      // 실제 HTML input type ('text', 'date', 'email' 등)
+    componentType?: InputType // 컴포넌트 구분 ('picture' 등)
+    mode?: InputMode          // 입력 모드 ('write', 'edit', 'read')
     width?: number            // 너비 (퍼센트)
     placeholder?: string      // placeholder 텍스트
     name?: string            // 필드 이름
     required?: boolean       // 필수 입력 여부
+    aspectRatio?: string     // picture 타입의 비율
+    icon?: 'check' | 'search' | 'calendar'  // 아이콘 타입
   }>
   onlyOne?: boolean          // 단일 입력만 허용 여부
 }
+
+// InputMode: 입력 상태
+type InputMode = 'write' | 'edit' | 'read'
+
+// InputHTMLType: 실제 HTML input type
+type InputHTMLType = 'text' | 'date' | 'number' | 'email' | 'password' | 'tel' | 'url'
 ```
 
 ## 사용 예제
@@ -176,7 +196,7 @@ const complexFormConfig: FormConfig = {
       fieldName: "email",
       inputConfig: {
         inputs: [
-          { type: 'text', placeholder: '이메일을 입력하세요' }
+          { type: 'email', placeholder: '이메일을 입력하세요', icon: 'check' }
         ],
         onlyOne: true  // 단일 입력만
       }
@@ -188,12 +208,19 @@ const complexFormConfig: FormConfig = {
       fieldName: "careers",
       inputConfig: {
         inputs: [
-          { type: 'date', width: 30, placeholder: '시작일' },
+          { type: 'date', width: 30, placeholder: '시작일', icon: 'calendar' },
           { type: 'text', width: 35, placeholder: '회사명' },
           { type: 'text', width: 35, placeholder: '직무' }
         ],
         onlyOne: false  // 여러 개 추가 가능
       }
+    },
+    {
+      type: 'picture',
+      label: "프로필 사진",
+      required: false,
+      fieldName: "profilePicture",
+      aspectRatio: '1:1'  // 정사각형
     },
     {
       type: 'skillTag',
@@ -274,9 +301,8 @@ const { control, handleSubmit, formState: { errors } } = useForm({
     if (field.type === 'skillTag') {
       return (
         <SkillTagProvider
-          onTagsChange={(tags: string[]) => onChange(tags)}
+          onTagsChange={(tags: string[]) => onChange(tags.map(tag => [{ value: tag }]))}
           white={field.white}
-          initialTags={field.initialTags}
         />
       )
     }
@@ -292,14 +318,29 @@ const { control, handleSubmit, formState: { errors } } = useForm({
       )
     }
     
+    // Picture 필드
+    if (field.type === 'picture') {
+      return (
+        <PictureUpload
+          aspectRatio={field.aspectRatio}
+          onFileChange={onChange}
+          value={typeof value === 'string' ? value : undefined}
+        />
+      )
+    }
+    
     // InputList 필드
-    return (
-      <InputListProvider
-        config={field.inputConfig}
-        onInputsChange={onChange}
-        onlyOne={field.inputConfig.onlyOne}
-      />
-    )
+    if (field.type === 'inputList') {
+      return (
+        <InputListProvider
+          config={field.inputConfig}
+          onInputsChange={onChange}
+          onlyOne={field.inputConfig.onlyOne}
+        />
+      )
+    }
+    
+    return <></>
   }}
 />
 ```
@@ -526,6 +567,46 @@ interface InputOfModalProps {
   isPublic: true
 }
 ```
+
+**특징**:
+- 비제어/제어 컴포넌트 모두 지원
+- 단독 사용 가능 (내부 상태 관리)
+- React Hook Form 통합
+
+### Picture 필드 (`type: 'picture'`)
+
+이미지를 업로드하는 필드입니다.
+
+```tsx
+{
+  type: 'picture',
+  label: '프로필 사진',
+  fieldName: 'profilePicture',
+  required: false,
+  aspectRatio: '1:1',    // 비율 설정 ('1:1', '4:3', '16:9' 등)
+  multiple: false         // 향후 다중 업로드 지원 (현재 미구현)
+}
+```
+
+**제출 데이터 형식**: `File | string | null`
+
+```typescript
+{
+  profilePicture: File // 업로드된 파일 객체
+}
+```
+
+**특징**:
+- 드래그 앤 드롭 지원 예정
+- 미리보기 자동 생성
+- 비율 맞춤 (aspectRatio)
+- 파일 타입 검증 (image/*)
+
+**aspectRatio 예시**:
+- `'1:1'`: 정사각형 (프로필 사진)
+- `'4:3'`: 일반 사진
+- `'16:9'`: 와이드 이미지 (배너, 썸네일)
+- `'3:4'`: 세로 이미지
 
 ## 실전 예제
 

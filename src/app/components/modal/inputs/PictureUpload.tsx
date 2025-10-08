@@ -4,7 +4,8 @@ import { useRef, useState, useEffect } from 'react';
 
 interface PictureUploadProps {
   aspectRatio?: string; // "1:1", "3:4", "16:9" 등 자유롭게 입력 가능
-  value?: string | File | null; // React Hook Form의 value
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value?: any; // React Hook Form의 value (boolean, array 등 다양한 타입이 올 수 있음)
   onFileChange?: (file: File | null) => void; // 파일 변경 콜백
 }
 
