@@ -24,7 +24,7 @@ React Hook Form의 `Controller`를 사용하여 InputListProvider를 제어된 �
 'use client'
 
 import { useForm, Controller } from 'react-hook-form'
-import InputListProvider from '@/app/components/inputsOfModal/InputListProvider'
+import InputListProvider from '@/app/components/modal/inputs/InputListProvider'
 import { MultiInputItem } from '@/utils/hook/useInputList'
 
 interface FormData {
@@ -133,7 +133,7 @@ Controller 없이 `setValue`를 사용하여 수동으로 상태를 동기화합
 'use client'
 
 import { useForm } from 'react-hook-form'
-import InputListProvider from '@/app/components/inputsOfModal/InputListProvider'
+import InputListProvider from '@/app/components/modal/inputs/InputListProvider'
 import { MultiInputItem } from '@/utils/hook/useInputList'
 
 interface FormData {
@@ -202,7 +202,7 @@ export default function SkillFormManualSync() {
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import InputListProvider from '@/app/components/inputsOfModal/InputListProvider'
+import InputListProvider from '@/app/components/modal/inputs/InputListProvider'
 
 // Zod 스키마 정의
 const projectSchema = z.object({
@@ -341,7 +341,7 @@ export default function ValidatedProjectForm() {
 
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import InputListProvider from '@/app/components/inputsOfModal/InputListProvider'
+import InputListProvider from '@/app/components/modal/inputs/InputListProvider'
 
 type ExperienceType = 'project' | 'activity' | 'award'
 
@@ -437,7 +437,7 @@ export default function DynamicExperienceForm() {
 'use client'
 
 import { useForm, Controller } from 'react-hook-form'
-import InputListProvider from '@/app/components/inputsOfModal/InputListProvider'
+import InputListProvider from '@/app/components/modal/inputs/InputListProvider'
 import { MultiInputItem } from '@/utils/hook/useInputList'
 import { savePortfolio } from './actions' // 서버 액션
 
@@ -638,7 +638,7 @@ const projects: Project[] = toObjectArray(
 ### 1. 타입 안정성
 
 ```typescript
-import { InputType } from '@/app/components/inputsOfModal/types/inputTypes'
+import { InputType } from '@/app/components/modal/inputs/types/inputTypes'
 
 // 설정을 상수로 분리
 const PROJECT_CONFIG = {
@@ -658,7 +658,7 @@ const PROJECT_CONFIG = {
 ```tsx
 // components/forms/ProjectInputField.tsx
 import { Controller, Control } from 'react-hook-form'
-import InputListProvider from '@/app/components/inputsOfModal/InputListProvider'
+import InputListProvider from '@/app/components/modal/inputs/InputListProvider'
 
 interface ProjectInputFieldProps {
   name: string
@@ -802,8 +802,8 @@ const { control } = useForm({
 ### 기본 사용법
 
 ```tsx
-import InputOfModal from '@/app/components/inputsOfModal/InputOfModal'
-import { FormConfig } from '@/app/components/inputsOfModal/types/inputTypes'
+import InputOfModal from '@/app/components/modal/inputs/InputOfModal'
+import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes'
 
 const formConfig: FormConfig = {
   fields: [

@@ -8,13 +8,13 @@
 
 - 🔄 **동적 입력 추가/제거**: 사용자가 필요에 따라 입력 그룹을 추가하거나 제거할 수 있습니다
 - 🎯 **활성 상태 관리**: 한 번에 하나의 입력 그룹만 활성화되며, 비어있는 그룹은 자동으로 제거됩니다
-- 🔒 **입력 잠금**: 비활성 입력 그룹은 잠금 상태로 표시되어 실수로 수정하는 것을 방지합니다
+- 🔒 **입력 읽기 전용**: 비활성 입력 그룹은 읽기 전용 상태로 표시되어 실수로 수정하는 것을 방지합니다
 - 📊 **유연한 설정**: 각 입력 필드의 타입, 너비, placeholder 등을 세밀하게 제어할 수 있습니다
 
 ## 설치 및 의존성
 
 ```typescript
-import InputListProvider from '@/app/components/inputsOfModal/InputListProvider'
+import InputListProvider from '@/app/components/modal/inputs/InputListProvider'
 ```
 
 ### 필요한 의존성
@@ -44,6 +44,7 @@ type InputConfig = {
     placeholder?: string      // placeholder 텍스트
     name?: string            // 필드 이름
     required?: boolean       // 필수 입력 여부
+    readOnly?: boolean       // 읽기 전용 여부
   }>
   onlyOne?: boolean          // 단일 입력만 허용 여부
 }
@@ -52,15 +53,17 @@ type InputConfig = {
 ### InputType
 
 ```typescript
-type InputType = 'text' | 'number' | 'date' | 'lock' | 'select' | ...
+type InputType = 'text' | 'date' | 'edit' | 'search' | 'picture' | ...
 ```
+
+**참고**: 읽기 전용 상태는 `type`이 아닌 `readOnly` prop으로 제어됩니다.
 
 ## 사용 예제
 
 ### 기본 사용법
 
 ```tsx
-import InputListProvider from '@/app/components/inputsOfModal/InputListProvider'
+import InputListProvider from '@/app/components/modal/inputs/InputListProvider'
 
 function MyComponent() {
   const config = {
