@@ -15,19 +15,25 @@ import { MultiInputItem } from '@utils/hook/useInputList'
 interface InputOfModalProps {
   title?: string;
   config: FormConfig;
-  onSubmit?: (data: Record<string, MultiInputItem[][] | string[] | boolean>) => void;
+  onSubmit?: (data: Record<string, MultiInputItem[][] | string[] | boolean | File | null>) => void;
   submitButtonText?: string;
 }
 
 const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '제출하기' }: InputOfModalProps) => {
   const { control, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][] | string[] | boolean>, field) => {
-      acc[field.fieldName] = field.type === 'checkbox' ? false : [];
+    defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][] | string[] | boolean | File | null>, field) => {
+      if (field.type === 'checkbox') {
+        acc[field.fieldName] = false;
+      } else if (field.type === 'picture') {
+        acc[field.fieldName] = null;
+      } else {
+        acc[field.fieldName] = [];
+      }
       return acc;
-    }, {} as Record<string, MultiInputItem[][] | string[] | boolean>)
+    }, {} as Record<string, MultiInputItem[][] | string[] | boolean | File | null>)
   });
 
-  const onFormSubmit = (data: Record<string, MultiInputItem[][] | string[] | boolean>) => {
+  const onFormSubmit = (data: Record<string, MultiInputItem[][] | string[] | boolean | File | null>) => {
     onSubmit?.(data);
   };
 
@@ -71,9 +77,7 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
                 if (field.type === 'skillTag') {
                   return (
                     <SkillTagProvider
-                      onTagsChange={(tags: string[]) => {
-                        onChange(tags.map(tag => [{ value: tag }]));
-                      }}
+                      onTagsChange={(tags: string[]) => onChange(tags.map(tag => [{ value: tag }]))}
                       white={field.white}
                     />
                   );
@@ -84,7 +88,7 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
                   return (
                     <Checkbox
                       checked={!!value}
-                      onChange={onChange}
+                      onChange={(checked: boolean) => onChange(checked)}
                       label={field.checkboxLabel}
                     />
                   );
@@ -92,12 +96,10 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
                 
                 // Picture 컴포넌트
                 if (field.type === 'picture') {
-                  const pictureValue = typeof value === 'string' || value instanceof File || value === null ? value : null;
                   return (
                     <PictureUpload
                       aspectRatio={field.aspectRatio}
                       onFileChange={onChange}
-                      value={pictureValue}
                     />
                   );
                 }

@@ -58,7 +58,8 @@ const InputListProvider = ({
   // inputs가 변경될 때마다 콜백 호출
   React.useEffect(() => {
     onInputsChange?.(inputs)
-  }, [inputs, onInputsChange])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputs])
 
   const handleAddInput = () => {
     // maxInputs 체크

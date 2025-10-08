@@ -65,17 +65,13 @@ const SkillTagProvider = ({
     }
   };
 
-  // 태그 변경 콜백 (onTagsChange를 useRef로 관리)
-  const onTagsChangeRef = React.useRef(onTagsChange);
+  // 태그 변경 콜백
   React.useEffect(() => {
-    onTagsChangeRef.current = onTagsChange;
-  }, [onTagsChange]);
-
-  React.useEffect(() => {
-    if (onTagsChangeRef.current) {
+    if (onTagsChange) {
       const tags = inputs.map((input) => String(input[0]?.value || '')).filter(v => v.trim());
-      onTagsChangeRef.current(tags);
+      onTagsChange(tags);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputs]);
 
   // 태그 렌더링
