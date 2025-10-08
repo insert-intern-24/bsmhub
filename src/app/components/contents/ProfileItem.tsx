@@ -1,12 +1,7 @@
 import React from "react"
 import Link from "next/link"
 import { IconLink } from "@tabler/icons-react"
-
-export interface ItemProps {
-  mode: 'competition' | 'certificate' | 'link'
-  value: string | null
-  url?: string | null
-}
+import { ItemProps } from "@/types/portfolio"
 
 const ProfileItem = ({ mode, value, url }: ItemProps) => {
   const Content = (

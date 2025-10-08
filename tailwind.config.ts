@@ -14,6 +14,9 @@ const config: Config = {
       }
     },
     extend: {
+      gridTemplateColumns: {
+        'auto-fit-card': 'repeat(auto-fit, minmax(24rem, 1fr))'
+      },
       lineClamp: {
         7: '7',
         8: '8',
