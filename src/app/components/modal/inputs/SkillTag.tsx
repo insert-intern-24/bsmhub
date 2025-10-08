@@ -55,6 +55,7 @@ const SkillTag = (props: SkillTagProps) => {
         type='text'
         placeholder='입력해 추가하기...'
         value={value}
+        autoFocus
         onChange={(e) => onChange?.(e.target.value)}
         onCompositionStart={() => isComposingRef.current = true}
         onCompositionEnd={() => isComposingRef.current = false}
