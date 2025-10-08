@@ -14,19 +14,19 @@ import { MultiInputItem } from '@utils/hook/useInputList'
 interface InputOfModalProps {
   title?: string;
   config: FormConfig;
-  onSubmit?: (data: Record<string, MultiInputItem[][]>) => void;
+  onSubmit?: (data: Record<string, MultiInputItem[][] | string[] | boolean>) => void;
   submitButtonText?: string;
 }
 
 const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '제출하기' }: InputOfModalProps) => {
   const { control, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][]>, field) => {
-      acc[field.fieldName] = [];
+    defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][] | string[] | boolean>, field) => {
+      acc[field.fieldName] = field.type === 'checkbox' ? false : [];
       return acc;
-    }, {} as Record<string, MultiInputItem[][]>)
+    }, {} as Record<string, MultiInputItem[][] | string[] | boolean>)
   });
 
-  const onFormSubmit = (data: Record<string, MultiInputItem[][]>) => {
+  const onFormSubmit = (data: Record<string, MultiInputItem[][] | string[] | boolean>) => {
     console.log('Form submitted:', data);
     onSubmit?.(data);
   };
@@ -51,9 +51,13 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
               control={control}
               rules={{ 
                 validate: (value) => {
-                  if (field.required && (!value || value.length === 0)) {
+                  if (!field.required) return true;
+                  
+                  // 배열 타입 검증 (InputList, SkillTag)
+                  if (Array.isArray(value) && value.length === 0) {
                     return `${field.label}은(는) 필수 항목입니다.`;
                   }
+                  
                   return true;
                 }
               }}
