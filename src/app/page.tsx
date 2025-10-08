@@ -23,7 +23,7 @@ const sampleFormConfig: FormConfig = {
       fieldName: 'email',
       inputConfig: {
         inputs: [
-          { type: 'text', placeholder: '이메일을 입력하세요', name: 'email' },
+          { type: 'email', placeholder: '이메일을 입력하세요', name: 'email' },
         ],
         onlyOne: true, // 단일 입력만 허용
       },
@@ -56,24 +56,18 @@ const sampleFormConfig: FormConfig = {
       },
     },
     {
-      type: 'inputList',
+      type: 'picture',
       label: '프로필 사진',
       required: false,
       fieldName: 'profilePicture',
-      inputConfig: {
-        inputs: [{ type: 'picture', aspectRatio: '1:1' }],
-        onlyOne: true,
-      },
+      aspectRatio: '1:1',
     },
     {
-      type: 'inputList',
-      label: '프로젝트 이미지',
+      type: 'picture',
+      label: '프로젝트 대표 이미지',
       required: false,
-      fieldName: 'projectImages',
-      inputConfig: {
-        inputs: [{ type: 'picture', aspectRatio: '16:9' }],
-        onlyOne: false, // 여러 이미지 추가 가능
-      },
+      fieldName: 'projectImage',
+      aspectRatio: '16:9',
     },
     {
       type: 'skillTag',
@@ -115,16 +109,16 @@ export default function Home() {
         <h2 className="text-2xl mb-4">개별 컴포넌트 테스트</h2>
         <LabelInputs label="이메일" required />
         <Buttons />
-        <Inputs type="text" />
-        <Inputs type="search" />
-        <Inputs type="date" />
-        <Inputs type="text" readOnly={true} value="읽기 전용 입력" />
-        <Inputs type="edit" />
+        <Inputs type="text" mode="write" />
+        <Inputs type="text" icon="search" />
+        <Inputs type="date" icon="calendar" />
+        <Inputs type="text" mode="read" value="읽기 전용 입력" />
+        <Inputs type="text" icon="check" />
         <PictureUpload aspectRatio="4:3" />
         <InputListProvider
           config={{
             inputs: [
-              { type: 'date', width: 30 },
+              { type: 'date', width: 30, icon: 'calendar' },
               { type: 'text', width: 35, placeholder: '내용을 입력하세요' },
               { type: 'text', width: 35 },
             ],
@@ -215,6 +209,8 @@ export default function Home() {
           />
         );
       })()}
+      <Checkbox label="동의합니다" />
+
     </div>
   );
 }

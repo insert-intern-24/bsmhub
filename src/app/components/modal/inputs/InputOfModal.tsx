@@ -8,6 +8,7 @@ import InputListProvider from './InputListProvider'
 import SkillTagProvider from './SkillTagProvider'
 import Checkbox from './Checkbox'
 import Buttons from './Buttons'
+import PictureUpload from './PictureUpload'
 import { FormConfig } from './types/inputTypes'
 import { MultiInputItem } from '@utils/hook/useInputList'
 
@@ -27,7 +28,6 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
   });
 
   const onFormSubmit = (data: Record<string, MultiInputItem[][] | string[] | boolean>) => {
-    console.log('Form submitted:', data);
     onSubmit?.(data);
   };
 
@@ -83,14 +83,30 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
                   );
                 }
                 
-                // 기본 InputListProvider
-                return (
-                  <InputListProvider
-                    config={field.inputConfig}
-                    onInputsChange={onChange}
-                    onlyOne={field.inputConfig.onlyOne}
-                  />
-                );
+                // Picture 컴포넌트
+                if (field.type === 'picture') {
+                  return (
+                    <PictureUpload
+                      aspectRatio={field.aspectRatio}
+                      onFileChange={onChange}
+                      value={value}
+                    />
+                  );
+                }
+                
+                // InputList 타입
+                if (field.type === 'inputList') {
+                  return (
+                    <InputListProvider
+                      config={field.inputConfig}
+                      onInputsChange={onChange}
+                      onlyOne={field.inputConfig.onlyOne}
+                    />
+                  );
+                }
+                
+                // Always return a React element
+                return <></>;
               }}
             />
             

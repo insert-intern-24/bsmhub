@@ -3,17 +3,20 @@
 import React from 'react'
 import { useInputList } from '@utils/hook/useInputList'
 import MultiInput, { type MultiInputItem } from './MultiInput'
-import { InputType } from './types/inputTypes'
+import { InputType, InputHTMLType, InputMode } from './types/inputTypes'
 
 // Input 설정 타입 - inputs 배열로 통일
 export type InputConfig = {
   inputs: Array<{ 
-    type?: InputType
+    type?: InputHTMLType // 실제 HTML input type
+    componentType?: InputType // 컴포넌트 구분 (picture 등)
+    mode?: InputMode
     width?: number
     placeholder?: string
     name?: string
     required?: boolean
     aspectRatio?: string
+    icon?: 'check' | 'search' | 'calendar'
   }>
   onlyOne?: boolean
   white?: boolean // SkillTag용
@@ -39,11 +42,14 @@ const InputListProvider = ({
   // config를 MultiInputItem으로 변환
   const initialConfig = config.inputs.map(input => ({
     type: input.type || 'text',
+    componentType: input.componentType,
+    mode: input.mode,
     width: input.width,
     placeholder: input.placeholder,
     name: input.name,
     required: input.required,
     aspectRatio: input.aspectRatio,
+    icon: input.icon,
     value: ''
   })) as MultiInputItem[]
 
@@ -82,7 +88,7 @@ const InputListProvider = ({
             <MultiInput 
               config={input.map((item: MultiInputItem, subIndex: number) => ({
                 ...item,
-                readOnly: isReadOnly,
+                mode: isReadOnly ? 'read' : (item.mode || 'write'),
                 onChange: (e: React.ChangeEvent<HTMLInputElement>) => dispatch({
                   type: 'UPDATE_VALUE',
                   index,

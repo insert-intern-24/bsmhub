@@ -90,7 +90,6 @@ const SkillTagProvider = ({
           onChange={(val) => updateValue(index, val)}
           onAdd={() => value.trim() && addInput()}
           white={white}
-          autoFocus
         />
       );
     }
