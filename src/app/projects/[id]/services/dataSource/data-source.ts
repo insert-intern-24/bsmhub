@@ -14,30 +14,11 @@ const fetchFromSupabase = async (projectId: number) => {
     .from('projects')
     .select(
       `
-        project_id,
-        project_name,
-        description,
-        status,
-        category_id,
-        created_at,
-        project_markdown:project_markdown(mark_id, mark_desc, project_id),
+        *,
+        project_markdown:project_markdown(*),
         project_contributors:project_contributors(
-          project_id,
-          student_id,
-          description,
-          student:student(
-            student_id,
-            name,
-            profile,
-            department_id,
-            join_at,
-            birthday,
-            graduate_at,
-            email,
-            gender,
-            phone,
-            student_number
-          )
+          *,
+          student:student(*)
         )
       `,
     )

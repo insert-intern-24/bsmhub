@@ -34,7 +34,7 @@ const ProjectActions = () => (
 );
 
 const PlayButton = () => (
-  <div className="relative flex-1">
+  <button className="relative flex-1 cursor-pointer">
     <div
       className="absolute inset-x-[0%] top-1/4 h-12"
       style={PLAY_BUTTON_DEPTH_STYLE}
@@ -69,13 +69,13 @@ const PlayButton = () => (
         <Body2 className="text-white">Play</Body2>
       </div>
     </div>
-  </div>
+  </button>
 );
 
 const AddToPlaylistButton = () => (
-  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-light-gray-input">
+  <button className="flex h-10 w-10 items-center justify-center rounded-full bg-light-gray-input cursor-pointer">
     <IconPlaylistAdd size={(16 * 12) / 16} color="black" />
-  </div>
+  </button>
 );
 
 interface ProjectLinkSectionProps {
@@ -85,7 +85,18 @@ interface ProjectLinkSectionProps {
 export const ProjectLinkSection = ({ url }: ProjectLinkSectionProps) => (
   <section className="flex-col gap-[0.375rem]">
     <Label>링크</Label>
-    <Label className="text-detail">{url ?? '등록된 링크가 없습니다.'}</Label>
+    {url ? (
+      <a 
+        href={url} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="text-detail cursor-pointer hover:underline"
+      >
+        <Label className="text-detail">{url}</Label>
+      </a>
+    ) : (
+      <Label className="text-detail">등록된 링크가 없습니다.</Label>
+    )}
   </section>
 );
 
