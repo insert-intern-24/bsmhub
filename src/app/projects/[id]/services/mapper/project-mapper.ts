@@ -20,10 +20,10 @@ export const toViewModel = (project: ProjectDetailRow): ProjectDetailViewModel =
     iconImage: iconImage ?? DEFAULT_ICON,
     technologies: technologies ?? [],
     team: (project.project_contributors ?? []).map((contributor, index) => ({
-      id: contributor.student_id ?? `member-${index}`,
-      name: contributor.student?.name ?? '이름 미정',
+      id: contributor.profile_id ?? `member-${index}`,
+      name: contributor.profile?.profile_name ?? '이름 미정',
       role: contributor.description ?? '기여 내용 미정',
-      profileImage: contributor.student?.profile ?? DEFAULT_PROFILE,
+      profileImage: contributor.profile?.profile_image ?? DEFAULT_PROFILE,
     })),
   };
 };

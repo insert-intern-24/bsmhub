@@ -9,7 +9,7 @@ export type ProjectDetailRow = MergeDeep<
       MergeDeep<
         Tables<'project_contributors'>,
         {
-          student: Tables<'student'> | null;
+          profile: Tables<'profile'> | null;
         }
       >
     > | null;

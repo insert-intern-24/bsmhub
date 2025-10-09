@@ -15,10 +15,10 @@ const fetchFromSupabase = async (projectId: number) => {
     .select(
       `
         *,
-        project_markdown:project_markdown(*),
-        project_contributors:project_contributors(
+        project_markdown(*),
+        project_contributors(
           *,
-          student:student(*)
+          profile(*)
         )
       `,
     )
