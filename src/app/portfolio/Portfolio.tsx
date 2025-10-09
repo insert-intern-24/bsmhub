@@ -6,12 +6,13 @@ import Tabs from '../components/layout/Tabs';
 import PortfolioHome from '../components/card/portfolio/PortfolioHome';
 import PortfolioProject from '../components/card/portfolio/components/PortfolioProject';
 import { getProfileById } from '@/services/profile/getProfileById';
-import NotFound from '../not-found';
+// import NotFound from '../not-found';
 import { convertName } from '@/utils/convertName';
 import { getProfileDetail } from '@/services/profile/getProfileDetail';
 import { getProfileIntroduce } from '@/services/profile/getProfileIntroduce';
 import { getPersonalProjects } from '@/services/project/getPersonalProjects';
 import { mockPortfolioProjects } from '../mock/portfolioProject';
+import { notFound } from 'next/navigation';
 
 interface PortfolioProps {
   uuid: string;
@@ -20,7 +21,7 @@ interface PortfolioProps {
 
 const Portfolio = async ({ uuid, path = 'home' }: PortfolioProps) => {
   const profile = await getProfileById(uuid);
-  if (!profile) return <NotFound />;
+  if (!profile) notFound();
 
   const profileDetail = await getProfileDetail(uuid);
   const profileIntroduce = await getProfileIntroduce(uuid);
