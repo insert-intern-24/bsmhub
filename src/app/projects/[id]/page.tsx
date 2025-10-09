@@ -4,11 +4,11 @@ import ProjectSidebar from './components/ProjectSidebar';
 import { getProjectDetailViewModel } from './services/project-service';
 
 interface ProjectDetailPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 const ProjectDetailPage = async ({ params }: ProjectDetailPageProps) => {
-  const { id } = params;
+  const { id } = await params;
   const projectId = Number(id);
 
   if (Number.isNaN(projectId)) {
