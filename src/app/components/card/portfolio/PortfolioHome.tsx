@@ -1,21 +1,21 @@
-import PortfolioItems from './components/PortfolioItems';
+import PortfolioItems from './components/PortfolioDetail';
 import { Title } from '../../system/text';
 
 import mockCardData from '@/app/mock/projectCard';
 import Card from '../project/ProjectCard';
 
-import { PortfolioItemsProps } from '@/types/portfolio';
+import { PortfolioDetailProps } from '@/app/portfolio/types/portfolio';
 
 interface PortfolioHomeProps {
   content: string;
-  items: PortfolioItemsProps[];
+  details: PortfolioDetailProps[];
 }
 
-const PortfolioHome = ({ content, items }: PortfolioHomeProps) => {
+const PortfolioHome = ({ content, details }: PortfolioHomeProps) => {
   return (
     <>
       <aside>
-        <PortfolioItems items={items} />
+        <PortfolioItems details={details} />
       </aside>
       <section className="flex-col gap-5">
         <div>{content}</div>

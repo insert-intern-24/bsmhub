@@ -1,11 +1,19 @@
 import Portfolio from '../Portfolio';
-import { PortfolioProps } from '@/types/portfolio';
+
+interface PortfolioProps {
+  params: Promise<{ uuid: string }>;
+  searchParams: Promise<{
+    path: 'home' | 'project';
+  }>;
+}
 
 const PortfolioPage = async ({ params, searchParams }: PortfolioProps) => {
-  const paramsData = await params;
-  const searchParamsData = await searchParams;
+  const uuid = (await params).uuid;
+  const path = (await searchParams).path ?? 'home';
 
-  return <Portfolio params={paramsData} searchParams={searchParamsData} />;
+  if (uuid === 'all') return <div>전체 포트폴리오~~</div>;
+
+  return <Portfolio uuid={uuid} path={path} />;
 };
 
 export default PortfolioPage;
