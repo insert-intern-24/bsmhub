@@ -1160,6 +1160,7 @@ export type Database = {
           category_id: number
           created_at: string
           description: string
+          owner: string
           project_id: number
           project_name: string
           status: number
@@ -1168,6 +1169,7 @@ export type Database = {
           category_id: number
           created_at?: string
           description: string
+          owner: string
           project_id?: number
           project_name: string
           status: number
@@ -1176,6 +1178,7 @@ export type Database = {
           category_id?: number
           created_at?: string
           description?: string
+          owner?: string
           project_id?: number
           project_name?: string
           status?: number
@@ -1186,6 +1189,12 @@ export type Database = {
             columns: ["category_id"]
             referencedRelation: "project_category"
             referencedColumns: ["category_id"]
+          },
+          {
+            foreignKeyName: "projects_owner_fkey"
+            columns: ["owner"]
+            referencedRelation: "profile"
+            referencedColumns: ["profile_id"]
           },
         ]
       }
@@ -1607,6 +1616,14 @@ export type Database = {
       get_my_claims: {
         Args: Record<PropertyKey, never>
         Returns: Json
+      }
+      get_personal_projects: {
+        Args: { profile_id: string }
+        Returns: {
+          project_id: number
+          project_name: string
+          description: string
+        }[]
       }
       is_claims_admin: {
         Args: Record<PropertyKey, never>

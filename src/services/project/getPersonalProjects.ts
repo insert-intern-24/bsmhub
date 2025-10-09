@@ -11,10 +11,8 @@ interface PersonalProject {
 export const getPersonalProjects = async (profile_id: string) => {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .rpc('get_personal_projects', { // supabase-js에는 group by가 없기 때문에 rpc query로 구현
-      profile_id: profile_id
-    })
+  // @ts-expect-error TS2345
+  const { data, error } = await supabase.rpc('get_personal_projects', { profile_id }) // supabase-js에는 group by가 없기 때문에 rpc query로 구현
 
   if (error) {
     console.error('개인 프로젝트 조회 중 오류')
