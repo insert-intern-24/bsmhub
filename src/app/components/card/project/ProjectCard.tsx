@@ -7,7 +7,7 @@ export interface CardProps {
   title: string;
   projectImage: string;
   authors: {
-    name: string;
+    name?: string;
     profileImage: string;
   }[];
 }

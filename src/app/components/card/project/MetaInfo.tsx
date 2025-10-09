@@ -5,7 +5,7 @@ import ProfileImage from '../portfolio/components/ProfileImage';
 interface MetaInfoProps {
   title: string;
   authors: {
-    name: string;
+    name?: string;
     profileImage: string;
   }[];
 }
@@ -20,7 +20,7 @@ const MetaInfo = ({ title, authors }: MetaInfoProps) => {
           <>
             <ProfileImage
               src={authors[0].profileImage}
-              name={authors[0].name}
+              name={authors[0].name ?? ''}
               size="tiny"
             />
             <Caption className="font-black">{authors[0].name}</Caption>
