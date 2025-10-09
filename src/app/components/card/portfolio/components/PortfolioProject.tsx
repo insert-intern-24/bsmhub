@@ -1,12 +1,12 @@
 import { Title } from '@/app/components/system/text';
 import Card, { CardProps } from '../../project/ProjectCard';
 
-interface PortfolioProject {
+export interface PortfolioProject {
   mode: 'personal' | 'cooperation';
   datas: CardProps[];
 }
 
-interface PortfolioProjectProps {
+export interface PortfolioProjectProps {
   projects: PortfolioProject[];
 }
 

@@ -1,17 +1,17 @@
 import PortfolioItems from './components/PortfolioDetail';
 import { Title } from '../../system/text';
-
-import mockCardData from '@/app/mock/projectCard';
 import Card from '../project/ProjectCard';
 
 import { PortfolioDetailProps } from '@/app/portfolio/types/portfolio';
+import { CardProps } from '@/app/components/card/project/ProjectCard';
 
 interface PortfolioHomeProps {
   content: string;
   details: PortfolioDetailProps[];
+  projects: CardProps[];
 }
 
-const PortfolioHome = ({ content, details }: PortfolioHomeProps) => {
+const PortfolioHome = ({ content, details, projects }: PortfolioHomeProps) => {
   return (
     <>
       <aside>
@@ -22,7 +22,7 @@ const PortfolioHome = ({ content, details }: PortfolioHomeProps) => {
         <div>
           <Title>개인 프로젝트</Title>
           <div className="mt-2 grid gap-6 grid-cols-auto-fit-card portfolioHomeCard">
-            {mockCardData.map((data) => (
+            {projects.map((data) => (
               <Card
                 key={data.id}
                 id={data.id}

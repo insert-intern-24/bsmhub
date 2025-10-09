@@ -5,12 +5,13 @@ import Tabs from '../components/layout/Tabs';
 
 import PortfolioHome from '../components/card/portfolio/PortfolioHome';
 import PortfolioProject from '../components/card/portfolio/components/PortfolioProject';
-import { mockPortfolioProjects } from '../mock/portfolioProject';
 import { getProfileById } from '@/services/profile/getProfileById';
 import NotFound from '../not-found';
 import { convertName } from '@/utils/convertName';
 import { getProfileDetail } from '@/services/profile/getProfileDetail';
 import { getProfileIntroduce } from '@/services/profile/getProfileIntroduce';
+import { getPersonalProjects } from '@/services/project/getPersonalProjects';
+import { mockPortfolioProjects } from '../mock/portfolioProject';
 
 interface PortfolioProps {
   uuid: string;
@@ -23,6 +24,7 @@ const Portfolio = async ({ uuid, path = 'home' }: PortfolioProps) => {
 
   const profileDetail = await getProfileDetail(uuid);
   const profileIntroduce = await getProfileIntroduce(uuid);
+  const personalProjects = await getPersonalProjects(uuid);
 
   const isHome = path === 'home';
 
@@ -30,7 +32,11 @@ const Portfolio = async ({ uuid, path = 'home' }: PortfolioProps) => {
 
   if (isHome) {
     Content = (
-      <PortfolioHome content={profileIntroduce} details={profileDetail} />
+      <PortfolioHome
+        content={profileIntroduce}
+        details={profileDetail}
+        projects={personalProjects}
+      />
     );
     containerCss = 'grid grid-cols-[22rem_1fr] grid-rows-[auto_auto] gap-7';
   } else {
