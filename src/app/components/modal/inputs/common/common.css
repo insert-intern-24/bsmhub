@@ -1,0 +1,7 @@
+.input-common {
+  @apply w-full h-[3.3125rem] rounded-md cursor-pointer flex-center bg-light-gray-outline;
+}
+
+.remove-input-focus {
+  @apply outline-none border-none focus:outline-none focus:ring-0
+}
