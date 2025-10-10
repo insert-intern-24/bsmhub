@@ -8,6 +8,11 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    screens: {
+      mobile: {
+        max: '900px'
+      }
+    },
     extend: {
       lineClamp: {
         7: '7',
@@ -68,7 +73,8 @@ const config: Config = {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-        },'.flex-x-center': {
+        },
+        '.flex-x-center': {
           display: 'flex',
           justifyContent: 'space-between',
         },
@@ -76,7 +82,7 @@ const config: Config = {
           display: 'flex',
           alignItems: 'center',
         },
-        '.inline-flex-center' : {
+        '.inline-flex-center': {
           display: 'inline-flex',
           justifyContent: 'space-between',
           alignItems: 'center',
