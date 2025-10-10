@@ -1,9 +1,10 @@
 # Build Stage
 FROM node:23-alpine AS builder
 WORKDIR /app
+RUN npm install -g pnpm
 RUN apk add --no-cache vips-dev git
-COPY package*.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 RUN npm install --platform=linuxmusl --arch=x64 sharp
 COPY . .
 RUN npm run build
