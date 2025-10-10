@@ -1,14 +1,31 @@
-import type { ProjectDetailRow, ProjectDetailViewModel } from '../../components/types';
+import type {
+  ProjectDetailRow,
+  ProjectDetailViewModel,
+} from '../../components/types';
 
-const DEFAULT_ICON = process.env.NEXT_PUBLIC_PROJECT_DEFAULT_ICON ?? '/card/dummy-project-icon.png';
-const DEFAULT_PROFILE = process.env.NEXT_PUBLIC_PROJECT_FALLBACK_PROFILE ?? '/card/dummy-profile.png';
+const DEFAULT_ICON = process.env.NEXT_PUBLIC_PROJECT_DEFAULT_ICON;
+const DEFAULT_PROFILE = process.env.NEXT_PUBLIC_PROJECT_FALLBACK_PROFILE;
+export const toViewModel = (
+  project: ProjectDetailRow,
+): ProjectDetailViewModel => {
+  let detailDescription = project.description ?? '설명 정보가 없습니다.';
 
-export const toViewModel = (project: ProjectDetailRow): ProjectDetailViewModel => {
+  if (project.project_markdown?.mark_desc) {
+    try {
+      const markdownData = JSON.parse(project.project_markdown.mark_desc);
+      if (markdownData.detailDescription) {
+        detailDescription = markdownData.detailDescription;
+      }
+    } catch (error) {
+      console.warn('Failed to parse project_markdown.mark_desc:', error);
+    }
+  }
+
   return {
     id: project.project_id,
     title: project.project_name,
-    introduction: project.introduction ?? '소개 정보가 없습니다.',
-    detailDescription: project.description ?? '설명 정보가 없습니다.',
+    introduction: project.description ?? '소개 정보가 없습니다.',
+    detailDescription,
     githubUrl: project.link,
     iconImage: DEFAULT_ICON,
     technologies: project.skills ?? [],

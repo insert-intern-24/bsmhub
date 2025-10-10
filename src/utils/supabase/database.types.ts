@@ -1138,7 +1138,6 @@ export type Database = {
           category_id: number
           created_at: string
           description: string
-          introduction: string | null
           link: string | null
           owner: string
           project_id: number
@@ -1150,7 +1149,6 @@ export type Database = {
           category_id: number
           created_at?: string
           description: string
-          introduction?: string | null
           link?: string | null
           owner: string
           project_id?: number
@@ -1162,7 +1160,6 @@ export type Database = {
           category_id?: number
           created_at?: string
           description?: string
-          introduction?: string | null
           link?: string | null
           owner?: string
           project_id?: number
