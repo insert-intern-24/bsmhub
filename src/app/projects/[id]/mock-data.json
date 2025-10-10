@@ -6,6 +6,7 @@
     "status": 1,
     "category_id": 1,
     "created_at": "2024-01-01T00:00:00Z",
+    "owner": "S-1",
     "project_markdown": {
       "mark_id": 1,
       "project_id": 1,
@@ -14,56 +15,46 @@
     "project_contributors": [
       {
         "project_id": 1,
-        "student_id": "S-1",
+        "profile_id": "S-1",
         "description": "프론트엔드 개발자",
-        "student": {
-          "student_id": "S-1",
-          "name": "김민수",
-          "profile": "/card/dummy-profile.png",
-          "department_id": 1,
-          "join_at": "2022-03-01T00:00:00Z",
-          "birthday": null,
-          "graduate_at": null,
+        "profile": {
+          "profile_id": "S-1",
+          "profile_image": "",
+          "profile_name": "김민수",
+          "created_at": "2022-03-01T00:00:00Z",
+          "isTeam": false,
           "email": null,
-          "gender": null,
-          "phone": null,
-          "student_number": 101
+          "owner": "김민수",
+          "link": []
         }
       },
       {
         "project_id": 1,
-        "student_id": "S-2",
+        "profile_id": "S-2",
         "description": "백엔드 개발자",
-        "student": {
-          "student_id": "S-2",
-          "name": "박서영",
-          "profile": "/card/dummy-profile.png",
-          "department_id": 1,
-          "join_at": "2022-03-01T00:00:00Z",
-          "birthday": null,
-          "graduate_at": null,
+        "profile": {
+          "profile_id": "S-2",
+          "profile_image": "",
+          "profile_name": "박서영",
+          "created_at": "2022-03-01T00:00:00Z",
+          "isTeam": false,
           "email": null,
-          "gender": null,
-          "phone": null,
-          "student_number": 102
+          "owner": "박서영",
+          "link": []
         }
       },
       {
         "project_id": 1,
-        "student_id": "S-3",
+        "profile_id": "S-3",
         "description": "UI/UX 디자이너",
-        "student": {
-          "student_id": "S-3",
-          "name": "이동현",
-          "profile": "/card/dummy-profile.png",
-          "department_id": 1,
-          "join_at": "2022-03-01T00:00:00Z",
-          "birthday": null,
-          "graduate_at": null,
+        "profile": {
+          "profile_id": "S-3",
+          "profile_name": "이동현",
+          "created_at": "2022-03-01T00:00:00Z",
+          "isTeam": false,
           "email": null,
-          "gender": null,
-          "phone": null,
-          "student_number": 103
+          "owner": "이동현",
+          "link": []
         }
       }
     ]
@@ -75,6 +66,7 @@
     "status": 1,
     "category_id": 2,
     "created_at": "2024-01-15T00:00:00Z",
+    "owner": "S-4",
     "project_markdown": {
       "mark_id": 2,
       "project_id": 2,
@@ -83,38 +75,32 @@
     "project_contributors": [
       {
         "project_id": 2,
-        "student_id": "S-4",
+        "profile_id": "S-4",
         "description": "앱 개발자",
-        "student": {
-          "student_id": "S-4",
-          "name": "최지원",
-          "profile": "/card/dummy-profile.png",
-          "department_id": 2,
-          "join_at": "2022-03-01T00:00:00Z",
-          "birthday": null,
-          "graduate_at": null,
+        "profile": {
+          "profile_id": "S-4",
+          "profile_image": "",
+          "profile_name": "최지원",
+          "created_at": "2022-03-01T00:00:00Z",
+          "isTeam": false,
           "email": null,
-          "gender": null,
-          "phone": null,
-          "student_number": 201
+          "owner": "최지원",
+          "link": []
         }
       },
       {
         "project_id": 2,
-        "student_id": "S-5",
+        "profile_id": "S-5",
         "description": "백엔드 개발자",
-        "student": {
-          "student_id": "S-5",
-          "name": "정민호",
-          "profile": "/card/dummy-profile.png",
-          "department_id": 2,
-          "join_at": "2022-03-01T00:00:00Z",
-          "birthday": null,
-          "graduate_at": null,
+        "profile": {
+          "profile_id": "S-5",
+          "profile_image": "",
+          "profile_name": "정민호",
+          "created_at": "2022-03-01T00:00:00Z",
+          "isTeam": false,
           "email": null,
-          "gender": null,
-          "phone": null,
-          "student_number": 202
+          "owner": "정민호",
+          "link": []
         }
       }
     ]
