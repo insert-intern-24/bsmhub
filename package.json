@@ -18,7 +18,7 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.18",
     "google-one-tap": "^1.0.6",
-    "lexical-rich-text-editor": "git+https://github.com/Team-INSERT/lexical-react.git#build-dist",
+    "lexical-rich-text-editor": "github:Team-INSERT/lexical-react#build-dist",
     "next": "^15.5.4",
     "next-mdx-remote": "^5.0.0",
     "react": "^19.2.0",
