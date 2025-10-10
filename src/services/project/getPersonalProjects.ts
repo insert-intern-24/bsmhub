@@ -6,27 +6,38 @@ interface PersonalProject {
   project_id: number;
   project_name: string;
   description: string;
+  project_thumbnail: string;
+  owner: string;
 }
 
 export const getPersonalProjects = async (profile_id: string) => {
   const supabase = await createClient();
 
-  // @ts-expect-error TS2345
-  const { data, error } = await supabase.rpc('get_personal_projects', { profile_id }) // supabase-js에는 group by가 없기 때문에 rpc query로 구현
-
+  const { data, error } = await supabase
+    .from('projects')
+    .select(`
+      project_id,
+      project_name,
+      description,
+      project_thumbnail,
+      owner
+    `)
+    .eq('owner', profile_id)
+    
   if (error) {
     console.error('개인 프로젝트 조회 중 오류')
-    return [];
   }
 
   const projects: CardProps[] = (data as PersonalProject[]).map((project) => ({
     id: project.project_id,
     title: project.description,
-    projectImage: '/shared/project.png', // supabase에 사진 저장 기능이 구현되어 있지 않기 때문에 mock 데이터로 대체
+    projectImage: project.project_thumbnail.replace('{{supabaseHost}}', process.env.NEXT_PUBLIC_SUPABASE_URL!),
     authors: [
-      { profileImage: '/shared/profile.png' } // supabase에 사진 저장 기능이 구현되어 있지 않기 때문에 mock 데이터로 대체
+      { profileImage: '/shared/profile.png' } // profile 페이지에서 따로 조회한 profileImage 사용
     ],
   }));
+
+  console.log(projects)
 
   return projects || [];
 }
