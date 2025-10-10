@@ -1140,7 +1140,9 @@ export type Database = {
           description: string
           link: string | null
           owner: string
+          project_thumbnail: string | null
           project_id: number
+          project_logo: string | null
           project_name: string
           skills: string[] | null
           status: number
@@ -1151,7 +1153,9 @@ export type Database = {
           description: string
           link?: string | null
           owner: string
+          project_thumbnail?: string | null
           project_id?: number
+          project_logo?: string | null
           project_name: string
           skills?: string[] | null
           status: number
@@ -1162,7 +1166,9 @@ export type Database = {
           description?: string
           link?: string | null
           owner?: string
+          project_thumbnail?: string | null
           project_id?: number
+          project_logo?: string | null
           project_name?: string
           skills?: string[] | null
           status?: number

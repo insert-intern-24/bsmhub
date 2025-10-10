@@ -3,10 +3,6 @@ import type {
   ProjectDetailViewModel,
 } from '../../components/types';
 
-const DEFAULT_ICON =
-  process.env.NEXT_PUBLIC_PROJECT_DEFAULT_ICON ?? '기본 이미지';
-const DEFAULT_PROFILE =
-  process.env.NEXT_PUBLIC_PROJECT_FALLBACK_PROFILE ?? '기본 이미지';
 export const toViewModel = (
   project: ProjectDetailRow,
 ): ProjectDetailViewModel => {
@@ -29,13 +25,13 @@ export const toViewModel = (
     introduction: project.description ?? '소개 정보가 없습니다.',
     detailDescription,
     githubUrl: project.link,
-    iconImage: DEFAULT_ICON,
+    iconImage: project.project_logo,
     technologies: project.skills ?? [],
     team: (project.project_contributors ?? []).map((contributor, index) => ({
       id: contributor.profile_id ?? `member-${index}`,
       name: contributor.profile?.profile_name ?? '이름 미정',
       role: contributor.description ?? '기여 내용 미정',
-      profileImage: contributor.profile?.profile_image ?? DEFAULT_PROFILE,
+      profileImage: contributor.profile?.profile_image,
     })),
   };
 };

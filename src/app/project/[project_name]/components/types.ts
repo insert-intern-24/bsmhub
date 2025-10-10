@@ -15,12 +15,12 @@ export type ProjectDetailViewModel = {
   introduction: string;
   detailDescription: string;
   githubUrl?: string | null;
-  iconImage: string;
+  iconImage?: string;
   technologies: string[];
   team: Array<{
     id: string;
     name: string;
     role: string;
-    profileImage: string;
+    profileImage?: string;
   }>;
 };
