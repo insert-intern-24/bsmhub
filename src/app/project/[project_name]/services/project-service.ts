@@ -1,8 +1,8 @@
 import { fetchProjectRow } from './dataSource/data-source';
 import { toViewModel } from './mapper/project-mapper';
 
-export const getProjectDetailViewModel = async (projectId: number) => {
-  const project = await fetchProjectRow(projectId);
+export const getProjectDetailViewModel = async (projectName: string) => {
+  const project = await fetchProjectRow(projectName);
 
   if (!project) {
     return null;

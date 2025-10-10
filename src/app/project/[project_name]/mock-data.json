@@ -3,14 +3,17 @@
     "project_id": 1,
     "project_name": "BSMHub",
     "description": "학생들의 프로젝트를 공유하고 피드백을 주고받는 플랫폼",
+    "introduction": "부산소프트웨어마이스터고 학생들을 위한 프로젝트 공유 플랫폼입니다.",
     "status": 1,
     "category_id": 1,
     "created_at": "2024-01-01T00:00:00Z",
     "owner": "S-1",
+    "link": "https://github.com/example/bsmhub",
+    "skills": ["React", "Next.js", "TypeScript", "Tailwind CSS", "Supabase"],
     "project_markdown": {
       "mark_id": 1,
       "project_id": 1,
-      "mark_desc": "{\"detailDescription\":\"이 프로젝트는 부산소프트웨어마이스터고 학생들을 위한 종합적인 프로젝트 관리 플랫폼입니다.\\n\\n## 주요 기능\\n- 프로젝트 검색 및 필터링\\n- 댓글과 좋아요 피드백\\n- 관리자 통계 대시보드\\n\\n### 데모 영상\\nhttps://www.youtube.com/watch?v=dQw4w9WgXcQ\\n\\n### 개발 히스토리\\n2023년 9월부터 2024년 2월까지 총 6개월간 개발되었습니다.\\n\\n#### 회고 정리\\n- 협업 툴: GitHub Projects, Slack\\n- 버전 관리 전략: GitHub Flow\\n\\n> 사용자 만족도를 높이기 위해 꾸준한 피드백 수집과 개선을 진행했습니다.\\n\\n***\\n\\n추가 질문은 아래 이메일로 연락 주세요.\\n\\n- 담당자: 김민수\\n- 이메일: contact@example.com\",\"technologies\":[\"React\",\"Next.js\",\"TypeScript\",\"Tailwind CSS\",\"Supabase\"],\"githubUrl\":\"https://github.com/example/bsmhub\",\"iconImage\":\"/card/dummy-project-icon.png\"}"
+      "mark_desc": "{\"detailDescription\":\"이 프로젝트는 부산소프트웨어마이스터고 학생들을 위한 종합적인 프로젝트 관리 플랫폼입니다.\\n\\n## 주요 기능\\n- 프로젝트 검색 및 필터링\\n- 댓글과 좋아요 피드백\\n- 관리자 통계 대시보드\\n\\n### 데모 영상\\nhttps://www.youtube.com/watch?v=dQw4w9WgXcQ\\n\\n### 개발 히스토리\\n2023년 9월부터 2024년 2월까지 총 6개월간 개발되었습니다.\\n\\n#### 회고 정리\\n- 협업 툴: GitHub Projects, Slack\\n- 버전 관리 전략: GitHub Flow\\n\\n> 사용자 만족도를 높이기 위해 꾸준한 피드백 수집과 개선을 진행했습니다.\\n\\n***\\n\\n추가 질문은 아래 이메일로 연락 주세요.\\n\\n- 담당자: 김민수\\n- 이메일: contact@example.com\",\"iconImage\":\"/card/dummy-project-icon.png\"}"
     },
     "project_contributors": [
       {
@@ -63,14 +66,17 @@
     "project_id": 2,
     "project_name": "SchoolMeal - 급식 정보 앱",
     "description": "실시간 급식 정보와 리뷰를 확인할 수 있는 모바일 앱",
+    "introduction": "학생들이 급식 정보를 쉽게 확인할 수 있는 모바일 앱입니다.",
     "status": 1,
     "category_id": 2,
     "created_at": "2024-01-15T00:00:00Z",
     "owner": "S-4",
+    "link": "https://github.com/example/schoolmeal",
+    "skills": ["React Native", "Firebase", "Node.js"],
     "project_markdown": {
       "mark_id": 2,
       "project_id": 2,
-      "mark_desc": "{\"detailDescription\":\"학생들이 급식 정보를 쉽게 확인하고 급식에 대한 리뷰를 공유할 수 있는 모바일 애플리케이션입니다.\\n\\n### 시연 영상\\nhttps://youtu.be/VIDEO_ID_SAMPLE\\n\\n### 사용 기술\\n- React Native\\n- Firebase\\n- Node.js\",\"technologies\":[\"React Native\",\"Firebase\",\"Node.js\"],\"githubUrl\":\"https://github.com/example/schoolmeal\",\"iconImage\":\"/card/dummy-project-icon.png\"}"
+      "mark_desc": "{\"detailDescription\":\"학생들이 급식 정보를 쉽게 확인하고 급식에 대한 리뷰를 공유할 수 있는 모바일 애플리케이션입니다.\\n\\n### 시연 영상\\nhttps://youtu.be/VIDEO_ID_SAMPLE\\n\\n### 사용 기술\\n- React Native\\n- Firebase\\n- Node.js\",\"iconImage\":\"/card/dummy-project-icon.png\"}"
     },
     "project_contributors": [
       {

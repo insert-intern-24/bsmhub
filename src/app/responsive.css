@@ -18,4 +18,39 @@
     flex-direction: column;
     padding: 2.5rem;
   }
+
+  /* Project Team Section */
+  .project-team-content.foldable {
+    max-height: 180px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .project-team-content.foldable::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, white);
+    pointer-events: none;
+  }
+
+  .project-team-expand-button {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .project-team-content.expanded {
+    max-height: none;
+    overflow: visible;
+  }
 }

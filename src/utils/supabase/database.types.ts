@@ -1138,27 +1138,36 @@ export type Database = {
           category_id: number
           created_at: string
           description: string
+          introduction: string | null
+          link: string | null
           owner: string
           project_id: number
           project_name: string
+          skills: string[] | null
           status: number
         }
         Insert: {
           category_id: number
           created_at?: string
           description: string
+          introduction?: string | null
+          link?: string | null
           owner: string
           project_id?: number
           project_name: string
+          skills?: string[] | null
           status: number
         }
         Update: {
           category_id?: number
           created_at?: string
           description?: string
+          introduction?: string | null
+          link?: string | null
           owner?: string
           project_id?: number
           project_name?: string
+          skills?: string[] | null
           status?: number
         }
         Relationships: [

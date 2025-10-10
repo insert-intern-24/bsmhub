@@ -19,7 +19,7 @@ export type ProjectDetailRow = MergeDeep<
 export type ProjectDetailViewModel = {
   id: number;
   title: string;
-  shortDescription: string;
+  introduction: string;
   detailDescription: string;
   githubUrl?: string | null;
   iconImage: string;

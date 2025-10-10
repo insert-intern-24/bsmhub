@@ -4,10 +4,10 @@ import type { ProjectDetailRow } from '../../components/types';
 
 const MOCK_PROJECTS = mockProjects as ProjectDetailRow[];
 
-const fetchFromMock = (projectId: number) =>
-  MOCK_PROJECTS.find((project) => project.project_id === projectId) ?? null;
+const fetchFromMock = (projectName: string) =>
+  MOCK_PROJECTS.find((project) => project.project_name === projectName) ?? null;
 
-const fetchFromSupabase = async (projectId: number) => {
+const fetchFromSupabase = async (projectName: string) => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -22,7 +22,7 @@ const fetchFromSupabase = async (projectId: number) => {
         )
       `,
     )
-    .eq('project_id', projectId)
+    .eq('project_name', projectName)
     .maybeSingle<ProjectDetailRow>();
 
   if (error) {
@@ -33,10 +33,10 @@ const fetchFromSupabase = async (projectId: number) => {
   return data;
 };
 
-export const fetchProjectRow = async (projectId: number) => {
+export const fetchProjectRow = async (projectName: string) => {
   if (process.env.NEXT_MOCK_MODE === 'true') {
-    return fetchFromMock(projectId);
+    return fetchFromMock(projectName);
   }
 
-  return fetchFromSupabase(projectId);
+  return fetchFromSupabase(projectName);
 };
