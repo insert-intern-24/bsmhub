@@ -3,8 +3,10 @@ import type {
   ProjectDetailViewModel,
 } from '../../components/types';
 
-const DEFAULT_ICON = process.env.NEXT_PUBLIC_PROJECT_DEFAULT_ICON;
-const DEFAULT_PROFILE = process.env.NEXT_PUBLIC_PROJECT_FALLBACK_PROFILE;
+const DEFAULT_ICON =
+  process.env.NEXT_PUBLIC_PROJECT_DEFAULT_ICON ?? '기본 이미지';
+const DEFAULT_PROFILE =
+  process.env.NEXT_PUBLIC_PROJECT_FALLBACK_PROFILE ?? '기본 이미지';
 export const toViewModel = (
   project: ProjectDetailRow,
 ): ProjectDetailViewModel => {
