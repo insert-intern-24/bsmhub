@@ -1,7 +1,7 @@
 # Build Stage
 FROM node:23-alpine AS builder
 WORKDIR /app
-RUN apk add --no-cache vips-dev
+RUN apk add --no-cache vips-dev git
 COPY package*.json ./
 RUN npm ci
 RUN npm install --platform=linuxmusl --arch=x64 sharp
