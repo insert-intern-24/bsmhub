@@ -87,14 +87,10 @@ const config: Config = {
           justifyContent: 'space-between',
           alignItems: 'center',
         },
-        '.flex-center-all': {
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-        },
       });
     },
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('@tailwindcss/aspect-ratio'),
   ],
 };
 export default config;
