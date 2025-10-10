@@ -1,12 +1,13 @@
 # Build Stage
 FROM node:23-alpine AS builder
 WORKDIR /app
-RUN apk add --no-cache vips-dev
-COPY package*.json ./
-RUN npm ci
-RUN npm install --platform=linuxmusl --arch=x64 sharp
+RUN npm install -g pnpm
+RUN apk add --no-cache vips-dev git
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+# RUN npm_config_platform=linuxmusl npm_config_arch=x64 pnpm add sharp
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
 # Production Stage
 FROM node:23-alpine AS runner
