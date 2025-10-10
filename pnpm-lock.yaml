@@ -30,8 +30,8 @@ importers:
         specifier: ^1.0.6
         version: 1.0.6
       lexical-rich-text-editor:
-        specifier: git+https://github.com/Team-INSERT/lexical-react.git
-        version: git+https://github.com/Team-INSERT/lexical-react.git#e0c794fef153eff91725dad758ce5fa0824ebbd5(@lexical/code-shiki@0.36.2)(@lexical/code@0.36.2)(@lexical/hashtag@0.36.2)(@lexical/link@0.36.2)(@lexical/list@0.36.2)(@lexical/markdown@0.36.2)(@lexical/react@0.36.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(yjs@13.6.27))(@lexical/rich-text@0.36.2)(@lexical/selection@0.36.2)(@lexical/table@0.36.2)(@lexical/utils@0.36.2)(@tabler/icons-react@3.35.0(react@19.2.0))(katex@0.16.23)(lexical@0.36.2)(lodash-es@4.17.21)(react-dom@19.2.0(react@19.2.0))(react-error-boundary@6.0.0(react@19.2.0))(react@19.2.0)
+        specifier: git+https://github.com/Team-INSERT/lexical-react.git#build-dist
+        version: https://codeload.github.com/Team-INSERT/lexical-react/tar.gz/c2aa921282080eb3f58167f3e63209e878b0723a(@lexical/code-shiki@0.36.2)(@lexical/code@0.36.2)(@lexical/hashtag@0.36.2)(@lexical/link@0.36.2)(@lexical/list@0.36.2)(@lexical/markdown@0.36.2)(@lexical/react@0.36.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(yjs@13.6.27))(@lexical/rich-text@0.36.2)(@lexical/selection@0.36.2)(@lexical/table@0.36.2)(@lexical/utils@0.36.2)(@tabler/icons-react@3.35.0(react@19.2.0))(katex@0.16.23)(lexical@0.36.2)(lodash-es@4.17.21)(react-dom@19.2.0(react@19.2.0))(react-error-boundary@6.0.0(react@19.2.0))(react@19.2.0)
       next:
         specifier: ^15.5.4
         version: 15.5.4(@babel/core@7.28.3)(babel-plugin-macros@3.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -1840,9 +1840,9 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
-  lexical-rich-text-editor@git+https://github.com/Team-INSERT/lexical-react.git#e0c794fef153eff91725dad758ce5fa0824ebbd5:
-    resolution: {commit: e0c794fef153eff91725dad758ce5fa0824ebbd5, repo: https://github.com/Team-INSERT/lexical-react.git, type: git}
-    version: 0.5.1
+  lexical-rich-text-editor@https://codeload.github.com/Team-INSERT/lexical-react/tar.gz/c2aa921282080eb3f58167f3e63209e878b0723a:
+    resolution: {tarball: https://codeload.github.com/Team-INSERT/lexical-react/tar.gz/c2aa921282080eb3f58167f3e63209e878b0723a}
+    version: 0.5.2
     peerDependencies:
       '@lexical/code': ^0.36.2
       '@lexical/code-shiki': ^0.36.2
@@ -4925,7 +4925,7 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  lexical-rich-text-editor@git+https://github.com/Team-INSERT/lexical-react.git#e0c794fef153eff91725dad758ce5fa0824ebbd5(@lexical/code-shiki@0.36.2)(@lexical/code@0.36.2)(@lexical/hashtag@0.36.2)(@lexical/link@0.36.2)(@lexical/list@0.36.2)(@lexical/markdown@0.36.2)(@lexical/react@0.36.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(yjs@13.6.27))(@lexical/rich-text@0.36.2)(@lexical/selection@0.36.2)(@lexical/table@0.36.2)(@lexical/utils@0.36.2)(@tabler/icons-react@3.35.0(react@19.2.0))(katex@0.16.23)(lexical@0.36.2)(lodash-es@4.17.21)(react-dom@19.2.0(react@19.2.0))(react-error-boundary@6.0.0(react@19.2.0))(react@19.2.0):
+  lexical-rich-text-editor@https://codeload.github.com/Team-INSERT/lexical-react/tar.gz/c2aa921282080eb3f58167f3e63209e878b0723a(@lexical/code-shiki@0.36.2)(@lexical/code@0.36.2)(@lexical/hashtag@0.36.2)(@lexical/link@0.36.2)(@lexical/list@0.36.2)(@lexical/markdown@0.36.2)(@lexical/react@0.36.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(yjs@13.6.27))(@lexical/rich-text@0.36.2)(@lexical/selection@0.36.2)(@lexical/table@0.36.2)(@lexical/utils@0.36.2)(@tabler/icons-react@3.35.0(react@19.2.0))(katex@0.16.23)(lexical@0.36.2)(lodash-es@4.17.21)(react-dom@19.2.0(react@19.2.0))(react-error-boundary@6.0.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@lexical/code': 0.36.2
       '@lexical/code-shiki': 0.36.2
