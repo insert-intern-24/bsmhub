@@ -31,7 +31,7 @@ export const toViewModel = (
       id: contributor.profile_id ?? `member-${index}`,
       name: contributor.profile?.profile_name ?? '이름 미정',
       role: contributor.description ?? '기여 내용 미정',
-      profileImage: contributor.profile?.profile_image,
+      profileImage: contributor.profile?.profile_image ?? null,
     })),
   };
 };
