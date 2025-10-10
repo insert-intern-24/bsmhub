@@ -11,7 +11,7 @@ import InputOfModal from '@components/modal/inputs/InputOfModal';
 import { FormConfig } from '@components/modal/inputs/types/inputTypes';
 import { useModal } from '@components/modal';
 import Checkbox from './components/modal/inputs/Checkbox';
-import SkillTagProvider from './components/modal/inputs/SkillTagProvider';
+// import SkillTagProvider from './components/modal/inputs/SkillTagProvider';
 
 // 폼 설정 예제
 const sampleFormConfig: FormConfig = {
@@ -69,12 +69,12 @@ const sampleFormConfig: FormConfig = {
       fieldName: 'projectImage',
       aspectRatio: '16:9',
     },
-    {
-      type: 'skillTag',
-      label: '스킬',
-      fieldName: 'skills',
-      white: false,
-    },
+    // {
+    //   type: 'skillTag',
+    //   label: '스킬',
+    //   fieldName: 'skills',
+    //   white: false,
+    // },
     {
       type: 'checkbox',
       label: '동의',
@@ -148,7 +148,7 @@ export default function Home() {
       <Checkbox />
 
       {/* SkillTagProvider 읽기 전용 화이트 테스트 */}
-      <div className="mt-10 p-4 bg-gray-100">
+      {/* <div className="mt-10 p-4 bg-gray-100">
         <h2 className="text-2xl mb-4">SkillTag 읽기 전용 (화이트 배경)</h2>
         <SkillTagProvider
           white={true}
@@ -163,16 +163,16 @@ export default function Home() {
           ]}
           onTagsChange={(tags) => console.log('Tags:', tags)}
         />
-      </div>
+      </div> */}
 
       {/* SkillTagProvider 편집 가능 */}
-      <div className="mt-10">
+      {/* <div className="mt-10">
         <h2 className="text-2xl mb-4">SkillTag 편집 가능</h2>
         <SkillTagProvider
           initialTags={['JavaScript', 'HTML', 'CSS']}
           onTagsChange={(tags) => console.log('Tags:', tags)}
         />
-      </div>
+      </div> */}
 
       <InputListProvider
         config={{
@@ -181,7 +181,7 @@ export default function Home() {
       />
 
       {/* 추가 필드 테스트용 config 선언 */}
-      {(() => {
+      {/* {(() => {
         const config: FormConfig = {
           fields: [
             {
@@ -208,7 +208,7 @@ export default function Home() {
             }}
           />
         );
-      })()}
+      })()} */}
       <Checkbox label="동의합니다" />
 
     </div>

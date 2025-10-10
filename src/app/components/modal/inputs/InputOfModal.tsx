@@ -5,7 +5,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { Title } from '@components/system/text'
 import LabelOfInputs from './LabelOfInputs'
 import InputListProvider from './InputListProvider'
-import SkillTagProvider from './SkillTagProvider'
+// import SkillTagProvider from './SkillTagProvider'
 import Checkbox from './Checkbox'
 import Buttons from './Buttons'
 import PictureUpload from './PictureUpload'
@@ -79,14 +79,14 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
               }}
               render={({ field: { onChange, value } }) => {
                 // SkillTag 컴포넌트
-                if (field.type === 'skillTag') {
-                  return (
-                    <SkillTagProvider
-                      onTagsChange={(tags: string[]) => onChange(tags.map(tag => [{ value: tag }]))}
-                      white={field.white}
-                    />
-                  );
-                }
+                // if (field.type === 'skillTag') {
+                //   return (
+                //     <SkillTagProvider
+                //       onTagsChange={(tags: string[]) => onChange(tags.map(tag => [{ value: tag }]))}
+                //       white={field.white}
+                //     />
+                //   );
+                // }
                 
                 // Checkbox 컴포넌트
                 if (field.type === 'checkbox') {
