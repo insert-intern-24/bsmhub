@@ -1,16 +1,16 @@
 import { Title } from '@/app/components/system/text';
 import Card, { CardProps } from '../../project/ProjectCard';
 
-export interface PortfolioProject {
+export interface PortfolioProjectType {
   mode: 'personal' | 'cooperation';
   datas: CardProps[];
 }
 
 export interface PortfolioProjectProps {
-  projects: PortfolioProject[];
+  projects: PortfolioProjectType[];
 }
 
-const mapProjectMode: Record<PortfolioProject['mode'], string> = {
+const mapProjectMode: Record<PortfolioProjectType['mode'], string> = {
   personal: '개인 프로젝트',
   cooperation: '협업 프로젝트',
 };

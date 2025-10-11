@@ -1,0 +1,89 @@
+'use server';
+import { createClient } from "@/utils/supabase/server"
+import { PersonalProjectType } from "./getPersonalProjects";
+import { CardProps } from "@/app/components/card/project/ProjectCard";
+import { Tables } from "@/utils/supabase/database.types";
+
+type TeamProjectType = {
+  projects: PersonalProjectType & {
+    profile: Pick<Tables<'profile'>, 'profile_id' | 'is_team'>
+  }
+}
+
+type ProfileImageType = {
+  project_id: number;
+  profile: Pick<Tables<'profile'>, 'profile_id' | 'profile_name' | 'profile_image'>
+}
+
+
+export const getCooperationProjects = async (profile_id: string) => {
+  const supabase = await createClient();
+
+  const getTeamProjects = async (profile_id: string): Promise<TeamProjectType[]> => {
+    const { data, error } = await supabase
+      .from('project_contributors')
+      .select(`
+        projects!inner (
+          project_id,
+          project_name,
+          description,
+          project_thumbnail,
+          profile!projects_owner_fkey!inner (
+            profile_id,
+            is_team
+          )
+        )
+      `)
+      .eq('profile_id', profile_id)
+      .eq('projects.profile.is_team', true)
+
+    if (error) {
+      console.error('팀 프로젝트 조회 중 오류')
+      return []
+    }
+
+    return data || []
+  }
+
+  const getProfileImages = async (projectIds: number[]): Promise<ProfileImageType[]> => {
+    const { data, error } = await supabase
+      .from('project_contributors')
+      .select(`
+        project_id,
+        profile!inner (
+          profile_id,
+          profile_name,
+          profile_image
+        )
+      `)
+      .in('project_id', projectIds)
+      
+    if (error) {
+      console.error('프로필 이미지 조회 중 오류', error)
+      return []
+    }
+
+    return data || []
+  }
+
+  const teamProjects = await getTeamProjects(profile_id);
+
+  const projectIds = teamProjects.map((data) => data.projects.project_id);
+  const profileImages = await getProfileImages(projectIds);
+
+
+  const projects: CardProps[] = teamProjects.map(({ projects }) => {
+    const authors = profileImages?.filter((img) => img.project_id === projects.project_id).map((img) => ({
+      profileImage: img.profile.profile_image.replace('{{supabaseHost}}', process.env.NEXT_PUBLIC_SUPABASE_URL!)
+    })) || [{ profileImage: '/shared/profile.png' }];
+
+    return {
+      id: projects.project_id,
+      title: projects.description,
+      projectImage: projects.project_thumbnail.replace('{{supabaseHost}}', process.env.NEXT_PUBLIC_SUPABASE_URL!),
+      authors: authors
+    }
+  })
+
+  return projects || [];
+}
