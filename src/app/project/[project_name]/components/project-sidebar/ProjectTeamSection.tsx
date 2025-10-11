@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { Label, Label2 } from '@/app/components/system/text';
+import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import type { ProjectDetailViewModel } from '../types';
 import { FALLBACK_PROFILE } from './styles';
 import Link from 'next/link';
@@ -8,18 +9,25 @@ interface TeamMemberItemProps {
   member: ProjectDetailViewModel['team'][number];
 }
 
-const TeamMemberItem = ({ member }: TeamMemberItemProps) => (
-  <article className="flex-row items-center gap-[0.375rem]">
-    <Link href={`/portfolio/${member.name}`} className="cursor-pointer">
-      <div className="relative h-10 w-10 overflow-hidden rounded-full">
-        <Image
-          src={member.profileImage || FALLBACK_PROFILE}
-          alt={member.name}
-          fill
-          className="object-cover"
-        />
-      </div>
-    </Link>
+const TeamMemberItem = ({ member }: TeamMemberItemProps) => {
+  const profileImageUrl = member.profileImage 
+    ? (member.profileImage.includes('{{supabaseHost}}') 
+        ? convertFromDatabaseImageURL(member.profileImage) 
+        : member.profileImage)
+    : FALLBACK_PROFILE;
+
+  return (
+    <article className="flex-row items-center gap-[0.375rem]">
+      <Link href={`/portfolio/${member.name}`} className="cursor-pointer">
+        <div className="relative h-10 w-10 overflow-hidden rounded-full">
+          <Image
+            src={profileImageUrl}
+            alt={member.name}
+            fill
+            className="object-cover"
+          />
+        </div>
+      </Link>
     <div className="flex-col">
       <Link
         href={`/portfolio/${member.name}`}
@@ -28,9 +36,10 @@ const TeamMemberItem = ({ member }: TeamMemberItemProps) => (
         <Label2 className="font-semibold">{member.name}</Label2>
       </Link>
       <Label className="text-gray-base">{member.role}</Label>
-    </div>
-  </article>
-);
+      </div>
+    </article>
+  );
+};
 
 interface ProjectTeamSectionProps {
   members: ProjectDetailViewModel['team'];

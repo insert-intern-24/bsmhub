@@ -6,7 +6,7 @@ import type {
 export const toViewModel = (
   project: ProjectDetailRow,
 ): ProjectDetailViewModel => {
-  let detailDescription = project.description ?? '설명 정보가 없습니다.';
+  let detailDescription = '자세한 설명 정보가 없습니다.';
 
   if (project.project_markdown?.mark_desc) {
     try {
@@ -16,7 +16,12 @@ export const toViewModel = (
       }
     } catch (error) {
       console.warn('Failed to parse project_markdown.mark_desc:', error);
+      // If parsing fails and we have no markdown, use project description as detail
+      detailDescription = project.description ?? '자세한 설명 정보가 없습니다.';
     }
+  } else if (project.description) {
+    // If no markdown but we have description, use it for detail description
+    detailDescription = project.description;
   }
 
   return {
