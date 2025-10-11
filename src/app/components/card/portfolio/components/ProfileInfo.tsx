@@ -25,7 +25,11 @@ const ProfileInfo = ({
   return (
     <div className={containerClass}>
       <Body2>{profile.name}</Body2>
-      <RoleComponent className="text-gray-base">{profile.role}</RoleComponent>
+      <RoleComponent className="text-gray-base">
+        {profile.role.length > 0
+          ? `${profile.role.join(', ')} 희망`
+          : '희망 분야 없음'}
+      </RoleComponent>
       {showBio && <Caption className="text-gray-base">{profile.bio}</Caption>}
     </div>
   );

@@ -1,21 +1,14 @@
 import { Tables } from '@/utils/supabase/database.types';
 import { MergeDeep } from 'type-fest';
 
-interface PortfolioProject {
-  title: string;
-  logo: string;
-  projectImage: string;
-}
+import { Project, Profile } from '../components/card/portfolio/types';
+
+export type { Project };
 
 export interface PortfolioData {
-  profile: {
-    name: string;
-    role: string;
-    bio: string;
-    status: string;
-    profile_image: string;
-  };
-  projects: PortfolioProject[];
+  profile: Profile;
+  projects: Project[];
+  student: ProfileWithProjects['profile_permission']['student'];
 }
 
 export type ProfileWithProjects = MergeDeep<
@@ -24,17 +17,25 @@ export type ProfileWithProjects = MergeDeep<
     project_contributors:
       | (Pick<Tables<'project_contributors'>, 'project_id' | 'description'> &
           {
-            projects: Tables<'projects'>;
+            project: Pick<
+              Tables<'projects'>,
+              | 'project_id'
+              | 'project_name'
+              | 'project_thumbnail'
+              | 'project_logo'
+              | 'description'
+              | 'status'
+            >;
           }[])
       | null;
     profile_permission: {
-      student?:
+      student:
         | Pick<Tables<'student'>, 'name' | 'join_at' | 'graduate_at'> & {
             department: Tables<'departments'>;
             student_jobs: {
               job: Tables<'jobs'>;
             }[];
           };
-    };
+    }[];
   }
 >;
