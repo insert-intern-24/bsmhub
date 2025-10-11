@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { IconLink } from '@tabler/icons-react';
 import { ItemProps } from '@/app/portfolio/types';
 
@@ -13,13 +12,14 @@ const ProfileItem = ({ mode, value, url, prize }: ItemProps) => {
   );
 
   return url ? (
-    <Link
+    <a
       href={url}
       target="_blank"
       className="outline-none border-none inline-flex max-w-fit"
+      rel="noopener noreferrer nofollow"
     >
       {Content}
-    </Link>
+    </a>
   ) : (
     Content
   );
