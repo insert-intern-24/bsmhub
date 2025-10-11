@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server"
 import { PersonalProjectType } from "./getPersonalProjects";
 import { CardProps } from "@/app/components/card/project/ProjectCard";
 import { Tables } from "@/utils/supabase/database.types";
-import { convertTofromDatabaseImageURL } from "@/utils/supabase/imageHostConverter";
+import { convertFromDatabaseImageURL } from "@/utils/supabase/imageHostConverter";
 
 type TeamProjectType = {
   projects: PersonalProjectType & {
@@ -75,13 +75,13 @@ export const getCooperationProjects = async (profile_id: string): Promise<CardPr
 
   const projects: CardProps[] = teamProjects.map(({ projects }) => {
     const authors = profileImages?.filter((img) => img.project_id === projects.project_id).map((img) => ({
-      profileImage: convertTofromDatabaseImageURL(img.profile.profile_image)
+      profileImage: convertFromDatabaseImageURL(img.profile.profile_image)
     }))
 
     return {
       id: projects.project_id,
       title: projects.description,
-      projectImage: convertTofromDatabaseImageURL(projects.project_thumbnail),
+      projectImage: convertFromDatabaseImageURL(projects.project_thumbnail),
       authors: authors
     }
   })

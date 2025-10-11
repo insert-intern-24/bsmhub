@@ -2,7 +2,7 @@
 import { CardProps } from "@/app/components/card/project/ProjectCard";
 import { createClient } from "@/utils/supabase/server";
 import { Tables } from "@/utils/supabase/database.types";
-import { convertTofromDatabaseImageURL } from "@/utils/supabase/imageHostConverter";
+import { convertFromDatabaseImageURL } from "@/utils/supabase/imageHostConverter";
 
 export type PersonalProjectType = Pick<
   Tables<'projects'>,
@@ -29,7 +29,7 @@ export const getPersonalProjects = async (profile_id: string): Promise<CardProps
   const projects: CardProps[] = (data as PersonalProjectType[]).map((project) => ({
     id: project.project_id,
     title: project.description,
-    projectImage: convertTofromDatabaseImageURL(project.project_thumbnail),
+    projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
     authors: [
       { profileImage: '' } // profile 페이지에서 따로 조회한 profileImage 사용
     ],

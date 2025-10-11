@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { TagProps } from "@/app/components/contents/SkillTag"
 
 export interface ItemProps {
@@ -15,7 +14,6 @@ export interface PortfolioDetailProps {
         | Omit<TagProps, 'mode'>
     >
 }
-=======
 import { Tables } from '@/utils/supabase/database.types';
 import { MergeDeep } from 'type-fest';
 
@@ -57,4 +55,3 @@ export type ProfileWithProjects = MergeDeep<
     }[];
   }
 >;
->>>>>>> release/v2

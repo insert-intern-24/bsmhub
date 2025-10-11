@@ -13,7 +13,7 @@ import { notFound } from 'next/navigation';
 import { getCooperationProjects } from '@/services/project/getCooperationProjects';
 import { getStudentInfo } from '@/services/profile/getStudentInfo';
 import { convertStudentNumber } from '@/utils/convertStudentNumber';
-import { convertTofromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
+import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 
 interface PortfolioProps {
   uuid: string;
@@ -31,7 +31,7 @@ const Portfolio = async ({ uuid, path = 'home' }: PortfolioProps) => {
   const personalProjects = (await getPersonalProjects(uuid)).map((project) => ({
     ...project,
     authors: [
-      { profileImage: convertTofromDatabaseImageURL(profile.profile_image) }, // getPersonalProjects 함수에서 Join으로 가져오지 않은 개인 프로필 이미지 추가
+      { profileImage: convertFromDatabaseImageURL(profile.profile_image) }, // getPersonalProjects 함수에서 Join으로 가져오지 않은 개인 프로필 이미지 추가
     ],
   }));
 
@@ -65,7 +65,7 @@ const Portfolio = async ({ uuid, path = 'home' }: PortfolioProps) => {
         width={(120 / 16) * 14}
         height={(120 / 16) * 14}
         alt="프로필 사진"
-        src={convertTofromDatabaseImageURL(profile.profile_image)}
+        src={convertFromDatabaseImageURL(profile.profile_image)}
         className="rounded-sm absolute -top-20"
       />
       <TitleEN className="mobile:mb-2">{profile.profile_name}</TitleEN>
