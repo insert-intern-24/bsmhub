@@ -17,7 +17,7 @@ type ProfileImageType = {
 }
 
 
-export const getCooperationProjects = async (profile_id: string) => {
+export const getCooperationProjects = async (profile_id: string): Promise<CardProps[]> => {
   const supabase = await createClient();
 
   const getTeamProjects = async (profile_id: string): Promise<TeamProjectType[]> => {

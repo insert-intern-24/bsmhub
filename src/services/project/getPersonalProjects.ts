@@ -9,7 +9,7 @@ export type PersonalProjectType = Pick<
   'project_id' | 'project_name' | 'description' | 'project_thumbnail'
 >;
 
-export const getPersonalProjects = async (profile_id: string) => {
+export const getPersonalProjects = async (profile_id: string): Promise<CardProps[]> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -31,7 +31,7 @@ export const getPersonalProjects = async (profile_id: string) => {
     title: project.description,
     projectImage: convertTofromDatabaseImageURL(project.project_thumbnail),
     authors: [
-      { profileImage: '/shared/profile.png' } // profile 페이지에서 따로 조회한 profileImage 사용
+      { profileImage: '' } // profile 페이지에서 따로 조회한 profileImage 사용
     ],
   }));
 

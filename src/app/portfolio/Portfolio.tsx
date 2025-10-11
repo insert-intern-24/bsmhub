@@ -8,13 +8,14 @@ import PortfolioProject, {
   PortfolioProjectType,
 } from '../components/card/portfolio/components/PortfolioProject';
 import { getProfileById } from '@/services/profile/getProfileById';
-// import NotFound from '../not-found';
-import { convertName } from '@/utils/convertName';
 import { getProfileDetail } from '@/services/profile/getProfileDetail';
 import { getProfileIntroduce } from '@/services/profile/getProfileIntroduce';
 import { getPersonalProjects } from '@/services/project/getPersonalProjects';
 import { notFound } from 'next/navigation';
 import { getCooperationProjects } from '@/services/project/getCooperationProjects';
+import { getStudentInfo } from '@/services/profile/getStudentInfo';
+import { convertStudentNumber } from '@/utils/convertStudentNumber';
+import { convertTofromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 
 interface PortfolioProps {
   uuid: string;
@@ -25,10 +26,16 @@ const Portfolio = async ({ uuid, path = 'home' }: PortfolioProps) => {
   const profile = await getProfileById(uuid);
   if (!profile) notFound();
 
+  const studentInfo = (await getStudentInfo(uuid)).student;
   const profileDetail = await getProfileDetail(uuid);
   const profileIntroduce = await getProfileIntroduce(uuid);
-  const personalProjects = await getPersonalProjects(uuid);
   const cooperationProjects = await getCooperationProjects(uuid);
+  const personalProjects = (await getPersonalProjects(uuid)).map((project) => ({
+    ...project,
+    authors: [
+      { profileImage: convertTofromDatabaseImageURL(profile.profile_image) },
+    ],
+  }));
 
   const portfolioProjects: PortfolioProjectType[] = [
     {
@@ -65,15 +72,14 @@ const Portfolio = async ({ uuid, path = 'home' }: PortfolioProps) => {
         width={(120 / 16) * 14}
         height={(120 / 16) * 14}
         alt="프로필 사진"
-        src="/shared/profile.png"
+        src={convertTofromDatabaseImageURL(profile.profile_image)}
         className="rounded-sm absolute -top-20"
       />
-      <TitleEN className="mobile:mb-2">
-        {convertName(profile.profile_name)}
-      </TitleEN>
+      <TitleEN className="mobile:mb-2">{profile.profile_name}</TitleEN>
       <div className={`${containerCss} responsive-portfolioHome`}>
         <Body className="text-gray-base flex-col justify-end">
-          2학년 2반 {profile.profile_name} | 소프트웨어개발과 백엔드 트랙
+          {convertStudentNumber(studentInfo.student_number)} {studentInfo.name}{' '}
+          | {studentInfo.departments.department_name}
         </Body>
 
         <div className={`${isHome ? 'max-w-[46rem]' : ''} mobile:hidden`}>
