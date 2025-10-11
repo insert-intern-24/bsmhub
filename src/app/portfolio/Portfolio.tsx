@@ -13,15 +13,16 @@ import { getCooperationProjects } from '@/services/project/getCooperationProject
 import { getStudentInfo } from '@/services/profile/getStudentInfo';
 import { convertStudentNumber } from '@/utils/convertStudentNumber';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
+import { getProfileIdByName } from '@/services/profile/getProfileIdByName';
 
 interface PortfolioProps {
-  uuid: string;
+  profileName: string;
   path: 'home' | 'project';
 }
 
-const Portfolio = async ({ uuid, path = 'home' }: PortfolioProps) => {
-  const profile = await getProfileById(uuid);
-  if (!profile) notFound();
+const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
+  const uuid = (await getProfileIdByName(profileName)) ?? notFound();
+  const profile = (await getProfileById(uuid)) ?? notFound();
 
   const studentInfo = (await getStudentInfo(uuid)).student;
   const profileDetail = await getProfileDetail(uuid);

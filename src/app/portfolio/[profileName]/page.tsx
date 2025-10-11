@@ -1,17 +1,17 @@
 import Portfolio from '../Portfolio';
 
 interface PortfolioProps {
-  params: Promise<{ uuid: string }>;
+  params: Promise<{ profileName: string }>;
   searchParams: Promise<{
     path: 'home' | 'project';
   }>;
 }
 
 const PortfolioPage = async ({ params, searchParams }: PortfolioProps) => {
-  const uuid = (await params).uuid;
+  const profileName = (await params).profileName;
   const path = (await searchParams).path ?? 'home';
 
-  return <Portfolio uuid={uuid} path={path} />;
+  return <Portfolio profileName={profileName} path={path} />;
 };
 
 export default PortfolioPage;
