@@ -45,9 +45,9 @@ pipeline {
         stage('Cleanup PR Resources') {
             steps {
                 script {
-                    // 브랜치 이름을 사용한 컨테이너 이름 (기존 방식과 일치)
-                    def containerName = "bsmhub-${env.pr_head_ref}"
-                    def imageName = "${env.REGISTRY}/${env.IMAGE_NAME}:${env.pr_head_ref}"
+                    // PR-숫자 형식으로 컨테이너 이름 생성 (메인 파이프라인과 일치)
+                    def containerName = "bsmhub-PR-${env.pr_number}"
+                    def imageName = "${env.REGISTRY}/${env.IMAGE_NAME}:PR-${env.pr_number}"
                     
                     echo "🧹 Starting cleanup for PR #${env.pr_number}"
                     echo "Branch: ${env.pr_head_ref}"
@@ -109,7 +109,7 @@ pipeline {
                         """🎉✨ **PR이 성공적으로 머지되었습니다!**
                         |
                         |🧹 프리뷰 환경이 자동으로 정리되었습니다:
-                        |• 컨테이너: `bsmhub-${env.pr_head_ref}` 제거됨
+                        |• 컨테이너: `bsmhub-PR-${env.pr_number}` 제거됨
                         |• 포트: `${port}` 해제됨
                         |• 관련 Docker 이미지 정리 완료
                         |
@@ -117,7 +117,7 @@ pipeline {
                         """🧹 **PR이 닫혔습니다.**
                         |
                         |프리뷰 환경이 자동으로 정리되었습니다:
-                        |• 컨테이너: `bsmhub-${env.pr_head_ref}` 제거됨
+                        |• 컨테이너: `bsmhub-PR-${env.pr_number}` 제거됨
                         |• 포트: `${port}` 해제됨
                         |• 관련 Docker 이미지 정리 완료""".stripMargin()
                     
