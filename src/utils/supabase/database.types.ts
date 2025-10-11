@@ -870,8 +870,9 @@ export type Database = {
       profile: {
         Row: {
           created_at: string
+          description: string | null
           email: string | null
-          isTeam: boolean
+          is_team: boolean
           link: string[] | null
           owner: string | null
           profile_id: string
@@ -880,8 +881,9 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          description?: string | null
           email?: string | null
-          isTeam: boolean
+          is_team: boolean
           link?: string[] | null
           owner?: string | null
           profile_id?: string
@@ -890,8 +892,9 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          description?: string | null
           email?: string | null
-          isTeam?: boolean
+          is_team?: boolean
           link?: string[] | null
           owner?: string | null
           profile_id?: string
