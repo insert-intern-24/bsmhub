@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
 export type TabMode = 'home' | 'project' | 'web' | 'desktop' | 'mobile';
@@ -25,7 +26,7 @@ const Tabs = ({ tabs }: TabsProps) => {
         const isActive = currentPath === mode;
 
         return (
-          <a
+          <Link
             key={mode}
             className={`px-5 pb-2 border-b-2 ${
               isActive ? 'border-black' : 'border-transparent text-gray-base'
@@ -33,7 +34,7 @@ const Tabs = ({ tabs }: TabsProps) => {
             href={`?path=${mode}`}
           >
             {mapTabValue[mode]}
-          </a>
+          </Link>
         );
       })}
     </div>
