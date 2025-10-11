@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase/server"
 import { PersonalProjectType } from "./getPersonalProjects";
 import { CardProps } from "@/app/components/card/project/ProjectCard";
 import { Tables } from "@/utils/supabase/database.types";
+import { convertTofromDatabaseImageURL } from "@/utils/supabase/imageHostConverter";
 
 type TeamProjectType = {
   projects: PersonalProjectType & {
@@ -74,13 +75,13 @@ export const getCooperationProjects = async (profile_id: string) => {
 
   const projects: CardProps[] = teamProjects.map(({ projects }) => {
     const authors = profileImages?.filter((img) => img.project_id === projects.project_id).map((img) => ({
-      profileImage: img.profile.profile_image.replace('{{supabaseHost}}', process.env.NEXT_PUBLIC_SUPABASE_URL!)
-    })) || [{ profileImage: '/shared/profile.png' }];
+      profileImage: convertTofromDatabaseImageURL(img.profile.profile_image)
+    }))
 
     return {
       id: projects.project_id,
       title: projects.description,
-      projectImage: projects.project_thumbnail.replace('{{supabaseHost}}', process.env.NEXT_PUBLIC_SUPABASE_URL!),
+      projectImage: convertTofromDatabaseImageURL(projects.project_thumbnail),
       authors: authors
     }
   })
