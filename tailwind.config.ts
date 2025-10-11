@@ -12,6 +12,21 @@ const config: Config = {
       mobile: {
         max: '900px',
       },
+      sm: {
+        min: '640px',
+      },
+      md: {
+        min: '768px',
+      },
+      lg: {
+        min: '1024px',
+      },
+      xl: {
+        min: '1280px',
+      },
+      '2xl': {
+        min: '1536px',
+      },
     },
     extend: {
       lineClamp: {
@@ -49,6 +64,8 @@ const config: Config = {
     },
   },
   plugins: [
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('@tailwindcss/container-queries'),
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@tailwindcss/line-clamp'),
     // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -88,14 +105,10 @@ const config: Config = {
           justifyContent: 'space-between',
           alignItems: 'center',
         },
-        '.flex-center-all': {
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-        },
       });
     },
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('@tailwindcss/aspect-ratio'),
   ],
 };
 export default config;
