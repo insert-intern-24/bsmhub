@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { IconLink } from '@tabler/icons-react';
-import { ItemProps } from '@/app/portfolio/types/portfolio';
+import { ItemProps } from '@/app/portfolio/types';
 
 const ProfileItem = ({ mode, value, url, prize }: ItemProps) => {
   const Content = (

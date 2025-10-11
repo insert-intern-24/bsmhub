@@ -2,8 +2,7 @@ import ProfileItem from '@/app/components/contents/ProfileItem';
 import SkillTag from '@/app/components/contents/SkillTag';
 import { Label } from '@/app/components/system/text';
 
-import { PortfolioDetailProps } from '@/app/portfolio/types/portfolio';
-import { ItemProps } from '@/app/portfolio/types/portfolio';
+import { PortfolioDetailProps, ItemProps } from '@/app/portfolio/types';
 
 const modeTextMap: Record<ItemProps['mode'] | 'skill', string> = {
   link: '링크',
