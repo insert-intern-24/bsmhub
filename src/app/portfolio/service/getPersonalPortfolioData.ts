@@ -1,5 +1,5 @@
 import { createClient } from '@/utils/supabase/client';
-import { convertTofromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
+import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import { PortfolioData, ProfileWithProjects } from '../types';
 
 export async function getPersonalPortfolioData(): Promise<PortfolioData[]> {
@@ -43,7 +43,10 @@ export async function getPersonalPortfolioData(): Promise<PortfolioData[]> {
     .returns<ProfileWithProjects[]>();
 
   if (profileError) {
-    console.error('Error fetching profiles:', profileError);
+    console.error(
+      'Failed to fetch portfolio profiles from database:',
+      profileError,
+    );
     return [];
   }
 
@@ -61,17 +64,15 @@ export async function getPersonalPortfolioData(): Promise<PortfolioData[]> {
           ) || [],
         bio: data.description!,
         status: '구직 중',
-        profile_image: convertTofromDatabaseImageURL(data.profile_image),
+        profile_image: convertFromDatabaseImageURL(data.profile_image),
       },
       student: data.profile_permission[0].student,
       projects:
         data.project_contributors?.map((contribution) => ({
           title: contribution.project.project_name,
-          logo: convertTofromDatabaseImageURL(
-            contribution.project.project_logo,
-          ),
+          logo: convertFromDatabaseImageURL(contribution.project.project_logo),
           description: contribution.project.description,
-          projectImage: convertTofromDatabaseImageURL(
+          projectImage: convertFromDatabaseImageURL(
             contribution.project.project_thumbnail,
           ),
         })) || [],

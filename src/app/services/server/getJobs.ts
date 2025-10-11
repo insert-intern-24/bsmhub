@@ -10,7 +10,7 @@ export default async function getJobs() {
     .returns<Tables<'jobs'>[]>();
 
   if (error) {
-    console.error('Error fetching jobs:', error);
+    console.error('Failed to fetch jobs from database:', error);
     return [];
   }
 

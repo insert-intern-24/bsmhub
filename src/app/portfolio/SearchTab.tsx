@@ -140,7 +140,7 @@ export default function SearchTab({
       <main className="flex-col gap-3 p-4 flex-1 bg-light-gray-footer-bg">
         {filteredData.length > 0 ? (
           filteredData.map((data, index) => (
-            <Link href={`/portfolio/${data.profile.name}`} key={index}>
+            <Link href={`/portfolio/${encodeURIComponent(data.profile.name)}`} key={index}>
               <PortfolioCard profile={data.profile} projects={data.projects} />
             </Link>
           ))
