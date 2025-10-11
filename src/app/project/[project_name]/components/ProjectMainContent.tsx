@@ -60,7 +60,7 @@ const isYoutubeUrl = (url: string) => {
 };
 
 const iframeWrapperClass =
-  'relative mb-[0.875rem] w-full overflow-hidden bg-black';
+  'relative mb-3.5 w-full overflow-hidden bg-black';
 
 const EMBED_ASPECT_RATIO = '16 / 9';
 
@@ -138,7 +138,7 @@ const splitTextIntoSegments = (text: string): Segment[] => {
 };
 
 const Paragraph = ({ children, className, ...props }: ParagraphProps) => {
-  const combinedClassName = `mb-[0.875rem] whitespace-pre-wrap${
+  const combinedClassName = `mb-3.5 whitespace-pre-wrap${
     className ? ` ${className}` : ''
   }`;
   const childArray = Children.toArray(children);
@@ -233,10 +233,10 @@ const Anchor = ({ href, children, className, ...props }: AnchorProps) => {
   return (
     <a
       href={href}
-      className={`text-blue-primary underline underline-offset-4 text-[1rem] leading-[1.375rem] tracking-[0.0057em]${
+      className={`text-blue-primary underline underline-offset-4 text-base leading-[1.375rem] tracking-[0.0057em]${
         className ? ` ${className}` : ''
       }`}
-      rel={rel ?? 'noopener noreferrer'}
+      rel={rel ?? 'noopener noreferrer nofollow'}
       target={target ?? '_blank'}
       {...rest}
     >

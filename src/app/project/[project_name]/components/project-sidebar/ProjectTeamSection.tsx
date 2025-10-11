@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Body, Label, Label2 } from '@/app/components/system/text';
+import { Label, Label2 } from '@/app/components/system/text';
 import type { ProjectDetailViewModel } from '../types';
 import { FALLBACK_PROFILE } from './styles';
 import Link from 'next/link';
@@ -34,26 +34,16 @@ const TeamMemberItem = ({ member }: TeamMemberItemProps) => (
 
 interface ProjectTeamSectionProps {
   members: ProjectDetailViewModel['team'];
-  isExpanded: boolean;
-  shouldFold: boolean;
-  onExpand: () => void;
 }
 
 export const ProjectTeamSection = ({ 
-  members, 
-  isExpanded, 
-  shouldFold, 
-  onExpand 
+  members
 }: ProjectTeamSectionProps) => {
   return (
     <section className="project-team-section relative flex-col gap-[0.375rem]">
       <Label>기여</Label>
       <div className="relative">
-        <div 
-          className={`project-team-content flex-col gap-[0.5rem] ${
-            shouldFold && !isExpanded ? 'foldable' : 'expanded'
-          }`}
-        >
+        <div className="project-team-content flex-col gap-2">
           {members.length > 0 ? (
             members.map((member) => (
               <TeamMemberItem key={member.id} member={member} />
@@ -62,15 +52,6 @@ export const ProjectTeamSection = ({
             <Label className="text-detail">참여자 정보가 없습니다.</Label>
           )}
         </div>
-        {shouldFold && !isExpanded && (
-          <button
-            type="button"
-            className="project-team-expand-button"
-            onClick={onExpand}
-          >
-            <Body className="text-gray-base">더보기</Body>
-          </button>
-        )}
       </div>
     </section>
   );

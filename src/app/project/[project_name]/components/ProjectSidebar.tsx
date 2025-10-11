@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { Body } from '@/app/components/system/text';
 import type { ProjectDetailViewModel } from './types';
 import {
   ProjectLinkSection,
@@ -16,8 +17,8 @@ interface ProjectSidebarProps {
 }
 
 const ProjectSidebar = ({ project }: ProjectSidebarProps) => {
-  const [isTeamExpanded, setIsTeamExpanded] = useState(false);
-  const shouldFoldTeam = project.team.length > 3;
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+  const shouldFoldSidebar = false; // TODO: Implement proper fold logic based on sidebar height in mobile
 
   return (
     <aside className="relative flex-shrink-0 w-[21.75rem] min-w-[21.75rem] border-r border-gray-200 px-[2.625rem] mobile:w-full mobile:min-w-0 mobile:border-0 mobile:px-0 mobile:pb-8">
@@ -34,10 +35,16 @@ const ProjectSidebar = ({ project }: ProjectSidebarProps) => {
         <ProjectTechnologiesSection technologies={project.technologies} />
         <ProjectTeamSection 
           members={project.team}
-          isExpanded={isTeamExpanded}
-          shouldFold={shouldFoldTeam}
-          onExpand={() => setIsTeamExpanded(true)}
         />
+        {shouldFoldSidebar && !isSidebarExpanded && (
+          <button
+            type="button"
+            className="mt-4 w-full py-2 text-center"
+            onClick={() => setIsSidebarExpanded(true)}
+          >
+            <Body className="text-gray-base">더보기</Body>
+          </button>
+        )}
       </div>
     </aside>
   );

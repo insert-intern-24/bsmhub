@@ -5,7 +5,7 @@ import { Body, Heading } from '../system/text';
 
 export default function Footer() {
   return (
-    <footer className="p-white-space-margin py-10 bg-light-gray-footer-bg flex-center gap-[1.5rem] text-gray-footer responsive-footer mobile:px-[0.6875rem]">
+    <footer className="p-white-space-margin py-10 bg-light-gray-footer-bg flex-center gap-6 text-gray-footer responsive-footer mobile:px-[0.6875rem]">
         <div className="flex flex-col mobile:mr-auto">
           <Link href="" className="text-xl mb-4">
             <Heading>

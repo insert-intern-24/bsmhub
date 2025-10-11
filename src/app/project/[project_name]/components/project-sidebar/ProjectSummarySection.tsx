@@ -36,7 +36,7 @@ const ProjectActions = () => (
 const PlayButton = () => (
   <button className="relative flex-1 cursor-pointer">
     <div
-      className="absolute inset-x-[0%] top-1/4 h-12"
+      className="absolute inset-x-0 top-1/4 h-12"
       style={PLAY_BUTTON_DEPTH_STYLE}
     />
     <div
