@@ -5,15 +5,15 @@ import Tabs from '../components/layout/Tabs';
 
 import PortfolioHome from '../components/card/portfolio/PortfolioHome';
 import PortfolioProject from '../components/card/portfolio/components/PortfolioProject';
-import { getProfileById } from '@/services/profile/getProfileById';
-import { getProfileDetail } from '@/services/profile/getProfileDetail';
-import { getPersonalProjects } from '@/services/project/getPersonalProjects';
+import { getProfileById } from '@/services/server/profile/getProfileById';
+import { getProfileDetail } from '@/services/server/profile/getProfileDetail';
+import { getPersonalProjects } from '@/services/server/project/getPersonalProjects';
 import { notFound } from 'next/navigation';
-import { getCooperationProjects } from '@/services/project/getCooperationProjects';
-import { getStudentInfo } from '@/services/profile/getStudentInfo';
+import { getCooperationProjects } from '@/services/server/project/getCooperationProjects';
+import { getStudentInfo } from '@/services/server/profile/getStudentInfo';
 import { convertStudentNumber } from '@/utils/convertStudentNumber';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
-import { getProfileIdByName } from '@/services/profile/getProfileIdByName';
+import { getProfileIdByName } from '@/services/server/profile/getProfileIdByName';
 
 interface PortfolioProps {
   profileName: string;
