@@ -6,7 +6,6 @@ pipeline {
         SUPABASE_KEY = credentials('NEXT_PUBLIC_SUPABASE_ANON_KEY')
         GOOGLE_CLIENT = credentials('NEXT_PUBLIC_GOOGLE_CLIENT_ID')
         NEXT_PUBLIC_SUPABASE_URL = 'https://bsmhubsp.obtuse.kr'
-        CONTAINER_NAME = "bsmhub-${env.BRANCH_NAME}"
         DEPLOY_SERVER = '10.3.0.127'
         DEPLOY_CREDS = credentials('DEPLOY_SERVER_CREDS')
         REPO_OWNER = 'insert-intern-24'
@@ -14,24 +13,41 @@ pipeline {
         GITHUB_APP = credentials('GITHUB_APP_CREDENTIALS')
     }
     stages {
-        stage('Determine Port') {
+        stage('Setup Names and Port') {
             steps {
                 script {
                     if (env.CHANGE_ID != null) {
-                        // PR인 경우: PR 번호를 기반으로 포트 계산 (4000 + PR번호)
+                        // PR인 경우: PR-숫자 형식 사용
+                        CONTAINER_NAME = "bsmhub-PR-${env.CHANGE_ID}"
+                        IMAGE_TAG = "${env.REGISTRY}/${env.IMAGE_NAME}:PR-${env.CHANGE_ID}"
+                        
+                        // PR 번호를 기반으로 포트 계산 (4000 + PR번호)
                         def prNumber = env.CHANGE_ID as Integer
                         PORT = (4000 + (prNumber % 1000)).toString()
-                        echo "PR #${env.CHANGE_ID} using fixed port: ${PORT}"
+                        echo "PR #${env.CHANGE_ID} deployment:"
+                        echo "  Container: ${CONTAINER_NAME}"
+                        echo "  Image: ${IMAGE_TAG}"
+                        echo "  Port: ${PORT} (fixed)"
                         
                         // 기존 컨테이너가 해당 포트를 사용 중인지 확인
-                        def existingContainer = sh(script: "docker ps -q -f name=${env.CONTAINER_NAME}", returnStdout: true).trim()
+                        def existingContainer = sh(script: "docker ps -q -f name=${CONTAINER_NAME}", returnStdout: true).trim()
                         if (existingContainer) {
-                            echo "✅ Found existing container ${env.CONTAINER_NAME} - will be replaced"
+                            echo "✅ Found existing container - will be replaced"
                         } else {
                             echo "ℹ️  No existing container found - will create new one"
                         }
                     } else {
-                        // 일반 브랜치인 경우: 사용 가능한 포트 찾기
+                        // 일반 브랜치인 경우: 브랜치명 정규화 후 사용
+                        def normalizedBranch = env.BRANCH_NAME
+                            .replaceAll('/', '-')
+                            .replaceAll('[^a-zA-Z0-9._-]', '')
+                            .toLowerCase()
+                            .take(128)
+                        
+                        CONTAINER_NAME = "bsmhub-${normalizedBranch}"
+                        IMAGE_TAG = "${env.REGISTRY}/${env.IMAGE_NAME}:${normalizedBranch}"
+                        
+                        // 사용 가능한 포트 찾기
                         PORT = sh(script: '''
                                 for port in $(seq 4000 4999); do
                                     if ! netstat -tna | grep -q ":$port "; then
@@ -41,7 +57,12 @@ pipeline {
                                 done
                                 echo "4000"  # Fallback port if none found
                             ''', returnStdout: true).trim()
-                        echo "Branch deployment using available port: ${PORT}"
+                        
+                        echo "Branch '${env.BRANCH_NAME}' deployment:"
+                        echo "  Normalized: ${normalizedBranch}"
+                        echo "  Container: ${CONTAINER_NAME}"
+                        echo "  Image: ${IMAGE_TAG}"
+                        echo "  Port: ${PORT} (available)"
                     }
                 }
             }
@@ -86,8 +107,9 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    def imageTag = "${env.REGISTRY}/${env.IMAGE_NAME}:${env.BRANCH_NAME}"
-                    sh "docker build -t ${imageTag} ."
+                    echo "Building Docker image: ${IMAGE_TAG}"
+                    sh "docker build -t ${IMAGE_TAG} ."
+                    echo "✅ Docker image built successfully"
                 }
             }
         }
@@ -95,19 +117,19 @@ pipeline {
         stage('Stop and Remove Existing Container') {
             steps {
                 script {
-                    echo "Checking for existing container: ${env.CONTAINER_NAME}"
-                    def existingContainer = sh(script: "docker ps -aq -f name=${env.CONTAINER_NAME}", returnStdout: true).trim()
+                    echo "Checking for existing container: ${CONTAINER_NAME}"
+                    def existingContainer = sh(script: "docker ps -aq -f name=${CONTAINER_NAME}", returnStdout: true).trim()
                     
                     if (existingContainer) {
                         echo "Found existing container: ${existingContainer}"
-                        echo "Stopping and removing container: ${env.CONTAINER_NAME}"
+                        echo "Stopping and removing container: ${CONTAINER_NAME}"
                         sh """
-                            docker stop ${env.CONTAINER_NAME} || true
-                            docker rm ${env.CONTAINER_NAME} || true
+                            docker stop ${CONTAINER_NAME} || true
+                            docker rm ${CONTAINER_NAME} || true
                         """
                         echo "Successfully removed existing container"
                     } else {
-                        echo "No existing container found with name: ${env.CONTAINER_NAME}"
+                        echo "No existing container found with name: ${CONTAINER_NAME}"
                     }
                 }
             }
@@ -116,25 +138,25 @@ pipeline {
         stage('Deploy New Container') {
             steps {
                 script {
-                    def imageTag = "${env.REGISTRY}/${env.IMAGE_NAME}:${env.BRANCH_NAME}"
-                    echo "Deploying new container: ${env.CONTAINER_NAME} on port ${PORT}"
+                    echo "Deploying new container: ${CONTAINER_NAME} on port ${PORT}"
+                    echo "Using image: ${IMAGE_TAG}"
                     sh """
                         docker run -d \\
-                            --name ${env.CONTAINER_NAME} \\
+                            --name ${CONTAINER_NAME} \\
                             -p ${PORT}:3000 \\
                             --restart unless-stopped \\
                             --env-file .env.local \\
-                            ${imageTag}
+                            ${IMAGE_TAG}
                     """
                     
                     // 컨테이너가 정상적으로 시작되었는지 확인
                     sh """
                         sleep 3
-                        if docker ps | grep -q ${env.CONTAINER_NAME}; then
-                            echo "✅ Container ${env.CONTAINER_NAME} is running successfully"
+                        if docker ps | grep -q ${CONTAINER_NAME}; then
+                            echo "✅ Container ${CONTAINER_NAME} is running successfully"
                         else
-                            echo "❌ Container ${env.CONTAINER_NAME} failed to start"
-                            docker logs ${env.CONTAINER_NAME}
+                            echo "❌ Container ${CONTAINER_NAME} failed to start"
+                            docker logs ${CONTAINER_NAME}
                             exit 1
                         fi
                     """
