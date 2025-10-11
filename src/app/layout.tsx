@@ -30,8 +30,8 @@ export default function RootLayout({
       <body className="bg-[#F5F5F7]">
         <ModalProvider>
           <Header />
-          <main className="w-full min-h-dvh p-white-space-margin pt-[120px] responsive-main">
-            <div className="max-w-outer min-h-screen bg-white mobile:pb-12 pb-[4rem] mx-auto">
+          <main className="w-full min-h-dvh pt-[120px]">
+            <div className="max-w-[109rem] min-h-screen bg-white mobile:pb-12 pb-[4rem] mx-auto">
               {children}
             </div>
           </main>
