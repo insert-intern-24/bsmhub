@@ -27,7 +27,7 @@ export default function RootLayout({
       <body className="bg-[#F5F5F7]">
         <Header />
         <main className="w-full min-h-dvh p-white-space-margin pt-[120px] responsive-main">
-          <div className="w-full min-h-screen bg-white mobile:pb-12">
+          <div className="w-full min-h-screen bg-white mobile:pb-12 pb-[4rem]">
             {children}
           </div>
         </main>
