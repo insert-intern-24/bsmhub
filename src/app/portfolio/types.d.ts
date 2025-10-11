@@ -1,7 +1,4 @@
 import { TagProps } from "@/app/components/contents/SkillTag"
-import { Database } from "@/utils/supabase/database.types"
-
-type DatabaseType = Database['public']['Tables']
 
 export interface ItemProps {
   mode: 'competition' | 'certificate' | 'link'
@@ -17,5 +14,3 @@ export interface PortfolioDetailProps {
         | Omit<TagProps, 'mode'>
     >
 }
-
-export type ProfileType = DatabaseType['profile']['Row']

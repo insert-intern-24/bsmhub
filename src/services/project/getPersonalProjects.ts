@@ -1,11 +1,11 @@
 'use server';
 import { CardProps } from "@/app/components/card/project/ProjectCard";
 import { createClient } from "@/utils/supabase/server";
-import { Database } from "@/utils/supabase/database.types";
+import { Tables } from "@/utils/supabase/database.types";
 import { convertTofromDatabaseImageURL } from "@/utils/supabase/imageHostConverter";
 
 export type PersonalProjectType = Pick<
-  Database['public']['Tables']['projects']['Row'],
+  Tables<'projects'>,
   'project_id' | 'project_name' | 'description' | 'project_thumbnail'
 >;
 

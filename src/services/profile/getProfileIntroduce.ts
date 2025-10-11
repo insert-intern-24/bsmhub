@@ -1,8 +1,6 @@
 'use server';
+import { Tables } from "@/utils/supabase/database.types";
 import { createClient } from "@/utils/supabase/server";
-import { Database } from "@/utils/supabase/database.types";
-
-type ProfileIntroduce = Database['public']['Tables']['profile_introduce']['Row']
 
 export const getProfileIntroduce = async (profile_id: string): Promise<string> => {
   const supabase = await createClient();
@@ -11,7 +9,7 @@ export const getProfileIntroduce = async (profile_id: string): Promise<string> =
     .from('profile_introduce')
     .select('introduce')
     .eq('profile_id', profile_id)
-    .maybeSingle<ProfileIntroduce>();
+    .maybeSingle<Tables<'profile_introduce'>>();
 
   if (error) {
     console.error('프로필 소개 조회 중 오류', error)

@@ -1,8 +1,8 @@
 'use server';
-import { ProfileType } from "@/app/portfolio/types";
+import { Tables } from "@/utils/supabase/database.types";
 import { createClient } from "@/utils/supabase/server";
 
-export const getProfileById = async (profile_id: string): Promise<ProfileType | null> => {
+export const getProfileById = async (profile_id: string): Promise<Tables<'profile'> | null> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase

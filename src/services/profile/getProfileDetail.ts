@@ -1,12 +1,9 @@
 'use server';
 import { PortfolioDetailProps } from "@/app/portfolio/types";
+import { Tables } from "@/utils/supabase/database.types";
 import { createClient } from "@/utils/supabase/server";
-import { Database } from "@/utils/supabase/database.types";
 
-type DatabaseType = Database['public']['Tables']
-
-type LinkType = DatabaseType['profile_link']['Row'];
-
+// view 테이블의 타입을 정의한 것
 interface CertificateType {
   profile_id: string;
   certificate_id: number;
@@ -33,7 +30,7 @@ interface SkillType {
 export const getProfileDetail = async (profile_id: string): Promise<PortfolioDetailProps[]> => {
   const supabase = await createClient();
   
-  const getLinks = async (): Promise<LinkType[]> => {
+  const getLinks = async (): Promise<Tables<'profile_link'>[]> => {
     const { data, error } = await supabase
       .from('profile_link')
       .select('*')
