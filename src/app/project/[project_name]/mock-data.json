@@ -10,7 +10,7 @@
     "link": "https://github.com/example/bsmhub",
     "skills": ["React", "Next.js", "TypeScript", "Tailwind CSS", "Supabase"],
     "project_logo": "/card/dummy-project-icon.png",
-    "project_thumbnail": null,
+    "project_thumbnail": "/card/dummy-project.png",
     "project_markdown": {
       "mark_id": 1,
       "project_id": 1,
@@ -23,13 +23,14 @@
         "description": "프론트엔드 개발자",
         "profile": {
           "profile_id": "S-1",
-          "profile_image": "",
+          "profile_image": "/card/dummy-profile.png",
           "profile_name": "김민수",
           "created_at": "2022-03-01T00:00:00Z",
-          "isTeam": false,
+          "is_team": false,
           "email": null,
           "owner": "김민수",
-          "link": []
+          "link": [],
+          "description": null
         }
       },
       {
@@ -38,13 +39,14 @@
         "description": "백엔드 개발자",
         "profile": {
           "profile_id": "S-2",
-          "profile_image": "",
+          "profile_image": "/card/dummy-profile.png",
           "profile_name": "박서영",
           "created_at": "2022-03-01T00:00:00Z",
-          "isTeam": false,
+          "is_team": false,
           "email": null,
           "owner": "박서영",
-          "link": []
+          "link": [],
+          "description": null
         }
       },
       {
@@ -55,10 +57,11 @@
           "profile_id": "S-3",
           "profile_name": "이동현",
           "created_at": "2022-03-01T00:00:00Z",
-          "isTeam": false,
+          "is_team": false,
           "email": null,
           "owner": "이동현",
-          "link": []
+          "link": [],
+          "description": null
         }
       }
     ]
@@ -74,7 +77,7 @@
     "link": "https://github.com/example/schoolmeal",
     "skills": ["React Native", "Firebase", "Node.js"],
     "project_logo": "/card/dummy-project-icon.png",
-    "project_thumbnail": null,
+    "project_thumbnail": "/card/dummy-project.png",
     "project_markdown": {
       "mark_id": 2,
       "project_id": 2,
@@ -87,13 +90,14 @@
         "description": "앱 개발자",
         "profile": {
           "profile_id": "S-4",
-          "profile_image": "",
+          "profile_image": "/card/dummy-profile.png",
           "profile_name": "최지원",
           "created_at": "2022-03-01T00:00:00Z",
-          "isTeam": false,
+          "is_team": false,
           "email": null,
           "owner": "최지원",
-          "link": []
+          "link": [],
+          "description": null
         }
       },
       {
@@ -102,13 +106,14 @@
         "description": "백엔드 개발자",
         "profile": {
           "profile_id": "S-5",
-          "profile_image": "",
+          "profile_image": "/card/dummy-profile.png",
           "profile_name": "정민호",
           "created_at": "2022-03-01T00:00:00Z",
-          "isTeam": false,
+          "is_team": false,
           "email": null,
           "owner": "정민호",
-          "link": []
+          "link": [],
+          "description": null
         }
       }
     ]
