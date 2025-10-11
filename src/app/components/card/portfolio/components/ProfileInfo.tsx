@@ -1,6 +1,6 @@
 import React from 'react';
-import { Body2, Caption, Label } from '../../../system/text';
-import { Profile } from '../types';
+import { Body2, Caption, Label } from '@components/system/text';
+import { Profile } from '@components/card/portfolio/types';
 
 interface ProfileInfoProps {
   profile: Profile;
@@ -25,7 +25,11 @@ const ProfileInfo = ({
   return (
     <div className={containerClass}>
       <Body2>{profile.name}</Body2>
-      <RoleComponent className="text-gray-base">{profile.role}</RoleComponent>
+      <RoleComponent className="text-gray-base">
+        {profile.role.length > 0
+          ? `${profile.role.join(', ')} 희망`
+          : '희망 분야 없음'}
+      </RoleComponent>
       {showBio && <Caption className="text-gray-base">{profile.bio}</Caption>}
     </div>
   );

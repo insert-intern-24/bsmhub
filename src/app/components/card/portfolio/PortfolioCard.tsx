@@ -1,9 +1,9 @@
 import React from 'react';
-import Image from 'next/image';
 import { PortfolioCardProps } from './types';
 import ProfileInfo from './components/ProfileInfo';
 import StatusBadge from './components/StatusBadge';
 import ProjectImages from './components/ProjectImages';
+import ProfileImage from './components/ProfileImage';
 
 const PortfolioCard = ({ profile, projects }: PortfolioCardProps) => {
   return (
@@ -20,18 +20,40 @@ const PortfolioCard = ({ profile, projects }: PortfolioCardProps) => {
 
         {/* Profile Section */}
         <div className="relative ml-2 w-full">
-          <Image
+          <ProfileImage
             src={profile.profile_image}
-            alt={`${profile.name} 프로필`}
-            width={(60 * 12) / 16}
-            height={(60 * 12) / 16}
-            className="rounded-full object-cover absolute top-[-4.25rem]"
+            name={profile.name}
+            size="small"
           />
           <ProfileInfo profile={profile} layout="horizontal" />
           <StatusBadge
             status={profile.status}
-            className="absolute top-[-0.375rem] right-0"
+            className="absolute top-0 right-0"
           />
+        </div>
+      </div>
+
+      {/* 컨테이너가 450px 이상일 때: 가로 레이아웃 (기존 LongPortfolioCard) */}
+      <div className="hidden @[450px]:flex w-full h-fit gap-2.5">
+        {/* Profile Image */}
+        <ProfileImage
+          src={profile.profile_image}
+          name={profile.name}
+          size="small"
+        />
+
+        <div className="flex-col gap-2 flex-1">
+          {/* Profile Info */}
+          <div className="relative w-full">
+            <ProfileInfo profile={profile} layout="horizontal" />
+            <StatusBadge
+              status={profile.status}
+              className="absolute top-0 right-0"
+            />
+          </div>
+
+          {/* Project Images */}
+          <ProjectImages projects={projects} variant="long" />
         </div>
       </div>
     </div>

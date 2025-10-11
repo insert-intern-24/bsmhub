@@ -1,13 +1,14 @@
 // Shared types for portfolio components
 export interface Project {
   title: string;
+  description: string;
   logo: string;
   projectImage: string;
 }
 
 export interface Profile {
   name: string;
-  role: string;
+  role: string[];
   bio: string;
   status: string;
   profile_image: string;
