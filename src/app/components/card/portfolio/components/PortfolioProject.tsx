@@ -9,7 +9,8 @@ export interface PortfolioProjectType {
 }
 
 export interface PortfolioProjectProps {
-  projects: PortfolioProjectType[];
+  personalProjects: CardProps[];
+  cooperationProjects: CardProps[];
 }
 
 const mapProjectMode: Record<PortfolioProjectType['mode'], string> = {
@@ -17,7 +18,21 @@ const mapProjectMode: Record<PortfolioProjectType['mode'], string> = {
   cooperation: '협업 프로젝트',
 };
 
-const PortfolioProject = ({ projects }: PortfolioProjectProps) => {
+const PortfolioProject = ({
+  personalProjects,
+  cooperationProjects,
+}: PortfolioProjectProps) => {
+  const projects: PortfolioProjectType[] = [
+    {
+      mode: 'personal',
+      datas: personalProjects,
+    },
+    {
+      mode: 'cooperation',
+      datas: cooperationProjects,
+    },
+  ];
+
   return (
     <div className="grid gap-6 grid-cols-auto-fit-card -mt-8">
       {projects.map(({ mode, datas }) => (

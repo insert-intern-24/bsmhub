@@ -4,9 +4,7 @@ import { Body, TitleEN } from '../components/system/text';
 import Tabs from '../components/layout/Tabs';
 
 import PortfolioHome from '../components/card/portfolio/PortfolioHome';
-import PortfolioProject, {
-  PortfolioProjectType,
-} from '../components/card/portfolio/components/PortfolioProject';
+import PortfolioProject from '../components/card/portfolio/components/PortfolioProject';
 import { getProfileById } from '@/services/profile/getProfileById';
 import { getProfileDetail } from '@/services/profile/getProfileDetail';
 import { getProfileIntroduce } from '@/services/profile/getProfileIntroduce';
@@ -33,25 +31,15 @@ const Portfolio = async ({ uuid, path = 'home' }: PortfolioProps) => {
   const personalProjects = (await getPersonalProjects(uuid)).map((project) => ({
     ...project,
     authors: [
-      { profileImage: convertTofromDatabaseImageURL(profile.profile_image) },
+      { profileImage: convertTofromDatabaseImageURL(profile.profile_image) }, // getPersonalProjects 함수에서 Join으로 가져오지 않은 개인 프로필 이미지 추가
     ],
   }));
-
-  const portfolioProjects: PortfolioProjectType[] = [
-    {
-      mode: 'personal',
-      datas: personalProjects,
-    },
-    {
-      mode: 'cooperation',
-      datas: cooperationProjects,
-    },
-  ];
 
   const isHome = path === 'home';
 
   let Content, containerCss;
 
+  // param이 home이라면 home에 대한 컴포넌트와 css를 반환
   if (isHome) {
     Content = (
       <PortfolioHome
@@ -62,7 +50,12 @@ const Portfolio = async ({ uuid, path = 'home' }: PortfolioProps) => {
     );
     containerCss = 'grid grid-cols-[22rem_1fr] grid-rows-[auto_auto] gap-7';
   } else {
-    Content = <PortfolioProject projects={portfolioProjects} />;
+    Content = (
+      <PortfolioProject
+        personalProjects={personalProjects}
+        cooperationProjects={cooperationProjects}
+      />
+    );
     containerCss = 'flex-col gap-6 mt-5';
   }
 

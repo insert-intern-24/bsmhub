@@ -1,5 +1,5 @@
 'use server';
-import { ProfileType } from "@/app/portfolio/types/portfolio";
+import { ProfileType } from "@/app/portfolio/types";
 import { createClient } from "@/utils/supabase/server";
 
 export const getProfileById = async (profile_id: string): Promise<ProfileType | null> => {

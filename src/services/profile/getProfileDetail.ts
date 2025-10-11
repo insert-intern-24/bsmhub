@@ -1,5 +1,5 @@
 'use server';
-import { PortfolioDetailProps } from "@/app/portfolio/types/portfolio";
+import { PortfolioDetailProps } from "@/app/portfolio/types";
 import { createClient } from "@/utils/supabase/server";
 import { Database } from "@/utils/supabase/database.types";
 
@@ -29,6 +29,7 @@ interface SkillType {
   language: boolean;
 }
 
+// profile_id에 대한 링크, 자격증, 대회, 기술스택를 조회하는 함수
 export const getProfileDetail = async (profile_id: string): Promise<PortfolioDetailProps[]> => {
   const supabase = await createClient();
   
