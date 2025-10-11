@@ -137,10 +137,13 @@ export default function SearchTab({
       </aside>
 
       {/* 포트폴리오 목록 */}
-      <main className="flex-col gap-3 p-4 flex-1 bg-light-gray-footer-bg">
+      <section className="flex-col gap-3 p-4 flex-1 bg-[#FAFAFA]">
         {filteredData.length > 0 ? (
           filteredData.map((data, index) => (
-            <Link href={`/portfolio/${encodeURIComponent(data.profile.name)}`} key={index}>
+            <Link
+              href={`/portfolio/${encodeURIComponent(data.profile.name)}`}
+              key={index}
+            >
               <PortfolioCard profile={data.profile} projects={data.projects} />
             </Link>
           ))
@@ -151,7 +154,7 @@ export default function SearchTab({
               : '검색 조건에 맞는 포트폴리오가 없습니다'}
           </div>
         )}
-      </main>
+      </section>
     </div>
   );
 }
