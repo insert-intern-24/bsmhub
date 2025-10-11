@@ -148,7 +148,7 @@ pipeline {
             }
             steps {
                 script {
-                    def comment = """🚀 배포 완료! (업데이트됨)
+                    def comment = """🚀 배포 완료!
                         |
                         |✨ 개발서버 프리뷰: http://${env.DEPLOY_SERVER}:${PORT}
                         |📌 고정포트: `${PORT}` (PR #${env.CHANGE_ID} 전용)
