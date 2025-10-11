@@ -26,9 +26,10 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=favorite,home,search,settings&display=optional"
           rel="stylesheet"
         />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body className="bg-[#F5F5F7]">
-        <ModalProvider >
+        <ModalProvider>
           <Header />
           <main className="mt-14 w-full min-h-dvh">
             <div className="max-w-outer mx-auto">{children}</div>

@@ -96,7 +96,7 @@ export default function SearchTab({
     .filter(filterByJobs)
     .filter(filterByEmploymentStatus);
   return (
-    <div className="container py-9 px-11 flex-row gap-4 min-h-dvh">
+    <div className="py-9 px-11 flex flex-col md:flex-row gap-4 min-h-dvh w-full">
       {/* 검색 및 필터 사이드바 */}
       <aside className="flex-col gap-3">
         <Inputs
@@ -137,7 +137,7 @@ export default function SearchTab({
       </aside>
 
       {/* 포트폴리오 목록 */}
-      <section className="flex-col gap-3 p-4 flex-1 bg-[#FAFAFA]">
+      <section className="flex-col gap-3 p-4 flex-1 bg-[#FAFAFA] rounded-lg">
         {filteredData.length > 0 ? (
           filteredData.map((data, index) => (
             <Link
