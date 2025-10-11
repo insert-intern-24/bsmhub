@@ -7,7 +7,6 @@ import PortfolioHome from '../components/card/portfolio/PortfolioHome';
 import PortfolioProject from '../components/card/portfolio/components/PortfolioProject';
 import { getProfileById } from '@/services/profile/getProfileById';
 import { getProfileDetail } from '@/services/profile/getProfileDetail';
-import { getProfileIntroduce } from '@/services/profile/getProfileIntroduce';
 import { getPersonalProjects } from '@/services/project/getPersonalProjects';
 import { notFound } from 'next/navigation';
 import { getCooperationProjects } from '@/services/project/getCooperationProjects';
@@ -26,7 +25,6 @@ const Portfolio = async ({ uuid, path = 'home' }: PortfolioProps) => {
 
   const studentInfo = (await getStudentInfo(uuid)).student;
   const profileDetail = await getProfileDetail(uuid);
-  const profileIntroduce = await getProfileIntroduce(uuid);
   const cooperationProjects = await getCooperationProjects(uuid);
   const personalProjects = (await getPersonalProjects(uuid)).map((project) => ({
     ...project,
@@ -43,7 +41,7 @@ const Portfolio = async ({ uuid, path = 'home' }: PortfolioProps) => {
   if (isHome) {
     Content = (
       <PortfolioHome
-        content={profileIntroduce}
+        content={profile.description ?? ''}
         details={profileDetail}
         projects={personalProjects}
       />
