@@ -871,28 +871,31 @@ export type Database = {
         Row: {
           created_at: string
           email: string | null
-          isTeam: boolean
+          is_team: boolean
           link: string[] | null
           owner: string | null
           profile_id: string
+          profile_image: string
           profile_name: string
         }
         Insert: {
           created_at?: string
           email?: string | null
-          isTeam: boolean
+          is_team: boolean
           link?: string[] | null
           owner?: string | null
           profile_id?: string
+          profile_image?: string
           profile_name: string
         }
         Update: {
           created_at?: string
           email?: string | null
-          isTeam?: boolean
+          is_team?: boolean
           link?: string[] | null
           owner?: string | null
           profile_id?: string
+          profile_image?: string
           profile_name?: string
         }
         Relationships: []
@@ -1054,23 +1057,29 @@ export type Database = {
       }
       project_contributors: {
         Row: {
-          description: string
+          description: string | null
+          profile_id: string
           project_id: number
-          student_id: string
         }
         Insert: {
-          description: string
+          description?: string | null
+          profile_id?: string
           project_id?: number
-          student_id?: string
         }
         Update: {
-          description?: string
+          description?: string | null
+          profile_id?: string
           project_id?: number
-          student_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "project_contributor_project_id_fkey"
+            foreignKeyName: "project_permissions_profile_id_fkey1"
+            columns: ["profile_id"]
+            referencedRelation: "profile"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "project_permissions_project_id_fkey"
             columns: ["project_id"]
             referencedRelation: "projects"
             referencedColumns: ["project_id"]
@@ -1124,63 +1133,44 @@ export type Database = {
           },
         ]
       }
-      project_permissions: {
-        Row: {
-          authority: boolean | null
-          profile_id: string
-          project_id: number
-        }
-        Insert: {
-          authority?: boolean | null
-          profile_id?: string
-          project_id?: number
-        }
-        Update: {
-          authority?: boolean | null
-          profile_id?: string
-          project_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "project_permissions_profile_id_fkey1"
-            columns: ["profile_id"]
-            referencedRelation: "profile"
-            referencedColumns: ["profile_id"]
-          },
-          {
-            foreignKeyName: "project_permissions_project_id_fkey"
-            columns: ["project_id"]
-            referencedRelation: "projects"
-            referencedColumns: ["project_id"]
-          },
-        ]
-      }
       projects: {
         Row: {
           category_id: number
           created_at: string
           description: string
+          link: string | null
           owner: string
           project_id: number
+          project_logo: string
           project_name: string
+          project_thumbnail: string
+          skills: string[] | null
           status: number
         }
         Insert: {
           category_id: number
           created_at?: string
           description: string
+          link?: string | null
           owner: string
           project_id?: number
+          project_logo?: string
           project_name: string
+          project_thumbnail?: string
+          skills?: string[] | null
           status: number
         }
         Update: {
           category_id?: number
           created_at?: string
           description?: string
+          link?: string | null
           owner?: string
           project_id?: number
+          project_logo?: string
           project_name?: string
+          project_thumbnail?: string
+          skills?: string[] | null
           status?: number
         }
         Relationships: [

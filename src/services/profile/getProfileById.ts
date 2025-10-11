@@ -9,7 +9,7 @@ export const getProfileById = async (profile_id: string): Promise<ProfileType | 
     .from('profile')
     .select('*')
     .eq('profile_id', profile_id)
-    .eq('isTeam', false)
+    .eq('is_team', false)
     .maybeSingle();
 
   if (error) {
