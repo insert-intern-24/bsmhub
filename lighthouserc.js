@@ -9,6 +9,7 @@ module.exports = {
     },
     upload: {
       target: 'lhci',
+      token: process.env.LHCI_TOKEN,
     },
   },
 };
