@@ -5,15 +5,13 @@ import Tabs from '../components/layout/Tabs';
 
 import PortfolioHome from '../components/card/portfolio/PortfolioHome';
 import PortfolioProject from '../components/card/portfolio/components/PortfolioProject';
-import { getProfileById } from '@/services/server/profile/getProfileById';
 import { getProfileDetail } from '@/services/server/profile/getProfileDetail';
 import { getPersonalProjects } from '@/services/server/project/getPersonalProjects';
 import { notFound } from 'next/navigation';
 import { getCooperationProjects } from '@/services/server/project/getCooperationProjects';
-import { getStudentInfo } from '@/services/server/profile/getStudentInfo';
 import { convertStudentNumber } from '@/utils/convertStudentNumber';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
-import { getProfileIdByName } from '@/services/server/profile/getProfileIdByName';
+import { getProfile } from '@/services/server/profile/getProfile';
 
 interface PortfolioProps {
   profileName: string;
@@ -21,11 +19,11 @@ interface PortfolioProps {
 }
 
 const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
-  const uuid = (await getProfileIdByName(profileName)) ?? notFound();
-  const profile = (await getProfileById(uuid)) ?? notFound();
+  const profile = (await getProfile(profileName)) ?? notFound();
+  const uuid = profile.profile_id;
+  const studentInfo = profile.profile_permission[0].student;
 
-  const studentInfo = (await getStudentInfo(uuid)).student;
-  const profileDetail = await getProfileDetail(uuid);
+  const profileDetail = await getProfileDetail(profileName);
   const cooperationProjects = await getCooperationProjects(uuid);
   const personalProjects = (await getPersonalProjects(uuid)).map((project) => ({
     ...project,

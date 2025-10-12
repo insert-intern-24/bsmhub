@@ -1,126 +1,77 @@
 'use server';
-import { PortfolioDetailProps } from "@/app/portfolio/types";
-import { Tables } from "@/utils/supabase/database.types";
-import { createClient } from "@/utils/supabase/server";
+import { PortfolioDetailProps, PortfolioDetailType } from "@/app/portfolio/types";
+import { createClient } from "@/utils/supabase/server"
 
-// view 테이블의 타입을 정의한 것
-interface CertificateType {
-  profile_id: string;
-  certificate_id: number;
-  certificate_name: string;
-  is_software: boolean;
-}
-
-interface CompetitionType {
-  profile_id: string;
-  prize: string;
-  competition_id: number;
-  competition_name: string;
-  competition_duration: string;
-}
-
-interface SkillType {
-  profile_id: string;
-  skill_id: number;
-  skill_name: string;
-  language: boolean;
-}
-
-// profile_id에 대한 링크, 자격증, 대회, 기술스택를 조회하는 함수
-export const getProfileDetail = async (profile_id: string): Promise<PortfolioDetailProps[]> => {
+export const getProfileDetail = async (profileName: string): Promise<PortfolioDetailProps[]> => {
   const supabase = await createClient();
-  
-  const getLinks = async (): Promise<Tables<'profile_link'>[]> => {
-    const { data, error } = await supabase
-      .from('profile_link')
-      .select('*')
-      .eq('profile_id', profile_id)
 
-    if (error) {
-      console.error('스킬 조회 중 오류')
-      return [];
-    }
+  const { data, error } = await supabase
+    .from('profile')
+    .select(`
+      profile_link (
+        link,
+        alt
+      ),
+      profile_permission (
+        student (
+          student_certificates (
+            certificates (
+              certificate_id,
+              certificate_name
+            )
+          )
+        )
+      ),
+      profile_competitions (
+        prize,
+        competitions (
+          competition_id,
+          competition_name
+        )
+      ),
+      profile_skills (
+        skills!fk_profile_skills_skill_id (
+          skill_id,
+          skill_name
+        )
+      )
+    `)
+    .eq('profile_name', profileName)
+    .maybeSingle<PortfolioDetailType>()
 
-    return data || [];
+  if (error) {
+    console.error('프로필 상세 정보 조회 중 오류', error)
+    return [];
   }
-
-  const getCertificates = async (): Promise<CertificateType[]> => {
-    const { data, error } = await supabase
-      .from('v_profile_certificates')
-      .select('*')
-      .eq('profile_id', profile_id)
-
-    if (error) {
-      console.error('자격증 조회 중 오류')
-      return [];
-    }
-
-    return data || [];
-  }
-
-  const getCompetitions = async (): Promise<CompetitionType[]> => {
-    const { data, error } = await supabase
-      .from('v_profile_competitions')
-      .select('*')
-      .eq('profile_id', profile_id)
-
-    if (error) {
-      console.error('대회 조회 중 오류')
-      return [];
-    }
-
-    return data || [];
-  }
-    
-  const getSkills = async (): Promise<SkillType[]> => {
-    const { data, error } = await supabase
-      .from('v_profile_skills')
-      .select('*')
-      .eq('profile_id', profile_id)
-
-    if (error) {
-      console.error('스킬 조회 중 오류')
-      return [];
-    }
-
-    return data || [];
-  }
-
-  const [links, certificates, competitions, skills] = await Promise.all([
-    getLinks(),
-    getCertificates(),
-    getCompetitions(),
-    getSkills()
-  ]);
 
   const details: PortfolioDetailProps[] = [
-    { 
+    {
       mode: 'link',
-      datas: links.map(link => ({
-        value: link?.alt,
-        url: link.link
+      datas: (data?.profile_link ?? []).map((item) => ({
+        value: item?.alt,
+        url: item.link
       }))
     },
     {
       mode: 'certificate',
-      datas: certificates.map(certificate => ({
-        value: certificate.certificate_name
+      datas: (data?.profile_permission[0].student.student_certificates ?? []).map((item) => ({
+        value: item.certificates.certificate_name
       }))
     },
     {
       mode: 'competition',
-      datas: competitions.map(competition => ({
-        value: competition.competition_name,
-        prize: competition.prize
+      datas: (data?.profile_competitions ?? []).map((item) => ({
+        value: item.competitions.competition_name,
+        prize: item.prize
       }))
     },
     {
       mode: 'skill',
-      datas: skills.map(skill => ({
-        value: skill.skill_name
+      datas: (data?.profile_skills ?? []).map((item) => ({
+        value: item.skills.skill_name
       }))
     }
   ]
-
+  
   return details;
 }

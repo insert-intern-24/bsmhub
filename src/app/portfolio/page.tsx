@@ -1,5 +1,5 @@
 import SearchTab from './SearchTab';
-import { getPersonalPortfolioData } from '@/services/server/profile/getPersonalPortfolioData';
+import { getPersonalPortfolioData } from '@/services/server/portfolio/getPersonalPortfolioData';
 import getJobs from '@/services/server/portfolio/getJobs';
 
 export default async function Portfolio() {
