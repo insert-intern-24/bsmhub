@@ -4,7 +4,7 @@ import path from 'path';
 import type { MetadataRoute } from 'next';
 
 const siteConfig = {
-  url: 'https://example.com',
+  url: process.env.SITE_URL || 'https://example.com',
 };
 
 // Recursively collect all pages with `page.tsx` or `page.jsx`
@@ -23,10 +23,12 @@ export async function getStaticRoutes(
     if (entry.isDirectory()) {
       const routePath = path.join(parentPath, entry.name);
 
-      // Check if this directory has a page.tsx or page.jsx file
-      const hasPage = ['page.tsx', 'page.jsx'].some((file) =>
-        fs.existsSync(path.join(fullPath, file)),
+      // Collect possible page file paths
+      const possiblePageFiles = ['page.tsx', 'page.jsx'].map((file) =>
+        path.join(fullPath, file),
       );
+      // Check if any of the possible page files exist
+      const hasPage = possiblePageFiles.some((filePath) => fs.existsSync(filePath));
 
       if (hasPage) {
         routes.push(`/${routePath}`);

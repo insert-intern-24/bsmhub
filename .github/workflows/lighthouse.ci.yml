@@ -12,9 +12,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-      - run: npm install && npm install -g @lhci/cli@0.15.x
+      - run: npm install && npm install -g @lhci/cli@0.15.x && npm install tsx
       - run: npm run build
-      - run: node ./generate-lighthouserc.mjs
-      - run: lhci autorun
+      - run: npx tsx ./generate-lighthouserc.mjs
+      - run: npx lhci autorun
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
