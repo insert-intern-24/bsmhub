@@ -18,4 +18,20 @@
     flex-direction: column;
     padding: 2.5rem;
   }
+
+  .responsive-main {
+    padding: 120px 0 0;
+  }
+
+  .responsive-portfolioHome {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .responsive-portfolioHome .portfolioHomeCard {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+  }
 }

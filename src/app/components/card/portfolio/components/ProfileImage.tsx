@@ -10,7 +10,7 @@ const sizeMap: Record<Size, { width: number; height: number }> = {
 };
 interface ProfileImageProps {
   src: string;
-  name: string;
+  name?: string;
   size: Size;
   className?: string;
   style?: React.CSSProperties;
