@@ -7,7 +7,8 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 # RUN npm_config_platform=linuxmusl npm_config_arch=x64 pnpm add sharp
 COPY . .
-RUN pnpm run build
+RUN --mount=type=cache,target=/app/.next/cache  \ 
+  pnpm run build
 
 # Production Stage
 FROM node:23-alpine AS runner
