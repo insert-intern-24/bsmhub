@@ -1,9 +1,9 @@
-// generate-lighthouserc.js
+// generate-lighthouserc.ts
 
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getStaticRoutes } from './src/app/sitemap.xml/sitemap.ts';
+import { getStaticRoutes } from './src/app/sitemap.xml/sitemap.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
