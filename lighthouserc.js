@@ -1,15 +1,22 @@
-module.exports = {
+import { getStaticRoutes } from './src/app/sitemap.xml/sitemap.ts';
+
+const staticPaths = await getStaticRoutes();
+
+const config = {
   ci: {
     collect: {
-      url: ['http://localhost:3000/'],
+      url: staticPaths.map((path) => `http://localhost:3000${path}`),
       startServerCommand: 'npm run start',
     },
     assert: {
       preset: 'lighthouse:recommended',
     },
     upload: {
-      target: 'lhci',
-      token: process.env.LHCI_TOKEN,
+      target: 'temporary-public-storage',
     },
   },
 };
+
+console.log(config.ci.collect.url);
+
+export default config;
