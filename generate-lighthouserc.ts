@@ -3,7 +3,10 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getStaticRoutes } from './src/app/sitemap.xml/sitemap.js';
+import { config } from 'dotenv';
+import { getAllRoutes } from './src/app/sitemap.xml/sitemap';
+
+config({ path: '.env.local' });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,7 +15,7 @@ async function generateConfig() {
   console.log('🚀 Generating Lighthouse CI config...');
 
   // 1. sitemap에서 동적으로 URL 경로를 가져옵니다.
-  const staticPaths = await getStaticRoutes();
+  const staticPaths = await getAllRoutes();
 
   // 2. Lighthouse CI 설정 객체를 만듭니다.
   const config = {

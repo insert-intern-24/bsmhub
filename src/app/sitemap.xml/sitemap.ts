@@ -28,7 +28,9 @@ export async function getStaticRoutes(
         path.join(fullPath, file),
       );
       // Check if any of the possible page files exist
-      const hasPage = possiblePageFiles.some((filePath) => fs.existsSync(filePath));
+      const hasPage = possiblePageFiles.some((filePath) =>
+        fs.existsSync(filePath),
+      );
 
       if (hasPage) {
         routes.push(`/${routePath}`);
@@ -52,35 +54,39 @@ export async function getStaticRoutes(
   return parentPath === '' ? ['/', ...routes] : routes;
 }
 
+export interface StaticParam {
+  [key: string]: string;
+}
+
 // Get dynamic routes by calling `generateStaticParams` from dynamic pages
-// async function getDynamicRoutes(
-//   subpath: string,
-//   dynamicSegment: string,
-// ): Promise<string[]> {
-//   try {
-//     const { generateStaticParams } = await import(
-//       `./${subpath}/[${dynamicSegment}]/page`
-//     );
-//     const params = await generateStaticParams();
-//     return params.map(
-//       (route: { [segment: string]: string }) =>
-//         `/${subpath}/${route[dynamicSegment]}`,
-//     );
-//   } catch (error) {
-//     console.error('Error loading dynamic routes:', error);
-//     return []; // Return empty array on error
-//   }
-// }
+async function getDynamicRoutes(
+  subpath: string,
+  dynamicSegment: string,
+): Promise<string[]> {
+  const filePath = path.join(process.cwd(), 'src/app', subpath);
+  try {
+    const staticParamsGenerator = (
+      await import(
+        path.join(filePath, `[${dynamicSegment}]`, 'staticParamsGenerator')
+      )
+    ).default;
+    const params = (await staticParamsGenerator()) as string[];
+    return params.map((route) => `/${subpath}/${route}`);
+  } catch (error) {
+    console.error('Error loading dynamic routes:', error);
+    return []; // Return empty array on error
+  }
+}
+
+export async function getAllRoutes(): Promise<string[]> {
+  return Promise.all([
+    getStaticRoutes(),
+    getDynamicRoutes('portfolio', 'profileName'),
+  ]).then((results) => results.flat());
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const allRoutes = (
-    await Promise.all([
-      getStaticRoutes(),
-      //   Uncomment the following lines if you have dynamic routes
-      //   getDynamicRoutes("blog", "slug"),
-      //   getDynamicRoutes("issue", "issueDate"),
-    ])
-  ).flat();
+  const allRoutes = await getAllRoutes();
 
   return allRoutes.map((route) => ({
     url: encodeURI(`${siteConfig.url}${route}`),
