@@ -16,7 +16,7 @@ const Navigator = () => {
   return (
     <nav className='hidden responsive-navigator'>
       {extendedNavigation.map((({label, href}) => {
-        const isActiveColor = pathName === href ? '#007AFF' : '#999'
+        const isActiveColor = pathName === href ? '#007AFF' : '#595959'
 
         return (
           <Link
