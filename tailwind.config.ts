@@ -30,7 +30,7 @@ const config: Config = {
     },
     extend: {
       gridTemplateColumns: {
-        'auto-fit-card': 'repeat(auto-fit, minmax(24rem, 1fr))'
+        'auto-fit-card': 'repeat(auto-fit, minmax(24rem, 1fr))',
       },
       lineClamp: {
         7: '7',
@@ -54,9 +54,9 @@ const config: Config = {
         white: '#FFFFFF',
         'light-gray-input': '#F5F5F7',
         'light-gray-outline': '#F5F5F7',
-        'light-gray-footer-bg': '#EDEDED',
+        'light-gray-footer-bg': '#F5F5F5',
         'light-gray': '#EAEAEC',
-        'gray-footer': '#7E7E8C',
+        'gray-footer': '#51515C',
         'placeholder-gray': '#858587',
         'gray-base': '#5E5E5E',
         black: '#131313',
