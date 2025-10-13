@@ -5,6 +5,7 @@ export default async function staticParamsGenerator(): Promise<string[]> {
   const { data, error } = await supabase
     .from('profile')
     .select('profile_name')
+    .eq('is_team', false)
     .returns<{ profile_name: string }[]>();
   if (error) {
     console.error('Error fetching profile names:', error);
