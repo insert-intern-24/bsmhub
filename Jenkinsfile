@@ -108,7 +108,7 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker image: ${IMAGE_TAG}"
-                    sh "docker build -t ${IMAGE_TAG} ."
+                    sh "DOCKER_BUILDKIT=1 docker build -t ${IMAGE_TAG} ."
                     echo "✅ Docker image built successfully"
                 }
             }

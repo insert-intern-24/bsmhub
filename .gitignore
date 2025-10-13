@@ -41,3 +41,7 @@ next-env.d.ts
 
 #local file
 *.local
+
+# lighthouse ci
+.lighthouseci/
+.lighthouserc.json
