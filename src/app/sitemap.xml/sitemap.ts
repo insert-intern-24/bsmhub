@@ -14,7 +14,7 @@ function shouldExcludeRoute(route: string): boolean {
   return exclusiveRoutes.some((pattern) => {
     if (pattern.includes('*')) {
       // Convert wildcard pattern to regex
-      const regexPattern = pattern.replace(/\*/g, '.*').replace(/\//g, '\\/');
+      const regexPattern = pattern.replace(/\\/g, '\\\\').replace(/\*/g, '.*').replace(/\//g, '\\/');
       const regex = new RegExp(`^${regexPattern}$`);
       return regex.test(route);
     }
