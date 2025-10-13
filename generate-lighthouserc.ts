@@ -26,9 +26,14 @@ async function generateConfig() {
       },
       assert: {
         preset: 'lighthouse:recommended',
+        assertions: {
+          'categories:performance': ['error', { minScore: 0.9 }],
+        },
       },
       upload: {
-        target: 'temporary-public-storage',
+        target: 'lhci',
+        token: process.env.LHCI_TOKEN,
+        serverBaseUrl: 'https://lhci.insert.team/',
       },
     },
   };
