@@ -31,10 +31,11 @@ export const PLAY_BUTTON_BOTTOM_GLOW_STYLE: CSSProperties = {
 export const PLAY_BUTTON_DEPTH_STYLE: CSSProperties = {
   background:
     'linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100%)',
-  zIndex: -1,
 };
 
-const DEFAULT_ICON = process.env.NEXT_PUBLIC_PROJECT_DEFAULT_ICON ?? '/card/dummy-project-icon.png';
+const DEFAULT_ICON =
+  process.env.NEXT_PUBLIC_PROJECT_DEFAULT_ICON ??
+  '/card/dummy-project-icon.png';
 
 export const FALLBACK_ICON = DEFAULT_ICON;
 export const FALLBACK_PROFILE =

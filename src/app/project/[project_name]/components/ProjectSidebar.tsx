@@ -24,11 +24,15 @@ const ProjectSidebar = ({ project }: ProjectSidebarProps) => {
 
   useEffect(() => {
     const checkSidebarHeight = () => {
-      if (sidebarRef.current && window.innerWidth <= 900) { // mobile breakpoint
-        const sidebarHeight = sidebarRef.current.scrollHeight;
-        const viewportHeight = window.innerHeight;
-        // Fold if sidebar height exceeds 70% of viewport height
-        setShouldFoldSidebar(sidebarHeight > viewportHeight * 0.7);
+      if (sidebarRef.current && window.innerWidth <= 900) {
+        const foldableContainer = sidebarRef.current.querySelector(
+          '.foldable-container',
+        ) as HTMLElement;
+        if (foldableContainer) {
+          const containerHeight = foldableContainer.scrollHeight;
+          const viewportHeight = window.innerHeight;
+          setShouldFoldSidebar(containerHeight > viewportHeight * 0.4);
+        }
       } else {
         setShouldFoldSidebar(false);
       }
@@ -37,38 +41,52 @@ const ProjectSidebar = ({ project }: ProjectSidebarProps) => {
     checkSidebarHeight();
     window.addEventListener('resize', checkSidebarHeight);
     return () => window.removeEventListener('resize', checkSidebarHeight);
-  }, [project]); // Re-check when project data changes
+  }, [project]);
 
   return (
-    <aside 
+    <aside
       ref={sidebarRef}
-      className={`relative flex-shrink-0 w-[21.75rem] min-w-[21.75rem] border-r border-gray-200 px-[2.625rem] mobile:w-full mobile:min-w-0 mobile:border-0 mobile:px-0 mobile:pb-8 ${
-        shouldFoldSidebar && !isSidebarExpanded ? 'mobile:max-h-[70vh] mobile:overflow-hidden' : ''
-      }`}
+      className="relative flex-shrink-0 w-[21.75rem] min-w-[21.75rem] border-r border-gray-200 px-[2.625rem] mobile:w-full mobile:min-w-0 mobile:border-0 mobile:px-0 mobile:pb-8"
     >
       <ProjectIcon
         image={project.iconImage ?? FALLBACK_ICON}
         title={project.title}
       />
+
       <div className="flex-col w-full gap-[1.625rem]">
         <ProjectSummarySection
           title={project.title}
           description={project.introduction}
         />
-        <ProjectLinkSection url={project.githubUrl} />
-        <ProjectTechnologiesSection technologies={project.technologies} />
-        <ProjectTeamSection 
-          members={project.team}
-        />
-        {shouldFoldSidebar && !isSidebarExpanded && (
-          <button
-            type="button"
-            className="mt-4 w-full py-2 text-center"
-            onClick={() => setIsSidebarExpanded(true)}
-          >
-            <Body className="text-gray-base">더보기</Body>
-          </button>
-        )}
+
+        {/* 링크, 기술스택, 기여자 컨테이너 */}
+        <div
+          className={`foldable-container relative flex-col w-full gap-[1.625rem] ${
+            shouldFoldSidebar && !isSidebarExpanded
+              ? 'mobile:max-h-[30vh] mobile:overflow-hidden'
+              : ''
+          }`}
+        >
+          <ProjectLinkSection url={project.githubUrl} />
+          <ProjectTechnologiesSection technologies={project.technologies} />
+          <ProjectTeamSection members={project.team} />
+
+          {/* 그라데이션 오버레이와 더보기 버튼 */}
+          {shouldFoldSidebar && !isSidebarExpanded && (
+            <>
+              <div className="pointer-events-none absolute inset-0 z-10 hidden bg-gradient-to-b from-white/70 via-white/85 to-white mobile:block" />
+              <div className="absolute inset-x-0 bottom-0 z-20 hidden justify-center mobile:flex">
+                <button
+                  type="button"
+                  className="pointer-events-auto px-4 py-1"
+                  onClick={() => setIsSidebarExpanded(true)}
+                >
+                  <Body className="text-detail">더보기</Body>
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </aside>
   );
@@ -80,8 +98,10 @@ interface ProjectIconProps {
 }
 
 const ProjectIcon = ({ image, title }: ProjectIconProps) => {
-  const imageUrl = image.includes('{{supabaseHost}}') ? convertFromDatabaseImageURL(image) : image;
-  
+  const imageUrl = image.includes('{{supabaseHost}}')
+    ? convertFromDatabaseImageURL(image)
+    : image;
+
   return (
     <div className="absolute top-[-8rem] h-[7.5rem] w-[7.5rem]">
       <Image src={imageUrl} alt={title} fill className="object-cover" />
