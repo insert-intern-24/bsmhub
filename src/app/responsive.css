@@ -53,4 +53,19 @@
     max-height: none;
     overflow: visible;
   }
+  .responsive-main {
+    padding: 120px 0 0;
+  }
+
+  .responsive-portfolioHome {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .responsive-portfolioHome .portfolioHomeCard {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+  }
 }

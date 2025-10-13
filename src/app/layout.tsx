@@ -1,11 +1,10 @@
-// src/app/layout.tsx
 import Footer from './components/layout/Footer';
 import './globals.css';
+import './responsive.css';
 import '@components/modal/inputs/common/common.css';
 import '@components/modal/modal.css';
 import Header from '@components/layout/Header';
 import { ModalProvider, Modal } from '@components/modal';
-// import Footer from '@components/layout/Footer';
 
 export const metadata = {
   title: 'BSMHub',
@@ -31,8 +30,10 @@ export default function RootLayout({
       <body className="bg-[#F5F5F7]">
         <ModalProvider>
           <Header />
-          <main className="mt-14 w-full min-h-dvh">
-            <div className="max-w-outer mx-auto">{children}</div>
+          <main className="w-full min-h-dvh pt-[120px]">
+            <div className="max-w-[109rem] min-h-screen bg-white mobile:pb-12 pb-[4rem] mx-auto">
+              {children}
+            </div>
           </main>
           <Footer />
           <Modal />

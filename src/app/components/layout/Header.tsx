@@ -6,12 +6,11 @@ import { Label } from '../system/text';
 export const navigation = [
   { label: '프로젝트', href: '/projects/all' },
   { label: '동아리', href: '/clubs/all' },
-  { label: '포트폴리오', href: '/portfolio/all' },
+  { label: '포트폴리오', href: '/portfolio' },
   { label: '대회', href: '/majors/all' },
 ];
 
 const Header = () => {
-
   return (
     <header className="bg-white p-white-space-margin flex-center h-14 border-b border-[light-gray-outline] responsive-header mobile:px-[0.6875rem]">
       <div className="flex-row items-center">

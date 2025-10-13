@@ -3,7 +3,7 @@
 import { IconX } from '@tabler/icons-react';
 import React from 'react';
 
-interface TagProps {
+export interface TagProps {
   mode: 'default' | 'input' | 'cancel' | 'white';
   value?: string | null;
   onClick?: () => void;
@@ -35,7 +35,7 @@ const SkillTag = ({ mode, value, onClick }: TagProps) => {
 
   return (
     <div
-      className={`min-w-16 max-w-fit inline-flex-center gap-[0.3rem] px-3 py-1 rounded-full font-normal
+      className={`min-w-16 max-w-fit inline-flex-center gap-[0.3rem] px-3 py-1 rounded-full font-normal text-xs
         ${mode === 'white' ? 'bg-white' : 'bg-light-gray-input'}`}
     >
       {children}
