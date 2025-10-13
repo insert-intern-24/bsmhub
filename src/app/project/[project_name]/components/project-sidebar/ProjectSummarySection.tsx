@@ -3,7 +3,6 @@ import SkillTag from '@/app/components/contents/SkillTag';
 import {
   PLAY_BUTTON_BORDER_STYLE,
   PLAY_BUTTON_BOTTOM_GLOW_STYLE,
-  PLAY_BUTTON_DEPTH_STYLE,
   PLAY_BUTTON_FILL_STYLE,
   PLAY_BUTTON_SHEEN_STYLE,
   PLAY_BUTTON_TOP_GLOW_STYLE,
@@ -36,11 +35,7 @@ const ProjectActions = () => (
 const PlayButton = () => (
   <button className="relative flex-1 cursor-pointer">
     <div
-      className="absolute inset-x-0 top-1/4 h-12"
-      style={PLAY_BUTTON_DEPTH_STYLE}
-    />
-    <div
-      className="relative flex h-10 items-center justify-center gap-1 overflow-hidden rounded-3xl"
+      className="relative flex h-10 items-center justify-center gap-1 overflow-hidden rounded-3xl z-10"
       style={{ opacity: 0.8, backdropFilter: 'blur(33.5px)' }}
     >
       <div
@@ -86,9 +81,9 @@ export const ProjectLinkSection = ({ url }: ProjectLinkSectionProps) => (
   <section className="flex-col gap-[0.375rem]">
     <Label>링크</Label>
     {url ? (
-      <a 
-        href={url} 
-        target="_blank" 
+      <a
+        href={url}
+        target="_blank"
         rel="noopener noreferrer"
         className="text-detail cursor-pointer hover:underline"
       >
