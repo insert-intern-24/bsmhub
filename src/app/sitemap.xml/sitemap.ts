@@ -7,6 +7,21 @@ const siteConfig = {
   url: process.env.SITE_URL || 'https://example.com',
 };
 
+const exclusiveRoutes = ['/auth*'];
+
+// Check if a route should be excluded based on exclusiveRoutes patterns
+function shouldExcludeRoute(route: string): boolean {
+  return exclusiveRoutes.some((pattern) => {
+    if (pattern.includes('*')) {
+      // Convert wildcard pattern to regex
+      const regexPattern = pattern.replace(/\*/g, '.*').replace(/\//g, '\\/');
+      const regex = new RegExp(`^${regexPattern}$`);
+      return regex.test(route);
+    }
+    return route === pattern;
+  });
+}
+
 // Recursively collect all pages with `page.tsx` or `page.jsx`
 export async function getStaticRoutes(
   dir = 'src/app', // Updated default directory to match the actual structure
@@ -82,7 +97,11 @@ export async function getAllRoutes(): Promise<string[]> {
   return Promise.all([
     getStaticRoutes(),
     getDynamicRoutes('portfolio', 'profileName'),
-  ]).then((results) => results.flat());
+  ])
+    .then((results) => results.flat())
+    .then((allRoutes) =>
+      allRoutes.filter((route) => !shouldExcludeRoute(route)),
+    );
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
