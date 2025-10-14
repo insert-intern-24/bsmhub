@@ -73,20 +73,14 @@ export interface StaticParam {
   [key: string]: string;
 }
 
+import { generateStaticParams } from '../portfolio/[profileName]/page';
 // Get dynamic routes by calling `generateStaticParams` from dynamic pages
-async function getDynamicRoutes(
-  subpath: string,
-  dynamicSegment: string,
-): Promise<string[]> {
-  const filePath = path.join(process.cwd(), 'src/app', subpath);
+async function getDynamicRoutes(subpath: string): Promise<string[]> {
   try {
-    const staticParamsGenerator = (
-      await import(
-        path.join(filePath, `[${dynamicSegment}]`, 'staticParamsGenerator')
-      )
-    ).default;
-    const params = (await staticParamsGenerator()) as string[];
-    return params.map((route) => `/${subpath}/${route}`);
+    const params = await generateStaticParams();
+    return params.map(
+      (param: { profileName: string }) => `/${subpath}/${param.profileName}`,
+    );
   } catch (error) {
     console.error('Error loading dynamic routes:', error);
     return []; // Return empty array on error
@@ -94,10 +88,7 @@ async function getDynamicRoutes(
 }
 
 export async function getAllRoutes(): Promise<string[]> {
-  return Promise.all([
-    getStaticRoutes(),
-    getDynamicRoutes('portfolio', 'profileName'),
-  ])
+  return Promise.all([getStaticRoutes(), getDynamicRoutes('portfolio')])
     .then((results) => results.flat())
     .then((allRoutes) =>
       allRoutes.filter((route) => !shouldExcludeRoute(route)),

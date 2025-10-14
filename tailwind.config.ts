@@ -57,8 +57,8 @@ const config: Config = {
         'light-gray-footer-bg': '#F5F5F5',
         'light-gray': '#EAEAEC',
         'gray-footer': '#51515C',
-        'placeholder-gray': '#858587',
-        'gray-base': '#5E5E5E',
+        'placeholder-gray': '#757575',
+        'gray-base': '#4A4A4A',
         black: '#131313',
         'blue-primary': '#1462FF',
         'red-primary': '#FD462D',
@@ -68,8 +68,6 @@ const config: Config = {
   plugins: [
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@tailwindcss/container-queries'),
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('@tailwindcss/line-clamp'),
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@tailwindcss/typography'),
     // eslint-disable-next-line @typescript-eslint/no-require-imports

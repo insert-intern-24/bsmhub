@@ -51,7 +51,9 @@ function Inputs({
       `}
       />
       {icon && iconMap[icon] && (
-        <button type="button">{iconMap[icon]}</button>
+        <button type="button" aria-label={icon}>
+          {iconMap[icon]}
+        </button>
       )}
     </div>
   );
