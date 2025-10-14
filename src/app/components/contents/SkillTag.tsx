@@ -35,7 +35,7 @@ const SkillTag = ({ mode, value, onClick }: TagProps) => {
 
   return (
     <div
-      className={`inline-flex-center gap-[0.3rem] px-3 py-1 rounded-full font-normal text-xs
+      className={`min-w-16 max-w-fit inline-flex-center gap-[0.3rem] px-3 py-1 rounded-full font-normal text-xs
         ${mode === 'white' ? 'bg-white' : 'bg-light-gray-input'}`}
     >
       {children}

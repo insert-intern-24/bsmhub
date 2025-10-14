@@ -14,7 +14,10 @@ function shouldExcludeRoute(route: string): boolean {
   return exclusiveRoutes.some((pattern) => {
     if (pattern.includes('*')) {
       // Convert wildcard pattern to regex
-      const regexPattern = pattern.replace(/\\/g, '\\\\').replace(/\*/g, '.*').replace(/\//g, '\\/');
+      const regexPattern = pattern
+        .replace(/\\/g, '\\\\')
+        .replace(/\*/g, '.*')
+        .replace(/\//g, '\\/');
       const regex = new RegExp(`^${regexPattern}$`);
       return regex.test(route);
     }
@@ -97,6 +100,7 @@ export async function getAllRoutes(): Promise<string[]> {
   return Promise.all([
     getStaticRoutes(),
     getDynamicRoutes('portfolio', 'profileName'),
+    getDynamicRoutes('project', 'project_name'),
   ])
     .then((results) => results.flat())
     .then((allRoutes) =>

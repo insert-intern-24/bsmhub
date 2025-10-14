@@ -60,6 +60,7 @@ const config: Config = {
         'placeholder-gray': '#858587',
         'gray-base': '#5E5E5E',
         black: '#131313',
+        detail: '#858587',
         'blue-primary': '#1462FF',
         'red-primary': '#FD462D',
       },
@@ -68,8 +69,6 @@ const config: Config = {
   plugins: [
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@tailwindcss/container-queries'),
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('@tailwindcss/line-clamp'),
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@tailwindcss/typography'),
     // eslint-disable-next-line @typescript-eslint/no-require-imports
