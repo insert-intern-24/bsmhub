@@ -93,11 +93,19 @@ export default function SearchTab({
     }));
   };
 
+  const [visibleCount, setVisibleCount] = useState(10);
+
   // 필터링된 데이터
   const filteredData = portfolioData
     .filter(filterBySearchTerm)
     .filter(filterByJobs)
     .filter(filterByEmploymentStatus);
+
+  const visibleData = filteredData.slice(0, visibleCount);
+
+  const showMore = () => {
+    setVisibleCount((prev) => prev + 10);
+  };
   return (
     <div className="py-9 px-11 flex flex-col md:flex-row gap-4 min-h-dvh w-full">
       {/* 검색 및 필터 사이드바 */}
@@ -141,8 +149,8 @@ export default function SearchTab({
 
       {/* 포트폴리오 목록 */}
       <section className="flex-col gap-3 p-4 flex-1 bg-[#FAFAFA] rounded-lg">
-        {filteredData.length > 0 ? (
-          filteredData.map((data, index) => (
+        {visibleData.length > 0 ? (
+          visibleData.map((data, index) => (
             <Link
               href={`/portfolio/${encodeURIComponent(data.profile.name)}`}
               key={index}
@@ -157,6 +165,14 @@ export default function SearchTab({
               ? '포트폴리오 데이터가 없습니다'
               : '검색 조건에 맞는 포트폴리오가 없습니다'}
           </div>
+        )}
+        {visibleCount < filteredData.length && (
+          <button
+            onClick={showMore}
+            className="w-full mt-4 p-2 bg-blue-primary text-white rounded-lg"
+          >
+            더 보기
+          </button>
         )}
       </section>
     </div>

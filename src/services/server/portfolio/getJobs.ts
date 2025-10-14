@@ -6,7 +6,7 @@ export default async function getJobs() {
 
   const { data: jobs, error } = await supabase
     .from('jobs')
-    .select('*')
+    .select('job_id, job_name')
     .returns<Tables<'jobs'>[]>();
 
   if (error) {

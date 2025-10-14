@@ -8,7 +8,9 @@ interface StatusBadgeProps {
 
 const StatusBadge = ({ status, className = '' }: StatusBadgeProps) => {
   return (
-    <div className={`px-3 py-1 rounded-3xl bg-[#F1FFF0] text-[#086100] ${className}`}>
+    <div
+      className={`px-3 py-1 rounded-3xl bg-[#F1FFF0] text-[#064500] ${className}`}
+    >
       <Caption>{status}</Caption>
     </div>
   );
