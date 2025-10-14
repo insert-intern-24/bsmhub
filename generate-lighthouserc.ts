@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { config } from 'dotenv';
-import { getAllRoutes } from './src/app/sitemap.xml/sitemap';
+import sitemap from './src/app/sitemap.xml/sitemap';
 
 config({ path: '.env.local' });
 
@@ -15,13 +15,14 @@ async function generateConfig() {
   console.log('🚀 Generating Lighthouse CI config...');
 
   // 1. sitemap에서 동적으로 URL 경로를 가져옵니다.
-  const staticPaths = await getAllRoutes();
+  const sitemapData = await sitemap();
+  const urls = sitemapData.map((item) => item.url.replace('https://bsmhub.vercel.app', 'http://localhost:3000'));
 
   // 2. Lighthouse CI 설정 객체를 만듭니다.
   const config = {
     ci: {
       collect: {
-        url: staticPaths.map((path) => `http://localhost:3000${path}`),
+        url: urls,
         startServerCommand: 'npm run start',
       },
       assert: {

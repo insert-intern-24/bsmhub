@@ -1,11 +1,8 @@
 import Portfolio from '../Portfolio';
-import { getPersonalPortfolioData } from '@/services/server/portfolio/getPersonalPortfolioData';
+import { getPortfolioParams } from './getPortfolioParams';
 
 export async function generateStaticParams() {
-  const portfolioData = await getPersonalPortfolioData();
-  return portfolioData.map((data) => ({
-    profileName: encodeURIComponent(data.profile.name),
-  }));
+  return getPortfolioParams();
 }
 
 interface PortfolioProps {
