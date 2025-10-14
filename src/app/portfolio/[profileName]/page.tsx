@@ -1,4 +1,9 @@
 import Portfolio from '../Portfolio';
+import { getPortfolioParams } from './getPortfolioParams';
+
+export async function generateStaticParams() {
+  return getPortfolioParams();
+}
 
 interface PortfolioProps {
   params: Promise<{ profileName: string }>;

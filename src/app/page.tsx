@@ -2,10 +2,6 @@
 
 import { useEffect } from 'react';
 // import Detail from '@components/detail/Detail';
-import Buttons from '@components/modal/inputs/Buttons';
-import Inputs from '@components/modal/inputs/SingleInput';
-import PictureUpload from '@components/modal/inputs/PictureUpload';
-import LabelInputs from '@components/modal/inputs/LabelOfInputs';
 import InputListProvider from '@components/modal/inputs/InputListProvider';
 import InputOfModal from '@components/modal/inputs/InputOfModal';
 import { FormConfig } from '@components/modal/inputs/types/inputTypes';
@@ -104,33 +100,6 @@ export default function Home() {
 
   return (
     <div className="bg-white p-10">
-      {/* 기존 컴포넌트 테스트 */}
-      <div className="mb-10">
-        <h2 className="text-2xl mb-4">개별 컴포넌트 테스트</h2>
-        <LabelInputs label="이메일" required />
-        <Buttons />
-        <Inputs type="text" mode="write" />
-        <Inputs type="text" icon="search" />
-        <Inputs type="date" icon="calendar" />
-        <Inputs type="text" mode="read" value="읽기 전용 입력" />
-        <Inputs type="text" icon="check" />
-        <PictureUpload aspectRatio="4:3" />
-        <InputListProvider
-          config={{
-            inputs: [
-              { type: 'date', width: 30, icon: 'calendar' },
-              { type: 'text', width: 35, placeholder: '내용을 입력하세요' },
-              { type: 'text', width: 35 },
-            ],
-          }}
-        />
-
-        <InputListProvider
-          config={{
-            inputs: [{ type: 'text', placeholder: '내용을 입력하세요' }],
-          }}
-        />
-      </div>
 
       {/* React Hook Form 통합 폼 */}
       <div className="border-t-2 pt-10">

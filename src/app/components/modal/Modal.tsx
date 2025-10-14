@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useModal } from './ModalContext';
+import './modal.css';
 
 export const Modal = () => {
   const { isOpen, modalContent, closeModal } = useModal();
