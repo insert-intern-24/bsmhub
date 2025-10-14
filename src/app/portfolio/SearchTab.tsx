@@ -2,7 +2,10 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import PortfolioCard from '../components/card/portfolio/PortfolioCard';
+import dynamic from 'next/dynamic';
+const PortfolioCard = dynamic(
+  () => import('../components/card/portfolio/PortfolioCard'),
+);
 import { PortfolioData } from './types';
 import Inputs from '../components/modal/inputs/SingleInput';
 import Checkbox from '../components/modal/inputs/Checkbox';
@@ -143,6 +146,7 @@ export default function SearchTab({
             <Link
               href={`/portfolio/${encodeURIComponent(data.profile.name)}`}
               key={index}
+              prefetch={false}
             >
               <PortfolioCard profile={data.profile} projects={data.projects} />
             </Link>

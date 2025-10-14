@@ -1,8 +1,6 @@
 import Footer from './components/layout/Footer';
 import './globals.css';
 import './responsive.css';
-import '@components/modal/inputs/common/common.css';
-import '@components/modal/modal.css';
 import Header from '@components/layout/Header';
 import { ModalProvider, Modal } from '@components/modal';
 

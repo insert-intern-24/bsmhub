@@ -12,5 +12,9 @@ export default function Editor() {
       .catch((err) => console.error('Failed to load rich text editor:', err));
   }, []);
 
-  return <div suppressHydrationWarning>{RichTextEditorComponent && <RichTextEditorComponent />}</div>;
+  return (
+    <div suppressHydrationWarning>
+      {RichTextEditorComponent && <RichTextEditorComponent aria-label="Rich Text Editor" />}
+    </div>
+  );
 }
