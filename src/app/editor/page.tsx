@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import 'lexical-rich-text-editor/lexical-rich-text-editor.css';
-import './editor-overrides.css';
 export default function Editor() {
   const [RichTextEditorComponent, setRichTextEditorComponent] = useState<React.FC | null>(null);
 
@@ -14,8 +13,8 @@ export default function Editor() {
   }, []);
 
   return (
-    <div suppressHydrationWarning aria-label="Rich Text Editor">
-      {RichTextEditorComponent && <RichTextEditorComponent />}
+    <div suppressHydrationWarning>
+      {RichTextEditorComponent && <RichTextEditorComponent aria-label="Rich Text Editor" />}
     </div>
   );
 }

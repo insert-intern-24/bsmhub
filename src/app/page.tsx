@@ -3,7 +3,10 @@
 import { useEffect } from 'react';
 // import Detail from '@components/detail/Detail';
 import InputListProvider from '@components/modal/inputs/InputListProvider';
-import InputOfModal from '@components/modal/inputs/InputOfModal';
+import dynamic from 'next/dynamic';
+const InputOfModal = dynamic(
+  () => import('@components/modal/inputs/InputOfModal'),
+);
 import { FormConfig } from '@components/modal/inputs/types/inputTypes';
 import { useModal } from '@components/modal';
 import Checkbox from './components/modal/inputs/Checkbox';

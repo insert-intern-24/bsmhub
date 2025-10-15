@@ -10,12 +10,6 @@ const nextConfig: NextConfig = {
     ],
   },
   output: 'standalone',
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.devtool = 'hidden-source-map';
-    }
-    return config;
-  },
 };
 
 export default nextConfig;

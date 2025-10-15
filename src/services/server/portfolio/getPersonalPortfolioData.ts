@@ -10,23 +10,29 @@ export async function getPersonalPortfolioData(): Promise<PortfolioData[]> {
     .from('profile')
     .select(
       `
-      profile_name,
-      description,
-      profile_image,
+      *,
       project_contributors (
+        description,
         project:projects (
+          project_id,
           project_name,
           project_thumbnail,
           project_logo,
-          description
+          description,
+          status
         )
       ),
       profile_permission (
         student(
           name,
+          join_at,
+          graduate_at,
+          department:departments(
+            *
+          ),
           student_jobs(
             job:jobs(
-              job_name
+              *
             )
           )
         )
