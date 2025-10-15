@@ -28,7 +28,7 @@ const Tabs = ({ tabs }: TabsProps) => {
         return (
           <Link
             key={mode}
-            className={`px-5 pb-2 border-b-2 ${
+            className={`flex items-center min-h-[48px] min-w-[48px] px-5 py-2 border-b-2 ${
               isActive ? 'border-black' : 'border-transparent text-gray-base'
             }`}
             href={`?path=${mode}`}

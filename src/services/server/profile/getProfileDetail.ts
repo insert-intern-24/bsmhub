@@ -30,7 +30,7 @@ export const getProfileDetail = async (profileName: string): Promise<PortfolioDe
         )
       ),
       profile_skills (
-        skills!fk_profile_skills_skill_id (
+        skills (
           skill_id,
           skill_name
         )

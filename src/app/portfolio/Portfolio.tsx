@@ -64,6 +64,7 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
         alt="프로필 사진"
         src={convertFromDatabaseImageURL(profile.profile_image)}
         className="rounded-sm absolute -top-20"
+        priority
       />
       <TitleEN className="mobile:mb-2">{profile.profile_name}</TitleEN>
       <div className={`${containerCss} responsive-portfolioHome`}>

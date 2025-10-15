@@ -26,6 +26,7 @@ body {
   font-family: 'Threat';
   font-style: normal;
   font-weight: 400;
+  font-display: swap;
   src:
     local('Threat'),
     url('https://fonts.cdnfonts.com/s/95719/Threat-2OAeX.woff') format('woff');
@@ -35,6 +36,7 @@ body {
   font-family: 'Material Symbols Outlined';
   font-style: normal;
   font-weight: 400;
+  font-display: swap;
   src: url(https://fonts.gstatic.com/s/materialsymbolsoutlined/v215/kJF1BvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzByHX9rA6RzaxHMPdY43zj-jCxv3fzvRNU22ZXGJpEpjC_1v-p_4MrImHCIJIZrDCvHOejbd5zrDAt.woff2)
     format('woff2');
 }
@@ -59,6 +61,7 @@ body {
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
+  font-display: swap;
   src: url(https://fonts.gstatic.com/s/materialicons/v142/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2)
     format('woff2');
 }
@@ -101,5 +104,5 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 
 html {
-  font-size: 12px;
+  font-size: 16px;
 }
