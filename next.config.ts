@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
       'bsmhubsp.insert.team',
     ],
   },
-  output: 'standalone',
+  // output: 'standalone',
   productionBrowserSourceMaps: true,
 };
 

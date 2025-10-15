@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { Body, TitleEN } from '../components/system/text';
 
 import Tabs from '../components/layout/Tabs';
@@ -23,12 +22,17 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
   const uuid = profile.profile_id;
   const studentInfo = profile.profile_permission[0].student;
 
-  const profileDetail = await getProfileDetail(profileName);
-  const cooperationProjects = await getCooperationProjects(uuid);
-  const personalProjects = (await getPersonalProjects(uuid)).map((project) => ({
+  const [profileDetail, cooperationProjects, personalProjectsResult] =
+    await Promise.all([
+      getProfileDetail(profileName),
+      getCooperationProjects(uuid),
+      getPersonalProjects(uuid),
+    ]);
+
+  const personalProjects = personalProjectsResult.map((project) => ({
     ...project,
     authors: [
-      { profileImage: convertFromDatabaseImageURL(profile.profile_image) }, // getPersonalProjects 함수에서 Join으로 가져오지 않은 개인 프로필 이미지 추가
+      { profileImage: convertFromDatabaseImageURL(profile.profile_image) },
     ],
   }));
 
@@ -58,13 +62,13 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
 
   return (
     <div className="pt-[4.5rem] px-[2.75rem] relative">
-      <Image
+      <img
         width={(120 / 16) * 14}
         height={(120 / 16) * 14}
         alt="프로필 사진"
         src={convertFromDatabaseImageURL(profile.profile_image)}
         className="rounded-sm absolute -top-20"
-        priority
+        fetchPriority="high"
       />
       <TitleEN className="mobile:mb-2">{profile.profile_name}</TitleEN>
       <div className={`${containerCss} responsive-portfolioHome`}>

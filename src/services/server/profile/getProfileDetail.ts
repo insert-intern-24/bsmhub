@@ -54,7 +54,7 @@ export const getProfileDetail = async (profileName: string): Promise<PortfolioDe
     },
     {
       mode: 'certificate',
-      datas: (data?.profile_permission[0].student.student_certificates ?? []).map((item) => ({
+      datas: (data?.profile_permission?.[0]?.student.student_certificates ?? []).map((item) => ({
         value: item.certificates.certificate_name
       }))
     },
