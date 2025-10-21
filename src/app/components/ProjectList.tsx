@@ -10,7 +10,7 @@ interface ProjectListProps {
 }
 
 export default function ProjectList({ projects }: ProjectListProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>('전체');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   const categories = useMemo(() => {
     const uniqueCategories = new Set<string>();
@@ -21,27 +21,29 @@ export default function ProjectList({ projects }: ProjectListProps) {
       }
     });
 
-    return ['전체', ...Array.from(uniqueCategories)];
+    return ['All', ...Array.from(uniqueCategories)];
   }, [projects]);
 
   const filteredProjects = useMemo(() => {
-    return selectedCategory === '전체'
+    return selectedCategory === 'All'
       ? projects
       : projects.filter((project) => project.category === selectedCategory);
   }, [projects, selectedCategory]);
 
   return (
-    <div className="flex-col gap-6">
+    <div className="flex-col gap-[0.90625rem] w-full">
       {/* 카테고리 토글 버튼들 */}
-      <div className="flex flex-wrap gap-2">
-        {categories.map((category) => (
-          <CategoryTag
-            key={category}
-            category={category}
-            isActive={selectedCategory === category}
-            onClick={() => setSelectedCategory(category)}
-          />
-        ))}
+      <div className="flex justify-center">
+        <div className="flex-wrap gap-0 w-fit">
+          {categories.map((category) => (
+            <CategoryTag
+              key={category}
+              category={category}
+              isActive={selectedCategory === category}
+              onClick={() => setSelectedCategory(category)}
+            />
+          ))}
+        </div>
       </div>
 
       {/* 프로젝트 그리드 */}
