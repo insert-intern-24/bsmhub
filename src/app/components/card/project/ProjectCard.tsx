@@ -6,6 +6,7 @@ export interface CardProps {
   id: number;
   title: string;
   projectImage: string;
+  category?: string;
   authors: {
     name?: string;
     profileImage: string;
