@@ -15,7 +15,7 @@ export interface CardProps {
 
 const Card = ({ title, projectImage, authors }: CardProps) => {
   return (
-    <div className="w-full flex-col gap-[0.375rem]">
+    <div className="w-full flex-col gap-[0.375rem] cursor-pointer">
       <figure className="relative w-full pb-[56.25%] rounded-[0.25rem] overflow-hidden">
         <Image
           src={projectImage}

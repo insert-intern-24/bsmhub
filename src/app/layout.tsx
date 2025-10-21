@@ -25,7 +25,7 @@ export default function RootLayout({
       <body className="bg-white">
         <ModalProvider>
           <Header />
-          <main className="w-full min-h-dvh pt-[120px]">
+          <main className="w-full min-h-dvh pt-[4.5rem]">
             <div className="p-white-space-margin mobile:px-[0.6875rem] mobile:pb-12 pb-[4rem]">
               {children}
             </div>
