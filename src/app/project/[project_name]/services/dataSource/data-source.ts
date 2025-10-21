@@ -1,13 +1,7 @@
-import mockProjects from '../../mock-data.json';
 import { createClient } from '@/utils/supabase/server';
 import type { ProjectDetailRow } from '../../components/types';
 
-const MOCK_PROJECTS = mockProjects as ProjectDetailRow[];
-
-const fetchFromMock = (projectName: string) =>
-  MOCK_PROJECTS.find((project) => project.project_name === projectName) ?? null;
-
-const fetchFromSupabase = async (projectName: string) => {
+export const fetchFromSupabase = async (projectName: string) => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -31,12 +25,4 @@ const fetchFromSupabase = async (projectName: string) => {
   }
 
   return data;
-};
-
-export const fetchProjectRow = async (projectName: string) => {
-  if (process.env.NEXT_MOCK_MODE === 'true') {
-    return fetchFromMock(projectName);
-  }
-
-  return fetchFromSupabase(projectName);
 };
