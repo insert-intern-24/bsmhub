@@ -4,7 +4,7 @@ import { getProjects as getProjectsFromServer } from '@/services/server/project/
 
 export async function getProjects(): Promise<CardProps[]> {
   const isMockMode = process.env.NEXT_MOCK_MODE === 'true';
-  
+
   if (isMockMode) {
     return mockProjects;
   }
