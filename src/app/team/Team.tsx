@@ -21,20 +21,25 @@ const Team = async ({ teamName }: { teamName: string }) => {
         className="rounded-sm absolute -top-20"
       />
       <TeamSidebar teamDetail={teamDetail} />
-      <section className="w-full mx-[3.5rem] mt-[4.5rem] grid grid-cols-auto-fit-card gap-6">
-        {teamProjects.map((project) => (
-          <Card
-            key={project.project_id}
-            id={project.project_id}
-            title={project.description}
-            projectImage={convertFromDatabaseImageURL(
-              project.project_thumbnail,
-            )}
-            authors={project.project_contributors.map((contributor) => ({
-              profileImage: convertFromDatabaseImageURL(contributor.profile.profile_image),
-            }))}
-          />
-        ))}
+      <section className="w-full">
+        <div className="px-[3.5rem] pt-[4.5rem] grid grid-cols-auto-fit-card gap-6">
+          {teamProjects.map((project) => (
+            <Card
+              key={project.project_id}
+              id={project.project_id}
+              title={project.description}
+              projectImage={convertFromDatabaseImageURL(
+                project.project_thumbnail,
+              )}
+              authors={project.project_contributors.map((contributor) => ({
+                name: contributor.profile.profile_name,
+                profileImage: convertFromDatabaseImageURL(
+                  contributor.profile.profile_image,
+                ),
+              }))}
+            />
+          ))}
+        </div>
       </section>
     </div>
   );

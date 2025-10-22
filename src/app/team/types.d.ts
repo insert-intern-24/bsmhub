@@ -17,6 +17,6 @@ export type TeamProjectType = PersonalProjectType & {
     profile_name: string;
   };
   project_contributors: {
-    profile: Pick<Tables<'profile'>, 'profile_id' | 'profile_image'>;
+    profile: Pick<Tables<'profile'>, 'profile_id' | 'profile_image' | 'profile_name'>;
   }[];
 }
