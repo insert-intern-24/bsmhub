@@ -32,7 +32,5 @@ export const getTeamDetail = async (teamName: string): Promise<TeamData | null> 
     console.error('팀 데이터 조회 중 오류', error);
   }
 
-  console.log(data)
-
   return data || null;
 }
