@@ -1,6 +1,6 @@
 import ProjectDetailPage from '@/app/components/project/page';
 
-export interface PortfolioProjectPageProps {
+interface PortfolioProjectPageProps {
   params: Promise<{
     profileName: string;
     projectName: string;

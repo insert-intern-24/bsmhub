@@ -1,7 +1,7 @@
 import { createClient } from '@/utils/supabase/server';
 import type { ProjectDetailRow } from '../../components/types';
 
-export const fetchFromSupabase = async (projectName: string, profileName?: string) => {
+export const fetchFromSupabase = async (projectName: string, ownerName?: string) => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -25,9 +25,9 @@ export const fetchFromSupabase = async (projectName: string, profileName?: strin
     return null;
   }
 
-  // 해당 project가 owner의 소유인지 확인
-  if (profileName && data) {
-    if (!data.profile || data.profile.profile_name !== profileName) {
+  // 해당 project가 owner의 소유인지 확인 (owner는 profile 또는 team)
+  if (ownerName && data) {
+    if (!data.profile || data.profile.profile_name !== ownerName) {
       return null;
     }
   }

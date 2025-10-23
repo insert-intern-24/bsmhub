@@ -2,13 +2,19 @@ import { notFound } from 'next/navigation';
 import ProjectMainContent from './components/ProjectMainContent';
 import ProjectSidebar from './components/ProjectSidebar';
 import { getProjectDetailViewModel } from './services/project-service';
-import type { PortfolioProjectPageProps } from '@/app/portfolio/[profileName]/[projectName]/page';
 
-const ProjectDetailPage = async ({ params }: PortfolioProjectPageProps) => {
-  const { projectName, profileName } = (await params) ?? notFound();
+export interface ProjectDetailPageProps {
+  params: Promise<{
+    profileName?: string;
+    teamName?: string;
+    projectName: string;
+  }>;
+}
 
-  const viewModel =
-    (await getProjectDetailViewModel(projectName, profileName)) ?? notFound();
+const ProjectDetailPage = async ({ params }: ProjectDetailPageProps) => {
+  const { profileName, teamName, projectName } = (await params) ?? notFound();
+
+  const viewModel = (await getProjectDetailViewModel(projectName, profileName, teamName)) ?? notFound();
 
   return (
     <section className="max-w-outer mx-auto py-[4.5rem]">
