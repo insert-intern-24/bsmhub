@@ -27,7 +27,10 @@ const PortfolioHome = ({ content, details, projects }: PortfolioHomeProps) => {
                 key={data.id}
                 id={data.id}
                 title={data.title}
+                description={data.description}
                 projectImage={data.projectImage}
+                ownerName={data.ownerName}
+                isTeam={data.isTeam}
                 authors={data.authors}
               />
             ))}

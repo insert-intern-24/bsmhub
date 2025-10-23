@@ -27,10 +27,13 @@ const Team = async ({ teamName }: { teamName: string }) => {
             <Card
               key={project.project_id}
               id={project.project_id}
-              title={project.description}
+              title={project.project_name}
+              description={project.description}
+              ownerName={project.profile.profile_name}
               projectImage={convertFromDatabaseImageURL(
                 project.project_thumbnail,
               )}
+              isTeam={project.profile.is_team}
               authors={project.project_contributors.map((contributor) => ({
                 name: contributor.profile.profile_name,
                 profileImage: convertFromDatabaseImageURL(
