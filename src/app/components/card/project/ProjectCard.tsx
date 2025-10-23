@@ -30,7 +30,7 @@ const Card = ({
       href={`/${converIsTeamToUrl(isTeam)}/${ownerName}/${title}`}
       className="cursor-pointer"
     >
-      <div className="w-full min-w-[24rem] flex-col gap-[0.375rem]">
+      <div className="w-full mobile:max-w-full max-w-[26rem] flex-col gap-[0.375rem]">
         <figure className="relative h-60 mobile:h-80 aspect-video rounded-[0.25rem] overflow-hidden">
           <Image
             src={projectImage}
