@@ -51,7 +51,7 @@ export const getProjects = async (): Promise<CardProps[]> => {
         {
           name: project.profile?.profile_name,
           profileImage: convertFromDatabaseImageURL(
-            project.profile?.profile_image || '',
+            project.profile?.profile_image,
           ),
         },
       ],
