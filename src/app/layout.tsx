@@ -26,7 +26,7 @@ export default function RootLayout({
         <ModalProvider>
           <Header />
           <main className="w-full min-h-dvh pt-[120px]">
-            <div className="max-w-[109rem] min-h-screen bg-white mobile:pb-12 pb-[4rem] mx-auto">
+            <div className="max-w-[109rem] px-[2.75rem] mobile:p-3 min-h-screen bg-white mobile:pb-12 pb-[4rem] mx-auto">
               {children}
             </div>
           </main>

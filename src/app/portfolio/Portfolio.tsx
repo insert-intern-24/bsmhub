@@ -57,7 +57,7 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
   }
 
   return (
-    <div className="pt-[4.5rem] px-[2.75rem] relative">
+    <div className="pt-[4.5rem] w-full relative">
       <Image
         width={(120 / 16) * 14}
         height={(120 / 16) * 14}
