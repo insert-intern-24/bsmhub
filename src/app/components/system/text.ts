@@ -8,6 +8,9 @@ export const TitleEN = styled.h1`
   font-size: 1.5rem; // 24px
   line-height: 1.5rem; // 24px
   letter-spacing: -0.023em;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 `;
 
 // Title
