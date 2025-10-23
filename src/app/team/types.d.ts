@@ -3,12 +3,12 @@ import { Tables } from "@/utils/supabase/database.types";
 import { MergeDeep } from "type-fest";
 
 export type TeamData = MergeDeep<
-  Pick<Tables<'profile'>, 'profile_id' | 'profile_name' | 'profile_image' | 'description' | 'created_at'>,
+  Omit<Tables<'profile'>, 'email' | 'is_team' | 'owner' | 'link'>,
   {
     profile_link: Pick<Tables<'profile_link'>, 'link' | 'alt'>[];
     team_member: {
-      profile: Pick<Tables<'profile'>, 'profile_id' | 'profile_image'>[];
-    };
+      profile: Pick<Tables<'profile'>, 'profile_id' | 'profile_image'>;
+    }[];
   }
 >;
 

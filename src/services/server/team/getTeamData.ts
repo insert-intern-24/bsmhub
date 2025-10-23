@@ -29,7 +29,7 @@ export const getTeamDetail = async (teamName: string): Promise<TeamData | null> 
     .maybeSingle();
 
   if (error) {
-    console.error('팀 데이터 조회 중 오류', error);
+    console.error('팀 데이터 조회 중 오류');
   }
 
   return data || null;

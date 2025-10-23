@@ -31,3 +31,10 @@ export const formatEndDate = (data: string | null): string => {
   data = formatDate(data);
   return data ? ` ~ ${data}` : '';
 };
+
+// datetime을 넣었을 때 창립년도를 반환하는 함수
+export const getFoundedYear = (dateString: string | null): number => {
+  if (!dateString) return 0;
+
+  return new Date(dateString).getFullYear();
+}

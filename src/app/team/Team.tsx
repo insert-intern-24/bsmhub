@@ -20,7 +20,7 @@ const Team = async ({ teamName }: { teamName: string }) => {
         src={convertFromDatabaseImageURL(teamDetail?.profile_image)}
         className="rounded-sm absolute -top-20"
       />
-      <TeamSidebar teamDetail={teamDetail} />
+      <TeamSidebar teamDetail={teamDetail} projectCount={teamProjects.length} />
       <section className="w-full">
         <div className="px-[3.5rem] pt-[4.5rem] grid grid-cols-auto-fit-card gap-6">
           {teamProjects.map((project) => (
