@@ -6,6 +6,7 @@ export interface CardProps {
   id: number;
   title: string;
   projectImage: string;
+  category?: string;
   authors: {
     name?: string;
     profileImage: string;
@@ -14,8 +15,8 @@ export interface CardProps {
 
 const Card = ({ title, projectImage, authors }: CardProps) => {
   return (
-    <div className="w-full min-w-[24rem] flex-col gap-[0.375rem]">
-      <figure className="relative h-56 aspect-video rounded-[0.25rem] overflow-hidden">
+    <div className="w-full flex-col gap-[0.375rem] cursor-pointer">
+      <figure className="relative w-full pb-[56.25%] rounded-[0.25rem] overflow-hidden">
         <Image
           src={projectImage}
           alt={`${title} 프로젝트 이미지`}
