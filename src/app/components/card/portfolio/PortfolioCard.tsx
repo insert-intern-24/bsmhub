@@ -20,7 +20,7 @@ const PortfolioCard = ({ profile, projects }: PortfolioCardProps) => {
         <ProjectImages projects={projects} variant="default" />
 
         {/* Profile Section */}
-        <div className="relative ml-2 w-full">
+        <div className="relative pl-2 -top-7 w-full">
           <ProfileImage
             src={profile.profile_image}
             name={profile.name}
@@ -29,7 +29,7 @@ const PortfolioCard = ({ profile, projects }: PortfolioCardProps) => {
           <ProfileInfo profile={profile} layout="horizontal" />
           <StatusBadge
             status={profile.status}
-            className="absolute top-0 right-0"
+            className="absolute top-12 right-0"
           />
         </div>
       </div>
@@ -43,9 +43,9 @@ const PortfolioCard = ({ profile, projects }: PortfolioCardProps) => {
           size="small"
         />
 
-        <div className="flex-col gap-2 flex-1">
+        <div className="flex-col gap-2 flex-1 w-[calc(100%-0.625rem-45px)]">
           {/* Profile Info */}
-          <div className="relative w-full">
+          <div className="flex-1 relative">
             <ProfileInfo profile={profile} layout="horizontal" />
             <StatusBadge
               status={profile.status}
@@ -54,7 +54,9 @@ const PortfolioCard = ({ profile, projects }: PortfolioCardProps) => {
           </div>
 
           {/* Project Images */}
-          <ProjectImages projects={projects} variant="long" />
+          {projects.length ? (
+            <ProjectImages projects={projects} variant="long" />
+          ) : null}
         </div>
       </div>
     </div>
