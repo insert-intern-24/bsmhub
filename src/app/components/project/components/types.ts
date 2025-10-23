@@ -7,6 +7,7 @@ export type ProjectDetailRow = Tables<'projects'> & {
       profile: Tables<'profile'> | null;
     }
   > | null;
+  profile: Pick<Tables<'profile'>, 'profile_name'> | null;
 };
 
 export type ProjectDetailViewModel = {
