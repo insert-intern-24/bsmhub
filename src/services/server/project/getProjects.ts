@@ -15,8 +15,8 @@ export type ProjectWithProfileType = {
   project_name: string;
   description: string;
   project_thumbnail: string;
-  profile: Pick<Tables<'profile'>, 'profile_name' | 'profile_image'> | null;
-  project_category: Pick<Tables<'project_category'>, 'category_name'> | null;
+  profile: Pick<Tables<'profile'>, 'profile_name' | 'profile_image'>;
+  project_category: Pick<Tables<'project_category'>, 'category_name'>;
 };
 
 export const getProjects = async (): Promise<CardProps[]> => {
@@ -49,9 +49,9 @@ export const getProjects = async (): Promise<CardProps[]> => {
       category: project.project_category?.category_name,
       authors: [
         {
-          name: project.profile?.profile_name,
+          name: project.profile.profile_name,
           profileImage: convertFromDatabaseImageURL(
-            project.profile?.profile_image,
+            project.profile.profile_image,
           ),
         },
       ],
