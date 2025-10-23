@@ -13,6 +13,6 @@ export async function getProjects(): Promise<CardProps[]> {
     return await getProjectsFromServer();
   } catch (error) {
     console.error('Database connection error:', error);
-    return mockProjects;
+    return [];
   }
 }

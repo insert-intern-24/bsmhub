@@ -10,7 +10,9 @@ interface ProjectListProps {
 }
 
 export default function ProjectList({ projects }: ProjectListProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [selectedCategory, setSelectedCategory] = useState<'All' | string>(
+    'All',
+  );
 
   const categories = useMemo(() => {
     const uniqueCategories = new Set<string>();
