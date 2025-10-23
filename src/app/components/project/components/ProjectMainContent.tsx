@@ -15,7 +15,10 @@ const normalizeYoutubeUrl = (url: string) => {
   try {
     const parsed = new URL(url);
     if (parsed.hostname.includes('youtu.be')) {
-      return `https://www.youtube.com/embed/${parsed.pathname.replace('/', '')}`;
+      return `https://www.youtube.com/embed/${parsed.pathname.replace(
+        '/',
+        '',
+      )}`;
     }
 
     if (parsed.hostname.includes('youtube.com')) {
@@ -30,7 +33,10 @@ const normalizeYoutubeUrl = (url: string) => {
 
       const pathSegments = parsed.pathname.split('/').filter(Boolean);
 
-      if (parsed.pathname.startsWith('/shorts/') || parsed.pathname.startsWith('/live/')) {
+      if (
+        parsed.pathname.startsWith('/shorts/') ||
+        parsed.pathname.startsWith('/live/')
+      ) {
         const videoId = pathSegments[1] ?? pathSegments[0];
         return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
       }
@@ -53,14 +59,15 @@ const isYoutubeUrl = (url: string) => {
     const { hostname } = new URL(url);
     const normalizedHost = hostname.replace(/^www\./, '');
 
-    return ['youtube.com', 'm.youtube.com', 'youtu.be'].includes(normalizedHost);
+    return ['youtube.com', 'm.youtube.com', 'youtu.be'].includes(
+      normalizedHost,
+    );
   } catch {
     return false;
   }
 };
 
-const iframeWrapperClass =
-  'relative mb-3.5 w-full overflow-hidden bg-black';
+const iframeWrapperClass = 'relative mb-3.5 w-full overflow-hidden bg-black';
 
 const EMBED_ASPECT_RATIO = '16 / 9';
 
@@ -101,7 +108,10 @@ const YouTubeEmbed = ({ url, title }: YouTubeEmbedProps) => {
   const embedUrl = normalizeYoutubeUrl(url);
 
   return (
-    <div className={iframeWrapperClass} style={{ aspectRatio: EMBED_ASPECT_RATIO }}>
+    <div
+      className={iframeWrapperClass}
+      style={{ aspectRatio: EMBED_ASPECT_RATIO }}
+    >
       <iframe
         src={embedUrl}
         title={title}
@@ -157,7 +167,9 @@ const Paragraph = ({ children, className, ...props }: ParagraphProps) => {
         className={combinedClassName}
         {...props}
       >
-        <Body>{inlineBuffer.length === 1 ? inlineBuffer[0] : inlineBuffer}</Body>
+        <Body>
+          {inlineBuffer.length === 1 ? inlineBuffer[0] : inlineBuffer}
+        </Body>
       </div>,
     );
 
@@ -211,7 +223,9 @@ const Paragraph = ({ children, className, ...props }: ParagraphProps) => {
         pushEmbed(
           <YouTubeEmbed
             url={href}
-            title={typeof anchorChildren === 'string' ? anchorChildren : undefined}
+            title={
+              typeof anchorChildren === 'string' ? anchorChildren : undefined
+            }
           />,
         );
 
@@ -257,7 +271,7 @@ interface ProjectMainContentProps {
 }
 
 const ProjectMainContent = ({ project }: ProjectMainContentProps) => (
-  <main className="flex-1 w-full px-[4.6875rem] mobile:px-0">
+  <main className="flex-1 w-full px-[4.6875rem] pt-[4.5rem] mobile:px-0">
     <Markdown options={markdownOptions}>{project.detailDescription}</Markdown>
   </main>
 );

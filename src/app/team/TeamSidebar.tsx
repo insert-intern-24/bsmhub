@@ -14,7 +14,7 @@ interface TeamSidebarProps {
 const TeamSidebar = ({ teamDetail, projectCount }: TeamSidebarProps) => {
   return (
     <aside
-      className="pt-[4.5rem] w-[21.75rem] min-h-[40rem] 
+      className="pt-[4.5rem] w-[21.75rem] min-h-[50rem] 
         pr-[2.6rem] border-r-[1px] border-light-gray-outline
         flex-col gap-[1.6rem] responsive-teamSidebar"
     >

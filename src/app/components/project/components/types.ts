@@ -16,7 +16,7 @@ export type ProjectDetailViewModel = {
   introduction: string;
   detailDescription: string;
   githubUrl?: string | null;
-  iconImage: string | null;
+  iconImage: string;
   technologies: string[];
   team: Array<{
     id: string;

@@ -72,10 +72,12 @@
   .responsive-team {
     display: flex;
     flex-direction: column;
+    gap: 2.5rem;
   }
 
   .responsive-teamSidebar {
     width: 100%;
+    min-height: auto;
     border: none;
     padding-right: 0;
   }

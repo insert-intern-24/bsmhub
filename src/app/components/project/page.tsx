@@ -14,10 +14,12 @@ export interface ProjectDetailPageProps {
 const ProjectDetailPage = async ({ params }: ProjectDetailPageProps) => {
   const { profileName, teamName, projectName } = (await params) ?? notFound();
 
-  const viewModel = (await getProjectDetailViewModel(projectName, profileName, teamName)) ?? notFound();
+  const viewModel =
+    (await getProjectDetailViewModel(projectName, profileName, teamName)) ??
+    notFound();
 
   return (
-    <section className="max-w-outer mx-auto py-[4.5rem]">
+    <section className="w-full">
       <div className="flex mobile:flex-col mobile:gap-y-8">
         <ProjectSidebar project={viewModel} />
         <ProjectMainContent project={viewModel} />

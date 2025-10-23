@@ -1,11 +1,11 @@
 'use server';
-import Image from 'next/image';
 import { getTeamDetail } from '@/services/server/team/getTeamData';
 import { getTeamProjects } from '@/services/server/team/getTeamProjects';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import { notFound } from 'next/navigation';
 import TeamSidebar from './TeamSidebar';
 import Card from '../components/card/project/ProjectCard';
+import ProfileIcon from '../components/card/portfolio/ProfileIcon';
 
 const Team = async ({ teamName }: { teamName: string }) => {
   const teamDetail = (await getTeamDetail(teamName)) ?? notFound();
@@ -13,13 +13,7 @@ const Team = async ({ teamName }: { teamName: string }) => {
 
   return (
     <div className="w-full flex-row relative responsive-team">
-      <Image
-        width={(120 / 16) * 14}
-        height={(120 / 16) * 14}
-        alt="프로필 사진"
-        src={convertFromDatabaseImageURL(teamDetail?.profile_image)}
-        className="rounded-sm absolute -top-20"
-      />
+      <ProfileIcon image={teamDetail.profile_image} />
       <TeamSidebar teamDetail={teamDetail} projectCount={teamProjects.length} />
       <section className="w-full">
         <div className="px-[3.5rem] pt-[4.5rem] grid grid-cols-auto-fit-card gap-6 responsive-teamProjects">

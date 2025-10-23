@@ -1,9 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
 import { Body } from '@/app/components/system/text';
-import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import type { ProjectDetailViewModel } from './types';
 import {
   ProjectLinkSection,
@@ -11,7 +9,7 @@ import {
   ProjectTechnologiesSection,
 } from './project-sidebar/ProjectSummarySection';
 import { ProjectTeamSection } from './project-sidebar/ProjectTeamSection';
-import { FALLBACK_ICON } from './project-sidebar/styles';
+import ProfileIcon from '../../card/portfolio/ProfileIcon';
 
 interface ProjectSidebarProps {
   project: ProjectDetailViewModel;
@@ -46,14 +44,11 @@ const ProjectSidebar = ({ project }: ProjectSidebarProps) => {
   return (
     <aside
       ref={sidebarRef}
-      className="relative flex-shrink-0 w-[21.75rem] min-w-[21.75rem] border-r border-gray-200 px-[2.625rem] mobile:w-full mobile:min-w-0 mobile:border-0 mobile:px-0 mobile:pb-8"
+      className="relative flex-shrink-0 w-[21.75rem] min-h-[50rem] min-w-[21.75rem] border-r-[1px] border-light-gray-outline pr-[2.625rem] mobile:w-full mobile:min-w-0 mobile:border-0 mobile:px-0 mobile:pb-8"
     >
-      <ProjectIcon
-        image={project.iconImage ?? FALLBACK_ICON}
-        title={project.title}
-      />
+      <ProfileIcon image={project.iconImage} />
 
-      <div className="flex-col w-full gap-[1.625rem]">
+      <div className="flex-col w-full gap-[1.625rem] pt-[4.5rem]">
         <ProjectSummarySection
           title={project.title}
           description={project.introduction}
@@ -89,23 +84,6 @@ const ProjectSidebar = ({ project }: ProjectSidebarProps) => {
         </div>
       </div>
     </aside>
-  );
-};
-
-interface ProjectIconProps {
-  image: string;
-  title: string;
-}
-
-const ProjectIcon = ({ image, title }: ProjectIconProps) => {
-  const imageUrl = image.includes('{{supabaseHost}}')
-    ? convertFromDatabaseImageURL(image)
-    : image;
-
-  return (
-    <div className="absolute top-[-8rem] h-[7.5rem] w-[7.5rem]">
-      <Image src={imageUrl} alt={title} fill className="object-cover" />
-    </div>
   );
 };
 
