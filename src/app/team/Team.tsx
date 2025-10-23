@@ -12,7 +12,7 @@ const Team = async ({ teamName }: { teamName: string }) => {
   const teamProjects = await getTeamProjects(teamName);
 
   return (
-    <div className="flex-row px-[2.75rem] relative">
+    <div className="w-full flex-row relative responsive-team">
       <Image
         width={(120 / 16) * 14}
         height={(120 / 16) * 14}
@@ -22,7 +22,7 @@ const Team = async ({ teamName }: { teamName: string }) => {
       />
       <TeamSidebar teamDetail={teamDetail} projectCount={teamProjects.length} />
       <section className="w-full">
-        <div className="px-[3.5rem] pt-[4.5rem] grid grid-cols-auto-fit-card gap-6">
+        <div className="px-[3.5rem] pt-[4.5rem] grid grid-cols-auto-fit-card gap-6 responsive-teamProjects">
           {teamProjects.map((project) => (
             <Card
               key={project.project_id}

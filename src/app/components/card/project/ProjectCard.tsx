@@ -15,7 +15,7 @@ export interface CardProps {
 const Card = ({ title, projectImage, authors }: CardProps) => {
   return (
     <div className="w-full min-w-[24rem] flex-col gap-[0.375rem]">
-      <figure className="relative h-56 aspect-video rounded-[0.25rem] overflow-hidden">
+      <figure className="relative h-60 mobile:h-80 aspect-video rounded-[0.25rem] overflow-hidden">
         <Image
           src={projectImage}
           alt={`${title} 프로젝트 이미지`}

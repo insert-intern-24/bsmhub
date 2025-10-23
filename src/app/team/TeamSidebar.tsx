@@ -16,8 +16,7 @@ const TeamSidebar = ({ teamDetail, projectCount }: TeamSidebarProps) => {
     <aside
       className="pt-[4.5rem] w-[21.75rem] min-h-[40rem] 
         pr-[2.6rem] border-r-[1px] border-light-gray-outline
-        flex-col gap-[1.6rem]
-      "
+        flex-col gap-[1.6rem] responsive-teamSidebar"
     >
       <div>
         <TitleEN className="mobile:mb-2">{teamDetail?.profile_name}</TitleEN>

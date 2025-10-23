@@ -68,4 +68,19 @@
     gap: 1.25rem;
     overflow-x: auto;
   }
+
+  .responsive-team {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .responsive-teamSidebar {
+    width: 100%;
+    border: none;
+    padding-right: 0;
+  }
+
+  .responsive-teamProjects {
+    padding: 0;
+  }
 }
