@@ -24,7 +24,7 @@ function ProfileImage({
   style,
 }: ProfileImageProps) {
   return (
-    <div className={className ?? ''} style={style}>
+    <div className={className ?? 'min-w-fit'} style={style}>
       <Image
         src={src}
         alt={`${name} 프로필`}

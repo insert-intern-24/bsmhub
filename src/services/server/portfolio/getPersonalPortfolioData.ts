@@ -11,6 +11,14 @@ export async function getPersonalPortfolioData(): Promise<PortfolioData[]> {
     .select(
       `
       *,
+      projects!projects_owner_fkey(
+        project_id,
+        project_name,
+        project_thumbnail,
+        project_logo,
+        description,
+        status
+      ),
       project_contributors (
         description,
         project:projects (
@@ -22,18 +30,16 @@ export async function getPersonalPortfolioData(): Promise<PortfolioData[]> {
           status
         )
       ),
-      profile_permission (
-        student(
-          name,
-          join_at,
-          graduate_at,
-          department:departments(
+      student(
+        name,
+        join_at,
+        graduate_at,
+        department:departments(
+          *
+        ),
+        student_jobs(
+          job:jobs(
             *
-          ),
-          student_jobs(
-            job:jobs(
-              *
-            )
           )
         )
       )
@@ -58,24 +64,28 @@ export async function getPersonalPortfolioData(): Promise<PortfolioData[]> {
     return {
       profile: {
         name: data.profile_name,
-        role:
-          data.profile_permission[0].student?.student_jobs.map(
-            ({ job }) => job.job_name,
-          ) || [],
+        role: data.student.student_jobs?.map(({ job }) => job.job_name) || [],
         bio: data.description!,
         status: '구직 중',
         profile_image: convertFromDatabaseImageURL(data.profile_image),
       },
-      student: data.profile_permission[0].student,
-      projects:
-        data.project_contributors?.map((contribution) => ({
+      student: data.student,
+      projects: [
+        ...(data.project_contributors?.map((contribution) => ({
           title: contribution.project.project_name,
           logo: convertFromDatabaseImageURL(contribution.project.project_logo),
           description: contribution.project.description,
           projectImage: convertFromDatabaseImageURL(
             contribution.project.project_thumbnail,
           ),
-        })) || [],
+        })) || []),
+        ...data.projects?.map((project) => ({
+          title: project.project_name,
+          logo: convertFromDatabaseImageURL(project.project_logo),
+          description: project.description,
+          projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
+        })),
+      ],
     };
   });
 
