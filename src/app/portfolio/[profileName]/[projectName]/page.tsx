@@ -1,4 +1,6 @@
 import ProjectDetailPage from '@/app/components/project/page';
+import { checkProfileTeam } from '@/services/server/profile/checkProfileTeam';
+import { notFound } from 'next/navigation';
 
 interface PortfolioProjectPageProps {
   params: Promise<{
@@ -8,7 +10,12 @@ interface PortfolioProjectPageProps {
 }
 
 const PortfolioProjectPage = async ({ params }: PortfolioProjectPageProps) => {
-  return <ProjectDetailPage params={params} />;
+  const { profileName } = await params;
+
+  if (!(await checkProfileTeam(profileName)))
+    return <ProjectDetailPage params={params} />;
+
+  notFound();
 };
 
 export default PortfolioProjectPage;
