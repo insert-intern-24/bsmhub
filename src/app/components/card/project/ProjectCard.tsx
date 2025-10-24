@@ -11,6 +11,7 @@ export interface CardProps {
   projectImage: string;
   ownerName: string;
   isTeam: boolean;
+  category?: string;
   authors: {
     name?: string;
     profileImage: string;
