@@ -1,9 +1,8 @@
-import { Body, TitleEN } from '../components/system/text';
+import { Body, TitleEN } from '@/app/components/system/text';
+import Tabs from '@/app/components/layout/Tabs';
 
-import Tabs from '../components/layout/Tabs';
-
-import PortfolioHome from '../components/card/portfolio/PortfolioHome';
-import PortfolioProject from '../components/card/portfolio/components/PortfolioProject';
+import PortfolioHome from '@/app/components/card/portfolio/PortfolioHome';
+import PortfolioProject from '@/app/components/card/portfolio/components/PortfolioProject';
 import { getProfileDetail } from '@/services/server/profile/getProfileDetail';
 import { getPersonalProjects } from '@/services/server/project/getPersonalProjects';
 import { notFound } from 'next/navigation';
@@ -11,7 +10,7 @@ import { getCooperationProjects } from '@/services/server/project/getCooperation
 import { convertStudentNumber } from '@/utils/convertStudentNumber';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import { getProfile } from '@/services/server/profile/getProfile';
-import ProfileIcon from '../components/card/portfolio/ProfileIcon';
+import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
 
 interface PortfolioProps {
   profileName: string;

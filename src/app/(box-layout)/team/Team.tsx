@@ -4,8 +4,8 @@ import { getTeamProjects } from '@/services/server/team/getTeamProjects';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import { notFound } from 'next/navigation';
 import TeamSidebar from './TeamSidebar';
-import Card from '../components/card/project/ProjectCard';
-import ProfileIcon from '../components/card/portfolio/ProfileIcon';
+import Card from '@/app/components/card/project/ProjectCard';
+import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
 
 const Team = async ({ teamName }: { teamName: string }) => {
   const teamDetail = (await getTeamDetail(teamName)) ?? notFound();

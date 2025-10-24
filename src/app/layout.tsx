@@ -22,14 +22,10 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <body className="bg-white">
+      <body className="bg-[#F5F5F7]">
         <ModalProvider>
           <Header />
-          <main className="w-full min-h-dvh pt-[120px]">
-            <div className="max-w-[109rem] px-[2.75rem] mobile:p-3 min-h-screen bg-white mobile:pb-12 pb-[4rem] mx-auto">
-              {children}
-            </div>
-          </main>
+          {children}
           <Footer />
           <Modal />
         </ModalProvider>

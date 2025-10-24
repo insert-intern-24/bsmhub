@@ -1,6 +1,6 @@
 'use server';
 import { createClient } from "@/utils/supabase/server";
-import type { TeamProjectType } from "@/app/team/types";
+import type { TeamProjectType } from "@/app/(box-layout)/team/types";
 
 export const getTeamProjects = async (teamName: string): Promise<TeamProjectType[]> => {
   const supabase = await createClient();

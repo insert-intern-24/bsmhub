@@ -1,6 +1,6 @@
 import { createClient } from '@/utils/supabase/client';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
-import { PortfolioData, ProfileWithProjects } from '@/app/portfolio/types';
+import { PortfolioData, ProfileWithProjects } from '@/app/(box-layout)/portfolio/types';
 
 export async function getPersonalPortfolioData(): Promise<PortfolioData[]> {
   const supabase = await createClient();

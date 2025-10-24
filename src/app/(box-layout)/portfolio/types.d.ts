@@ -1,5 +1,5 @@
 import { TagProps } from '@/app/components/contents/SkillTag';
-
+import { Project, Profile } from '@/app/components/card/portfolio/types';
 export interface ItemProps {
   mode: 'competition' | 'certificate' | 'link';
   value: string | null;
@@ -14,8 +14,6 @@ export interface PortfolioDetailProps {
 
 import { Tables } from '@/utils/supabase/database.types';
 import { MergeDeep } from 'type-fest';
-
-import { Project, Profile } from '../components/card/portfolio/types';
 
 export type { Project };
 

@@ -1,7 +1,7 @@
 import Image from 'next/image';
-import ProfileItem from '../components/contents/ProfileItem';
-import TeamLabel from '../components/contents/TeamLabel';
-import { Body, Label, TitleEN } from '../components/system/text';
+import ProfileItem from '@/app/components/contents/ProfileItem';
+import TeamLabel from '@/app/components/contents/TeamLabel';
+import { Body, Label, TitleEN } from '@/app/components/system/text';
 import { TeamData } from './types';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import { getFoundedYear } from '@/utils/date';
