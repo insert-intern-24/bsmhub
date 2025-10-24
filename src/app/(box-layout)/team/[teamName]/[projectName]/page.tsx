@@ -1,4 +1,4 @@
-import ProjectDetailPage from '@/app/components/project/page';
+import ProjectDetailPage from '@/app/components/project/ProjectPage';
 import { checkProfileTeam } from '@/services/server/profile/checkProfileTeam';
 import { notFound } from 'next/navigation';
 
