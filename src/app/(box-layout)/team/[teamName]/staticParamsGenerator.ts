@@ -12,7 +12,7 @@ export default async function staticParamsGenerator(): Promise<string[]> {
       )
       `,
     )
-    .eq('is_team', false)
+    .eq('is_team', true)
     .returns<
       { profile_name: string; projects: { project_name: string }[] }[]
     >();
