@@ -2,7 +2,7 @@ import PortfolioItems from './components/PortfolioDetail';
 import { Title } from '../../system/text';
 import Card from '../project/ProjectCard';
 
-import { PortfolioDetailProps } from '@/app/portfolio/types';
+import { PortfolioDetailProps } from '@/app/(box-layout)/portfolio/types';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 
 interface PortfolioHomeProps {

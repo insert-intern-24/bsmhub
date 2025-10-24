@@ -1,5 +1,5 @@
 'use server';
-import { TeamData } from "@/app/team/types";
+import { TeamData } from "@/app/(box-layout)/team/types";
 import { createClient } from "@/utils/supabase/server";
 
 export const getTeamDetail = async (teamName: string): Promise<TeamData | null> => {

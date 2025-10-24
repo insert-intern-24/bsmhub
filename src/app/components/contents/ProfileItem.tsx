@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconLink } from '@tabler/icons-react';
-import { ItemProps } from '@/app/portfolio/types';
+import { ItemProps } from '@/app/(box-layout)/portfolio/types';
 
 const ProfileItem = ({ mode, value, url, prize }: ItemProps) => {
   const Content = (
