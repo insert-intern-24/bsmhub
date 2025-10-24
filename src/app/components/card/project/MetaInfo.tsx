@@ -3,17 +3,17 @@ import { Caption, Label } from '../../system/text';
 import ProfileImage from '../portfolio/components/ProfileImage';
 
 interface MetaInfoProps {
-  title: string;
+  description: string;
   authors: {
     name?: string;
     profileImage: string;
   }[];
 }
 
-const MetaInfo = ({ title, authors }: MetaInfoProps) => {
+const MetaInfo = ({ description, authors }: MetaInfoProps) => {
   return (
     <figcaption className="flex-x-center">
-      <Label className="text-gray-base">{title}</Label>
+      <Label className="text-gray-base">{description}</Label>
       <div className="flex-y-center gap-1">
         {authors.length === 1 ? (
           // 작성자가 1명인 경우: 프로필 사진 + 이름

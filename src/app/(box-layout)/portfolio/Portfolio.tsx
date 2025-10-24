@@ -1,10 +1,8 @@
-import Image from 'next/image';
-import { Body, TitleEN } from '../components/system/text';
+import { Body, TitleEN } from '@/app/components/system/text';
+import Tabs from '@/app/components/layout/Tabs';
 
-import Tabs from '../components/layout/Tabs';
-
-import PortfolioHome from '../components/card/portfolio/PortfolioHome';
-import PortfolioProject from '../components/card/portfolio/components/PortfolioProject';
+import PortfolioHome from '@/app/components/card/portfolio/PortfolioHome';
+import PortfolioProject from '@/app/components/card/portfolio/components/PortfolioProject';
 import { getProfileDetail } from '@/services/server/profile/getProfileDetail';
 import { getPersonalProjects } from '@/services/server/project/getPersonalProjects';
 import { notFound } from 'next/navigation';
@@ -12,6 +10,7 @@ import { getCooperationProjects } from '@/services/server/project/getCooperation
 import { convertStudentNumber } from '@/utils/convertStudentNumber';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import { getProfile } from '@/services/server/profile/getProfile';
+import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
 
 interface PortfolioProps {
   profileName: string;
@@ -57,14 +56,8 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
   }
 
   return (
-    <div className="pt-[4.5rem] px-[2.75rem] relative">
-      <Image
-        width={(120 / 16) * 14}
-        height={(120 / 16) * 14}
-        alt="프로필 사진"
-        src={convertFromDatabaseImageURL(profile.profile_image)}
-        className="rounded-sm absolute -top-20"
-      />
+    <div className="pt-[4.5rem] w-full relative">
+      <ProfileIcon image={profile.profile_image} />
       <TitleEN className="mobile:mb-2">{profile.profile_name}</TitleEN>
       <div className={`${containerCss} responsive-portfolioHome`}>
         <Body className="text-gray-base flex-col justify-end">

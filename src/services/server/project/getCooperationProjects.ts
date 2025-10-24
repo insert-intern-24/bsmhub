@@ -7,7 +7,7 @@ import { convertFromDatabaseImageURL } from "@/utils/supabase/imageHostConverter
 
 type TeamProjectType = {
   projects: PersonalProjectType & {
-    profile: Pick<Tables<'profile'>, 'profile_id' | 'is_team'>
+    profile: Pick<Tables<'profile'>, 'profile_id' | 'is_team' | 'profile_name'>
   }
 }
 
@@ -31,6 +31,7 @@ export const getCooperationProjects = async (profile_id: string): Promise<CardPr
           project_thumbnail,
           profile!projects_owner_fkey!inner (
             profile_id,
+            profile_name,
             is_team
           )
         )
@@ -80,8 +81,11 @@ export const getCooperationProjects = async (profile_id: string): Promise<CardPr
 
     return {
       id: projects.project_id,
-      title: projects.description,
+      title: projects.project_name,
+      description: projects.description,
       projectImage: convertFromDatabaseImageURL(projects.project_thumbnail),
+      ownerName: projects.profile.profile_name,
+      isTeam: projects.profile.is_team,
       authors: authors
     }
   })

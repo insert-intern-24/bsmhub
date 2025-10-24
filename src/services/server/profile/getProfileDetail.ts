@@ -1,5 +1,5 @@
 'use server';
-import { PortfolioDetailProps, PortfolioDetailType } from "@/app/portfolio/types";
+import { PortfolioDetailProps, PortfolioDetailType } from "@/app/(box-layout)/portfolio/types";
 import { createClient } from "@/utils/supabase/server"
 
 export const getProfileDetail = async (profileName: string): Promise<PortfolioDetailProps[]> => {

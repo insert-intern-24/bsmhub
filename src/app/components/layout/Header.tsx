@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { Label } from '../system/text';
 
 export const navigation = [
-  { label: '프로젝트', href: '/projects/all' },
-  { label: '동아리', href: '/clubs/all' },
+  { label: '프로젝트', href: '/project' },
+  { label: '동아리', href: '/team' },
   { label: '포트폴리오', href: '/portfolio' },
-  { label: '대회', href: '/majors/all' },
+  { label: '대회', href: '/major' },
 ];
 
 const Header = () => {

@@ -2,7 +2,7 @@ import PortfolioItems from './components/PortfolioDetail';
 import { Title } from '../../system/text';
 import Card from '../project/ProjectCard';
 
-import { PortfolioDetailProps } from '@/app/portfolio/types';
+import { PortfolioDetailProps } from '@/app/(box-layout)/portfolio/types';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 
 interface PortfolioHomeProps {
@@ -27,7 +27,10 @@ const PortfolioHome = ({ content, details, projects }: PortfolioHomeProps) => {
                 key={data.id}
                 id={data.id}
                 title={data.title}
+                description={data.description}
                 projectImage={data.projectImage}
+                ownerName={data.ownerName}
+                isTeam={data.isTeam}
                 authors={data.authors}
               />
             ))}

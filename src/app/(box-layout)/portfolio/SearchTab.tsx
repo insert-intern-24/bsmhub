@@ -2,11 +2,11 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import PortfolioCard from '../components/card/portfolio/PortfolioCard';
+import PortfolioCard from '@/app/components/card/portfolio/PortfolioCard';
 import { PortfolioData } from './types';
-import Inputs from '../components/modal/inputs/SingleInput';
-import Checkbox from '../components/modal/inputs/Checkbox';
-import { Body } from '../components/system/text';
+import Inputs from '@/app/components/modal/inputs/SingleInput';
+import Checkbox from '@/app/components/modal/inputs/Checkbox';
+import { Body } from '@/app/components/system/text';
 import { Tables } from '@/utils/supabase/database.types';
 
 const JOB_SEEKING_STATUS = ['구직 중', 'jobseeking'];
@@ -96,7 +96,7 @@ export default function SearchTab({
     .filter(filterByJobs)
     .filter(filterByEmploymentStatus);
   return (
-    <div className="py-9 px-11 flex flex-col md:flex-row gap-4 min-h-dvh w-full">
+    <div className="py-9 flex flex-col md:flex-row gap-4 min-h-dvh w-full">
       {/* 검색 및 필터 사이드바 */}
       <aside className="flex-col gap-3">
         <Inputs

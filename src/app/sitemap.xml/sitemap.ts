@@ -25,6 +25,15 @@ function shouldExcludeRoute(route: string): boolean {
   });
 }
 
+function normalizeRouteSubpath(subpath: string): string {
+  return subpath
+    .split('/')
+    .filter(Boolean)
+    .filter((segment) => !(segment.startsWith('(') && segment.endsWith(')')))
+    .filter((segment) => !segment.startsWith('['))
+    .join('/');
+}
+
 // Recursively collect all pages with `page.tsx` or `page.jsx`
 export async function getStaticRoutes(
   dir = 'src/app', // Updated default directory to match the actual structure
@@ -39,7 +48,14 @@ export async function getStaticRoutes(
     const fullPath = path.join(currentDir, entry.name);
 
     if (entry.isDirectory()) {
-      const routePath = path.join(parentPath, entry.name);
+      // Check if this is a route group (wrapped in parentheses)
+      const isRouteGroup =
+        entry.name.startsWith('(') && entry.name.endsWith(')');
+
+      // For route groups, don't include the group name in the path
+      const routePath = isRouteGroup
+        ? parentPath
+        : path.join(parentPath, entry.name);
 
       // Collect possible page file paths
       const possiblePageFiles = ['page.tsx', 'page.jsx'].map((file) =>
@@ -72,24 +88,21 @@ export async function getStaticRoutes(
   return parentPath === '' ? ['/', ...routes] : routes;
 }
 
-export interface StaticParam {
-  [key: string]: string;
+interface DynamicRouteConfig {
+  subpath: string;
+  loader: () => Promise<string[]>;
 }
 
 // Get dynamic routes by calling `generateStaticParams` from dynamic pages
-async function getDynamicRoutes(
-  subpath: string,
-  dynamicSegment: string,
-): Promise<string[]> {
-  const filePath = path.join(process.cwd(), 'src/app', subpath);
+async function getDynamicRoutes(config: DynamicRouteConfig): Promise<string[]> {
   try {
-    const staticParamsGenerator = (
-      await import(
-        path.join(filePath, `[${dynamicSegment}]`, 'staticParamsGenerator')
-      )
-    ).default;
-    const params = (await staticParamsGenerator()) as string[];
-    return params.map((route) => `/${subpath}/${route}`);
+    const params = await config.loader();
+    const normalizedSubpath = normalizeRouteSubpath(config.subpath);
+
+    return params.map((route) => {
+      const segments = [normalizedSubpath, route].filter(Boolean);
+      return `/${segments.join('/')}`;
+    });
   } catch (error) {
     console.error('Error loading dynamic routes:', error);
     return []; // Return empty array on error
@@ -97,15 +110,35 @@ async function getDynamicRoutes(
 }
 
 export async function getAllRoutes(): Promise<string[]> {
-  return Promise.all([
+  const dynamicRouteConfigs: DynamicRouteConfig[] = [
+    {
+      subpath: '(box-layout)/portfolio',
+      loader: async () =>
+        (
+          await import(
+            '@/app/(box-layout)/portfolio/[profileName]/staticParamsGenerator'
+          )
+        ).default(),
+    },
+    {
+      subpath: '(box-layout)/team',
+      loader: async () =>
+        (
+          await import(
+            '@/app/(box-layout)/team/[teamName]/staticParamsGenerator'
+          )
+        ).default(),
+    },
+  ];
+
+  const [staticRoutes, dynamicRoutes] = await Promise.all([
     getStaticRoutes(),
-    getDynamicRoutes('portfolio', 'profileName'),
-    getDynamicRoutes('project', 'project_name'),
-  ])
-    .then((results) => results.flat())
-    .then((allRoutes) =>
-      allRoutes.filter((route) => !shouldExcludeRoute(route)),
-    );
+    Promise.all(dynamicRouteConfigs.map((config) => getDynamicRoutes(config))),
+  ]);
+
+  return [...staticRoutes, ...dynamicRoutes.flat()].filter(
+    (route) => !shouldExcludeRoute(route),
+  );
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
