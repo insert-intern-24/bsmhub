@@ -55,6 +55,9 @@ export default function ProjectList({ projects }: ProjectListProps) {
             key={project.id}
             id={project.id}
             title={project.title}
+            description={project.description}
+            isTeam={project.isTeam}
+            ownerName={project.ownerName}
             projectImage={project.projectImage}
             authors={project.authors}
           />

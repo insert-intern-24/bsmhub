@@ -15,7 +15,7 @@ export type ProjectWithProfileType = {
   project_name: string;
   description: string;
   project_thumbnail: string;
-  profile: Pick<Tables<'profile'>, 'profile_name' | 'profile_image'>;
+  profile: Pick<Tables<'profile'>, 'profile_name' | 'profile_image' | 'is_team'>;
   project_category: Pick<Tables<'project_category'>, 'category_name'>;
 };
 
@@ -29,7 +29,8 @@ export const getProjects = async (): Promise<CardProps[]> => {
       project_thumbnail,
       profile!projects_owner_fkey (
         profile_name,
-        profile_image
+        profile_image,
+        is_team
       ),
       project_category!projects_category_id_fkey (
         category_name
@@ -47,6 +48,9 @@ export const getProjects = async (): Promise<CardProps[]> => {
       title: project.project_name,
       projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
       category: project.project_category?.category_name,
+      description: project.description,
+      isTeam: project.profile.is_team,
+      ownerName: project.profile.profile_name,
       authors: [
         {
           name: project.profile.profile_name,
