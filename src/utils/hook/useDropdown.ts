@@ -7,7 +7,7 @@ interface UseDropdownReturn {
   toggle: () => void;
   close: () => void;
   open: () => void;
-  dropdownRef: React.RefObject<HTMLDivElement>;
+  dropdownRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export const useDropdown = (): UseDropdownReturn => {
