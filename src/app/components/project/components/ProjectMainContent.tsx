@@ -52,10 +52,15 @@ const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
     setIsEditing(true);
   };
 
-  const handleSaveClick = () => {
-    projectContentEditHandler(project.id, editedContent);
-    console.log('저장된 내용:', editedContent);
-    setIsEditing(false);
+  const handleSaveClick = async () => {
+    try {
+      await projectContentEditHandler(project.id, editedContent);
+      console.log('저장된 내용:', editedContent);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('프로젝트 내용 저장 중 오류 발생:', error);
+      alert('저장에 실패했습니다. 다시 시도해 주세요.');
+    }
   };
 
   const handleCancelClick = () => {
