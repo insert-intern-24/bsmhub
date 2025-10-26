@@ -163,7 +163,7 @@ export default function InfinitePagination<T>({
 
       {/* 로딩 상태 */}
       {isFetching && (
-        <div className="w-full text-center text-gray-500 py-4">로딩 중...</div>
+        <div className="w-full text-center text-gray-500 py-4">로드 중...</div>
       )}
 
       {/* 페이지네이션 */}
