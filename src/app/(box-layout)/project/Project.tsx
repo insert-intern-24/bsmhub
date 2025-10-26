@@ -3,8 +3,9 @@
 import React, { useState, ChangeEvent, useMemo, useCallback } from 'react';
 import Inputs from '@/app/components/modal/inputs/SingleInput';
 import InfinitePagination from '@/app/project/[project_name]/components/pagination/Pagination';
-import Tabs from '@/app/project/[project_name]/components/tabs/ProjectTab';
+import Tabs, { TabMode } from '@/app/components/layout/Tabs';
 import Card, { CardProps } from '@/app/components/card/project/ProjectCard';
+import { useSearchParams } from 'next/navigation';
 
 interface ProjectClientProps {
   initialProjects: CardProps[];
@@ -12,26 +13,24 @@ interface ProjectClientProps {
 
 export default function ProjectClient({ initialProjects }: ProjectClientProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState(0);
+  const searchParams = useSearchParams();
+  const currentTab = (searchParams.get('path') ?? 'web') as TabMode;
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleTabChange = (index: number) => {
-    setActiveTab(index);
-  };
-
   const filteredProjects = useMemo(() => {
-    // 탭 인덱스와 데이터베이스 카테고리 매핑
-    const categoryMap: { [key: number]: string } = {
-      0: 'Web',
-      1: 'Desktop Utility',
-      2: 'Mobile',
+    // 탭과 데이터베이스 카테고리 매핑
+    const categoryMap: Record<TabMode, string | null> = {
+      home: null,
+      project: null,
+      web: 'Web',
+      desktop: 'Desktop Utility',
+      mobile: 'Mobile',
     };
 
-    const selectedCategory = categoryMap[activeTab];
-
+    const selectedCategory = categoryMap[currentTab];
     let filtered = initialProjects;
 
     // 카테고리 필터링
@@ -54,7 +53,7 @@ export default function ProjectClient({ initialProjects }: ProjectClientProps) {
     }
 
     return filtered;
-  }, [initialProjects, searchTerm, activeTab]);
+  }, [initialProjects, searchTerm, currentTab]);
 
   // 페이지네이션 함수 - useCallback으로 메모이제이션
   const fetchProjects = useCallback(
@@ -85,10 +84,10 @@ export default function ProjectClient({ initialProjects }: ProjectClientProps) {
         />
       </div>
 
-      <Tabs activeTab={activeTab} onTabChange={handleTabChange} />
+      <Tabs tabs={['web', 'desktop', 'mobile']} />
 
       <InfinitePagination<CardProps>
-        queryKey={['projects', searchTerm, activeTab]}
+        queryKey={['projects', searchTerm, currentTab]}
         queryFn={fetchProjects}
         enabled={true}
         renderItem={(project) => (
