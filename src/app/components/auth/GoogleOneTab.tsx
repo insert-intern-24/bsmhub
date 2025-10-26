@@ -85,8 +85,8 @@ const OneTapComponent = () => {
 
             // 프로필이 없으면 새 사용자
             if (profileError || !profile) {
-              console.log('New user detected, redirecting to onboarding');
-              router.push('/onboarding');
+              console.log('New user detected, showing onboarding modal');
+              router.push('/?onboarding=true');
             } else {
               console.log('Existing user, staying on current page');
             }
