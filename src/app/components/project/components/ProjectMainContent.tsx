@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { ProjectDetailViewModel } from './types';
 import { IconPencil, IconCheck, IconX } from '@tabler/icons-react';
 import 'lexical-rich-text-editor/lexical-rich-text-editor.css';
 import { RichTextEditor } from 'lexical-rich-text-editor';
 import DOMPurify from 'isomorphic-dompurify';
 import projectContentEditHandler from '../services/content-edit-handler';
+import editProjectPermissionChecker from '../services/editProjectPermissionChecker';
 
 interface ProjectMainContentProps {
   project: ProjectDetailViewModel;
@@ -15,7 +16,17 @@ interface ProjectMainContentProps {
 const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(project.detailDescription);
-  
+  const [hasEditPermission, setHasEditPermission] = useState(false);
+
+  useEffect(() => {
+    const checkEditPermission = async () => {
+      const hasPermission = await editProjectPermissionChecker(project.id);
+      setHasEditPermission(hasPermission);
+    };
+
+    checkEditPermission();
+  }, [project.id]);
+
   // HTML을 정제하여 XSS 공격 방지
   const sanitizedContent = useMemo(() => {
     return DOMPurify.sanitize(editedContent, {
@@ -55,7 +66,6 @@ const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
   };
 
   const handleSaveClick = () => {
-    // TODO: 저장 로직 구현 (예: API 호출로 내용 업데이트)
     projectContentEditHandler(project.id, editedContent);
     console.log('저장된 내용:', editedContent);
     setIsEditing(false);
@@ -68,7 +78,8 @@ const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
 
   return (
     <div className="relative w-full h-full max-w-full">
-      <button
+      
+      {hasEditPermission && <button
         className="absolute top-8 right-4"
         onClick={isEditing ? undefined : handleEditClick}
       >
@@ -88,7 +99,7 @@ const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
         ) : (
           <IconPencil className="text-gray-footer" size={12} />
         )}
-      </button>
+      </button>}
       <main
         className={`flex-1 w-full ${
           isEditing ? 'p-3 pt-6' : 'px-[4.6875rem] pt-[4.5rem]'
