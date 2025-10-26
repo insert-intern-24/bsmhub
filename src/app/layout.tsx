@@ -7,6 +7,7 @@ import Header from '@components/layout/Header';
 import Navigator from '@components/layout/Navigator';
 import Providers from './providers';
 import type { Metadata } from 'next';
+import GoogleOneTab from '@components/auth/GoogleOneTab';
 
 export const metadata: Metadata = {
   title: 'BSMHub',
@@ -32,6 +33,7 @@ export default function RootLayout({
       </head>
       <body className="bg-[#F5F5F7] pt-14">
         <Providers>
+          <GoogleOneTab />
           <Header />
           {children}
           <Navigator />

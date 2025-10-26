@@ -16,7 +16,7 @@ export default function DefaultLayout({
 }) {
   return (
     <main className="w-full min-h-dvh bg-white">
-      <div className="max-w-[109rem] px-[2.75rem] mobile:p-3 min-h-screen mobile:pb-12 pb-[4rem] mx-auto">
+      <div className="max-w-[109rem] mobile:p-3 min-h-screen mobile:pb-12 pb-[4rem] mx-auto">
         {children}
       </div>
     </main>
