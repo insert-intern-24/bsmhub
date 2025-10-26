@@ -12,26 +12,28 @@ export const navigation = [
 
 const Header = () => {
   return (
-    <header className="fixed top-0 left-0 right-0 w-full z-50 bg-white p-white-space-margin flex-center h-14 border-b border-[light-gray-outline] responsive-header mobile:px-[0.6875rem]">
-      <Link href="/" className="flex-row items-center">
-        <Image
-          src="/icon/logo.svg"
-          alt="Logo"
-          width="21"
-          height="21"
-          className="pr-2"
-        />
-        <div className="text-xl text-titleColor whitespace-nowrap">
-          <b>부산소프트웨어마이스터고</b> 프로젝트의장
-        </div>
-      </Link>
-      <nav className="flex-row gap-4 mobile:hidden">
-        {navigation.map((item) => (
-          <Link key={item.label} href={item.href}>
-            <Label>{item.label}</Label>
-          </Link>
-        ))}
-      </nav>
+    <header className="fixed top-0 left-0 right-0 w-full z-50 bg-white h-14 border-b border-[light-gray-outline] px-[33px] mobile:px-[0.6875rem]">
+      <div className="max-w-[109rem] mx-auto h-full flex justify-between items-center responsive-header">
+        <Link href="/" className="flex-row items-center">
+          <Image
+            src="/icon/logo.svg"
+            alt="Logo"
+            width="21"
+            height="21"
+            className="pr-2"
+          />
+          <div className="text-xl text-titleColor whitespace-nowrap">
+            <b>부산소프트웨어마이스터고</b> 프로젝트의장
+          </div>
+        </Link>
+        <nav className="flex-row gap-4 items-center mobile:hidden">
+          {navigation.map((item) => (
+            <Link key={item.label} href={item.href}>
+              <Label>{item.label}</Label>
+            </Link>
+          ))}
+        </nav>
+      </div>
     </header>
   );
 };
