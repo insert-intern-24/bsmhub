@@ -19,8 +19,8 @@ export const checkProfileExistence = async (): Promise<boolean> => {
       .eq('owner', user.id)
       .eq('is_team', false)
       .single();
-
     if (error) {
+      console.error('Profile existence check error:', error);
       return false;
     }
 
