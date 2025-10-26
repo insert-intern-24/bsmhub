@@ -55,7 +55,6 @@ const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
   const handleSaveClick = async () => {
     try {
       await projectContentEditHandler(project.id, editedContent);
-      console.log('저장된 내용:', editedContent);
       setIsEditing(false);
     } catch (error) {
       console.error('프로젝트 내용 저장 중 오류 발생:', error);
@@ -69,7 +68,7 @@ const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
   };
 
   return (
-    <div className="relative w-full h-full max-w-full">
+    <div className="relative w-full h-full">
       
       {hasEditPermission && <button
         className="absolute top-8 right-4"
@@ -93,21 +92,19 @@ const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
           <IconPencil className="text-gray-footer" size={12} />
         )}
       </button>}
-      <main
+      <section
         className={`flex-1 w-full ${
-          isEditing ? 'p-3 pt-6' : 'px-[4.6875rem] pt-[4.5rem]'
+          isEditing ? 'p-3 pt-6' : 'px-[4.7rem] pt-[4.5rem]'
         } mobile:px-0`}
       >
         {isEditing ? (
           <div>
-            {/* {RichTextEditorComponent && ( */}
             <RichTextEditor
               defaultData={editedContent}
               onChange={(data: string) => {
                 setEditedContent(data);
               }}
             />
-            {/* )} */}
           </div>
         ) : (
           <div
@@ -115,7 +112,7 @@ const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
         )}
-      </main>
+      </section>
     </div>
   );
 };
