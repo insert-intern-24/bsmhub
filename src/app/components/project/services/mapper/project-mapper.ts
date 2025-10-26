@@ -8,20 +8,10 @@ export const toViewModel = (
 ): ProjectDetailViewModel => {
   let detailDescription = '자세한 설명 정보가 없습니다.';
 
-  if (project.project_markdown?.mark_desc) {
-    try {
-      const markdownData = JSON.parse(project.project_markdown.mark_desc);
-      if (markdownData.detailDescription) {
-        detailDescription = markdownData.detailDescription;
-      }
-    } catch (error) {
-      console.warn('Failed to parse project_markdown.mark_desc:', error);
-      // If parsing fails and we have no markdown, use project description as detail
-      detailDescription = project.description ?? '자세한 설명 정보가 없습니다.';
-    }
+  if (project.project_html_description?.html_content) {
+    detailDescription = project.project_html_description.html_content;
   } else if (project.description) {
-    // If no markdown but we have description, use it for detail description
-    detailDescription = project.description;
+    detailDescription = `<p>${project.description}</p>`;
   }
 
   return {

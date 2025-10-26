@@ -1,7 +1,7 @@
 import { Tables } from '@/utils/supabase/database.types';
 
 export type ProjectDetailRow = Tables<'projects'> & {
-  project_markdown: Tables<'project_markdown'> | null;
+  project_html_description: Tables<'project_html_description'> | null;
   project_contributors: Array<
     Tables<'project_contributors'> & {
       profile: Tables<'profile'> | null;

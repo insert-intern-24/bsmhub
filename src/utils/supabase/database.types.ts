@@ -794,14 +794,7 @@ export type Database = {
           "\bimage_url"?: string
           mark_id?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "markdown_picture_mark_id_fkey"
-            columns: ["mark_id"]
-            referencedRelation: "project_markdown"
-            referencedColumns: ["mark_id"]
-          },
-        ]
+        Relationships: []
       }
       middle_schools: {
         Row: {
@@ -1089,6 +1082,28 @@ export type Database = {
           },
         ]
       }
+      project_html_description: {
+        Row: {
+          html_content: string
+          project_id: number
+        }
+        Insert: {
+          html_content: string
+          project_id?: number
+        }
+        Update: {
+          html_content?: string
+          project_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_html_description_project_id_fkey"
+            columns: ["project_id"]
+            referencedRelation: "projects"
+            referencedColumns: ["project_id"]
+          },
+        ]
+      }
       project_likes: {
         Row: {
           profile_id: string
@@ -1105,31 +1120,6 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "project_likes_project_id_fkey"
-            columns: ["project_id"]
-            referencedRelation: "projects"
-            referencedColumns: ["project_id"]
-          },
-        ]
-      }
-      project_markdown: {
-        Row: {
-          mark_desc: string | null
-          mark_id: number
-          project_id: number
-        }
-        Insert: {
-          mark_desc?: string | null
-          mark_id?: number
-          project_id: number
-        }
-        Update: {
-          mark_desc?: string | null
-          mark_id?: number
-          project_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "project_markdown_project_id_fkey"
             columns: ["project_id"]
             referencedRelation: "projects"
             referencedColumns: ["project_id"]
