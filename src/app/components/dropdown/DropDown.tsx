@@ -112,7 +112,7 @@ export const Dropdown = ({
         ref={triggerRef}
         type="button"
         className={cn(
-          'flex p-2 w-full items-center justify-between rounded-md bg-light-gray-outline px-4 text-body2 text-black transition-colors duration-150 hover:bg-light-gray-outline/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-black',
+          'flex items-center justify-between rounded-md transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-black',
           triggerClassName,
         )}
         onClick={toggleOpen}
@@ -141,7 +141,7 @@ export const Dropdown = ({
             role="menu"
             aria-orientation="vertical"
             className={cn(
-              'absolute z-20 min-w-full rounded-md border border-light-gray-outline bg-white p-2 shadow-md focus:outline-none',
+              'absolute z-20 w-auto min-w-[120px] rounded-md border border-light-gray-outline bg-white p-2 shadow-md focus:outline-none',
               align === 'right' ? 'right-0' : 'left-0',
               menuClassName,
             )}
@@ -199,10 +199,10 @@ export const DropdownItem = ({
       onClick={handleClick}
       disabled={disabled}
       className={cn(
-        'flex w-fit items-center gap-2 rounded-md py-2 text-left text-body2 text-black transition-colors duration-150',
+        'flex w-full items-center gap-2 rounded-md px-4 py-2 text-left text-sm text-gray-700 transition-colors duration-150',
         disabled
           ? 'cursor-not-allowed text-gray-base'
-          : 'hover:bg-light-gray-outline focus:bg-light-gray-outline focus:outline-none',
+          : 'hover:bg-gray-100 focus:bg-gray-100 focus:outline-none',
         className,
       )}
     >

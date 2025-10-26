@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useModal } from '@/app/components/modal';
 import InputOfModal from '@/app/components/modal/inputs/InputOfModal';
 import { useProfileExistence } from '@/utils/hook/useProfile';
-import { useDropdown } from '@/utils/hook/useDropdown';
+import { Dropdown, DropdownItem } from '@/app/components/dropdown/DropDown';
 import { profileConfig } from '@/services/config/profileConfig';
 import Image from 'next/image';
 
@@ -17,12 +17,10 @@ interface UserProfile {
 const Account = () => {
   const supabase = createClient();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [hasShownModal, setHasShownModal] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const { openModal, closeModal } = useModal();
-  const { isOpen: isDropdownOpen, toggle: toggleDropdown, close: closeDropdown, dropdownRef } = useDropdown();
   
-  const { data: profileExists, isLoading: isProfileLoading } = useProfileExistence();
+  const { data: profileExists } = useProfileExistence();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -36,7 +34,6 @@ const Account = () => {
           });
         } else if (event === 'SIGNED_OUT') {
           setIsLoggedIn(false);
-          setHasShownModal(false);
           setUserProfile(null);
         }
       }
@@ -45,8 +42,7 @@ const Account = () => {
   }, []);
 
   useEffect(() => {
-    if (isLoggedIn && !isProfileLoading && profileExists === false && !hasShownModal) {
-      setHasShownModal(true);
+    if (isLoggedIn && profileExists === false) {
       openModal(
         <InputOfModal
           title="프로필 설정"
@@ -55,7 +51,7 @@ const Account = () => {
         />
       );
     }
-  }, [isLoggedIn, isProfileLoading, profileExists, hasShownModal, openModal, closeModal]);
+  }, [isLoggedIn, profileExists]);
 
   const handleGoogleLogin = async () => {
     await supabase.auth.signInWithOAuth({
@@ -68,34 +64,26 @@ const Account = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    closeDropdown();
   };
 
   if (isLoggedIn) {
     return (
-      <div className="relative" ref={dropdownRef}>
-        {userProfile?.avatar_url && (
-          <Image
-            src={userProfile.avatar_url}
-            alt={userProfile.full_name || '프로필'}
-            width={20}
-            height={20}
-            className="rounded-full select-none cursor-pointer hover:opacity-80 transition-opacity"
-            onClick={toggleDropdown}
-          />
-        )}
-        
-        {isDropdownOpen && (
-          <div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[120px] z-50">
-            <button
-              onClick={handleLogout}
-              className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-            >
-              로그아웃
-            </button>
-          </div>
-        )}
-      </div>
+      <Dropdown 
+        trigger={
+            <Image
+              src={userProfile?.avatar_url ?? "/avatar.png"}
+              alt='프로필'
+              width={20}
+              height={20}
+              className="rounded-full cursor-pointer hover:opacity-80"
+            />
+        }
+        align="right"
+      >
+        <DropdownItem onSelect={handleLogout}>
+          로그아웃
+        </DropdownItem>
+      </Dropdown>
     );
   }
 
