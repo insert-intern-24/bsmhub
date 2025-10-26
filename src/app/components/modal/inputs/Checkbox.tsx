@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { IconSquareCheckFilled, IconSquareCheck } from '@tabler/icons-react';
 
 interface CheckboxProps {
   checked?: boolean;
@@ -19,11 +18,14 @@ const Checkbox = ({ checked, onChange, label = '체크박스' }: CheckboxProps) 
         onChange?.(next);
       }}
     >
-      {(checked ?? state) ? (
-        <IconSquareCheckFilled className="w-8" />
-      ) : (
-        <IconSquareCheck className="w-8" />
-      )}{' '}
+      <span 
+        className="material-symbols-outlined text-[24px] transition-colors"
+        style={{ 
+          fontVariationSettings: `'FILL' ${(checked ?? state) ? 1 : 0}, 'wght' 400, 'GRAD' 0, 'opsz' 24`
+        }}
+      >
+        {(checked ?? state) ? 'check_box' : 'check_box_outline_blank'}
+      </span>
       {label}
     </label>
   );
