@@ -1,78 +1,48 @@
 'use client';
 
 import { createClient } from '@/utils/supabase/client';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useModal } from '@/app/components/modal';
 import InputOfModal from '@/app/components/modal/inputs/InputOfModal';
-import { getIsExistProfileClient } from '@/services/client/profileService';
+import { useProfileExistence } from '@/utils/hook/useProfile';
 import { profileConfig } from '@/services/config/profileConfig';
 
 function GooglePopupLoginContent() {
   const supabase = createClient();
-  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [hasShownModal, setHasShownModal] = useState(false);
   const { openModal, closeModal } = useModal();
+  
+  const { data: profileExists, isLoading: isProfileLoading } = useProfileExistence();
 
-
-  const handleProfileSubmit = (data: any) => {
-    console.log('Profile data:', data);
-    // TODO: 프로필 데이터를 서버에 저장
-    closeModal();
-  };
-
-  const showOnboardingModal = async () => {
-    if (!hasShownModal) {
-      // 현재 로그인된 사용자 정보 콘솔 출력
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      console.log('Current user:', user);
-      console.log('User error:', userError);
-      
-      // 프로필 존재 여부 확인
-      const profileExists = await getIsExistProfileClient();
-      
-      if (!profileExists) {
-        setHasShownModal(true);
-        openModal(
-          <InputOfModal
-            title="프로필 설정"
-            config={profileConfig}
-            onSubmit={handleProfileSubmit}
-          />
-        );
-      }
-    }
-  };
+  const handleProfileSubmit = () => closeModal();
 
   useEffect(() => {
-    // 기존 세션 확인 (모달은 띄우지 않음)
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        setIsLoggedIn(true);
-      }
-    };
-
-    checkSession();
-
-    // 인증 상태 변화 감지
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === 'SIGNED_IN' && session) {
           setIsLoggedIn(true);
-          showOnboardingModal();
         } else if (event === 'SIGNED_OUT') {
           setIsLoggedIn(false);
-          setHasShownModal(false); // 로그아웃 시 플래그 리셋
+          setHasShownModal(false);
         }
       }
     );
+    return () => subscription.unsubscribe();
+  }, []);
 
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [supabase.auth, router, openModal, profileConfig, handleProfileSubmit, hasShownModal]);
+  useEffect(() => {
+    if (isLoggedIn && !isProfileLoading && profileExists === false && !hasShownModal) {
+      setHasShownModal(true);
+      openModal(
+        <InputOfModal
+          title="프로필 설정"
+          config={profileConfig}
+          onSubmit={handleProfileSubmit}
+        />
+      );
+    }
+  }, [isLoggedIn, isProfileLoading, profileExists, hasShownModal]);
 
   const handleGoogleLogin = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
@@ -82,9 +52,6 @@ function GooglePopupLoginContent() {
       }
     });
 
-    if (error) {
-      console.error('Google 로그인 오류:', error);
-    }
   };
 
   const handleLogout = async () => {

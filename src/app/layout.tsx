@@ -5,6 +5,7 @@ import '@components/modal/inputs/common/common.css';
 import '@components/modal/modal.css';
 import Header from '@components/layout/Header';
 import { ModalProvider, Modal } from '@components/modal';
+import QueryProvider from './providers/QueryProvider';
 
 export const metadata = {
   title: 'BSMHub',
@@ -27,12 +28,14 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#F5F5F7] pt-14">
-        <ModalProvider>
-          <Header />
-          {children}
-          <Footer />
-          <Modal />
-        </ModalProvider>
+        <QueryProvider>
+          <ModalProvider>
+            <Header />
+            {children}
+            <Footer />
+            <Modal />
+          </ModalProvider>
+        </QueryProvider>
       </body>
     </html>
   );
