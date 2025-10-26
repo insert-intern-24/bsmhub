@@ -3,7 +3,7 @@
 import Script from 'next/script';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // google 전역 객체에 대한 타입 정의
 declare global {
@@ -26,8 +26,8 @@ interface CredentialResponse {
 
 const OneTapComponent = () => {
   const supabase = createClient();
-
   const router = useRouter();
+  const [isGoogleLoaded, setIsGoogleLoaded] = useState(false);
 
   const generateNonce = async (): Promise<string[]> => {
     const nonce = btoa(
@@ -44,66 +44,80 @@ const OneTapComponent = () => {
     return [nonce, hashedNonce];
   };
 
-  useEffect(() => {
-    let isInitialized = false;
+  const initializeGoogleOneTap = async () => {
+    if (!isGoogleLoaded) return;
+    
+    console.log('Initializing Google One Tap');
 
-    const initializeGoogleOneTap = async () => {
-      if (isInitialized) return;
-      console.log('Initializing Google One Tap');
+    const [nonce, hashedNonce] = await generateNonce();
+    console.log('Nonce: ', nonce, hashedNonce);
 
-      const [nonce, hashedNonce] = await generateNonce();
-      console.log('Nonce: ', nonce, hashedNonce);
+    // check if there's already an existing session
+    const { data, error } = await supabase.auth.getSession();
+    if (error) {
+      console.error('Error getting session', error);
+    }
+    if (data.session) {
+      return;
+    }
 
-      // check if there's already an existing session
-      const { data, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error('Error getting session', error);
-      }
-      if (data.session) {
-        return;
-      }
+    window.google.accounts.id.initialize({
+      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+      callback: async (response: CredentialResponse) => {
+        try {
+          const { data, error } = await supabase.auth.signInWithIdToken({
+            provider: 'google',
+            token: response.credential,
+            nonce,
+          });
 
-      window.google.accounts.id.initialize({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-        callback: async (response: CredentialResponse) => {
-          try {
-            const { data, error } = await supabase.auth.signInWithIdToken({
-              provider: 'google',
-              token: response.credential,
-              nonce,
-            });
+          if (error) throw error;
+          console.log('Session data: ', data);
+          console.log('Successfully logged in with Google One Tap');
 
-            if (error) throw error;
-            console.log('Session data: ', data);
-            console.log('Successfully logged in with Google One Tap');
-          } catch (error) {
-            console.error('Error logging in with Google One Tap', error);
+          // 새 사용자인지 확인 - 데이터베이스에서 프로필 존재 여부 확인
+          if (data.user) {
+            const { data: profile, error: profileError } = await supabase
+              .from('profile')
+              .select('profile_id')
+              .eq('user_id', data.user.id)
+              .single();
+
+            // 프로필이 없으면 새 사용자
+            if (profileError || !profile) {
+              console.log('New user detected, redirecting to onboarding');
+              router.push('/onboarding');
+            } else {
+              console.log('Existing user, staying on current page');
+            }
           }
-        },
-        nonce: hashedNonce,
-        use_fedcm_for_prompt: true,
-        // allowed_parent_origin: window.location.origin,
-      });
+        } catch (error) {
+          console.error('Error logging in with Google One Tap', error);
+        }
+      },
+      nonce: hashedNonce,
+      use_fedcm_for_prompt: true,
+      // allowed_parent_origin: window.location.origin,
+    });
 
-      window.google.accounts.id.prompt();
-      isInitialized = true;
-    };
+    window.google.accounts.id.prompt();
+  };
 
-    // Script가 로드된 후에 초기화
-    const timer = setTimeout(initializeGoogleOneTap, 100);
-
-    return () => {
-      clearTimeout(timer);
-      isInitialized = false;
-    };
-  }, [router, supabase.auth]);
+  useEffect(() => {
+    if (isGoogleLoaded) {
+      initializeGoogleOneTap();
+    }
+  }, [isGoogleLoaded, router, supabase.auth]);
 
   return (
     <>
       <Script
         src="https://accounts.google.com/gsi/client"
         strategy="afterInteractive"
-        onLoad={() => console.log('Google Script loaded')}
+        onLoad={() => {
+          console.log('Google Script loaded');
+          setIsGoogleLoaded(true);
+        }}
       />
       <div id="oneTap" className="fixed top-0 right-0 z-[100]" />
     </>
