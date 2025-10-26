@@ -199,7 +199,7 @@ export const DropdownItem = ({
       onClick={handleClick}
       disabled={disabled}
       className={cn(
-        'flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-body2 text-black transition-colors duration-150',
+        'flex w-fit items-center gap-2 rounded-md py-2 text-left text-body2 text-black transition-colors duration-150',
         disabled
           ? 'cursor-not-allowed text-gray-base'
           : 'hover:bg-light-gray-outline focus:bg-light-gray-outline focus:outline-none',
