@@ -7,6 +7,7 @@ import Header from '@components/layout/Header';
 import { ModalProvider, Modal } from '@components/modal';
 import QueryProvider from './providers/QueryProvider';
 import Navigator from '@components/layout/Navigator';
+import GoogleOneTab from '@components/auth/GoogleOneTab';
 
 export const metadata = {
   title: 'BSMHub',
@@ -32,6 +33,7 @@ export default function RootLayout({
         <QueryProvider>
           <ModalProvider>
             <Header />
+            <GoogleOneTab />
             {children}
             <Navigator />
             <Footer />
