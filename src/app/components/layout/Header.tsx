@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Label } from '../system/text';
+import HeaderDropdown from './HeaderDropdown';
 
 export const navigation = [
   { label: '프로젝트', href: '/project' },
@@ -25,7 +26,8 @@ const Header = () => {
           <b>부산소프트웨어마이스터고</b> 프로젝트의장
         </div>
       </Link>
-      <nav className="flex-row gap-4 mobile:hidden">
+      <nav className="flex-row gap-4 items-center mobile:hidden">
+        <HeaderDropdown />
         {navigation.map((item) => (
           <Link key={item.label} href={item.href}>
             <Label>{item.label}</Label>
