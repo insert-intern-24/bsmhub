@@ -108,7 +108,6 @@ const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
             className="prose max-w-none"
             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
-          // <Markdown options={markdownOptions}>{editedContent}</Markdown>
         )}
       </main>
     </div>
