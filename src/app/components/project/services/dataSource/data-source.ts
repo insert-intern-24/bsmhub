@@ -1,7 +1,10 @@
 import { createClient } from '@/utils/supabase/server';
 import type { ProjectDetailRow } from '../../components/types';
 
-export const fetchFromSupabase = async (projectName: string, ownerName?: string) => {
+export const fetchFromSupabase = async (
+  projectName: string,
+  ownerName?: string,
+) => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -9,7 +12,7 @@ export const fetchFromSupabase = async (projectName: string, ownerName?: string)
     .select(
       `
         *,
-        project_markdown(*),
+        project_html_description(*),
         project_contributors(
           *,
           profile(*)
