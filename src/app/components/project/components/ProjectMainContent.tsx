@@ -74,6 +74,7 @@ const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
       {hasEditPermission && <button
         className="absolute top-8 right-4"
         onClick={isEditing ? undefined : handleEditClick}
+        aria-label={isEditing ? '저장 또는 취소' : '프로젝트 편집'}
       >
         {isEditing ? (
           <div className="flex gap-2">
