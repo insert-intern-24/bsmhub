@@ -1,6 +1,6 @@
 import ProjectList from '@/app/components/ProjectList';
 import { getProjects } from '@/services/server/project/getProjects';
-import OneTapComponent from '@/app/components/auth/GoogleOneTap';
+import OneTapComponent from '@/app/components/auth/GoogleOneTab';
 
 export default async function Home() {
   const projects = await getProjects();

@@ -25,7 +25,7 @@ export const checkProfileExistence = async (): Promise<boolean> => {
     }
 
     return !!data;
-  } catch (error) {
+  } catch {
     return false;
   }
 };
