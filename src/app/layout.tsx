@@ -6,6 +6,7 @@ import '@components/modal/modal.css';
 import Header from '@components/layout/Header';
 import { ModalProvider, Modal } from '@components/modal';
 import Navigator from '@components/layout/Navigator';
+import GoogleOneTab from '@components/auth/GoogleOneTab';
 
 export const metadata = {
   title: 'BSMHub',
@@ -29,6 +30,7 @@ export default function RootLayout({
       </head>
       <body className="bg-[#F5F5F7] pt-14">
         <ModalProvider>
+          <GoogleOneTab />
           <Header />
           {children}
           <Navigator />
