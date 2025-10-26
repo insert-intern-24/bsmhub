@@ -3,12 +3,18 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Label } from '../system/text';
 import HeaderDropdown from './HeaderDropdown';
+import {
+  IconUsersGroup,
+  IconAssembly,
+  IconId,
+  IconAward,
+} from '@tabler/icons-react';
 
 export const navigation = [
-  { label: '프로젝트', href: '/project' },
-  { label: '동아리', href: '/team' },
-  { label: '포트폴리오', href: '/portfolio' },
-  { label: '대회', href: '/major' },
+  { label: '프로젝트', href: '/project', icon: IconAssembly },
+  { label: '동아리', href: '/team', icon: IconUsersGroup },
+  { label: '포트폴리오', href: '/portfolio', icon: IconId },
+  { label: '대회', href: '/major', icon: IconAward },
 ];
 
 const Header = () => {
