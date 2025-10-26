@@ -10,8 +10,7 @@ export default async function projectContentEditHandler(
     .update({ html_content: content } as never)
     .eq('project_id', project_id);
   if (error) {
-    console.error('프로젝트 내용 업데이트 실패:', error);
-  } else {
-    console.log('프로젝트 내용이 성공적으로 업데이트되었습니다.');
+    return { success: false, error };
   }
+  return { success: true };
 }
