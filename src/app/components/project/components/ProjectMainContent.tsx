@@ -5,7 +5,8 @@ import type { ProjectDetailViewModel } from './types';
 import { IconPencil, IconCheck, IconX } from '@tabler/icons-react';
 import 'lexical-rich-text-editor/lexical-rich-text-editor.css';
 import { RichTextEditor } from 'lexical-rich-text-editor';
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
+import projectContentEditHandler from '../services/content-edit-handler';
 
 interface ProjectMainContentProps {
   project: ProjectDetailViewModel;
@@ -28,7 +29,7 @@ const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
       ],
       ALLOWED_ATTR: [
         'href', 'target', 'rel', 'src', 'alt', 'title',
-        'class', 'style', 'width', 'height'
+        'class', 'style', 'width', 'height', 'data-lexical-equation', 'data-lexical-inline', 'aria-hidden'
       ],
       // target="_blank" 링크에 자동으로 rel="noopener noreferrer" 추가
       ALLOW_DATA_ATTR: false,
@@ -55,6 +56,7 @@ const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
 
   const handleSaveClick = () => {
     // TODO: 저장 로직 구현 (예: API 호출로 내용 업데이트)
+    projectContentEditHandler(project.id, editedContent);
     console.log('저장된 내용:', editedContent);
     setIsEditing(false);
   };

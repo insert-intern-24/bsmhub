@@ -21,6 +21,8 @@
     "dompurify": "^3.3.0",
     "google-one-tap": "^1.0.6",
     "immer": "^10.2.0",
+    "isomorphic-dompurify": "^2.30.1",
+    "jsdom": "^27.0.1",
     "lexical-rich-text-editor": "github:Team-INSERT/lexical-react#build-dist",
     "next": "^15.5.6",
     "next-mdx-remote": "^5.0.0",

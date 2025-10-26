@@ -8,8 +8,6 @@ export const toViewModel = (
 ): ProjectDetailViewModel => {
   let detailDescription = '자세한 설명 정보가 없습니다.';
 
-  console.log('project.project_html_description:', project);
-
   if (project.project_html_description?.html_content) {
     detailDescription = project.project_html_description.html_content;
   } else if (project.description) {
