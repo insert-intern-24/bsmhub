@@ -1,3 +1,5 @@
+'use client';
+
 import {
   AnchorHTMLAttributes,
   Children,
@@ -5,12 +7,15 @@ import {
   HTMLAttributes,
   ReactNode,
   isValidElement,
+  useState,
+  useEffect,
 } from 'react';
 import Markdown from 'markdown-to-jsx';
 import type { MarkdownToJSX } from 'markdown-to-jsx';
 import { Body } from '@/app/components/system/text';
 import type { ProjectDetailViewModel } from './types';
-import { IconPencil } from '@tabler/icons-react';
+import { IconPencil, IconCheck, IconX } from '@tabler/icons-react';
+import 'lexical-rich-text-editor/lexical-rich-text-editor.css';
 
 const normalizeYoutubeUrl = (url: string) => {
   try {
@@ -271,15 +276,78 @@ interface ProjectMainContentProps {
   project: ProjectDetailViewModel;
 }
 
-const ProjectMainContent = ({ project }: ProjectMainContentProps) => (
-  <div className="relative w-full h-full">
-    <button className="absolute top-8 right-4">
-      <IconPencil className="text-gray-footer" size={12} />
-    </button>
-    <main className="flex-1 w-full px-[4.6875rem] pt-[4.5rem] mobile:px-0">
-      <Markdown options={markdownOptions}>{project.detailDescription}</Markdown>
-    </main>
-  </div>
-);
+const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(project.detailDescription);
+  const [RichTextEditorComponent, setRichTextEditorComponent] =
+    useState<React.FC | null>(null);
+
+  useEffect(() => {
+    if (isEditing) {
+      // 편집 모드일 때만 동적으로 라이브러리 임포트
+      import('lexical-rich-text-editor')
+        .then((module) =>
+          setRichTextEditorComponent(() => module.RichTextEditor),
+        )
+        .catch((err) => console.error('Failed to load rich text editor:', err));
+    }
+  }, [isEditing]);
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleSaveClick = () => {
+    // TODO: 저장 로직 구현 (예: API 호출로 내용 업데이트)
+    console.log('저장된 내용:', editedContent);
+    setIsEditing(false);
+  };
+
+  const handleCancelClick = () => {
+    setEditedContent(project.detailDescription); // 원래 내용으로 복원
+    setIsEditing(false);
+  };
+
+  return (
+    <div className="relative w-full h-full max-w-full">
+      <button
+        className="absolute top-8 right-4"
+        onClick={isEditing ? undefined : handleEditClick}
+      >
+        {isEditing ? (
+          <div className="flex gap-2">
+            <IconCheck
+              className="text-green-500 cursor-pointer"
+              size={12}
+              onClick={handleSaveClick}
+            />
+            <IconX
+              className="text-red-500 cursor-pointer"
+              size={12}
+              onClick={handleCancelClick}
+            />
+          </div>
+        ) : (
+          <IconPencil className="text-gray-footer" size={12} />
+        )}
+      </button>
+      <main
+        className={`flex-1 w-full ${
+          isEditing ? 'p-3 pt-6' : 'px-[4.6875rem] pt-[4.5rem]'
+        } mobile:px-0`}
+      >
+        {isEditing ? (
+          <div suppressHydrationWarning>
+            {RichTextEditorComponent && <RichTextEditorComponent />}
+          </div>
+        ) : (
+          <Markdown options={markdownOptions}>
+            {project.detailDescription}
+          </Markdown>
+        )}
+      </main>
+    </div>
+  );
+};
 
 export default ProjectMainContent;
