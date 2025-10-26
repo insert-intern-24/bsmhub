@@ -96,9 +96,9 @@ export default function SearchTab({
     .filter(filterByJobs)
     .filter(filterByEmploymentStatus);
   return (
-    <div className="py-9 flex flex-col md:flex-row gap-4 min-h-dvh w-full">
+    <div className="pt-9 flex mobile:flex-col flex-row gap-4 min-h-dvh w-full">
       {/* 검색 및 필터 사이드바 */}
-      <aside className="flex-col gap-3 min-w-64">
+      <aside className="flex-col gap-3 min-w-80">
         <Inputs
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search"
