@@ -11,12 +11,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import Navigator from '@components/layout/Navigator';
 
-export const metadata = {
-  title: 'BSMHub',
-  description: '부산소프트웨어마이스터고 프로젝트의 장',
-  image: '/favicon.ico',
-};
-
 export default function RootLayout({
   children,
 }: {
@@ -46,29 +40,21 @@ export default function RootLayout({
           content="부산소프트웨어마이스터고 프로젝트의 장"
         />
         <link rel="icon" href="/favicon.ico" />
-      </head>
-      <body className="bg-[#F5F5F7]">
-        <QueryClientProvider client={queryClient}>
-          <ModalProvider>
-            <Header />
-            {children}
-            <Footer />
-            <Modal />
-          </ModalProvider>
-        </QueryClientProvider>
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
       </head>
       <body className="bg-[#F5F5F7] pt-14">
-        <ModalProvider>
-          <Header />
-          {children}
-          <Navigator />
-          <Footer />
-          <Modal />
-        </ModalProvider>
+        <QueryClientProvider client={queryClient}>
+          <ModalProvider>
+            <Header />
+            {children}
+            <Navigator />
+            <Footer />
+            <Modal />
+          </ModalProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );
