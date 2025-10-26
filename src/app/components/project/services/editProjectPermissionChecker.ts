@@ -41,10 +41,10 @@ export default async function editProjectPermissionChecker(
     `,
     )
     .eq('project_id', projectId)
-    .single();
+    .single<ProfileWithOwner>();
 
   if (!contributorError && contributorData) {
-    const profileData = contributorData as unknown as ProfileWithOwner;
+    const profileData = contributorData;
     if (profileData.profile && profileData.profile.owner === user.id) {
       return true;
     }
@@ -62,10 +62,10 @@ export default async function editProjectPermissionChecker(
     `,
     )
     .eq('project_id', projectId)
-    .single();
+    .single<ProfileWithOwner>();
 
   if (!projectError && projectData) {
-    const profileData = projectData as unknown as ProfileWithOwner;
+    const profileData = projectData;
     if (profileData.profile && profileData.profile.owner === user.id) {
       return true;
     }
