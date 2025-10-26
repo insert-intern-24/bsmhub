@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, ChangeEvent, useMemo, useCallback } from 'react';
-import Inputs from '../components/modal/inputs/SingleInput';
-import InfinitePagination from './[project_name]/components/pagination/Pagination';
-import Tabs from './[project_name]/components/tabs/ProjectTab';
-import Card, { CardProps } from '../components/card/project/ProjectCard';
+import Inputs from '@/app/components/modal/inputs/SingleInput';
+import InfinitePagination from '@/app/project/[project_name]/components/pagination/Pagination';
+import Tabs from '@/app/project/[project_name]/components/tabs/ProjectTab';
+import Card, { CardProps } from '@/app/components/card/project/ProjectCard';
 
 interface ProjectClientProps {
   initialProjects: CardProps[];
@@ -75,35 +75,33 @@ export default function ProjectClient({ initialProjects }: ProjectClientProps) {
   );
 
   return (
-    <div className="flex min-w-[20.625rem] py-9 px-11 items-start flex-1 shrink-0 self-stretch bg-white">
-      <div className="flex flex-col items-start gap-6 flex-1 shrink-0">
-        <Inputs
-          type="text"
-          icon="search"
-          placeholder="Search"
-          onChange={handleSearchChange}
-        />
-        <Tabs activeTab={activeTab} onTabChange={handleTabChange} />
+    <div className="flex flex-col items-start gap-6 flex-1 shrink-0">
+      <Inputs
+        type="text"
+        icon="search"
+        placeholder="Search"
+        onChange={handleSearchChange}
+      />
+      <Tabs activeTab={activeTab} onTabChange={handleTabChange} />
 
-        <InfinitePagination<CardProps>
-          queryKey={['projects', searchTerm, activeTab]}
-          queryFn={fetchProjects}
-          enabled={true}
-          renderItem={(project) => (
-            <Card
-              key={project.id}
-              id={project.id}
-              title={project.title}
-              description={project.description}
-              projectImage={project.projectImage}
-              ownerName={project.ownerName}
-              isTeam={project.isTeam}
-              category={project.category}
-              authors={project.authors}
-            />
-          )}
-        />
-      </div>
+      <InfinitePagination<CardProps>
+        queryKey={['projects', searchTerm, activeTab]}
+        queryFn={fetchProjects}
+        enabled={true}
+        renderItem={(project) => (
+          <Card
+            key={project.id}
+            id={project.id}
+            title={project.title}
+            description={project.description}
+            projectImage={project.projectImage}
+            ownerName={project.ownerName}
+            isTeam={project.isTeam}
+            category={project.category}
+            authors={project.authors}
+          />
+        )}
+      />
     </div>
   );
 }
