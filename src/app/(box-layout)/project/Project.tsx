@@ -76,12 +76,15 @@ export default function ProjectClient({ initialProjects }: ProjectClientProps) {
 
   return (
     <div className="flex flex-col items-start gap-6 flex-1 shrink-0">
-      <Inputs
-        type="text"
-        icon="search"
-        placeholder="Search"
-        onChange={handleSearchChange}
-      />
+      <div className="w-full max-w-[25rem]">
+        <Inputs
+          type="text"
+          icon="search"
+          placeholder="Search"
+          onChange={handleSearchChange}
+        />
+      </div>
+
       <Tabs activeTab={activeTab} onTabChange={handleTabChange} />
 
       <InfinitePagination<CardProps>
