@@ -43,7 +43,7 @@ const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
         'class', 'style', 'width', 'height', 'data-lexical-equation', 'data-lexical-inline', 'aria-hidden'
       ],
       // target="_blank" 링크에 자동으로 rel="noopener noreferrer" 추가
-      ALLOW_DATA_ATTR: false,
+      ALLOW_DATA_ATTR: true,
       ADD_ATTR: ['target'],
     });
   }, [editedContent]);
