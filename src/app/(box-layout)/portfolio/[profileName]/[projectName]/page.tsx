@@ -1,5 +1,5 @@
 import ProjectDetailPage from '@/app/components/project/ProjectPage';
-import { checkProfileTeam } from '@/services/server/profile/checkProfileTeam';
+import { checkProfileisTeam } from '@/services/server/profile/checkProfileisTeam';
 import { notFound } from 'next/navigation';
 
 interface PortfolioProjectPageProps {
@@ -12,7 +12,7 @@ interface PortfolioProjectPageProps {
 const PortfolioProjectPage = async ({ params }: PortfolioProjectPageProps) => {
   const { profileName } = await params;
 
-  if (!(await checkProfileTeam(profileName)))
+  if (!(await checkProfileisTeam(profileName)))
     return <ProjectDetailPage params={params} />;
 
   notFound();

@@ -10,6 +10,7 @@ import Markdown from 'markdown-to-jsx';
 import type { MarkdownToJSX } from 'markdown-to-jsx';
 import { Body } from '@/app/components/system/text';
 import type { ProjectDetailViewModel } from './types';
+import { IconPencil } from '@tabler/icons-react';
 
 const normalizeYoutubeUrl = (url: string) => {
   try {
@@ -271,9 +272,14 @@ interface ProjectMainContentProps {
 }
 
 const ProjectMainContent = ({ project }: ProjectMainContentProps) => (
-  <main className="flex-1 w-full px-[4.6875rem] pt-[4.5rem] mobile:px-0">
-    <Markdown options={markdownOptions}>{project.detailDescription}</Markdown>
-  </main>
+  <div className="relative w-full h-full">
+    <button className="absolute top-8 right-4">
+      <IconPencil className="text-gray-footer" size={12} />
+    </button>
+    <main className="flex-1 w-full px-[4.6875rem] pt-[4.5rem] mobile:px-0">
+      <Markdown options={markdownOptions}>{project.detailDescription}</Markdown>
+    </main>
+  </div>
 );
 
 export default ProjectMainContent;
