@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Label } from '../system/text';
+import Account from '../auth/Account';
 
 export const navigation = [
   { label: '프로젝트', href: '/project' },
@@ -32,6 +33,7 @@ const Header = () => {
               <Label>{item.label}</Label>
             </Link>
           ))}
+          <Account />
         </nav>
       </div>
     </header>
