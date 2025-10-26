@@ -72,6 +72,11 @@ export default function InfinitePagination<T>({
         lastPage.hasNextPage ? lastPage.currentPage + 1 : undefined,
     });
 
+  // queryKey가 변경될 때 페이지를 1로 리셋
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [queryKey]);
+
   const totalPages = data?.pages[0]?.totalPages || 1;
 
   // 현재 페이지의 데이터만 표시

@@ -12,21 +12,49 @@ interface ProjectClientProps {
 
 export default function ProjectClient({ initialProjects }: ProjectClientProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState(0);
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredProjects = useMemo(() => {
-    if (!searchTerm) return initialProjects;
+  const handleTabChange = (index: number) => {
+    setActiveTab(index);
+  };
 
-    return initialProjects.filter(
-      (project) =>
-        project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.ownerName.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-  }, [initialProjects, searchTerm]);
+  const filteredProjects = useMemo(() => {
+    // 탭 인덱스와 데이터베이스 카테고리 매핑
+    const categoryMap: { [key: number]: string } = {
+      0: 'Web',
+      1: 'Desktop Utility',
+      2: 'Mobile',
+    };
+
+    const selectedCategory = categoryMap[activeTab];
+
+    let filtered = initialProjects;
+
+    // 카테고리 필터링
+    if (selectedCategory) {
+      filtered = filtered.filter(
+        (project) => project.category === selectedCategory,
+      );
+    }
+
+    // 검색어 필터링
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (project) =>
+          project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          project.description
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          project.ownerName.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
+    }
+
+    return filtered;
+  }, [initialProjects, searchTerm, activeTab]);
 
   // 페이지네이션 함수
   const fetchProjects = async ({ pageParam }: { pageParam: number }) => {
@@ -52,10 +80,10 @@ export default function ProjectClient({ initialProjects }: ProjectClientProps) {
           placeholder="Search"
           onChange={handleSearchChange}
         />
-        <Tabs />
+        <Tabs activeTab={activeTab} onTabChange={handleTabChange} />
 
         <InfinitePagination<CardProps>
-          queryKey={['projects', searchTerm]}
+          queryKey={['projects', searchTerm, activeTab]}
           queryFn={fetchProjects}
           enabled={true}
           renderItem={(project) => (
