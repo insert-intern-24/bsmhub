@@ -24,6 +24,11 @@ function GooglePopupLoginContent() {
 
   const showOnboardingModal = async () => {
     if (!hasShownModal) {
+      // 현재 로그인된 사용자 정보 콘솔 출력
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      console.log('Current user:', user);
+      console.log('User error:', userError);
+      
       // 프로필 존재 여부 확인
       const profileExists = await getIsExistProfileClient();
       
