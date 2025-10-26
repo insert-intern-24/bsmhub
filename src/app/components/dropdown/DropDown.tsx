@@ -112,7 +112,7 @@ export const Dropdown = ({
         ref={triggerRef}
         type="button"
         className={cn(
-          'flex items-center justify-between rounded-md transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-black',
+          'flex items-center justify-between rounded-md transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-black p-1',
           triggerClassName,
         )}
         onClick={toggleOpen}
