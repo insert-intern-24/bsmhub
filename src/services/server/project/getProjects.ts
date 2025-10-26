@@ -22,7 +22,10 @@ export type ProjectWithProfileType = {
 export const getProjects = async (): Promise<CardProps[]> => {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.from('projects').select(`
+  // 메인 페이지에서 최대 16개의 프로젝트만 조회
+  const { data, error } = await supabase
+    .from('projects')
+    .select(`
       project_id,
       project_name,
       description,
@@ -35,7 +38,8 @@ export const getProjects = async (): Promise<CardProps[]> => {
       project_category!projects_category_id_fkey (
         category_name
       )
-    `);
+    `)
+    .limit(16);
 
   if (error) {
     console.error('프로젝트 조회 중 오류:', error);
