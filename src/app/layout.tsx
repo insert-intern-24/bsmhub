@@ -7,12 +7,16 @@ import Header from '@components/layout/Header';
 import { ModalProvider, Modal } from '@components/modal';
 import QueryProvider from './providers/QueryProvider';
 import Navigator from '@components/layout/Navigator';
+// import Providers from './providers';
+import type { Metadata } from 'next';
 import GoogleOneTab from '@components/auth/GoogleOneTab';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'BSMHub',
   description: '부산소프트웨어마이스터고 프로젝트의 장',
-  image: '/favicon.ico',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

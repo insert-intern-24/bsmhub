@@ -2,11 +2,12 @@
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
-export type TabMode = 'home' | 'project' | 'web' | 'desktop' | 'mobile';
+export type TabMode = 'home' | 'project' | 'all' | 'web' | 'desktop' | 'mobile';
 
 const mapTabValue: Record<TabMode, string> = {
   home: '홈',
   project: '프로젝트',
+  all: '전체',
   web: '웹',
   desktop: '데스크톱앱',
   mobile: '모바일앱',
@@ -18,10 +19,10 @@ interface TabsProps {
 
 const Tabs = ({ tabs }: TabsProps) => {
   const searchParams = useSearchParams();
-  const currentPath = (searchParams.get('path') ?? 'home') as TabMode;
+  const currentPath = (searchParams.get('path') ?? tabs[0]) as TabMode;
 
   return (
-    <div className="flex-row border-b-[1px] border-[#F1F1F1]">
+    <div className="flex border-b-[1px] border-[#F1F1F1] w-full">
       {tabs.map((mode) => {
         const isActive = currentPath === mode;
 
