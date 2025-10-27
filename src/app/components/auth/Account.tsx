@@ -22,7 +22,8 @@ const Account = () => {
       setUserProfile(session?.user || null);
       // 첫 로그인 시 프로필 존재 여부 확인
       if (event === 'SIGNED_IN') {
-        checkProfileExistence(session!.user.id).then((exists) => {
+        if (!session?.user?.id) return;
+        checkProfileExistence(session.user.id).then((exists) => {
           if (exists) return;
           openModal(
             <InputOfModal
@@ -46,13 +47,14 @@ const Account = () => {
 
     popup?.focus();
 
-    window.addEventListener('message', (event) => {
+    const handleMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
-
       if (event.data === 'success') {
         popup?.close();
+        window.removeEventListener('message', handleMessage);
       }
-    });
+    };
+    window.addEventListener('message', handleMessage);
   };
 
   const handleLogout = async () => {
@@ -72,6 +74,7 @@ const Account = () => {
       }
       align="right"
     >
+      <DropdownItem>내 프로필</DropdownItem>
       <DropdownItem onSelect={handleLogout}>로그아웃</DropdownItem>
     </Dropdown>
   ) : (

@@ -21,7 +21,7 @@ export const GET = async () => {
 
     if (error) {
       console.error('Error during sign in:', error);
-      return;
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     if (data.url) {
