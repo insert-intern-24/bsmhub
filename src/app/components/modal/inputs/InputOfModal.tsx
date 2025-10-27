@@ -126,7 +126,7 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
                     <InputListProvider
                       config={field.inputConfig}
                       onInputsChange={onChange}
-                      initialValue={value}
+                      initialValue={value as MultiInputItem[][] | undefined}
                       onlyOne={field.inputConfig.onlyOne}
                     />
                   );
