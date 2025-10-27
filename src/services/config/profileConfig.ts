@@ -7,6 +7,7 @@ export const profileConfig: FormConfig = {
       label: '이름',
       type: 'inputList',
       required: true,
+      databaseColumn: 'profiles.full_name',
       inputConfig: {
         onlyOne: true,
         inputs: [
@@ -24,6 +25,7 @@ export const profileConfig: FormConfig = {
       label: '학번',
       type: 'inputList',
       required: true,
+      databaseColumn: 'profiles.student_number',
       inputConfig: {
         onlyOne: true,
         inputs: [
@@ -41,6 +43,7 @@ export const profileConfig: FormConfig = {
       label: '프로필 이미지',
       type: 'picture',
       required: false,
+      databaseColumn: 'profiles.avatar_url',
       aspectRatio: '1:1'
     },
     {
@@ -48,6 +51,7 @@ export const profileConfig: FormConfig = {
       label: '자기소개',
       type: 'inputList',
       required: false,
+      databaseColumn: 'profiles.bio',
       inputConfig: {
         onlyOne: true,
         inputs: [
@@ -65,6 +69,7 @@ export const profileConfig: FormConfig = {
       label: '링크',
       type: 'inputList',
       required: false,
+      databaseColumn: 'profile_links',
       inputConfig: {
         onlyOne: false,
         inputs: [
@@ -88,6 +93,7 @@ export const profileConfig: FormConfig = {
       label: '자격증',
       type: 'inputList',
       required: false,
+      databaseColumn: 'profile_certifications',
       inputConfig: {
         onlyOne: false,
         inputs: [
@@ -117,6 +123,7 @@ export const profileConfig: FormConfig = {
       label: '수상이력',
       type: 'inputList',
       required: false,
+      databaseColumn: 'profile_awards',
       inputConfig: {
         onlyOne: false,
         inputs: [
@@ -146,6 +153,7 @@ export const profileConfig: FormConfig = {
       label: '기술스택',
       type: 'skillTag',
       required: false,
+      databaseColumn: 'profile_skills',
       white: false
     }
   ]
