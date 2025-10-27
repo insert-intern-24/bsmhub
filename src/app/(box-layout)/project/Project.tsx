@@ -14,7 +14,7 @@ interface ProjectClientProps {
 export default function ProjectClient({ initialProjects }: ProjectClientProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const searchParams = useSearchParams();
-  const currentTab = (searchParams.get('path') ?? 'web') as TabMode;
+  const currentTab = (searchParams.get('path') ?? 'all') as TabMode;
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -25,6 +25,7 @@ export default function ProjectClient({ initialProjects }: ProjectClientProps) {
     const categoryMap: Record<TabMode, string | null> = {
       home: null,
       project: null,
+      all: null, // 전체: 모든 카테고리 표시
       web: 'Web',
       desktop: 'Desktop Utility',
       mobile: 'Mobile',
@@ -33,7 +34,7 @@ export default function ProjectClient({ initialProjects }: ProjectClientProps) {
     const selectedCategory = categoryMap[currentTab];
     let filtered = initialProjects;
 
-    // 카테고리 필터링
+    // 카테고리 필터링 (all인 경우 필터링하지 않음)
     if (selectedCategory) {
       filtered = filtered.filter(
         (project) => project.category === selectedCategory,
@@ -84,7 +85,7 @@ export default function ProjectClient({ initialProjects }: ProjectClientProps) {
         />
       </div>
 
-      <Tabs tabs={['web', 'desktop', 'mobile']} />
+      <Tabs tabs={['all', 'web', 'desktop', 'mobile']} />
 
       <InfinitePagination<CardProps>
         queryKey={['projects', searchTerm, currentTab]}
