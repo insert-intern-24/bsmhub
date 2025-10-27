@@ -1,8 +1,10 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ApolloProvider } from '@apollo/client';
 import { useState } from 'react';
 import { ModalProvider, Modal } from '@components/modal';
+import apolloClient from '@/lib/apollo';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -20,11 +22,13 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ModalProvider>
-        {children}
-        <Modal />
-      </ModalProvider>
-    </QueryClientProvider>
+    <ApolloProvider client={apolloClient}>
+      <QueryClientProvider client={queryClient}>
+        <ModalProvider>
+          {children}
+          <Modal />
+        </ModalProvider>
+      </QueryClientProvider>
+    </ApolloProvider>
   );
 }
