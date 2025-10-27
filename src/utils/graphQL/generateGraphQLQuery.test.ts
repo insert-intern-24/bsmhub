@@ -7,7 +7,7 @@
  * npx tsx src/utils/graphql-query-generator/test.ts
  */
 
-import { generateGraphQLQuery, ColumnInfo } from './index';
+import { generateGraphQLQuery, ColumnInfo } from './generateGraphQLQuery';
 
 function main() {
   console.log('🚀 GraphQL 쿼리 생성기 테스트 시작\n');

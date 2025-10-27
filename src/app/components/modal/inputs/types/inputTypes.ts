@@ -1,6 +1,12 @@
 import { ChangeEvent } from 'react';
 import { InputConfig } from '../InputListProvider';
 
+// GraphQL 쿼리 생성을 위한 컬럼 정보
+export interface ColumnInfo {
+  table: string;
+  column: string;
+}
+
 // 실제 input HTML type
 export type InputHTMLType = 'text' | 'date' | 'number' | 'email' | 'password' | 'tel' | 'url';
 
@@ -47,6 +53,7 @@ interface BaseFieldConfig {
   label: string;
   required?: boolean;
   fieldName: string; // "테이블명.속성" 형식으로 데이터베이스 컬럼 매핑
+  columnInfo?: ColumnInfo; // GraphQL 쿼리 생성을 위한 컬럼 정보
 }
 
 // InputList 타입

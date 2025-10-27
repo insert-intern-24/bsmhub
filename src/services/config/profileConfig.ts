@@ -7,6 +7,7 @@ export const profileConfig: FormConfig = {
       label: '이름',
       type: 'inputList',
       required: true,
+      columnInfo: { table: 'profile', column: 'profile_name' },
       inputConfig: {
         onlyOne: true,
         inputs: [
@@ -24,6 +25,7 @@ export const profileConfig: FormConfig = {
       label: '학번',
       type: 'inputList',
       required: true,
+      columnInfo: { table: 'student', column: 'student_number' },
       inputConfig: {
         onlyOne: true,
         inputs: [
@@ -41,6 +43,7 @@ export const profileConfig: FormConfig = {
       label: '프로필 이미지',
       type: 'picture',
       required: false,
+      columnInfo: { table: 'profile', column: 'profile_image' },
       aspectRatio: '1:1'
     },
     {
