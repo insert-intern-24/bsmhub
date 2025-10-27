@@ -3,11 +3,10 @@ import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
 export const profileConfig: FormConfig = {
   fields: [
     {
-      fieldName: 'profileName',
+      fieldName: 'profiles.full_name',
       label: '이름',
       type: 'inputList',
       required: true,
-      databaseColumn: 'profiles.full_name',
       inputConfig: {
         onlyOne: true,
         inputs: [
@@ -21,11 +20,10 @@ export const profileConfig: FormConfig = {
       }
     },
     {
-      fieldName: 'studentNumber',
+      fieldName: 'profiles.student_number',
       label: '학번',
       type: 'inputList',
       required: true,
-      databaseColumn: 'profiles.student_number',
       inputConfig: {
         onlyOne: true,
         inputs: [
@@ -39,19 +37,17 @@ export const profileConfig: FormConfig = {
       }
     },
     {
-      fieldName: 'profileImage',
+      fieldName: 'profiles.avatar_url',
       label: '프로필 이미지',
       type: 'picture',
       required: false,
-      databaseColumn: 'profiles.avatar_url',
       aspectRatio: '1:1'
     },
     {
-      fieldName: 'bio',
+      fieldName: 'profiles.bio',
       label: '자기소개',
       type: 'inputList',
       required: false,
-      databaseColumn: 'profiles.bio',
       inputConfig: {
         onlyOne: true,
         inputs: [
@@ -65,11 +61,10 @@ export const profileConfig: FormConfig = {
       }
     },
     {
-      fieldName: 'links',
+      fieldName: 'profile_links',
       label: '링크',
       type: 'inputList',
       required: false,
-      databaseColumn: 'profile_links',
       inputConfig: {
         onlyOne: false,
         inputs: [
@@ -89,11 +84,10 @@ export const profileConfig: FormConfig = {
       }
     },
     {
-      fieldName: 'certifications',
+      fieldName: 'profile_certifications',
       label: '자격증',
       type: 'inputList',
       required: false,
-      databaseColumn: 'profile_certifications',
       inputConfig: {
         onlyOne: false,
         inputs: [
@@ -119,11 +113,10 @@ export const profileConfig: FormConfig = {
       }
     },
     {
-      fieldName: 'awards',
+      fieldName: 'profile_awards',
       label: '수상이력',
       type: 'inputList',
       required: false,
-      databaseColumn: 'profile_awards',
       inputConfig: {
         onlyOne: false,
         inputs: [
@@ -149,11 +142,10 @@ export const profileConfig: FormConfig = {
       }
     },
     {
-      fieldName: 'skills',
+      fieldName: 'profile_skills',
       label: '기술스택',
       type: 'skillTag',
       required: false,
-      databaseColumn: 'profile_skills',
       white: false
     }
   ]
