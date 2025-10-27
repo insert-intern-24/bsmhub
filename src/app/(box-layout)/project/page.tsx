@@ -6,7 +6,7 @@ export default async function ProjectPage() {
   const initialProjects = await getProjects();
 
   return (
-    <div className="container mx-auto pt-32">
+    <div className="container mx-auto pt-8">
       <ProjectClient initialProjects={initialProjects} />
     </div>
   );
