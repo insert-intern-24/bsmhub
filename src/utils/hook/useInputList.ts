@@ -17,7 +17,7 @@ type InputAction =
   | { type: 'ADD_INPUT'; multiInputConfig: MultiInputItem[] }
 
 // 커스텀 훅: 비즈니스 로직 분리
-export const useInputList = (initialConfig?: MultiInputItem[]) => {
+export const useInputList = (initialConfig?: MultiInputItem[] | MultiInputItem[][]) => {
   const isEmpty = (value?: string | number | null) => 
     !value || String(value).trim() === ''
 
@@ -63,10 +63,19 @@ export const useInputList = (initialConfig?: MultiInputItem[]) => {
     }
   })
 
-  const initialInputs = initialConfig || [{ value: '' } as MultiInputItem]
+  // initialConfig가 2차원 배열인지 확인
+  const is2DArray = Array.isArray(initialConfig) && 
+    initialConfig.length > 0 && 
+    Array.isArray(initialConfig[0])
+
+  const initialInputs = is2DArray 
+    ? initialConfig as MultiInputItem[][]
+    : initialConfig 
+      ? [initialConfig as MultiInputItem[]]
+      : [[{ value: '' } as MultiInputItem]]
 
   return useReducer(reducer, {
-    inputs: [initialInputs],
+    inputs: initialInputs,
     activeIndex: null
   })
 }

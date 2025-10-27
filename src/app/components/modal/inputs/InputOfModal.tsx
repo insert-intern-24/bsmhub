@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { Title } from '@components/system/text'
 import LabelOfInputs from './LabelOfInputs'
@@ -17,12 +17,16 @@ interface InputOfModalProps {
   config: FormConfig;
   onSubmit?: (data: Record<string, MultiInputItem[][] | string[] | boolean | File | null>) => void;
   submitButtonText?: string;
+  initialValues?: Record<string, MultiInputItem[][] | string[] | boolean | File | null>;
 }
 
-const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '제출하기' }: InputOfModalProps) => {
-  const { control, handleSubmit, formState: { errors } } = useForm({
+const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '제출하기', initialValues }: InputOfModalProps) => {
+  const { control, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][] | string[] | boolean | File | null>, field) => {
-      if (field.type === 'checkbox') {
+      // 초기값이 제공된 경우 사용, 그렇지 않으면 기본값 사용
+      if (initialValues && initialValues[field.fieldName] !== undefined) {
+        acc[field.fieldName] = initialValues[field.fieldName];
+      } else if (field.type === 'checkbox') {
         acc[field.fieldName] = false;
       } else if (field.type === 'picture') {
         acc[field.fieldName] = null;
@@ -32,6 +36,13 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
       return acc;
     }, {} as Record<string, MultiInputItem[][] | string[] | boolean | File | null>)
   });
+
+  // initialValues가 변경될 때마다 폼을 리셋
+  useEffect(() => {
+    if (initialValues) {
+      reset(initialValues);
+    }
+  }, [initialValues, reset]);
 
   const onFormSubmit = (data: Record<string, MultiInputItem[][] | string[] | boolean | File | null>) => {
     onSubmit?.(data);
@@ -115,6 +126,7 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
                     <InputListProvider
                       config={field.inputConfig}
                       onInputsChange={onChange}
+                      initialValue={value}
                       onlyOne={field.inputConfig.onlyOne}
                     />
                   );

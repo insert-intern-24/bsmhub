@@ -101,6 +101,7 @@ const Account = () => {
       }
       align="right"
     >
+      <DropdownItem onSelect={handleMakeProfile}>프로필 만들기</DropdownItem>
       {profileLink ? (
         <Link href={profileLink}>
           <DropdownItem>내 프로필</DropdownItem>

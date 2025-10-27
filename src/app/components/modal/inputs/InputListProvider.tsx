@@ -27,6 +27,7 @@ interface InputListProviderProps {
   config: InputConfig
   className?: string
   onInputsChange?: (inputs: MultiInputItem[][]) => void
+  initialValue?: MultiInputItem[][]
   // maxInputs?: number
   onlyOne?: boolean
 }
@@ -36,6 +37,7 @@ const InputListProvider = ({
   config,
   className = '',
   onInputsChange,
+  initialValue,
   // maxInputs,
   onlyOne = false
 }: InputListProviderProps) => {
@@ -53,7 +55,7 @@ const InputListProvider = ({
     value: ''
   })) as MultiInputItem[]
 
-  const [{ inputs, activeIndex }, dispatch] = useInputList(initialConfig)
+  const [{ inputs, activeIndex }, dispatch] = useInputList(initialValue || initialConfig)
 
   // inputs가 변경될 때마다 콜백 호출
   React.useEffect(() => {
