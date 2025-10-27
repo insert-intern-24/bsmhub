@@ -5,6 +5,7 @@ import '@components/modal/inputs/common/common.css';
 import '@components/modal/modal.css';
 import Header from '@components/layout/Header';
 import { ModalProvider, Modal } from '@components/modal';
+import QueryProvider from './providers/QueryProvider';
 import Navigator from '@components/layout/Navigator';
 import GoogleOneTab from '@components/auth/GoogleOneTab';
 
@@ -29,14 +30,16 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#F5F5F7] pt-14">
-        <ModalProvider>
-          <GoogleOneTab />
-          <Header />
-          {children}
-          <Navigator />
-          <Footer />
-          <Modal />
-        </ModalProvider>
+        <QueryProvider>
+          <ModalProvider>
+            <Header />
+            <GoogleOneTab />
+            {children}
+            <Navigator />
+            <Footer />
+            <Modal />
+          </ModalProvider>
+        </QueryProvider>
       </body>
     </html>
   );

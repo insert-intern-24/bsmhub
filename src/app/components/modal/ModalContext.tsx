@@ -33,7 +33,6 @@ export const ModalProvider = ({ children }: ModalProviderProps) => {
   }, []);
 
   const closeModal = useCallback(() => {
-    console.log('closeModal 호출됨');
     setIsOpen(false);
     // 애니메이션을 위해 약간의 지연 후 컨텐츠 제거
     setTimeout(() => {

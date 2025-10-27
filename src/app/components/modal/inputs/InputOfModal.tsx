@@ -39,7 +39,7 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
 
   return (
     <form 
-      className="flex-col items-start w-[64rem] p-[4rem] gap-6 bg-white rounded-[0.5rem]"
+      className="flex-col items-start w-[64rem] p-[4rem] gap-6 bg-white border-0 outline-none"
       onSubmit={handleSubmit(onFormSubmit)}
       onKeyDown={(e) => {
         if (e.key === 'Enter' && e.target instanceof HTMLInputElement) {
