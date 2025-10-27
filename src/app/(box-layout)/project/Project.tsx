@@ -59,16 +59,13 @@ export default function ProjectClient({ initialProjects }: ProjectClientProps) {
   // 페이지네이션 함수 - useCallback으로 메모이제이션
   const fetchProjects = useCallback(
     async ({ pageParam }: { pageParam: number }) => {
-      const limit = 8;
-      const startIndex = (pageParam - 1) * limit;
-      const endIndex = startIndex + limit;
-      const paginatedData = filteredProjects.slice(startIndex, endIndex);
-
+      // Pagination 컴포넌트에서 클라이언트 측 페이지네이션을 처리하므로
+      // 여기서는 전체 데이터를 반환
       return {
-        data: paginatedData,
-        totalPages: Math.ceil(filteredProjects.length / limit),
+        data: filteredProjects,
+        totalPages: 1, // 전체 데이터를 한 번에 반환
         currentPage: pageParam,
-        hasNextPage: pageParam < Math.ceil(filteredProjects.length / limit),
+        hasNextPage: false, // 추가 페이지 없음
       };
     },
     [filteredProjects],
