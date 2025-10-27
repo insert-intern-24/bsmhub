@@ -1,6 +1,7 @@
 'use client';
 
 import { createClient } from '@/utils/supabase/client';
+import { Tables } from '@/utils/supabase/database.types';
 
 // 프로필 존재 여부 확인 함수
 export const checkProfileExistence = async (
@@ -23,4 +24,21 @@ export const checkProfileExistence = async (
   } catch {
     return false;
   }
+};
+
+export const getProfileByStudentId = async (studentId: string) => {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('profile')
+    .select('*')
+    .eq('owner', studentId)
+    .eq('is_team', false)
+    .single<Tables<'profile'>>();
+
+  if (error) {
+    console.error('Error fetching profile:', error);
+    return null;
+  }
+
+  return data;
 };

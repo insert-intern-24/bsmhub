@@ -8,7 +8,11 @@ import { Dropdown, DropdownItem } from '@/app/components/dropdown/DropDown';
 import { profileConfig } from '@/services/config/profileConfig';
 import Image from 'next/image';
 import { User } from '@supabase/supabase-js';
-import { checkProfileExistence } from '@/services/client/profile/profileApi';
+import {
+  checkProfileExistence,
+  getProfileByStudentId,
+} from '@/services/client/profile/profileApi';
+import Link from 'next/link';
 
 const Account = () => {
   const supabase = createClient();
@@ -25,13 +29,7 @@ const Account = () => {
         if (!session?.user?.id) return;
         checkProfileExistence(session.user.id).then((exists) => {
           if (exists) return;
-          openModal(
-            <InputOfModal
-              title="프로필 설정"
-              config={profileConfig}
-              onSubmit={() => closeModal()}
-            />,
-          );
+          handleMakeProfile();
         });
       }
     });
@@ -57,9 +55,31 @@ const Account = () => {
     window.addEventListener('message', handleMessage);
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleMakeProfile = () => {
+    openModal(
+      <InputOfModal
+        title="프로필 설정"
+        config={profileConfig}
+        onSubmit={() => closeModal()}
+      />,
+    );
   };
+
+  const [profileLink, setProfileLink] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProfileLink = async () => {
+      if (!userProfile?.id) return;
+      const profile = await getProfileByStudentId(userProfile.id);
+
+      if (profile) {
+        setProfileLink(`/portfolio/${profile.profile_name}`);
+      } else {
+        setProfileLink(null);
+      }
+    };
+    fetchProfileLink();
+  }, [userProfile?.id]);
 
   return userProfile ? (
     <Dropdown
@@ -74,8 +94,20 @@ const Account = () => {
       }
       align="right"
     >
-      <DropdownItem>내 프로필</DropdownItem>
-      <DropdownItem onSelect={handleLogout}>로그아웃</DropdownItem>
+      {profileLink ? (
+        <Link href={profileLink}>
+          <DropdownItem>내 프로필</DropdownItem>
+        </Link>
+      ) : (
+        <DropdownItem onSelect={handleMakeProfile}>프로필 만들기</DropdownItem>
+      )}
+      <DropdownItem
+        onSelect={() => {
+          supabase.auth.signOut();
+        }}
+      >
+        로그아웃
+      </DropdownItem>
     </Dropdown>
   ) : (
     <button
