@@ -33,7 +33,7 @@ export const getProfileByStudentId = async (studentId: string) => {
     .select('*')
     .eq('owner', studentId)
     .eq('is_team', false)
-    .single<Tables<'profile'>>();
+    .maybeSingle<Tables<'profile'>>();
 
   if (error) {
     console.error('Error fetching profile for studentId:', studentId, error);
