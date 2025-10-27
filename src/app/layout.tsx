@@ -10,6 +10,7 @@ import Navigator from '@components/layout/Navigator';
 // import Providers from './providers';
 import type { Metadata } from 'next';
 import GoogleOneTab from '@components/auth/GoogleOneTab';
+import StyledComponentsRegistry from '@components/registry/StyledComponentsRegistry';
 
 export const metadata: Metadata = {
   title: 'BSMHub',
@@ -34,16 +35,18 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#F5F5F7] pt-14">
-        <QueryProvider>
-          <ModalProvider>
-            <Header />
-            <GoogleOneTab />
-            {children}
-            <Navigator />
-            <Footer />
-            <Modal />
-          </ModalProvider>
-        </QueryProvider>
+        <StyledComponentsRegistry>
+          <QueryProvider>
+            <ModalProvider>
+              <Header />
+              <GoogleOneTab />
+              {children}
+              <Navigator />
+              <Footer />
+              <Modal />
+            </ModalProvider>
+          </QueryProvider>
+        </StyledComponentsRegistry>
       </body>
     </html>
   );
