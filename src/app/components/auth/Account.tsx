@@ -18,6 +18,7 @@ const Account = () => {
   const supabase = createClient();
   const [userProfile, setUserProfile] = useState<User | null>(null);
   const { openModal, closeModal } = useModal();
+  const [profileLink, setProfileLink] = useState<string | null>(null);
 
   useEffect(() => {
     const {
@@ -65,13 +66,15 @@ const Account = () => {
     );
   };
 
-  const [profileLink, setProfileLink] = useState<string | null>(null);
-
   useEffect(() => {
+    // 컴포넌트 언마운트 시 setState 호출을 방지하기 위한 플래그
+    let mounted = true;
+
     const fetchProfileLink = async () => {
-      if (!userProfile?.id) return;
+      if (!userProfile?.id || !mounted) return;
       const profile = await getProfileByStudentId(userProfile.id);
 
+      if (!mounted) return;
       if (profile) {
         setProfileLink(`/portfolio/${profile.profile_name}`);
       } else {
@@ -79,6 +82,10 @@ const Account = () => {
       }
     };
     fetchProfileLink();
+
+    return () => {
+      mounted = false;
+    };
   }, [userProfile?.id]);
 
   return userProfile ? (

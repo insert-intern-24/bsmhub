@@ -36,7 +36,7 @@ export const getProfileByStudentId = async (studentId: string) => {
     .single<Tables<'profile'>>();
 
   if (error) {
-    console.error('Error fetching profile:', error);
+    console.error('Error fetching profile for studentId:', studentId, error);
     return null;
   }
 
