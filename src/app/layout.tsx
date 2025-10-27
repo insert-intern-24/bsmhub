@@ -4,8 +4,10 @@ import './responsive.css';
 import '@components/modal/inputs/common/common.css';
 import '@components/modal/modal.css';
 import Header from '@components/layout/Header';
+import { ModalProvider, Modal } from '@components/modal';
+import QueryProvider from './providers/QueryProvider';
 import Navigator from '@components/layout/Navigator';
-import Providers from './providers';
+// import Providers from './providers';
 import type { Metadata } from 'next';
 import GoogleOneTab from '@components/auth/GoogleOneTab';
 
@@ -32,13 +34,16 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#F5F5F7] pt-14">
-        <Providers>
-          <GoogleOneTab />
-          <Header />
-          {children}
-          <Navigator />
-          <Footer />
-        </Providers>
+        <QueryProvider>
+          <ModalProvider>
+            <Header />
+            <GoogleOneTab />
+            {children}
+            <Navigator />
+            <Footer />
+            <Modal />
+          </ModalProvider>
+        </QueryProvider>
       </body>
     </html>
   );
