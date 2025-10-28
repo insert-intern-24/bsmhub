@@ -7,11 +7,15 @@ import Tabs, { TabMode } from '@/app/components/layout/Tabs';
 import Card, { CardProps } from '@/app/components/card/project/ProjectCard';
 import { useSearchParams } from 'next/navigation';
 
-interface ProjectClientProps {
+interface CollectClientProps {
   initialProjects: CardProps[];
+  type?: 'project' | 'team';
 }
 
-export default function ProjectClient({ initialProjects }: ProjectClientProps) {
+export default function CollectClient({
+  initialProjects,
+  type = 'project',
+}: CollectClientProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const searchParams = useSearchParams();
   const currentTab = (searchParams.get('path') ?? 'all') as TabMode;
@@ -21,11 +25,32 @@ export default function ProjectClient({ initialProjects }: ProjectClientProps) {
   };
 
   const filteredProjects = useMemo(() => {
-    // 탭과 데이터베이스 카테고리 매핑
+    // 타입이 팀인 경우 카테고리 필터링 스킵
+    if (type === 'team') {
+      let filtered = initialProjects;
+
+      // 검색어 필터링
+      if (searchTerm) {
+        filtered = filtered.filter(
+          (project) =>
+            (project.title ?? '')
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            project.description
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            project.ownerName.toLowerCase().includes(searchTerm.toLowerCase()),
+        );
+      }
+
+      return filtered;
+    }
+
+    // 프로젝트 타입인 경우 기존 로직 유지
     const categoryMap: Record<TabMode, string | null> = {
       home: null,
       project: null,
-      all: null, // 전체: 모든 카테고리 표시
+      all: null,
       web: 'Web',
       desktop: 'Desktop Utility',
       mobile: 'Mobile',
@@ -34,18 +59,18 @@ export default function ProjectClient({ initialProjects }: ProjectClientProps) {
     const selectedCategory = categoryMap[currentTab];
     let filtered = initialProjects;
 
-    // 카테고리 필터링 (all인 경우 필터링하지 않음)
     if (selectedCategory) {
       filtered = filtered.filter(
         (project) => project.category === selectedCategory,
       );
     }
 
-    // 검색어 필터링
     if (searchTerm) {
       filtered = filtered.filter(
         (project) =>
-          project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (project.title ?? '')
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
           project.description
             .toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
@@ -54,18 +79,15 @@ export default function ProjectClient({ initialProjects }: ProjectClientProps) {
     }
 
     return filtered;
-  }, [initialProjects, searchTerm, currentTab]);
+  }, [initialProjects, searchTerm, currentTab, type]);
 
-  // 페이지네이션 함수 - useCallback으로 메모이제이션
   const fetchProjects = useCallback(
     async ({ pageParam }: { pageParam: number }) => {
-      // Pagination 컴포넌트에서 클라이언트 측 페이지네이션을 처리하므로
-      // 여기서는 전체 데이터를 반환
       return {
         data: filteredProjects,
-        totalPages: 1, // 전체 데이터를 한 번에 반환
+        totalPages: 1,
         currentPage: pageParam,
-        hasNextPage: false, // 추가 페이지 없음
+        hasNextPage: false,
       };
     },
     [filteredProjects],
@@ -82,10 +104,13 @@ export default function ProjectClient({ initialProjects }: ProjectClientProps) {
         />
       </div>
 
-      <Tabs tabs={['all', 'web', 'desktop', 'mobile']} />
+      {/* 프로젝트 타입일 때만 탭 표시 */}
+      {type === 'project' && (
+        <Tabs tabs={['all', 'web', 'desktop', 'mobile']} />
+      )}
 
       <InfinitePagination<CardProps>
-        queryKey={['projects', searchTerm, currentTab]}
+        queryKey={['projects', searchTerm, currentTab, type]}
         queryFn={fetchProjects}
         enabled={true}
         renderItem={(project) => (
