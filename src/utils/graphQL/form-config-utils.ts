@@ -90,11 +90,23 @@ function transformInputListData(
   if (!tableData) return [];
   
   return tableData.map(item => 
-    field.inputConfig.inputs.map(input => ({
-      value: String(item[input.name || ''] || '')
-    }))
+    field.inputConfig.inputs.map(input => {
+      let value = '';
+      
+      // JOIN된 구조에서 값 추출 (예: certificates.certificate_name)
+      if (input.name && input.name.includes('.')) {
+        const [tableName, columnName] = input.name.split('.');
+        value = (item as any)[tableName]?.[columnName] || '';
+      } else {
+        // 직접 필드 접근
+        value = String(item[input.name || ''] || '');
+      }
+      
+      return { value: String(value) };
+    })
   );
 }
+
 
 /**
  * 단일 값 필드를 변환합니다.

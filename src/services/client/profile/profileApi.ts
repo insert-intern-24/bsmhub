@@ -78,5 +78,10 @@ export const getProfileWithDetails = async (userId: string) => {
     return null;
   }
   
+  // 데이터 구조 평면화: student_certificates를 최상위로 이동
+  if (data && (data as any).student && (data as any).student.length > 0) {
+    (data as any).student_certificates = (data as any).student[0].student_certificates || [];
+  }
+  
   return data;
 };

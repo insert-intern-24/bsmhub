@@ -89,37 +89,25 @@ export const profileConfig: FormConfig = {
       }
     },
     {
-      fieldName: 'profile_certifications',
+      fieldName: 'student_certificates',
       label: '자격증',
       type: 'inputList',
       required: false,
-      columnInfo: { table: 'profile_certification', column: 'certificate_name' },
+      columnInfo: { table: 'student_certificates', column: '*' },
       inputConfig: {
         onlyOne: false,
         inputs: [
           {
-            name: 'name',
+            name: 'certificates.certificate_name',
             type: 'text',
             placeholder: '자격증명을 입력하세요',
             required: true
           }
-          // {
-          //   name: 'issuer',
-          //   type: 'text',
-          //   placeholder: '발급기관을 입력하세요',
-          //   required: true
-          // },
-          // {
-          //   name: 'date',
-          //   type: 'text',
-          //   placeholder: '취득일 (YYYY-MM-DD)',
-          //   required: true
-          // }
         ]
       }
     },
     {
-      fieldName: 'profile_awards',
+      fieldName: 'profile_competitions',
       label: '수상이력',
       type: 'inputList',
       required: false,
@@ -128,21 +116,9 @@ export const profileConfig: FormConfig = {
         onlyOne: false,
         inputs: [
           {
-            name: 'competition',
+            name: 'prize',
             type: 'text',
-            placeholder: '대회명을 입력하세요',
-            required: true
-          },
-          {
-            name: 'rank',
-            type: 'text',
-            placeholder: '순위를 입력하세요',
-            required: true
-          },
-          {
-            name: 'date',
-            type: 'text',
-            placeholder: '수상일 (YYYY-MM-DD)',
+            placeholder: '수상내역을 입력하세요',
             required: true
           }
         ]

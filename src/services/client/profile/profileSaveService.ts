@@ -16,15 +16,25 @@ interface ProfileSkillsData {
   profile_id: string;
 }
 
+interface StudentCertificatesData {
+  certificate_id: number;
+  student_id: string;
+}
+
+interface ProfileCompetitionsData {
+  competition_id: number;
+  prize: string;
+  profile_id: string;
+}
+
 interface SkillsData {
   skill_name: string;
   language: boolean | null;
 }
 
-async function getOrCreateSkillIds(skillNames: string[]): Promise<number[]> {
+async function getOrCreateSkillIds(skillNames: string[], supabase: any): Promise<number[]> {
   if (skillNames.length === 0) return [];
   
-  const supabase = createClient();
   const skillIds: number[] = [];
   
   for (const skillName of skillNames) {
@@ -57,11 +67,86 @@ async function getOrCreateSkillIds(skillNames: string[]): Promise<number[]> {
   return skillIds;
 }
 
+async function getOrCreateCertificateIds(certificateNames: string[], supabase: any): Promise<number[]> {
+  if (certificateNames.length === 0) return [];
+  
+  const certificateIds: number[] = [];
+  
+  for (const certificateName of certificateNames) {
+    const { data: existingCertificate } = await supabase
+      .from('certificates')
+      .select('certificate_id')
+      .eq('certificate_name', certificateName)
+      .maybeSingle();
+    
+    if (existingCertificate) {
+      certificateIds.push((existingCertificate as { certificate_id: number }).certificate_id);
+    } else {
+      const certificateData = { 
+        certificate_name: certificateName, 
+        is_software: false 
+      };
+      
+      const { data: newCertificate } = await supabase
+        .from('certificates')
+        .insert(certificateData as never)
+        .select('certificate_id')
+        .single();
+      
+      if (newCertificate) {
+        certificateIds.push((newCertificate as { certificate_id: number }).certificate_id);
+      }
+    }
+  }
+  
+  return certificateIds;
+}
+
+async function getOrCreateCompetitionIds(prizes: string[], supabase: any): Promise<number[]> {
+  if (prizes.length === 0) return [];
+  
+  const competitionIds: number[] = [];
+  
+  for (const prize of prizes) {
+    // 간단한 대회명 생성 (실제로는 더 정교한 로직이 필요할 수 있음)
+    const competitionName = `대회 - ${prize}`;
+    
+    const { data: existingCompetition } = await supabase
+      .from('competitions')
+      .select('competition_id')
+      .eq('competition_name', competitionName)
+      .maybeSingle();
+    
+    if (existingCompetition) {
+      competitionIds.push((existingCompetition as { competition_id: number }).competition_id);
+    } else {
+      const competitionData = { 
+        competition_name: competitionName,
+        competition_duration: null
+      };
+      
+      const { data: newCompetition } = await supabase
+        .from('competitions')
+        .insert(competitionData as never)
+        .select('competition_id')
+        .single();
+      
+      if (newCompetition) {
+        competitionIds.push((newCompetition as { competition_id: number }).competition_id);
+      }
+    }
+  }
+  
+  return competitionIds;
+}
+
 export interface ProfileSaveData {
   profile: Partial<Tables<'profile'>>;
   student: Partial<Tables<'student'>>;
   profileLinks: Omit<ProfileLinkData, 'profile_id'>[];
   profileSkills: string[];
+  studentCertificates: string[];
+  profileCompetitions: string[];
 }
 
 export function transformFormDataToSaveFormat(
@@ -73,7 +158,9 @@ export function transformFormDataToSaveFormat(
     profile: { owner: userId },
     student: {},
     profileLinks: [],
-    profileSkills: []
+    profileSkills: [],
+    studentCertificates: [],
+    profileCompetitions: []
   };
 
   const columnInfoMap = extractColumnInfoFromFormConfig(formConfig);
@@ -108,6 +195,22 @@ export function transformFormDataToSaveFormat(
       }
       if (fieldName === 'profile_skills') {
         result.profileSkills = Array.isArray(value) ? value : [];
+      }
+      if (fieldName === 'student_certificates') {
+        if (Array.isArray(value) && value.length > 0) {
+          result.studentCertificates = value.map((item: unknown) => {
+            const certItem = item as Array<{ value: string }>;
+            return String(certItem[0]?.value || '');
+          }).filter(cert => cert.trim() !== '');
+        }
+      }
+      if (fieldName === 'profile_competitions') {
+        if (Array.isArray(value) && value.length > 0) {
+          result.profileCompetitions = value.map((item: unknown) => {
+            const compItem = item as Array<{ value: string }>;
+            return String(compItem[0]?.value || '');
+          }).filter(comp => comp.trim() !== '');
+        }
       }
     }
   }
@@ -177,13 +280,38 @@ export async function saveProfileData(
     
     // 스킬 처리
     if (saveData.profileSkills.length > 0) {
-      const skillIds = await getOrCreateSkillIds(saveData.profileSkills);
+      const skillIds = await getOrCreateSkillIds(saveData.profileSkills, supabase);
       if (skillIds.length > 0) {
         const skillPayloads: ProfileSkillsData[] = skillIds.map(skillId => ({ 
           skill_id: skillId, 
           profile_id: profileId 
         }));
         await supabase.from('profile_skills').upsert(skillPayloads as never);
+      }
+    }
+
+    // 자격증 처리
+    if (saveData.studentCertificates.length > 0) {
+      const certificateIds = await getOrCreateCertificateIds(saveData.studentCertificates, supabase);
+      if (certificateIds.length > 0) {
+        const certificatePayloads: StudentCertificatesData[] = certificateIds.map(certId => ({ 
+          certificate_id: certId, 
+          student_id: userId 
+        }));
+        await supabase.from('student_certificates').upsert(certificatePayloads as never);
+      }
+    }
+
+    // 수상내역 처리
+    if (saveData.profileCompetitions.length > 0) {
+      const competitionIds = await getOrCreateCompetitionIds(saveData.profileCompetitions, supabase);
+      if (competitionIds.length > 0) {
+        const competitionPayloads: ProfileCompetitionsData[] = competitionIds.map((compId, index) => ({ 
+          competition_id: compId, 
+          prize: saveData.profileCompetitions[index],
+          profile_id: profileId 
+        }));
+        await supabase.from('profile_competitions').upsert(competitionPayloads as never);
       }
     }
 
