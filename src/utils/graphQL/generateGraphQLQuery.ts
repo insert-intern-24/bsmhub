@@ -5,6 +5,13 @@ export interface ColumnInfo {
   column: string;
 }
 
+export interface TableRelationship {
+  foreignKeyName: string;
+  columns: string[];
+  referencedRelation: string;
+  referencedColumns: string[];
+}
+
 /**
  * 컬럼 정보를 기반으로 GraphQL 쿼리를 자동 생성합니다.
  * @param columns 쿼리 생성을 위한 컬럼 정보 배열
@@ -52,8 +59,8 @@ export function generateGraphQLQuery(columns: ColumnInfo[]): string {
  * 테이블 관계 정보를 정의합니다.
  * database.types.ts에서 확인한 실제 관계 정보를 하드코딩
  */
-function extractTableRelationships(): Map<string, any[]> {
-  const relationships = new Map<string, any[]>();
+function extractTableRelationships(): Map<string, TableRelationship[]> {
+  const relationships = new Map<string, TableRelationship[]>();
   
   // chat_messages -> conversations 관계
   relationships.set('chat_messages', [
@@ -94,7 +101,7 @@ function extractTableRelationships(): Map<string, any[]> {
 function generateTableQuery(
   tableName: string, 
   tableColumns: Map<string, string[]>, 
-  relationships: Map<string, any[]>,
+  relationships: Map<string, TableRelationship[]>,
   processedTables: Set<string>
 ): string {
   if (processedTables.has(tableName)) return '';

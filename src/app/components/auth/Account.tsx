@@ -11,7 +11,9 @@ import { User } from '@supabase/supabase-js';
 import {
   checkProfileExistence,
   getProfileByStudentId,
+  getProfileWithDetails,
 } from '@/services/client/profile/profileApi';
+import { transformDataToInitialValues } from '@/utils/graphQL/form-config-utils';
 import Link from 'next/link';
 
 const Account = () => {
@@ -56,11 +58,21 @@ const Account = () => {
     window.addEventListener('message', handleMessage);
   };
 
-  const handleMakeProfile = () => {
+  const handleMakeProfile = async () => {
+    let initialValues = undefined;
+    
+    if (userProfile?.id) {
+      const profileData = await getProfileWithDetails(userProfile.id);
+      if (profileData) {
+        initialValues = transformDataToInitialValues(profileData, profileConfig);
+      }
+    }
+    
     openModal(
       <InputOfModal
         title="프로필 설정"
         config={profileConfig}
+        initialValues={initialValues}
         onSubmit={() => closeModal()}
       />,
     );

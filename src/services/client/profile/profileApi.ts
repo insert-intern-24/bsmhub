@@ -42,3 +42,25 @@ export const getProfileByStudentId = async (studentId: string) => {
 
   return data;
 };
+
+export const getProfileWithDetails = async (userId: string) => {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('profile')
+    .select(`
+      *,
+      profile_link(*),
+      profile_skills(*),
+      profile_competitions(*),
+      student(*)
+    `)
+    .eq('owner', userId)
+    .eq('is_team', false)
+    .maybeSingle();
+  
+  if (error) {
+    console.error('Error fetching profile with details:', error);
+    return null;
+  }
+  return data;
+};

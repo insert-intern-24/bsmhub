@@ -1,8 +1,5 @@
 import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
-import { 
-  extractColumnInfoFromFormConfig, 
-  getColumnInfoArray 
-} from './form-config-utils';
+import { getColumnInfoArray } from './form-config-utils';
 import { generateGraphQLQuery } from './generateGraphQLQuery';
 
 /**

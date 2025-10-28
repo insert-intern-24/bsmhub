@@ -20,24 +20,24 @@ export const profileConfig: FormConfig = {
         ]
       }
     },
-    {
-      fieldName: 'profiles.student_number',
-      label: '학번',
-      type: 'inputList',
-      required: true,
-      columnInfo: { table: 'student', column: 'student_number' },
-      inputConfig: {
-        onlyOne: true,
-        inputs: [
-          {
-            name: 'number',
-            type: 'text',
-            placeholder: '학번을 입력하세요',
-            required: true
-          }
-        ]
-      }
-    },
+    // {
+    //   fieldName: 'profiles.student_number',
+    //   label: '학번',
+    //   type: 'inputList',
+    //   required: true,
+    //   columnInfo: { table: 'student', column: 'student_number' },
+    //   inputConfig: {
+    //     onlyOne: true,
+    //     inputs: [
+    //       {
+    //         name: 'number',
+    //         type: 'text',
+    //         placeholder: '학번을 입력하세요',
+    //         required: true
+    //       }
+    //     ]
+    //   }
+    // },
     {
       fieldName: 'profiles.avatar_url',
       label: '프로필 이미지',
@@ -51,6 +51,7 @@ export const profileConfig: FormConfig = {
       label: '자기소개',
       type: 'inputList',
       required: false,
+      columnInfo: { table: 'profile', column: 'description' },
       inputConfig: {
         onlyOne: true,
         inputs: [
@@ -68,6 +69,7 @@ export const profileConfig: FormConfig = {
       label: '링크',
       type: 'inputList',
       required: false,
+      columnInfo: { table: 'profile_link', column: '*' },
       inputConfig: {
         onlyOne: false,
         inputs: [
@@ -91,6 +93,7 @@ export const profileConfig: FormConfig = {
       label: '자격증',
       type: 'inputList',
       required: false,
+      columnInfo: { table: 'profile_certification', column: '*' },
       inputConfig: {
         onlyOne: false,
         inputs: [
@@ -120,6 +123,7 @@ export const profileConfig: FormConfig = {
       label: '수상이력',
       type: 'inputList',
       required: false,
+      columnInfo: { table: 'profile_competitions', column: '*' },
       inputConfig: {
         onlyOne: false,
         inputs: [
@@ -149,6 +153,7 @@ export const profileConfig: FormConfig = {
       label: '기술스택',
       type: 'skillTag',
       required: false,
+      columnInfo: { table: 'profile_skills', column: '*' },
       white: false
     }
   ]

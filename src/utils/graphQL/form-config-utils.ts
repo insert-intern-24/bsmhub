@@ -46,20 +46,8 @@ export function getColumnInfoArray(formConfig: FormConfig): ColumnInfo[] {
  */
 /**
  * DB 데이터를 FormConfig에 따라 모달 초기값 형식으로 변환합니다.
- * 
- * 데이터 구조:
- * - 단일 값 필드 (profiles.full_name): 최상위 데이터에서 직접 추출
- * - 관계 테이블 필드 (profile_links): 배열 데이터에서 각 항목 처리
- * 
- * 변환 규칙:
- * - inputList (onlyOne=true): 단일 값을 [[{ value: string }]] 형식으로 변환
- * - inputList (onlyOne=false): 배열을 각 항목별로 [[{ value: string }]] 형식으로 변환
- * - skillTag: 배열에서 skill_name 또는 name 필드를 string[]로 변환
- * - picture: File 타입으로 변환
- * - checkbox: boolean으로 변환
- * 
- * @param data DB에서 조회한 원본 데이터 (Supabase join 결과)
- * @param formConfig 폼 설정 객체 (필드별 타입과 컬럼 정보 포함)
+ * @param data DB에서 조회한 원본 데이터
+ * @param formConfig 폼 설정 객체
  * @returns 모달 초기값 형식의 데이터
  */
 export function transformDataToInitialValues(
@@ -78,17 +66,13 @@ export function transformDataToInitialValues(
       let value: unknown = null;
       
       if (columnInfo) {
-        // 데이터 구조 자동 감지: 최상위 데이터인지 배열인지 확인
-        const tableData = data[columnInfo.table];
-        const isTopLevelData = !Array.isArray(tableData);
-        
-        if (isTopLevelData) {
-          // 최상위 데이터에서 직접 컬럼 값 추출
-          value = (tableData as Record<string, unknown>)?.[columnInfo.column];
+        // profile 또는 profiles 테이블은 최상위 데이터
+        if (columnInfo.table === 'profile' || columnInfo.table === 'profiles') {
+          value = data[columnInfo.column];
         } else {
-          // 배열 데이터에서 첫 번째 항목의 컬럼 값 추출
-          const arrayData = tableData as unknown[];
-          value = (arrayData as Record<string, unknown>[])?.[0]?.[columnInfo.column];
+          // 다른 테이블은 배열의 첫 항목
+          const tableData = data[columnInfo.table] as Record<string, unknown>[];
+          value = tableData?.[0]?.[columnInfo.column];
         }
       }
       
@@ -105,24 +89,17 @@ export function transformDataToInitialValues(
     } 
     // 관계 테이블 필드 (profile_links 형식)
     else {
-      const tableData = data[fieldName] as unknown[];
+      const tableData = data[fieldName] as Record<string, unknown>[];
       
       if (field.type === 'skillTag') {
-        // skillTag: 배열에서 skill_name 또는 name 필드 추출
-        result[fieldName] = (tableData as Record<string, unknown>[])?.map(item => {
-          const skillItem = item as Record<string, unknown>;
-          return String(skillItem.skill_name || skillItem.name || '');
-        }) || [];
+        // skillTag: 배열에서 skill_name 추출
+        result[fieldName] = tableData?.map(item => String(item.skill_name || item.name || '')) || [];
       } else if (field.type === 'inputList') {
         // inputList: inputConfig.inputs의 name에 맞춰 변환
-        result[fieldName] = (tableData as Record<string, unknown>[])?.map(item => 
-          field.inputConfig.inputs.map(input => {
-            const inputItem = item as Record<string, unknown>;
-            const fieldName = input.name || '';
-            return {
-              value: String(inputItem[fieldName] || '')
-            };
-          })
+        result[fieldName] = tableData?.map(item => 
+          field.inputConfig.inputs.map(input => ({
+            value: String(item[input.name || ''] || '')
+          }))
         ) || [];
       } else {
         result[fieldName] = [];

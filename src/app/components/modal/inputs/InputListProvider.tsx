@@ -55,7 +55,7 @@ const InputListProvider = ({
     value: ''
   })) as MultiInputItem[]
 
-  const [{ inputs, activeIndex }, dispatch] = useInputList(initialValue ?? initialConfig)
+  const [{ inputs, activeIndex }, dispatch] = useInputList(initialValue || initialConfig)
 
   // inputs가 변경될 때마다 콜백 호출
   React.useEffect(() => {
