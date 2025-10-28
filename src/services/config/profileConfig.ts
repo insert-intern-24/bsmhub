@@ -3,7 +3,7 @@ import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
 export const profileConfig: FormConfig = {
   fields: [
     {
-      fieldName: 'profiles.full_name',
+      fieldName: 'profile_full_name',
       label: '이름',
       type: 'inputList',
       required: true,
@@ -15,13 +15,13 @@ export const profileConfig: FormConfig = {
             name: 'name',
             type: 'text',
             placeholder: '이름을 입력하세요',
-            required: true
-          }
-        ]
-      }
+            required: true,
+          },
+        ],
+      },
     },
     // {
-    //   fieldName: 'profiles.student_number',
+    //   fieldName: 'profile_student_number',
     //   label: '학번',
     //   type: 'inputList',
     //   required: true,
@@ -39,15 +39,15 @@ export const profileConfig: FormConfig = {
     //   }
     // },
     {
-      fieldName: 'profiles.avatar_url',
+      fieldName: 'profile_avatar_url',
       label: '프로필 이미지',
       type: 'picture',
       required: false,
       columnInfo: { table: 'profile', column: 'profile_image' },
-      aspectRatio: '1:1'
+      aspectRatio: '1:1',
     },
     {
-      fieldName: 'profiles.bio',
+      fieldName: 'profile_description',
       label: '자기소개',
       type: 'inputList',
       required: false,
@@ -59,10 +59,10 @@ export const profileConfig: FormConfig = {
             name: 'description',
             type: 'text',
             placeholder: '자기소개를 입력하세요',
-            required: false
-          }
-        ]
-      }
+            required: false,
+          },
+        ],
+      },
     },
     {
       fieldName: 'profile_link',
@@ -77,16 +77,16 @@ export const profileConfig: FormConfig = {
             name: 'link',
             type: 'text',
             placeholder: '링크 URL을 입력하세요',
-            required: true
+            required: true,
           },
           {
             name: 'alt',
             type: 'text',
             placeholder: '링크 제목을 입력하세요',
-            required: true
-          }
-        ]
-      }
+            required: true,
+          },
+        ],
+      },
     },
     {
       fieldName: 'student_certificates',
@@ -101,10 +101,10 @@ export const profileConfig: FormConfig = {
             name: 'certificates.certificate_name',
             type: 'text',
             placeholder: '자격증명을 입력하세요',
-            required: true
-          }
-        ]
-      }
+            required: true,
+          },
+        ],
+      },
     },
     {
       fieldName: 'profile_competitions',
@@ -119,10 +119,10 @@ export const profileConfig: FormConfig = {
             name: 'prize',
             type: 'text',
             placeholder: '수상내역을 입력하세요',
-            required: true
-          }
-        ]
-      }
+            required: true,
+          },
+        ],
+      },
     },
     {
       fieldName: 'profile_skills',
@@ -130,7 +130,7 @@ export const profileConfig: FormConfig = {
       type: 'skillTag',
       required: false,
       columnInfo: { table: 'profile_skills', column: '*' },
-      white: false
-    }
-  ]
+      white: false,
+    },
+  ],
 };
