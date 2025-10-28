@@ -44,7 +44,7 @@ export const useInputList = (initialConfig?: MultiInputItem[] | MultiInputItem[]
           const removedIndex = draft.activeIndex!
           draft.inputs.splice(removedIndex, 1)
         }
-        draft.activeIndex = action.index % draft.inputs.length
+        draft.activeIndex = action.index < 0 ? null : action.index % draft.inputs.length
         break
       }
       
