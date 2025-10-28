@@ -14,6 +14,8 @@ import {
   getProfileWithDetails,
 } from '@/services/client/profile/profileApi';
 import { transformDataToInitialValues } from '@/utils/graphQL/form-config-utils';
+import { transformFormDataToSaveFormat, saveProfileData } from '@/services/client/profile/profileSaveService';
+import { MultiInputItem } from '@/utils/hook/useInputList';
 import Link from 'next/link';
 
 const Account = () => {
@@ -68,12 +70,43 @@ const Account = () => {
       }
     }
     
+    const handleProfileSubmit = async (formData: Record<string, MultiInputItem[][] | string[] | boolean | File | null>) => {
+      if (!userProfile?.id) {
+        console.error('User ID not available');
+        return;
+      }
+
+      try {
+        // 폼 데이터를 저장 형식으로 변환
+        const saveData = transformFormDataToSaveFormat(formData, profileConfig, userProfile.id);
+        
+        // 데이터베이스에 저장
+        const result = await saveProfileData(saveData, userProfile.id);
+        
+        if (result.success) {
+          console.log('프로필이 성공적으로 저장되었습니다.');
+          closeModal();
+          // 프로필 링크 업데이트를 위해 다시 fetch
+          const profile = await getProfileByStudentId(userProfile.id);
+          if (profile) {
+            setProfileLink(`/portfolio/${profile.profile_name}`);
+          }
+        } else {
+          console.error('프로필 저장 실패:', result.error);
+          alert(`저장 중 오류가 발생했습니다: ${result.error}`);
+        }
+      } catch (error) {
+        console.error('프로필 저장 중 예상치 못한 오류:', error);
+        alert('저장 중 예상치 못한 오류가 발생했습니다.');
+      }
+    };
+    
     openModal(
       <InputOfModal
         title="프로필 설정"
         config={profileConfig}
         initialValues={initialValues}
-        onSubmit={() => closeModal()}
+        onSubmit={handleProfileSubmit}
       />,
     );
   };

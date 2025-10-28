@@ -1,26 +1,23 @@
-import { FormConfig, ColumnInfo } from '@/app/components/modal/inputs/types/inputTypes';
+import { FormConfig, ColumnInfo, FormFieldConfig } from '@/app/components/modal/inputs/types/inputTypes';
 import { MultiInputItem } from '@/utils/hook/useInputList';
+
+// 타입 정의
+type InitialValue = MultiInputItem[][] | string[] | boolean | File | null;
+type InitialValuesMap = Record<string, InitialValue>;
 
 /**
  * FormConfig에서 각 필드의 ColumnInfo를 추출하여 매칭 객체를 생성합니다.
- * @param formConfig 폼 설정 객체
- * @returns 필드명을 키로 하고 ColumnInfo를 값으로 하는 객체
  */
 export function extractColumnInfoFromFormConfig(formConfig: FormConfig): Record<string, ColumnInfo> {
   const columnInfoMap: Record<string, ColumnInfo> = {};
   
   for (const field of formConfig.fields) {
-    // columnInfo가 명시적으로 설정된 경우
     if (field.columnInfo) {
       columnInfoMap[field.fieldName] = field.columnInfo;
     } else {
-      // fieldName에서 테이블과 컬럼 정보를 추출
       const [table, column] = field.fieldName.split('.');
       if (table && column) {
-        columnInfoMap[field.fieldName] = {
-          table,
-          column
-        };
+        columnInfoMap[field.fieldName] = { table, column };
       }
     }
   }
@@ -30,82 +27,144 @@ export function extractColumnInfoFromFormConfig(formConfig: FormConfig): Record<
 
 /**
  * FormConfig에서 ColumnInfo 배열을 추출합니다.
- * @param formConfig 폼 설정 객체
- * @returns ColumnInfo 배열
  */
 export function getColumnInfoArray(formConfig: FormConfig): ColumnInfo[] {
-  const columnInfoMap = extractColumnInfoFromFormConfig(formConfig);
-  return Object.values(columnInfoMap);
+  return Object.values(extractColumnInfoFromFormConfig(formConfig));
 }
 
 /**
  * 특정 필드명에 해당하는 ColumnInfo를 가져옵니다.
- * @param formConfig 폼 설정 객체
- * @param fieldName 필드명
- * @returns 해당 필드의 ColumnInfo 또는 undefined
  */
+export function getColumnInfoByFieldName(
+  formConfig: FormConfig, 
+  fieldName: string
+): ColumnInfo | undefined {
+  const columnInfoMap = extractColumnInfoFromFormConfig(formConfig);
+  return columnInfoMap[fieldName];
+}
+
+/**
+ * 단일 값 필드의 데이터를 추출합니다.
+ */
+function extractSingleValue(
+  data: Record<string, unknown>,
+  fieldName: string,
+  columnInfo?: ColumnInfo
+): unknown {
+  if (!columnInfo) return null;
+  
+  // profile 또는 profiles 테이블은 최상위 데이터
+  if (columnInfo.table === 'profile' || columnInfo.table === 'profiles') {
+    return data[columnInfo.column];
+  }
+  
+  // 다른 테이블은 배열의 첫 항목
+  const tableData = data[columnInfo.table] as Record<string, unknown>[] | undefined;
+  return tableData?.[0]?.[columnInfo.column] ?? null;
+}
+
+/**
+ * SkillTag 필드의 데이터를 변환합니다.
+ */
+function transformSkillTagData(tableData: Record<string, unknown>[] | undefined): string[] {
+  if (!tableData) return [];
+  
+  return tableData
+    .map(item => {
+      // JOIN된 구조에서 skill_name 추출
+      const skillName = (item as any).skills?.skill_name || 
+                       (item as any).skill_name || 
+                       (item as any).name || '';
+      return String(skillName);
+    })
+    .filter(name => name.trim() !== '');
+}
+
+/**
+ * InputList 필드의 데이터를 변환합니다.
+ */
+function transformInputListData(
+  tableData: Record<string, unknown>[] | undefined,
+  field: Extract<FormFieldConfig, { type: 'inputList' }>
+): MultiInputItem[][] {
+  if (!tableData) return [];
+  
+  return tableData.map(item => 
+    field.inputConfig.inputs.map(input => ({
+      value: String(item[input.name || ''] || '')
+    }))
+  );
+}
+
+/**
+ * 단일 값 필드를 변환합니다.
+ */
+function transformSingleValueField(
+  field: FormFieldConfig,
+  value: unknown
+): InitialValue {
+  switch (field.type) {
+    case 'inputList':
+      if (field.inputConfig.onlyOne) {
+        return value ? [[{ value: String(value) }]] : [];
+      }
+      return [];
+      
+    case 'picture':
+      return (value as File | null) || null;
+      
+    case 'checkbox':
+      return Boolean(value);
+      
+    default:
+      return [];
+  }
+}
+
+/**
+ * 관계 테이블 필드를 변환합니다.
+ */
+function transformRelationField(
+  field: FormFieldConfig,
+  tableData: Record<string, unknown>[] | undefined
+): InitialValue {
+  switch (field.type) {
+    case 'skillTag':
+      return transformSkillTagData(tableData);
+      
+    case 'inputList':
+      return transformInputListData(tableData, field);
+      
+    default:
+      return [];
+  }
+}
+
 /**
  * DB 데이터를 FormConfig에 따라 모달 초기값 형식으로 변환합니다.
- * @param data DB에서 조회한 원본 데이터
- * @param formConfig 폼 설정 객체
- * @returns 모달 초기값 형식의 데이터
  */
 export function transformDataToInitialValues(
   data: Record<string, unknown>,
   formConfig: FormConfig
-): Record<string, MultiInputItem[][] | string[] | boolean | File | null> {
-  
-  const result: Record<string, MultiInputItem[][] | string[] | boolean | File | null> = {};
+): InitialValuesMap {
+  const result: InitialValuesMap = {};
   
   for (const field of formConfig.fields) {
-    const fieldName = field.fieldName;
-    const columnInfo = field.columnInfo;
+    const { fieldName, columnInfo } = field;
     
     // 단일 값 필드 (profiles.full_name 형식)
     if (fieldName.includes('.')) {
-      let value: unknown = null;
-      
-      if (columnInfo) {
-        // profile 또는 profiles 테이블은 최상위 데이터
-        if (columnInfo.table === 'profile' || columnInfo.table === 'profiles') {
-          value = data[columnInfo.column];
-        } else {
-          // 다른 테이블은 배열의 첫 항목
-          const tableData = data[columnInfo.table] as Record<string, unknown>[];
-          value = tableData?.[0]?.[columnInfo.column];
-        }
-      }
-      
-      // 타입별 변환
-      if (field.type === 'inputList' && field.inputConfig.onlyOne) {
-        result[fieldName] = value ? [[{ value: String(value) }]] : [];
-      } else if (field.type === 'picture') {
-        result[fieldName] = (value as File | null) || null;
-      } else if (field.type === 'checkbox') {
-        result[fieldName] = Boolean(value);
-      } else {
-        result[fieldName] = [];
-      }
+      const value = extractSingleValue(data, fieldName, columnInfo);
+      result[fieldName] = transformSingleValueField(field, value);
     } 
     // 관계 테이블 필드 (profile_links 형식)
     else {
-      const tableData = data[fieldName] as Record<string, unknown>[];
-      
-      if (field.type === 'skillTag') {
-        // skillTag: 배열에서 skill_name 추출
-        result[fieldName] = tableData?.map(item => String(item.skill_name || item.name || '')) || [];
-      } else if (field.type === 'inputList') {
-        // inputList: inputConfig.inputs의 name에 맞춰 변환
-        result[fieldName] = tableData?.map(item => 
-          field.inputConfig.inputs.map(input => ({
-            value: String(item[input.name || ''] || '')
-          }))
-        ) || [];
-      } else {
-        result[fieldName] = [];
-      }
+      const tableData = data[fieldName] as Record<string, unknown>[] | undefined;
+      result[fieldName] = transformRelationField(field, tableData);
     }
   }
+
+  console.log('transformDataToInitialValues result:', result);
   
   return result;
 }

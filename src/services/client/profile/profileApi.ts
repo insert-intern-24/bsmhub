@@ -45,14 +45,29 @@ export const getProfileByStudentId = async (studentId: string) => {
 
 export const getProfileWithDetails = async (userId: string) => {
   const supabase = createClient();
+  
+  // 현재 사용자 정보 확인
+  const { data: { user } } = await supabase.auth.getUser();
+  
   const { data, error } = await supabase
     .from('profile')
     .select(`
       *,
       profile_link(*),
-      profile_skills(*),
+      profile_skills(
+        skill_id,
+        skills(skill_name)
+      ),
       profile_competitions(*),
-      student(*)
+      student(*,
+        student_certificates(
+          certificate_id,
+          certificates(
+            certificate_name,
+            is_software
+          )
+        )
+      )
     `)
     .eq('owner', userId)
     .eq('is_team', false)
@@ -62,5 +77,6 @@ export const getProfileWithDetails = async (userId: string) => {
     console.error('Error fetching profile with details:', error);
     return null;
   }
+  
   return data;
 };

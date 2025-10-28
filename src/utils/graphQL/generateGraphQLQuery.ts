@@ -1,5 +1,3 @@
-import { Database } from '../supabase/database.types';
-
 export interface ColumnInfo {
   table: string;
   column: string;

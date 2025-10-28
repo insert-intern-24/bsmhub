@@ -19,21 +19,18 @@ const SkillTagProvider = ({
   readOnly = false,
   initialTags = []
 }: SkillTagProviderProps) => {
-  const [{ inputs, activeIndex }, dispatch] = useInputList([{ value: '' }]);
+  const [{ inputs, activeIndex }, dispatch] = useInputList(initialTags.length > 0 ? initialTags.map(tag => [{ value: tag }]) : [{ value: '' }]);
   
-  // 초기 태그 설정
+  // 초기 태그가 설정된 경우 activeIndex를 null로 유지
   React.useEffect(() => {
-    if (initialTags.length > 0) {
-      initialTags.forEach((tag, index) => {
-        if (index === 0) {
-          dispatch({ type: 'UPDATE_VALUE', index: 0, subIndex: 0, value: tag });
-        } else {
-          dispatch({ type: 'ADD_INPUT', multiInputConfig: [{ value: tag }] });
-        }
-      });
+    if (initialTags.length > 0 && activeIndex !== null) {
+      // 초기 태그가 있는 경우 편집 모드 해제
+      setTimeout(() => {
+        dispatch({ type: 'SET_ACTIVE', index: -1 });
+      }, 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [initialTags.length]);
 
   // 태그 값 추출
   const getValue = (index: number) => String(inputs[index]?.[0]?.value || '');

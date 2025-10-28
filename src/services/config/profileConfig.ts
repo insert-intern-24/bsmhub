@@ -65,7 +65,7 @@ export const profileConfig: FormConfig = {
       }
     },
     {
-      fieldName: 'profile_links',
+      fieldName: 'profile_link',
       label: '링크',
       type: 'inputList',
       required: false,
@@ -74,13 +74,13 @@ export const profileConfig: FormConfig = {
         onlyOne: false,
         inputs: [
           {
-            name: 'url',
+            name: 'link',
             type: 'text',
             placeholder: '링크 URL을 입력하세요',
             required: true
           },
           {
-            name: 'title',
+            name: 'alt',
             type: 'text',
             placeholder: '링크 제목을 입력하세요',
             required: true
@@ -93,7 +93,7 @@ export const profileConfig: FormConfig = {
       label: '자격증',
       type: 'inputList',
       required: false,
-      columnInfo: { table: 'profile_certification', column: '*' },
+      columnInfo: { table: 'profile_certification', column: 'certificate_name' },
       inputConfig: {
         onlyOne: false,
         inputs: [
@@ -102,19 +102,19 @@ export const profileConfig: FormConfig = {
             type: 'text',
             placeholder: '자격증명을 입력하세요',
             required: true
-          },
-          {
-            name: 'issuer',
-            type: 'text',
-            placeholder: '발급기관을 입력하세요',
-            required: true
-          },
-          {
-            name: 'date',
-            type: 'text',
-            placeholder: '취득일 (YYYY-MM-DD)',
-            required: true
           }
+          // {
+          //   name: 'issuer',
+          //   type: 'text',
+          //   placeholder: '발급기관을 입력하세요',
+          //   required: true
+          // },
+          // {
+          //   name: 'date',
+          //   type: 'text',
+          //   placeholder: '취득일 (YYYY-MM-DD)',
+          //   required: true
+          // }
         ]
       }
     },
