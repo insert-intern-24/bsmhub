@@ -7,32 +7,42 @@ import {
   PLAY_BUTTON_SHEEN_STYLE,
   PLAY_BUTTON_TOP_GLOW_STYLE,
 } from './styles';
-import { IconPlayerPlayFilled, IconPlaylistAdd } from '@tabler/icons-react';
+import {
+  IconPencil,
+  IconPlayerPlayFilled,
+  IconPlaylistAdd,
+} from '@tabler/icons-react';
 
 interface ProjectSummarySectionProps {
   title: string;
   description: string;
+  hasEditPermission?: boolean;
 }
 
 export const ProjectSummarySection = ({
   title,
   description,
+  hasEditPermission,
 }: ProjectSummarySectionProps) => (
   <section className="flex-col w-full gap-[0.375rem]">
     <TitleEN>{title}</TitleEN>
     <Body className="text-detail">{description}</Body>
-    <ProjectActions />
+    <ProjectActions hasEditPermission={hasEditPermission} />
   </section>
 );
 
-const ProjectActions = () => (
+const ProjectActions = ({
+  hasEditPermission,
+}: {
+  hasEditPermission?: boolean;
+}) => (
   <div className="flex w-full gap-1">
-    <PlayButton />
+    <PlayButton hasEditPermission={hasEditPermission} />
     <AddToPlaylistButton />
   </div>
 );
 
-const PlayButton = () => (
+const PlayButton = ({ hasEditPermission }: { hasEditPermission?: boolean }) => (
   <button className="relative flex-1 cursor-pointer">
     <div
       className="relative flex h-10 items-center justify-center gap-1 overflow-hidden rounded-3xl z-10"
@@ -60,8 +70,17 @@ const PlayButton = () => (
         style={PLAY_BUTTON_BOTTOM_GLOW_STYLE}
       />
       <div className="z-10 flex items-center justify-center gap-1">
-        <IconPlayerPlayFilled size={(18 * 12) / 16} color="white" />
-        <Body2 className="text-white">Play</Body2>
+        {hasEditPermission ? (
+          <>
+            <IconPencil size={(18 * 12) / 16} color="white" />
+            <Body2 className="text-white">Edit</Body2>
+          </>
+        ) : (
+          <>
+            <IconPlayerPlayFilled size={(18 * 12) / 16} color="white" />
+            <Body2 className="text-white">Play</Body2>
+          </>
+        )}
       </div>
     </div>
   </button>

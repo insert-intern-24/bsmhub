@@ -1,13 +1,13 @@
 import React from 'react';
+import CollectClient from '@/app/components/collect/CollectClient';
 import { getProjects } from '@/services/server/project/getProjects';
-import ProjectClient from './Project';
 
 export default async function ProjectPage() {
-  const initialProjects = await getProjects();
+  const projects = await getProjects();
 
   return (
     <div className="container mx-auto pt-8">
-      <ProjectClient initialProjects={initialProjects} />
+      <CollectClient initialProjects={projects} type="project" />
     </div>
   );
 }

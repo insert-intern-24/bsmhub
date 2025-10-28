@@ -1,31 +1,22 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import type { ProjectDetailViewModel } from './types';
 import { IconPencil, IconCheck, IconX } from '@tabler/icons-react';
 import 'lexical-rich-text-editor/lexical-rich-text-editor.css';
 import { RichTextEditor } from 'lexical-rich-text-editor';
 import DOMPurify from 'isomorphic-dompurify';
 import projectContentEditHandler from '../services/content-edit-handler';
-import editProjectPermissionChecker from '../services/editProjectPermissionChecker';
 
 interface ProjectMainContentProps {
   project: ProjectDetailViewModel;
+  hasEditPermission?: boolean;
 }
 
-const ProjectMainContent = ({ project }: ProjectMainContentProps) => {
+const ProjectMainContent = ({ project, hasEditPermission }: ProjectMainContentProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(project.detailDescription);
-  const [hasEditPermission, setHasEditPermission] = useState(false);
-
-  useEffect(() => {
-    const checkEditPermission = async () => {
-      const hasPermission = await editProjectPermissionChecker(project.id);
-      setHasEditPermission(hasPermission);
-    };
-
-    checkEditPermission();
-  }, [project.id]);
+  
 
   // HTML을 정제하여 XSS 공격 방지
   const sanitizedContent = useMemo(() => {
