@@ -95,7 +95,7 @@ export default function CollectClient({
 
   return (
     <div className="flex flex-col items-start gap-6 flex-1 shrink-0">
-      <div className="w-full max-w-[25rem]">
+      <div className="w-full max-w-[25rem] mobile:max-w-full">
         <Inputs
           type="text"
           icon="search"
