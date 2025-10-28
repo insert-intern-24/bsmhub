@@ -26,16 +26,17 @@ const Card = ({
   isTeam,
   authors,
 }: CardProps) => {
+  const href = title
+    ? `/${converIsTeamToUrl(isTeam)}/${ownerName}/${title}`
+    : `/${converIsTeamToUrl(isTeam)}/${ownerName}`;
+
   return (
-    <Link
-      href={`/${converIsTeamToUrl(isTeam)}/${ownerName}/${title}`}
-      className="cursor-pointer"
-    >
+    <Link href={href} className="cursor-pointer">
       <div className="w-full mobile:max-w-full max-w-[26rem] flex-col gap-[0.375rem]">
         <figure className="relative h-60 mobile:h-80 aspect-video rounded-[0.25rem] overflow-hidden">
           <Image
             src={projectImage}
-            alt={`${title} 프로젝트 이미지`}
+            alt={`${title || ownerName} 프로젝트 이미지`}
             fill
             className="object-cover"
           />
