@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { converIsTeamToUrl } from '@/utils/convertIsTeamToUrl';
 
 export interface CardProps {
-  id: number | string;
-  title: string;
+  id: number;
+  title?: string;
   description: string;
   projectImage: string;
   ownerName: string;

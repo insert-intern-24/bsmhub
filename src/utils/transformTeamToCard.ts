@@ -9,9 +9,9 @@ import { convertFromDatabaseImageURL } from './supabase/imageHostConverter';
  */
 export function transformTeamToCard(team: TeamData): CardProps {
   return {
-    id: team.profile_name, // profile_name을 id로 사용하여 중복 방지
-    title: team.profile_name,
-    description: team.description || '',
+    id: parseInt(team.profile_id, 10),
+    title: undefined,
+    description: team.profile_name || '',
     projectImage: team.profile_image
       ? convertFromDatabaseImageURL(team.profile_image)
       : '',

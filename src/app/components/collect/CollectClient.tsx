@@ -33,7 +33,9 @@ export default function CollectClient({
       if (searchTerm) {
         filtered = filtered.filter(
           (project) =>
-            project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (project.title ?? '')
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
             project.description
               .toLowerCase()
               .includes(searchTerm.toLowerCase()) ||
@@ -66,7 +68,9 @@ export default function CollectClient({
     if (searchTerm) {
       filtered = filtered.filter(
         (project) =>
-          project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (project.title ?? '')
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
           project.description
             .toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
