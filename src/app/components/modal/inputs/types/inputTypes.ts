@@ -46,7 +46,7 @@ export type LabelInputsProps = BaseInputProps & {
 interface BaseFieldConfig {
   label: string;
   required?: boolean;
-  fieldName: string;
+  fieldName: string; // "테이블명.속성" 형식으로 데이터베이스 컬럼 매핑
 }
 
 // InputList 타입
