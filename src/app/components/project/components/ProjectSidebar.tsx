@@ -13,9 +13,13 @@ import ProfileIcon from '../../card/portfolio/ProfileIcon';
 
 interface ProjectSidebarProps {
   project: ProjectDetailViewModel;
+  hasEditPermission?: boolean;
 }
 
-const ProjectSidebar = ({ project }: ProjectSidebarProps) => {
+const ProjectSidebar = ({
+  project,
+  hasEditPermission,
+}: ProjectSidebarProps) => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [shouldFoldSidebar, setShouldFoldSidebar] = useState(false);
   const sidebarRef = useRef<HTMLElement>(null);
@@ -52,6 +56,7 @@ const ProjectSidebar = ({ project }: ProjectSidebarProps) => {
         <ProjectSummarySection
           title={project.title}
           description={project.introduction}
+          hasEditPermission={hasEditPermission}
         />
 
         {/* 링크, 기술스택, 기여자 컨테이너 */}
