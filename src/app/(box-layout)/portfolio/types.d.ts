@@ -89,9 +89,7 @@ export type ProfileType = Pick<
   Tables<'profile'>,
   'profile_id' | 'profile_name' | 'description' | 'profile_image'
 > & {
-  profile_permission: {
-    student: Pick<Tables<'student'>, 'student_number' | 'name'> & {
-      departments: Pick<Tables<'departments'>, 'department_name'>;
-    };
-  }[];
+  student: (Pick<Tables<'student'>, 'name' | 'student_number'> & {
+    departments: Pick<Tables<'departments'>, 'department_name'>;
+  })[];
 };
