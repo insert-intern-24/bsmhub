@@ -91,7 +91,11 @@ export function useFormConfigData(
 
       await Promise.all(
         formConfig.fields.map(async (field) => {
-          if (field.type === 'picture' && !field.multiple) {
+          if (
+            field.type === 'picture' &&
+            !field.multiple &&
+            formData[field.fieldName] instanceof File
+          ) {
             formData[field.fieldName] = await uploadProfileImage(
               formData[field.fieldName] as File,
               field.bucket,
