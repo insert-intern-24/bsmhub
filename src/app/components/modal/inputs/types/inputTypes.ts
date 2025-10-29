@@ -74,6 +74,18 @@ interface BaseFieldConfig {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     handler?: (...args: any[]) => any; // 핸들러 함수 자체
     requiresIdLookup?: boolean; // ID 조회/생성이 필요한지 여부
+    dataTransformer?: (data: unknown[]) => unknown[]; // 데이터 변환 함수
+    deleteFilterGenerator?: (
+      item: Record<string, unknown>,
+      profileId: string,
+    ) => Record<string, unknown>; // 삭제 필터 생성 함수
+    changeCalculator?: (
+      newData: unknown[],
+      existingData: Record<string, unknown>[],
+    ) => {
+      toDelete: Record<string, unknown>[];
+      toInsert: Record<string, unknown>[];
+    }; // 변경사항 계산 함수
   };
 }
 
