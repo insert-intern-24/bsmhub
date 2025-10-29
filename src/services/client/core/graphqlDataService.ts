@@ -10,6 +10,10 @@ import {
   graphqlToFormData,
   formDataToGraphQL,
 } from '@/utils/graphQL/dataTransformer';
+import {
+  updateProfileSkills,
+  updateStudentCertificates,
+} from '@/utils/graphQL/relationTableHelper';
 
 /**
  * 작업 결과 타입
@@ -25,6 +29,8 @@ export interface Result {
  * 사용자 정의 쿼리 실행 + 데이터 매핑만 수행
  */
 export class GraphQLDataService {
+  private currentProfileId: string | null = null; // 현재 로드된 프로필 ID 저장
+
   /**
    * 데이터 로드
    * @param formConfig - 폼 설정 (사용자 정의 쿼리 포함)
@@ -33,8 +39,10 @@ export class GraphQLDataService {
    */
   async loadData(
     formConfig: FormConfig,
-    variables?: Record<string, any>
-  ): Promise<Record<string, MultiInputItem[][] | string[] | boolean | File | null>> {
+    variables?: Record<string, any>,
+  ): Promise<
+    Record<string, MultiInputItem[][] | string[] | boolean | File | null>
+  > {
     try {
       const query = buildReadQuery(formConfig);
       const response = await executeQuery(query, variables);
@@ -43,7 +51,11 @@ export class GraphQLDataService {
 
       // 응답에 여러 컬렉션이 있을 수 있음 (profileCollection, studentCollection 등)
       // 모든 컬렉션을 병합하여 하나의 데이터 객체로 만듦
-      const collectionKeys = Object.keys(response).filter(key => key.endsWith('Collection'));
+      const collectionKeys = Object.keys(response).filter((key) =>
+        key.endsWith('Collection'),
+      );
+
+      console.log('Collection Keys found:', collectionKeys);
 
       if (collectionKeys.length === 0) {
         console.warn('No collection found in response');
@@ -54,6 +66,11 @@ export class GraphQLDataService {
       const mainCollectionKey = collectionKeys[0];
       const mainCollection = response[mainCollectionKey];
 
+      console.log(
+        `Main Collection (${mainCollectionKey}):`,
+        JSON.stringify(mainCollection, null, 2),
+      );
+
       if (!mainCollection?.edges || mainCollection.edges.length === 0) {
         console.warn('No data in main collection');
         return this.getEmptyFormData(formConfig);
@@ -62,15 +79,34 @@ export class GraphQLDataService {
       // 메인 데이터 노드
       const mainNode = mainCollection.edges[0].node;
 
+      // profile_id 저장 (업데이트 시 사용)
+      if (mainNode.profile_id) {
+        this.currentProfileId = mainNode.profile_id;
+        console.log('Saved profile_id for updates:', this.currentProfileId);
+      }
+
       // 다른 컬렉션들의 데이터를 메인 노드에 병합
       for (let i = 1; i < collectionKeys.length; i++) {
         const additionalKey = collectionKeys[i];
         const additionalCollection = response[additionalKey];
 
-        if (additionalCollection?.edges && additionalCollection.edges.length > 0) {
+        if (
+          additionalCollection?.edges &&
+          additionalCollection.edges.length > 0
+        ) {
           const additionalNode = additionalCollection.edges[0].node;
-          // 추가 컬렉션의 데이터를 메인 노드에 병합
-          Object.assign(mainNode, additionalNode);
+
+          // 중첩된 컬렉션들을 재귀적으로 병합
+          // 예: studentCollection 내부의 student_certificatesCollection
+          Object.keys(additionalNode).forEach((key) => {
+            if (key.endsWith('Collection')) {
+              // 컬렉션 데이터를 메인 노드에 추가
+              mainNode[key] = additionalNode[key];
+            } else if (!mainNode[key]) {
+              // 일반 필드는 기존 값이 없을 때만 추가
+              mainNode[key] = additionalNode[key];
+            }
+          });
         }
       }
 
@@ -78,7 +114,7 @@ export class GraphQLDataService {
 
       // edges 배열을 다시 구성
       const mergedCollectionData = {
-        edges: [{ node: mainNode }]
+        edges: [{ node: mainNode }],
       };
 
       // GraphQL 응답을 Form 데이터로 변환 (매핑)
@@ -104,21 +140,22 @@ export class GraphQLDataService {
     formConfig: FormConfig,
     formData: Record<string, any>,
     variables?: Record<string, any>,
-    isUpdate: boolean = false
+    isUpdate: boolean = false,
   ): Promise<Result> {
     try {
       console.log('Save Data - Form Data:', JSON.stringify(formData, null, 2));
 
       // Form 데이터를 GraphQL variables로 변환 (매핑)
-      const { mainTableData, relationTableData } = formDataToGraphQL(formData, formConfig);
-      console.log('Save Data - Transformed Data:', { 
-        mainTableData, 
-        relationTableData: Array.from(relationTableData.entries()).map(([table, data]) => ({ [table]: data }))
+      const { mainTableData, relationTableData } = formDataToGraphQL(
+        formData,
+        formConfig,
+      );
+      console.log('Save Data - Transformed Data:', {
+        mainTableData,
+        relationTableData: Array.from(relationTableData.entries()).map(
+          ([table, data]) => ({ [table]: data }),
+        ),
       });
-
-      // 추가 variables 병합 (owner 등)
-      const mergedMainData = { ...mainTableData, ...variables };
-      console.log('Save Data - Merged Main Data:', JSON.stringify(mergedMainData, null, 2));
 
       // 사용자 정의 mutation 실행
       const mutation = isUpdate
@@ -131,19 +168,60 @@ export class GraphQLDataService {
       let finalVariables: Record<string, any>;
 
       if (isUpdate) {
-        // Update: $set과 $filter 형식
+        // Update: $set에는 실제 변경할 필드만 포함 (owner, is_team 제외)
+        // owner와 is_team은 filter에만 사용
+        const updateSet = { ...mainTableData };
+
+        // 업데이트 시 변경하면 안 되는 필드 제거
+        delete updateSet.owner;
+        delete updateSet.is_team;
+
+        console.log(
+          'Save Data - Update Set (after filtering):',
+          JSON.stringify(updateSet, null, 2),
+        );
+        console.log(
+          'Save Data - Variables for filter:',
+          JSON.stringify(variables, null, 2),
+        );
+        console.log('Save Data - Current profile_id:', this.currentProfileId);
+
+        // 빈 객체인 경우 에러 방지 (변경할 필드가 없으면 업데이트하지 않음)
+        if (Object.keys(updateSet).length === 0) {
+          console.warn('No fields to update - skipping main table update');
+        }
+
+        // 🔥 핵심 수정: profile_id로 필터링 (owner 대신)
+        // profile_id가 있으면 사용하고, 없으면 owner 사용
+        const filterField = this.currentProfileId ? 'profile_id' : 'owner';
+        const filterValue = this.currentProfileId || variables?.owner;
+
+        console.log(`Using filter: ${filterField} = ${filterValue}`);
+
         finalVariables = {
-          set: mergedMainData,
-          filter: { owner: { eq: variables?.owner } }, // owner로 필터링
+          set: updateSet,
+          filter: { [filterField]: { eq: filterValue } },
         };
       } else {
-        // Insert: $objects 배열 형식
+        // Insert: $objects에 owner와 is_team 포함 (새로 생성하므로 필요)
+        const mergedMainData = { ...mainTableData, ...variables };
+        console.log(
+          'Save Data - Merged Main Data (Insert):',
+          JSON.stringify(mergedMainData, null, 2),
+        );
+
         finalVariables = {
           objects: [mergedMainData],
         };
       }
 
-      console.log('Save Data - Final Variables:', JSON.stringify(finalVariables, null, 2));
+      console.log(
+        'Save Data - Final Variables:',
+        JSON.stringify(finalVariables, null, 2),
+      );
+
+      // 디버깅: mutation 전체 출력
+      console.log('Save Data - Full Mutation:', mutation);
 
       const response = await executeMutation(mutation, finalVariables);
 
@@ -152,30 +230,65 @@ export class GraphQLDataService {
       // 관계 테이블 데이터 처리 (Update 시에만)
       if (isUpdate && relationTableData.size > 0) {
         console.log('Processing relation tables...');
-        
-        // 각 관계 테이블에 대해 삭제 후 삽입
+
+        const profileId =
+          response?.updateprofileCollection?.records?.[0]?.profile_id ||
+          variables?.owner;
+
+        // 각 관계 테이블에 대해 처리
         for (const [tableName, relationData] of relationTableData) {
           try {
+            // profile_skills와 student_certificates는 Supabase REST API로 처리 (skill_name -> skill_id 변환 필요)
+            if (tableName === 'profile_skills') {
+              console.log(`Processing ${tableName} via Supabase REST API`);
+              const skillNames = relationData
+                .map((item) => item.skill_name)
+                .filter(Boolean);
+              await updateProfileSkills(profileId, skillNames);
+              continue;
+            }
+
+            if (tableName === 'student_certificates') {
+              console.log(`Processing ${tableName} via Supabase REST API`);
+              const certNames = relationData
+                .map(
+                  (item) =>
+                    item.certificate_name ||
+                    item.certificates?.certificate_name,
+                )
+                .filter(Boolean);
+              await updateStudentCertificates(
+                variables?.owner || profileId,
+                certNames,
+              );
+              continue;
+            }
+
+            // 다른 관계 테이블들은 GraphQL로 처리
             // 1. 기존 데이터 삭제
             const deleteMutation = `
-              mutation Delete${tableName.charAt(0).toUpperCase() + tableName.slice(1)}($filter: ${tableName}Filter!) {
+              mutation Delete${
+                tableName.charAt(0).toUpperCase() + tableName.slice(1)
+              }($filter: ${tableName}Filter!) {
                 deleteFrom${tableName}Collection(filter: $filter) {
                   affectedCount
                 }
               }
             `;
-            
+
             const deleteVariables = {
-              filter: { profile_id: { eq: response?.updateprofileCollection?.records?.[0]?.profile_id || variables?.owner } }
+              filter: { profile_id: { eq: profileId } },
             };
-            
+
             console.log(`Deleting from ${tableName}:`, deleteVariables);
             await executeMutation(deleteMutation, deleteVariables);
-            
+
             // 2. 새 데이터 삽입 (데이터가 있는 경우에만)
             if (relationData && relationData.length > 0) {
               const insertMutation = `
-                mutation Insert${tableName.charAt(0).toUpperCase() + tableName.slice(1)}($objects: [${tableName}InsertInput!]!) {
+                mutation Insert${
+                  tableName.charAt(0).toUpperCase() + tableName.slice(1)
+                }($objects: [${tableName}InsertInput!]!) {
                   insertInto${tableName}Collection(objects: $objects) {
                     affectedCount
                     records {
@@ -184,14 +297,14 @@ export class GraphQLDataService {
                   }
                 }
               `;
-              
+
               const insertVariables = {
                 objects: relationData.map((item: any) => ({
                   ...item,
-                  profile_id: response?.updateprofileCollection?.records?.[0]?.profile_id || variables?.owner
-                }))
+                  profile_id: profileId,
+                })),
               };
-              
+
               console.log(`Inserting into ${tableName}:`, insertVariables);
               await executeMutation(insertMutation, insertVariables);
             }
@@ -220,9 +333,12 @@ export class GraphQLDataService {
    * 빈 Form 데이터 생성
    */
   getEmptyFormData(
-    formConfig: FormConfig
+    formConfig: FormConfig,
   ): Record<string, MultiInputItem[][] | string[] | boolean | File | null> {
-    const formData: Record<string, MultiInputItem[][] | string[] | boolean | File | null> = {};
+    const formData: Record<
+      string,
+      MultiInputItem[][] | string[] | boolean | File | null
+    > = {};
 
     formConfig.fields.forEach((field) => {
       if (field.type === 'checkbox') {
@@ -242,12 +358,12 @@ export class GraphQLDataService {
    */
   private getTableIdField(tableName: string): string {
     const idFieldMap: Record<string, string> = {
-      'profile_link': 'profile_id', // profile_link는 별도 ID 없음, profile_id만 있음
-      'profile_skills': 'profile_id', // profile_skills는 별도 ID 없음, profile_id와 skill_id만 있음
-      'profile_competitions': 'competition_id', // competition_id가 있음
-      'student_certificates': 'certificate_id', // certificate_id가 있음
+      profile_link: 'profile_id', // profile_link는 별도 ID 없음, profile_id만 있음
+      profile_skills: 'profile_id', // profile_skills는 별도 ID 없음, profile_id와 skill_id만 있음
+      profile_competitions: 'competition_id', // competition_id가 있음
+      student_certificates: 'certificate_id', // certificate_id가 있음
     };
-    
+
     return idFieldMap[tableName] || `${tableName}_id`;
   }
 }

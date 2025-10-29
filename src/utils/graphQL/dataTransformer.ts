@@ -10,13 +10,19 @@ import { isRelationshipTable } from './metadataExtractor';
  */
 export function graphqlToFormData(
   graphqlData: any,
-  formConfig: FormConfig
+  formConfig: FormConfig,
 ): Record<string, MultiInputItem[][] | string[] | boolean | File | null> {
-  const formData: Record<string, MultiInputItem[][] | string[] | boolean | File | null> = {};
+  const formData: Record<
+    string,
+    MultiInputItem[][] | string[] | boolean | File | null
+  > = {};
 
   // GraphQL 응답에서 edges.node 추출
   const mainData = graphqlData?.edges?.[0]?.node || graphqlData;
-  console.log('graphqlToFormData - mainData:', JSON.stringify(mainData, null, 2));
+  console.log(
+    'graphqlToFormData - mainData:',
+    JSON.stringify(mainData, null, 2),
+  );
 
   formConfig.fields.forEach((field) => {
     if (!field.columnInfo) {
@@ -51,19 +57,21 @@ export function graphqlToFormData(
 
       // valuePath를 사용하여 중첩된 값 추출
       const valuePath = field.valuePath || column;
-      const skillNames: string[] = relationTableData.map((edge: any) => {
-        const node = edge.node;
+      const skillNames: string[] = relationTableData
+        .map((edge: any) => {
+          const node = edge.node;
 
-        // valuePath를 따라 중첩된 객체 탐색 (예: 'skill.skill_name')
-        const pathParts = valuePath.split('.');
-        let value = node;
-        for (const part of pathParts) {
-          value = value?.[part];
-          if (value === undefined || value === null) break;
-        }
+          // valuePath를 따라 중첩된 객체 탐색 (예: 'skill.skill_name')
+          const pathParts = valuePath.split('.');
+          let value = node;
+          for (const part of pathParts) {
+            value = value?.[part];
+            if (value === undefined || value === null) break;
+          }
 
-        return value || '';
-      }).filter(Boolean);
+          return value || '';
+        })
+        .filter(Boolean);
 
       formData[field.fieldName] = skillNames;
       return;
@@ -77,22 +85,36 @@ export function graphqlToFormData(
       if (isRelationshipTable(table)) {
         const relationData = mainData?.[`${table}Collection`]?.edges || [];
 
+        console.log(`Processing InputList for ${table}:`, {
+          tableName: table,
+          collectionKey: `${table}Collection`,
+          relationDataExists: !!mainData?.[`${table}Collection`],
+          edgesLength: relationData.length,
+          firstNode: relationData[0]?.node,
+        });
+
         if (inputConfig.onlyOne) {
           // onlyOne인 경우 단일 아이템
           const firstItem = relationData[0]?.node;
           if (firstItem) {
-            const multiInputItems: MultiInputItem[] = inputConfig.inputs.map((input) => {
-              // input.name이 "certificates.certificate_name" 같은 형식일 수 있음
-              if (!input.name) {
-                return { value: '' };
-              }
-              const nameParts = input.name.split('.');
-              let value = firstItem;
-              for (const part of nameParts) {
-                value = value?.[part];
-              }
-              return { value: value || '' };
-            });
+            const multiInputItems: MultiInputItem[] = inputConfig.inputs.map(
+              (input) => {
+                // input.name이 "certificates.certificate_name" 같은 형식일 수 있음
+                if (!input.name) {
+                  return { value: '' };
+                }
+                const nameParts = input.name.split('.');
+                let value = firstItem;
+                for (const part of nameParts) {
+                  value = value?.[part];
+                }
+                console.log(
+                  `Field ${field.fieldName}, input ${input.name}, extracted value:`,
+                  value,
+                );
+                return { value: value || '' };
+              },
+            );
             formData[field.fieldName] = [multiInputItems];
           } else {
             formData[field.fieldName] = [];
@@ -110,18 +132,25 @@ export function graphqlToFormData(
               for (const part of nameParts) {
                 value = value?.[part];
               }
+              console.log(
+                `Field ${field.fieldName}, input ${input.name}, extracted value from node:`,
+                value,
+              );
               return { value: value || '' };
             });
           });
           formData[field.fieldName] = items;
+          console.log(`Field ${field.fieldName} final items:`, items);
         }
       } else {
         // 메인 테이블의 컬럼인 경우 (onlyOne)
         if (inputConfig.onlyOne) {
           const value = mainData?.[column];
-          const multiInputItems: MultiInputItem[] = inputConfig.inputs.map(() => ({
-            value: value || '',
-          }));
+          const multiInputItems: MultiInputItem[] = inputConfig.inputs.map(
+            () => ({
+              value: value || '',
+            }),
+          );
           formData[field.fieldName] = [multiInputItems];
         } else {
           formData[field.fieldName] = [];
@@ -141,7 +170,7 @@ export function graphqlToFormData(
  */
 export function formDataToGraphQL(
   formData: Record<string, any>,
-  formConfig: FormConfig
+  formConfig: FormConfig,
 ): {
   mainTableData: Record<string, any>;
   relationTableData: Map<string, any[]>;
@@ -175,6 +204,7 @@ export function formDataToGraphQL(
     if (field.type === 'skillTag') {
       const skillNames = fieldValue as string[];
       if (skillNames && skillNames.length > 0) {
+        // skill_name을 저장 (나중에 graphqlDataService에서 Supabase REST API로 처리)
         const skillData = skillNames.map((skillName) => ({
           skill_name: skillName,
         }));
@@ -194,7 +224,9 @@ export function formDataToGraphQL(
           const relationItems = items
             .filter((item) => {
               // 빈 항목 제외
-              return item.some((input) => input.value && String(input.value).trim() !== '');
+              return item.some(
+                (input) => input.value && String(input.value).trim() !== '',
+              );
             })
             .map((item) => {
               const obj: Record<string, any> = {};
@@ -239,7 +271,9 @@ export function formDataToGraphQL(
 
   console.log('formDataToGraphQL - Output:', {
     mainTableData,
-    relationTableData: Array.from(relationTableData.entries()).map(([key, value]) => ({ [key]: value }))
+    relationTableData: Array.from(relationTableData.entries()).map(
+      ([key, value]) => ({ [key]: value }),
+    ),
   });
 
   return { mainTableData, relationTableData };
@@ -260,7 +294,7 @@ export function isEmpty(value: any): boolean {
  */
 export function getChangedFields(
   oldData: Record<string, any>,
-  newData: Record<string, any>
+  newData: Record<string, any>,
 ): Record<string, any> {
   const changes: Record<string, any> = {};
 

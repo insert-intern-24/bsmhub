@@ -40,7 +40,7 @@ export class SupabaseGraphQLClient {
    */
   async executeQuery<T = any>(
     query: string,
-    variables?: Record<string, any>
+    variables?: Record<string, any>,
   ): Promise<GraphQLResponse<T>> {
     return this.execute<T>(query, variables);
   }
@@ -50,7 +50,7 @@ export class SupabaseGraphQLClient {
    */
   async executeMutation<T = any>(
     mutation: string,
-    variables: Record<string, any>
+    variables: Record<string, any>,
   ): Promise<GraphQLResponse<T>> {
     return this.execute<T>(mutation, variables);
   }
@@ -60,7 +60,7 @@ export class SupabaseGraphQLClient {
    */
   private async execute<T>(
     query: string,
-    variables?: Record<string, any>
+    variables?: Record<string, any>,
   ): Promise<GraphQLResponse<T>> {
     try {
       // Supabase 세션 토큰 가져오기
@@ -76,6 +76,7 @@ export class SupabaseGraphQLClient {
         endpoint: this.graphqlEndpoint,
         query: query.substring(0, 200) + '...',
         variables,
+        hasSession: !!session,
       });
 
       // GraphQL 요청
@@ -98,9 +99,19 @@ export class SupabaseGraphQLClient {
 
       const result: GraphQLResponse<T> = await response.json();
 
+      console.log('GraphQL Response:', {
+        hasData: !!result.data,
+        hasErrors: !!result.errors,
+        errorCount: result.errors?.length || 0,
+      });
+
       // GraphQL 에러 처리
       if (result.errors && result.errors.length > 0) {
         console.error('GraphQL Errors:', result.errors);
+        console.error(
+          'Full error details:',
+          JSON.stringify(result.errors, null, 2),
+        );
         throw new Error(result.errors[0].message);
       }
 
@@ -114,7 +125,9 @@ export class SupabaseGraphQLClient {
   /**
    * 배치 쿼리 실행 (여러 쿼리를 한 번에)
    */
-  async executeBatch(queries: { query: string; variables?: Record<string, any> }[]): Promise<GraphQLResponse[]> {
+  async executeBatch(
+    queries: { query: string; variables?: Record<string, any> }[],
+  ): Promise<GraphQLResponse[]> {
     const promises = queries.map((q) => this.execute(q.query, q.variables));
     return Promise.all(promises);
   }
@@ -138,7 +151,7 @@ export function getGraphQLClient(): SupabaseGraphQLClient {
  */
 export async function executeQuery<T = any>(
   query: string,
-  variables?: Record<string, any>
+  variables?: Record<string, any>,
 ): Promise<T> {
   const client = getGraphQLClient();
   const response = await client.executeQuery<T>(query, variables);
@@ -150,7 +163,7 @@ export async function executeQuery<T = any>(
  */
 export async function executeMutation<T = any>(
   mutation: string,
-  variables: Record<string, any>
+  variables: Record<string, any>,
 ): Promise<T> {
   const client = getGraphQLClient();
   const response = await client.executeMutation<T>(mutation, variables);
