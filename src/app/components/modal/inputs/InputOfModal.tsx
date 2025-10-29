@@ -15,14 +15,14 @@ import { MultiInputItem } from '@utils/hook/useInputList'
 interface InputOfModalProps {
   title?: string;
   config: FormConfig;
-  onSubmit?: (data: Record<string, MultiInputItem[][] | string[] | boolean | File | null>) => void;
+  onSubmit?: (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>) => void;
   submitButtonText?: string;
-  initialValues?: Record<string, MultiInputItem[][] | string[] | boolean | File | null>;
+  initialValues?: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>;
 }
 
 const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '제출하기', initialValues }: InputOfModalProps) => {
   const { control, handleSubmit, formState: { errors }, reset } = useForm({
-    defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][] | string[] | boolean | File | null>, field) => {
+    defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>, field) => {
       // 초기값이 제공된 경우 사용, 그렇지 않으면 기본값 사용
       if (initialValues && initialValues[field.fieldName] !== undefined) {
         acc[field.fieldName] = initialValues[field.fieldName];
@@ -44,7 +44,7 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
     }
   }, [initialValues, reset]);
 
-  const onFormSubmit = (data: Record<string, MultiInputItem[][] | string[] | boolean | File | null>) => {
+  const onFormSubmit = (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>) => {
     console.log('인풋모달 제출값:', data);
     onSubmit?.(data);
   };
