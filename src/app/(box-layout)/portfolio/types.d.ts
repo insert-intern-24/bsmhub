@@ -63,15 +63,13 @@ export type ProfileWithProjects = MergeDeep<
 
 export type PortfolioDetailType = {
   profile_link: Pick<Tables<'profile_link'>, 'link' | 'alt'>[];
-  profile_permission: {
-    student: {
-      student_certificates: {
-        certificates: Pick<
-          Tables<'certificates'>,
-          'certificate_id' | 'certificate_name'
-        >;
-      }[];
-    };
+  student: {
+    student_certificates: {
+      certificates: Pick<
+        Tables<'certificates'>,
+        'certificate_id' | 'certificate_name'
+      >;
+    }[];
   }[];
   profile_competitions: {
     prize: Pick<Tables<'student_competitions'>, 'prize'>;
