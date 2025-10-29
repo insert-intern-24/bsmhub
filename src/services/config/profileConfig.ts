@@ -1,6 +1,89 @@
 import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
 
 export const profileConfig: FormConfig = {
+  graphql: {
+    read: `
+      query GetProfile($owner: String!) {
+        profileCollection(filter: { owner: { eq: $owner }, is_team: { eq: false } }) {
+          edges {
+            node {
+              profile_id
+              profile_name
+              profile_image
+              description
+              owner
+              profile_linkCollection {
+                edges {
+                  node {
+                    link
+                    alt
+                  }
+                }
+              }
+              profile_skillsCollection {
+                edges {
+                  node {
+                    skill_id
+                    skills {
+                      skill_name
+                    }
+                  }
+                }
+              }
+              profile_competitionsCollection {
+                edges {
+                  node {
+                    prize
+                  }
+                }
+              }
+            }
+          }
+        }
+        studentCollection(filter: { student_id: { eq: $owner } }) {
+          edges {
+            node {
+              student_certificatesCollection {
+                edges {
+                  node {
+                    certificate_id
+                    certificates {
+                      certificate_name
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+    insert: `
+      mutation InsertProfile($objects: [profileInsertInput!]!) {
+        insertIntoprofileCollection(objects: $objects) {
+          affectedCount
+          records {
+            profile_id
+          }
+        }
+      }
+    `,
+    update: `
+      mutation UpdateProfile($set: profileUpdateInput!, $filter: profileFilter!) {
+        updateprofileCollection(set: $set, filter: $filter) {
+          affectedCount
+          records {
+            profile_id
+            profile_name
+            profile_image
+            description
+            owner
+            is_team
+          }
+        }
+      }
+    `
+  },
   fields: [
     {
       fieldName: 'profile_full_name',
@@ -130,6 +213,7 @@ export const profileConfig: FormConfig = {
       type: 'skillTag',
       required: false,
       columnInfo: { table: 'profile_skills', column: '*' },
+      valuePath: 'skills.skill_name',
       white: false,
     },
   ],

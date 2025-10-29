@@ -66,6 +66,7 @@ interface InputListFieldConfig extends BaseFieldConfig {
 interface SkillTagFieldConfig extends BaseFieldConfig {
   type: 'skillTag';
   white?: boolean;
+  valuePath?: string; // GraphQL 응답에서 값을 추출할 경로 (예: 'skill.skill_name')
 }
 
 // Checkbox 타입
@@ -87,4 +88,10 @@ export type FormFieldConfig = InputListFieldConfig | SkillTagFieldConfig | Check
 // 전체 폼 설정
 export interface FormConfig {
   fields: FormFieldConfig[];
+  // GraphQL 쿼리 (필수: 사용자가 직접 작성)
+  graphql: {
+    read: string; // 조회 쿼리
+    insert: string; // 삽입 mutation
+    update: string; // 업데이트 mutation
+  };
 }
