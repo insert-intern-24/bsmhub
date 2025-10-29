@@ -1,9 +1,13 @@
-"use client"
+'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
 import { MultiInputItem } from '@/utils/hook/useInputList';
-import { getGraphQLDataService, Result } from '@/services/client/core/graphqlDataService';
+import {
+  getGraphQLDataService,
+  Result,
+} from '@/services/client/core/graphqlDataService';
+import uploadProfileImage from '@/services/client/profile/uploadProfileImage';
 
 /**
  * FormConfig 기반 데이터 관리 Hook
@@ -18,7 +22,7 @@ export function useFormConfigData(
     autoLoad?: boolean; // 자동으로 데이터 로드 (기본: true)
     mode?: FormMode; // 모달의 동작 모드 (기본: 'create')
     isUpdate?: boolean; // 업데이트 모드 여부 (deprecated, mode 사용 권장)
-  }
+  },
 ) {
   const [initialValues, setInitialValues] = useState<
     Record<string, MultiInputItem[][] | string[] | boolean | File | null>
@@ -29,10 +33,11 @@ export function useFormConfigData(
 
   const dataService = getGraphQLDataService();
   const autoLoad = options?.autoLoad !== false;
-  
+
   // mode 결정 (isUpdate는 하위 호환성을 위해 유지)
-  const mode: FormMode = options?.mode || (options?.isUpdate ? 'update' : 'create');
-  
+  const mode: FormMode =
+    options?.mode || (options?.isUpdate ? 'update' : 'create');
+
   // mode에 따른 동작 결정
   const shouldLoadData = autoLoad && (mode === 'update' || mode === 'read');
   const canSave = mode === 'create' || mode === 'update';
@@ -54,7 +59,8 @@ export function useFormConfigData(
       const data = await dataService.loadData(formConfig, variables);
       setInitialValues(data);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load data';
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to load data';
       setError(errorMessage);
       console.error('Load data error:', err);
     } finally {
@@ -67,8 +73,11 @@ export function useFormConfigData(
    */
   const saveData = useCallback(
     async (
-      formData: Record<string, MultiInputItem[][] | string[] | boolean | File | null>,
-      additionalVariables?: Record<string, any>
+      formData: Record<
+        string,
+        MultiInputItem[][] | string[] | boolean | File | null | string
+      >,
+      additionalVariables?: Record<string, any>,
     ): Promise<Result> => {
       if (!canSave) {
         return {
@@ -80,12 +89,23 @@ export function useFormConfigData(
       setIsSaving(true);
       setError(null);
 
+      await Promise.all(
+        formConfig.fields.map(async (field) => {
+          if (field.type === 'picture' && !field.multiple) {
+            formData[field.fieldName] = await uploadProfileImage(
+              formData[field.fieldName] as File,
+              field.bucket,
+            );
+          }
+        }),
+      );
+
       try {
         const result = await dataService.saveData(
           formConfig,
           formData,
           { ...variables, ...additionalVariables },
-          mode === 'update'
+          mode === 'update',
         );
 
         if (!result.success) {
@@ -94,7 +114,8 @@ export function useFormConfigData(
 
         return result;
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to save data';
+        const errorMessage =
+          err instanceof Error ? err.message : 'Failed to save data';
         setError(errorMessage);
         return {
           success: false,
@@ -104,7 +125,7 @@ export function useFormConfigData(
         setIsSaving(false);
       }
     },
-    [formConfig, variables, mode, canSave, dataService]
+    [formConfig, variables, mode, canSave, dataService],
   );
 
   /**
@@ -122,7 +143,7 @@ export function useFormConfigData(
       // 로드할 필요가 없으면 빈 데이터 설정
       setInitialValues(dataService.getEmptyFormData(formConfig));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // 마운트 시 한 번만 실행
 
   return {

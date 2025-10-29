@@ -81,6 +81,7 @@ interface PictureFieldConfig extends BaseFieldConfig {
   type: 'picture';
   aspectRatio?: string;
   multiple?: boolean; // 여러 이미지 업로드 가능 여부
+  bucket: string;
 }
 
 export type FormFieldConfig = InputListFieldConfig | SkillTagFieldConfig | CheckboxFieldConfig | PictureFieldConfig;

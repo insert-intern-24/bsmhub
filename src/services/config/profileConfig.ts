@@ -129,6 +129,7 @@ export const profileConfig: FormConfig = {
       required: false,
       columnInfo: { table: 'profile', column: 'profile_image' },
       aspectRatio: '1:1',
+      bucket: 'profile-image'
     },
     {
       fieldName: 'profile_description',
