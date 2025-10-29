@@ -202,11 +202,10 @@ export function formDataToGraphQL(
 
     // SkillTag 타입 처리
     if (field.type === 'skillTag') {
-      const skillNames = fieldValue as string[];
-      if (skillNames && skillNames.length > 0) {
-        // skill_name을 저장 (나중에 graphqlDataService에서 Supabase REST API로 처리)
-        const skillData = skillNames.map((skillName) => ({
-          skill_name: skillName,
+      const skillIds = fieldValue as number[];
+      if (skillIds && skillIds.length > 0) {
+        const skillData = skillIds.map((skillId) => ({
+          skill_id: skillId,
         }));
         relationTableData.set(table, skillData);
       }

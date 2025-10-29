@@ -474,8 +474,8 @@ export class GraphQLDataService {
       // 기본 변환 로직 (하위 호환성)
       switch (tableName) {
         case 'profile_skills':
-          processedData = (relationData as Array<{ skill_name: string }>)
-            .map((item) => item.skill_name)
+          processedData = (relationData as Array<{ skill_id: number }>)
+            .map((item) => item.skill_id)
             .filter(Boolean);
           break;
         case 'student_certificates':
