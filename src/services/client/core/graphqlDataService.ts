@@ -512,7 +512,7 @@ export class GraphQLDataService {
     }
 
     // 핸들러 호출
-    const targetId = fieldConfig.relationHandler?.requiresIdLookup
+    const targetId = fieldConfig.relationHandler?.identifierIsStudnetId
       ? (variables?.owner as string) || profileId
       : profileId;
     await handler(targetId, processedData, existingData);

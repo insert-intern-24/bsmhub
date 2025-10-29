@@ -163,7 +163,7 @@ export const profileConfig: FormConfig = {
       columnInfo: { table: 'profile_link', column: '*' },
       relationHandler: {
         type: 'graphql',
-        requiresIdLookup: false,
+        identifierIsStudnetId: false,
         dataTransformer: (data: unknown[]) =>
           (data as Array<{ link: string; alt?: string }>)
             .map((item) => ({
@@ -252,7 +252,7 @@ export const profileConfig: FormConfig = {
       relationHandler: {
         type: 'rest',
         handler: updateStudentCertificates,
-        requiresIdLookup: true,
+        identifierIsStudnetId: true,
       },
       inputConfig: {
         onlyOne: false,
@@ -275,7 +275,7 @@ export const profileConfig: FormConfig = {
       relationHandler: {
         type: 'rest',
         handler: updateProfileCompetitions,
-        requiresIdLookup: false,
+        identifierIsStudnetId: false,
       },
       inputConfig: {
         onlyOne: false,
@@ -298,9 +298,9 @@ export const profileConfig: FormConfig = {
       relationHandler: {
         type: 'rest',
         handler: updateProfileSkills,
-        requiresIdLookup: true,
+        identifierIsStudnetId: false,
       },
-      valuePath: 'skills.skill_name',
+      valuePath: 'skill_id',
       white: false,
     },
   ],

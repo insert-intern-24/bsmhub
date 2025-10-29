@@ -1,39 +1,41 @@
 import { createClient } from '@/utils/supabase/client';
+import { Tables } from '../supabase/database.types';
 
 /**
- * skill_name을 skill_id로 변환 (없으면 생성)
+ * skill_name으로 skill_id를 찾거나 새로 생성합니다.
  */
-export async function getOrCreateSkillIds(
-  skillNames: string[],
-): Promise<number[]> {
-  if (skillNames.length === 0) return [];
-
-  const supabase = createClient();
-  const skillIds: number[] = [];
-
-  for (const skillName of skillNames) {
-    const { data: existingSkill } = await supabase
-      .from('skills')
-      .select('skill_id')
-      .eq('skill_name', skillName)
-      .maybeSingle();
-
-    if (existingSkill) {
-      skillIds.push((existingSkill as { skill_id: number }).skill_id);
-    } else {
-      const { data: newSkill } = await supabase
-        .from('skills')
-        .insert({ skill_name: skillName, language: false } as never)
-        .select('skill_id')
-        .single();
-
-      if (newSkill) {
-        skillIds.push((newSkill as { skill_id: number }).skill_id);
-      }
-    }
+export async function getOrCreateSkillId(skillName: string): Promise<number> {
+  if (!skillName) {
+    throw new Error('Skill name cannot be empty.');
   }
 
-  return skillIds;
+  const supabase = createClient();
+
+  const { data: existingSkill } = await supabase
+    .from('skills')
+    .select('skill_id')
+    .eq('skill_name', skillName)
+    .maybeSingle<Tables<'skills'>>();
+
+  if (existingSkill) {
+    return existingSkill.skill_id;
+  }
+
+  const { data: newSkill, error } = await supabase
+    .from('skills')
+    .insert({ skill_name: skillName, language: false } as never)
+    .select('skill_id')
+    .single<Tables<'skills'>>();
+
+  if (error) {
+    console.error('Error creating new skill:', error);
+    throw error;
+  }
+  if (newSkill) {
+    return newSkill.skill_id;
+  }
+
+  throw new Error('Failed to get or create skill ID.');
 }
 
 /**
@@ -125,50 +127,49 @@ export async function getOrCreateCompetitionIds(
 }
 
 /**
- * profile_skills 테이블 업데이트 (개별 삭제 + upsert)
+ * profile_skills 테이블 업데이트 (ID 기반)
  * @param profileId - 프로필 ID
- * @param skillNames - 새로운 스킬 이름 배열
- * @param existingSkills - 기존 스킬 데이터 배열 (캐시된 데이터, skill_id 포함)
+ * @param skillIds - 새로운 스킬 ID 배열
+ * @param existingProfileSkills - 기존 프로필 스킬 데이터 배열
  */
 export async function updateProfileSkills(
   profileId: string,
-  skillNames: string[],
-  existingSkills: Array<{ skill_id: number; skill_name: string }> = [],
+  skillIds: number[],
+  existingProfileSkills: Array<{ skill_id: number }> = [],
 ): Promise<void> {
   const supabase = createClient();
 
-  const existingSkillNames = new Set(existingSkills.map((s) => s.skill_name));
-  const newSkillNames = new Set(skillNames);
+  const existingSkillIds = new Set(
+    existingProfileSkills.map((s) => s.skill_id),
+  );
+  const newSkillIds = new Set(skillIds);
 
-  // 2. 삭제할 항목 찾기 (기존에는 있지만 새 데이터에는 없는 것)
-  const skillsToDelete = existingSkills.filter(
-    (skill) => !newSkillNames.has(skill.skill_name),
+  // 삭제할 스킬 ID 찾기
+  const skillsToDelete = Array.from(existingSkillIds).filter(
+    (id) => !newSkillIds.has(id),
   );
 
-  // 3. 개별 삭제 (RLS 정책 준수) - skill_id를 이미 알고 있음
-  for (const skill of skillsToDelete) {
-    await supabase
-      .from('profile_skills')
-      .delete()
-      .eq('profile_id', profileId)
-      .eq('skill_id', skill.skill_id);
+  // 삭제 실행
+  if (skillsToDelete.length > 0) {
+    for (const skillId of skillsToDelete) {
+      await supabase
+        .from('profile_skills')
+        .delete()
+        .eq('profile_id', profileId)
+        .eq('skill_id', skillId);
+    }
   }
 
-  // 4. 추가할 항목 찾기 (새 데이터에는 있지만 기존에는 없는 것)
-  const skillsToAdd = skillNames.filter(
-    (name) => !existingSkillNames.has(name),
-  );
+  // 추가할 스킬 ID 찾기
+  const skillsToAdd = skillIds.filter((id) => !existingSkillIds.has(id));
 
-  // 5. 새 항목 삽입
+  // 추가 실행
   if (skillsToAdd.length > 0) {
-    const skillIds = await getOrCreateSkillIds(skillsToAdd);
-    if (skillIds.length > 0) {
-      const skillPayloads = skillIds.map((skillId) => ({
-        skill_id: skillId,
-        profile_id: profileId,
-      }));
-      await supabase.from('profile_skills').insert(skillPayloads as never);
-    }
+    const skillPayloads = skillsToAdd.map((skillId) => ({
+      skill_id: skillId,
+      profile_id: profileId,
+    }));
+    await supabase.from('profile_skills').insert(skillPayloads as never);
   }
 }
 

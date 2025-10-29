@@ -12,8 +12,8 @@ interface InputListState {
 }
 
 type InputAction =
-  | { type: 'UPDATE_VALUE'; index: number; value: string; subIndex: number }
-  | { type: 'SET_ACTIVE'; index: number }
+  | { type: 'UPDATE_VALUE'; index: number; value: string | number | undefined; subIndex: number }
+  | { type: 'SET_ACTIVE'; index: number | null }
   | { type: 'ADD_INPUT'; multiInputConfig: MultiInputItem[] }
 
 // 커스텀 훅: 비즈니스 로직 분리
@@ -29,8 +29,10 @@ export const useInputList = (initialConfig?: MultiInputItem[] | MultiInputItem[]
   const reducer = produce((draft: InputListState, action: InputAction) => {
     switch (action.type) {
       case 'UPDATE_VALUE': {
-        const input = draft.inputs[action.index]
-        input[action.subIndex].value = action.value
+        if (draft.inputs[action.index]) {
+          const input = draft.inputs[action.index]
+          input[action.subIndex].value = action.value
+        }
         break
       }
       
@@ -43,8 +45,11 @@ export const useInputList = (initialConfig?: MultiInputItem[] | MultiInputItem[]
         if (shouldRemoveEmpty) {
           const removedIndex = draft.activeIndex!
           draft.inputs.splice(removedIndex, 1)
+          if (action.index != null && action.index > removedIndex) {
+            action.index--
+          }
         }
-        draft.activeIndex = action.index < 0 ? null : action.index % draft.inputs.length
+        draft.activeIndex = action.index
         break
       }
       

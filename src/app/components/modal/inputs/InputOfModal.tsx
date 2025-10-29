@@ -94,9 +94,9 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
                 if (field.type === 'skillTag') {
                   return (
                     <SkillTagProvider
-                      onTagsChange={(tags: string[]) => onChange(tags)}
+                      onTagsChange={(tags: number[]) => onChange(tags)}
                       white={field.white}
-                      initialTags={value as string[]}
+                      initialTags={value as number[]}
                     />
                   );
                 }

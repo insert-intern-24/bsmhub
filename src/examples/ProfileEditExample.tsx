@@ -18,10 +18,6 @@ export default function ProfileEditExample() {
   const { initialValues, isLoading, saveData } = useFormConfigData(
     profileConfig,
     { owner: userId }, // 필터 조건
-    {
-      recordId: profileId, // 업데이트할 레코드 ID
-      userId: userId, // owner로 설정될 ID
-    }
   );
 
   const handleSubmit = async (data: any) => {
