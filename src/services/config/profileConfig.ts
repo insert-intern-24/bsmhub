@@ -3,7 +3,6 @@ import {
   updateProfileSkills,
   updateStudentCertificates,
   updateProfileCompetitions,
-  updateProfileLinks,
 } from '@/utils/graphQL/relationTableHelper';
 
 export const profileConfig: FormConfig = {
@@ -110,24 +109,6 @@ export const profileConfig: FormConfig = {
         ],
       },
     },
-    // {
-    //   fieldName: 'profile_student_number',
-    //   label: '학번',
-    //   type: 'inputList',
-    //   required: true,
-    //   columnInfo: { table: 'student', column: 'student_number' },
-    //   inputConfig: {
-    //     onlyOne: true,
-    //     inputs: [
-    //       {
-    //         name: 'number',
-    //         type: 'text',
-    //         placeholder: '학번을 입력하세요',
-    //         required: true
-    //       }
-    //     ]
-    //   }
-    // },
     {
       fieldName: 'profile_avatar_url',
       label: '프로필 이미지',
