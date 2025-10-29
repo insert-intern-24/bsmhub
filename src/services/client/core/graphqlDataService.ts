@@ -13,6 +13,7 @@ import {
 import {
   updateProfileSkills,
   updateStudentCertificates,
+  updateProfileCompetitions,
 } from '@/utils/graphQL/relationTableHelper';
 
 /**
@@ -261,6 +262,15 @@ export class GraphQLDataService {
                 variables?.owner || profileId,
                 certNames,
               );
+              continue;
+            }
+
+            if (tableName === 'profile_competitions') {
+              console.log(`Processing ${tableName} via Supabase REST API`);
+              const prizes = relationData
+                .map((item) => item.prize)
+                .filter(Boolean);
+              await updateProfileCompetitions(profileId, prizes);
               continue;
             }
 

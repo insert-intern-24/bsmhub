@@ -77,6 +77,54 @@ export async function getOrCreateCertificateIds(
 }
 
 /**
+ * prize를 competition_id로 변환 (없으면 생성)
+ */
+export async function getOrCreateCompetitionIds(
+  prizes: string[],
+): Promise<number[]> {
+  if (prizes.length === 0) return [];
+
+  const supabase = createClient();
+  const competitionIds: number[] = [];
+
+  for (const prize of prizes) {
+    // 간단한 대회명 생성 (실제로는 더 정교한 로직이 필요할 수 있음)
+    const competitionName = `대회 - ${prize}`;
+
+    const { data: existingCompetition } = await supabase
+      .from('competitions')
+      .select('competition_id')
+      .eq('competition_name', competitionName)
+      .maybeSingle();
+
+    if (existingCompetition) {
+      competitionIds.push(
+        (existingCompetition as { competition_id: number }).competition_id,
+      );
+    } else {
+      const competitionData = {
+        competition_name: competitionName,
+        competition_duration: null,
+      };
+
+      const { data: newCompetition } = await supabase
+        .from('competitions')
+        .insert(competitionData as never)
+        .select('competition_id')
+        .single();
+
+      if (newCompetition) {
+        competitionIds.push(
+          (newCompetition as { competition_id: number }).competition_id,
+        );
+      }
+    }
+  }
+
+  return competitionIds;
+}
+
+/**
  * profile_skills 테이블 업데이트 (삭제 후 삽입)
  */
 export async function updateProfileSkills(
@@ -125,6 +173,35 @@ export async function updateStudentCertificates(
         student_id: studentId,
       }));
       await supabase.from('student_certificates').insert(certPayloads as never);
+    }
+  }
+}
+
+/**
+ * profile_competitions 테이블 업데이트 (삭제 후 삽입)
+ */
+export async function updateProfileCompetitions(
+  profileId: string,
+  prizes: string[],
+): Promise<void> {
+  const supabase = createClient();
+
+  // 1. 기존 데이터 삭제
+  await supabase
+    .from('profile_competitions')
+    .delete()
+    .eq('profile_id', profileId);
+
+  // 2. 새 데이터 삽입
+  if (prizes.length > 0) {
+    const competitionIds = await getOrCreateCompetitionIds(prizes);
+    if (competitionIds.length > 0) {
+      const compPayloads = competitionIds.map((compId, index) => ({
+        competition_id: compId,
+        prize: prizes[index],
+        profile_id: profileId,
+      }));
+      await supabase.from('profile_competitions').insert(compPayloads as never);
     }
   }
 }
