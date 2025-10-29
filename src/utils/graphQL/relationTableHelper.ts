@@ -127,53 +127,6 @@ export async function getOrCreateCompetitionIds(
 }
 
 /**
- * profile_skills 테이블 업데이트 (ID 기반)
- * @param profileId - 프로필 ID
- * @param skillIds - 새로운 스킬 ID 배열
- * @param existingProfileSkills - 기존 프로필 스킬 데이터 배열
- */
-export async function updateProfileSkills(
-  profileId: string,
-  skillIds: number[],
-  existingProfileSkills: Array<{ skill_id: number }> = [],
-): Promise<void> {
-  const supabase = createClient();
-
-  const existingSkillIds = new Set(
-    existingProfileSkills.map((s) => s.skill_id),
-  );
-  const newSkillIds = new Set(skillIds);
-
-  // 삭제할 스킬 ID 찾기
-  const skillsToDelete = Array.from(existingSkillIds).filter(
-    (id) => !newSkillIds.has(id),
-  );
-
-  // 삭제 실행
-  if (skillsToDelete.length > 0) {
-    for (const skillId of skillsToDelete) {
-      await supabase
-        .from('profile_skills')
-        .delete()
-        .eq('profile_id', profileId)
-        .eq('skill_id', skillId);
-    }
-  }
-
-  // 추가할 스킬 ID 찾기
-  const skillsToAdd = skillIds.filter((id) => !existingSkillIds.has(id));
-
-  // 추가 실행
-  if (skillsToAdd.length > 0) {
-    const skillPayloads = skillsToAdd.map((skillId) => ({
-      skill_id: skillId,
-      profile_id: profileId,
-    }));
-    await supabase.from('profile_skills').insert(skillPayloads as never);
-  }
-}
-
-/**
  * student_certificates 테이블 업데이트 (개별 삭제 + upsert)
  * @param studentId - 학생 ID
  * @param certificateNames - 새로운 자격증 이름 배열

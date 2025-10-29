@@ -1,6 +1,6 @@
 import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
+import { graphqlRelationHandler } from '@/utils/graphQL/handler';
 import {
-  updateProfileSkills,
   updateStudentCertificates,
   updateProfileCompetitions,
   updateProfileLinks,
@@ -296,9 +296,15 @@ export const profileConfig: FormConfig = {
       required: false,
       columnInfo: { table: 'profile_skills', column: '*' },
       relationHandler: {
-        type: 'rest',
-        handler: updateProfileSkills,
+        type: 'graphql',
+        handler: graphqlRelationHandler,
         identifierIsStudnetId: false,
+        config: {
+          tableName: 'profile_skills',
+          parentIdColumn: 'profile_id',
+          relationIdColumn: 'skill_id',
+          existingIdField: 'skill_id',
+        },
       },
       valuePath: 'skill_id',
       white: false,
