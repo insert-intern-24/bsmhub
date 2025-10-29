@@ -68,16 +68,18 @@ export const useInputList = (initialConfig?: MultiInputItem[] | MultiInputItem[]
     }
   })
 
-  // initialConfig가 2차원 배열인지 확인
+  // initialConfig가 2차원 배열인지 확인
   const is2DArray = Array.isArray(initialConfig) && 
     initialConfig.length > 0 && 
     Array.isArray(initialConfig[0])
 
   const initialInputs = is2DArray 
     ? initialConfig as MultiInputItem[][]
-    : initialConfig 
+    : initialConfig && initialConfig.length > 0
       ? [initialConfig as MultiInputItem[]]
       : [[{ value: '' } as MultiInputItem]]
+
+  console.log('useInputList initialInputs:', initialInputs);
 
   return useReducer(reducer, {
     inputs: initialInputs,
