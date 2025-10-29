@@ -518,42 +518,69 @@ export class GraphQLDataService {
 
     // 각 테이블에 대한 변수와 필드 추가
     graphqlTables.forEach(({ tableName, relationData }, index) => {
-      const varName = `${tableName}Filter${index}`;
-      const objectsVarName = `${tableName}Objects${index}`;
+      // 기존 데이터 가져오기
+      const existingData = this.getOriginalRelationData(tableName) as Record<
+        string,
+        unknown
+      >[];
 
-      // Delete mutation용 변수
-      mutationBlock += `$${varName}: ${tableName}Filter!, `;
-      variables[varName] = { profile_id: { eq: profileId } };
-
-      // Insert: $objects에 owner와 is_team 포함 (새로 생성하므로 필요)
-      const mergedMainData = { ...relationData, ...variables };
-      console.log(
-        'Save Data - Merged Main Data (Insert):',
-        JSON.stringify(mergedMainData, null, 2),
+      // 변경사항 계산
+      const changes = this.calculateRelationChanges(
+        tableName,
+        relationData,
+        existingData,
       );
 
-      variables[objectsVarName] = (relationData as unknown[]).map((item) => ({
-        ...(item as Record<string, unknown>),
-        profile_id: profileId,
-      }));
+      if (changes.toDelete.length === 0 && changes.toInsert.length === 0) {
+        console.log(`No changes for ${tableName}, skipping`);
+        return;
+      }
 
-      // Selection 필드
-      const deleteFieldName = `delete${
-        tableName.charAt(0).toUpperCase() + tableName.slice(1)
-      }`;
-      selectionFields.push(
-        `${deleteFieldName}: deleteFrom${tableName}Collection(filter: $${varName}) { affectedCount }`,
-      );
+      // Delete mutations (변경사항이 있는 경우에만)
+      if (changes.toDelete.length > 0) {
+        changes.toDelete.forEach((item, itemIndex) => {
+          const deleteVarName = `${tableName}DeleteFilter${index}_${itemIndex}`;
+          mutationBlock += `$${deleteVarName}: ${tableName}Filter!, `;
 
-      if (relationData && relationData.length > 0) {
+          // 테이블별로 구체적인 필터 생성
+          variables[deleteVarName] = this.createDeleteFilter(
+            tableName,
+            item,
+            profileId,
+          );
+
+          const deleteFieldName = `delete${
+            tableName.charAt(0).toUpperCase() + tableName.slice(1)
+          }${index}_${itemIndex}`;
+          selectionFields.push(
+            `${deleteFieldName}: deleteFrom${tableName}Collection(filter: $${deleteVarName}) { affectedCount }`,
+          );
+        });
+      }
+
+      // Insert mutations
+      if (changes.toInsert.length > 0) {
+        const insertVarName = `${tableName}InsertObjects${index}`;
+        mutationBlock += `$${insertVarName}: [${tableName}InsertInput!]!, `;
+        variables[insertVarName] = changes.toInsert.map((item) => ({
+          ...item,
+          profile_id: profileId,
+        }));
+
         const insertFieldName = `insert${
           tableName.charAt(0).toUpperCase() + tableName.slice(1)
         }`;
         selectionFields.push(
-          `${insertFieldName}: insertInto${tableName}Collection(objects: $${objectsVarName}) { affectedCount }`,
+          `${insertFieldName}: insertInto${tableName}Collection(objects: $${insertVarName}) { affectedCount }`,
         );
       }
     });
+
+    // Mutation이 없으면 실행하지 않음
+    if (selectionFields.length === 0) {
+      console.log('No mutations to execute');
+      return;
+    }
 
     // Mutation block 완성
     mutationBlock = mutationBlock.slice(0, -2) + ') {\n'; // 마지막 ', ' 제거하고 괄호 닫기
@@ -564,6 +591,97 @@ export class GraphQLDataService {
 
     // Mutation 실행
     await executeMutation(mutationBlock, variables);
+  }
+
+  /**
+   * 관계 테이블 변경사항 계산
+   */
+  private calculateRelationChanges(
+    tableName: string,
+    newData: unknown[],
+    existingData: Record<string, unknown>[],
+  ): {
+    toDelete: Record<string, unknown>[];
+    toInsert: Record<string, unknown>[];
+  } {
+    const toDelete: Record<string, unknown>[] = [];
+    const toInsert: Record<string, unknown>[] = [];
+
+    // 테이블별 비교 로직
+    switch (tableName) {
+      case 'profile_link':
+        const existingLinks = existingData as Array<{
+          link: string;
+          alt: string;
+        }>;
+        const newLinks = newData as Array<{ link: string; alt: string }>;
+
+        // 삭제할 항목: 기존에 있지만 새로운 데이터에 없는 것
+        existingLinks.forEach((existing) => {
+          const stillExists = newLinks.some(
+            (newItem) =>
+              newItem.link === existing.link && newItem.alt === existing.alt,
+          );
+          if (!stillExists) {
+            toDelete.push(existing);
+          }
+        });
+
+        // 추가할 항목: 새로운 데이터에 있지만 기존에 없는 것
+        newLinks.forEach((newItem) => {
+          const alreadyExists = existingLinks.some(
+            (existing) =>
+              existing.link === newItem.link && existing.alt === newItem.alt,
+          );
+          if (!alreadyExists) {
+            toInsert.push(newItem);
+          }
+        });
+        break;
+
+      default:
+        // 다른 테이블들은 아직 구현되지 않음
+        console.warn(`Change calculation not implemented for ${tableName}`);
+        break;
+    }
+
+    return { toDelete, toInsert };
+  }
+
+  /**
+   * 삭제 필터 생성
+   */
+  private createDeleteFilter(
+    tableName: string,
+    item: Record<string, unknown>,
+    profileId: string,
+  ): Record<string, unknown> {
+    const filter: Record<string, unknown> = { profile_id: { eq: profileId } };
+
+    // 테이블별로 추가 필터 조건
+    switch (tableName) {
+      case 'profile_link':
+        filter['link'] = { eq: item.link };
+        filter['alt'] = { eq: item.alt };
+        break;
+      case 'profile_skills':
+        if (item.skill_id) {
+          filter['skill_id'] = { eq: item.skill_id };
+        }
+        break;
+      case 'student_certificates':
+        if (item.certificate_id) {
+          filter['certificate_id'] = { eq: item.certificate_id };
+        }
+        break;
+      case 'profile_competitions':
+        if (item.competition_id) {
+          filter['competition_id'] = { eq: item.competition_id };
+        }
+        break;
+    }
+
+    return filter;
   }
 }
 

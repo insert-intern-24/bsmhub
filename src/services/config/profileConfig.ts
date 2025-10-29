@@ -162,8 +162,7 @@ export const profileConfig: FormConfig = {
       required: false,
       columnInfo: { table: 'profile_link', column: '*' },
       relationHandler: {
-        type: 'rest',
-        handler: updateProfileLinks,
+        type: 'graphql',
         requiresIdLookup: false,
       },
       inputConfig: {
