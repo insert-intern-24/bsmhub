@@ -189,7 +189,7 @@ export function formDataToGraphQL(
     // Picture 타입 처리
     if (field.type === 'picture') {
       if (fieldValue) {
-        mainTableData[column] = fieldValue;
+        mainTableData[column] = fieldValue.name;
       }
       return;
     }

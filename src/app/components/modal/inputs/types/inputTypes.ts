@@ -8,10 +8,24 @@ export interface ColumnInfo {
 }
 
 // 실제 input HTML type
-export type InputHTMLType = 'text' | 'date' | 'number' | 'email' | 'password' | 'tel' | 'url';
+export type InputHTMLType =
+  | 'text'
+  | 'date'
+  | 'number'
+  | 'email'
+  | 'password'
+  | 'tel'
+  | 'url';
 
 // 컴포넌트 타입 (FormFieldConfig에서 사용)
-export type InputType = 'text' | 'date' | 'edit' | 'search' | 'picture' | 'checkbox' | 'skillTag';
+export type InputType =
+  | 'text'
+  | 'date'
+  | 'edit'
+  | 'search'
+  | 'picture'
+  | 'checkbox'
+  | 'skillTag';
 
 // Input 모드 (SkillTag처럼 write/edit/read)
 export type InputMode = 'write' | 'edit' | 'read';
@@ -30,7 +44,8 @@ export interface BaseInputPropsCommon {
 }
 
 // picture 타입일 때
-export interface PictureInputProps extends Omit<BaseInputPropsCommon, 'type' | 'icon'> {
+export interface PictureInputProps
+  extends Omit<BaseInputPropsCommon, 'type' | 'icon'> {
   componentType: 'picture';
   aspectRatio?: string;
 }
@@ -54,6 +69,12 @@ interface BaseFieldConfig {
   required?: boolean;
   fieldName: string; // "테이블명.속성" 형식으로 데이터베이스 컬럼 매핑
   columnInfo?: ColumnInfo; // GraphQL 쿼리 생성을 위한 컬럼 정보
+  relationHandler?: {
+    type: 'rest' | 'graphql';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    handler?: (...args: any[]) => any; // 핸들러 함수 자체
+    requiresIdLookup?: boolean; // ID 조회/생성이 필요한지 여부
+  };
 }
 
 // InputList 타입
@@ -84,7 +105,11 @@ interface PictureFieldConfig extends BaseFieldConfig {
   bucket: string;
 }
 
-export type FormFieldConfig = InputListFieldConfig | SkillTagFieldConfig | CheckboxFieldConfig | PictureFieldConfig;
+export type FormFieldConfig =
+  | InputListFieldConfig
+  | SkillTagFieldConfig
+  | CheckboxFieldConfig
+  | PictureFieldConfig;
 
 // 전체 폼 설정
 export interface FormConfig {

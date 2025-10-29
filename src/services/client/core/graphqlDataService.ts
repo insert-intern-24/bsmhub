@@ -1,4 +1,7 @@
-import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
+import {
+  FormConfig,
+  FormFieldConfig,
+} from '@/app/components/modal/inputs/types/inputTypes';
 import { MultiInputItem } from '@/utils/hook/useInputList';
 import { executeQuery, executeMutation } from '@/utils/graphQL/client';
 import {
@@ -10,12 +13,6 @@ import {
   graphqlToFormData,
   formDataToGraphQL,
 } from '@/utils/graphQL/dataTransformer';
-import {
-  updateProfileSkills,
-  updateStudentCertificates,
-  updateProfileCompetitions,
-  updateProfileLinks,
-} from '@/utils/graphQL/relationTableHelper';
 
 /**
  * 작업 결과 타입
@@ -150,6 +147,7 @@ export class GraphQLDataService {
   ): Promise<Result> {
     try {
       console.log('Save Data - Form Data:', JSON.stringify(formData, null, 2));
+      console.debug('isUpdate :', isUpdate);
 
       // Form 데이터를 GraphQL variables로 변환 (매핑)
       const { mainTableData, relationTableData } = formDataToGraphQL(
@@ -241,122 +239,12 @@ export class GraphQLDataService {
           response?.updateprofileCollection?.records?.[0]?.profile_id ||
           variables?.owner;
 
-        // 각 관계 테이블에 대해 처리
-        for (const [tableName, relationData] of relationTableData) {
-          try {
-            // profile_skills와 student_certificates는 Supabase REST API로 처리 (skill_name -> skill_id 변환 필요)
-            if (tableName === 'profile_skills') {
-              console.log(`Processing ${tableName} via Supabase REST API`);
-              const skillNames = relationData
-                .map((item) => item.skill_name)
-                .filter(Boolean);
-              const existingSkills = this.getOriginalRelationData(
-                'profile_skills',
-              ) as Array<{ skill_id: number; skill_name: string }>;
-              await updateProfileSkills(profileId, skillNames, existingSkills);
-              continue;
-            }
-
-            if (tableName === 'student_certificates') {
-              console.log(`Processing ${tableName} via Supabase REST API`);
-              const certNames = relationData
-                .map(
-                  (item) =>
-                    item.certificate_name ||
-                    item.certificates?.certificate_name,
-                )
-                .filter(Boolean);
-              const existingCerts = this.getOriginalRelationData(
-                'student_certificates',
-              ) as Array<{ certificate_id: number; certificate_name: string }>;
-              await updateStudentCertificates(
-                variables?.owner || profileId,
-                certNames,
-                existingCerts,
-              );
-              continue;
-            }
-
-            if (tableName === 'profile_competitions') {
-              console.log(`Processing ${tableName} via Supabase REST API`);
-              const prizes = relationData
-                .map((item) => item.prize)
-                .filter(Boolean);
-              const existingPrizes = this.getOriginalRelationData(
-                'profile_competitions',
-              ) as Array<{ competition_id: number; prize: string }>;
-              await updateProfileCompetitions(
-                profileId,
-                prizes,
-                existingPrizes,
-              );
-              continue;
-            }
-
-            if (tableName === 'profile_link') {
-              console.log(`Processing ${tableName} via Supabase REST API`);
-              const links = relationData
-                .map((item) => ({
-                  link: item.link,
-                  alt: item.alt || '',
-                }))
-                .filter((item) => item.link);
-              const existingLinks = this.getOriginalRelationData(
-                'profile_link',
-              ) as Array<{ link: string; alt: string }>;
-              await updateProfileLinks(profileId, links, existingLinks);
-              continue;
-            }
-
-            // 다른 관계 테이블들은 GraphQL로 처리
-            // 1. 기존 데이터 삭제
-            const deleteMutation = `
-              mutation Delete${
-                tableName.charAt(0).toUpperCase() + tableName.slice(1)
-              }($filter: ${tableName}Filter!) {
-                deleteFrom${tableName}Collection(filter: $filter) {
-                  affectedCount
-                }
-              }
-            `;
-
-            const deleteVariables = {
-              filter: { profile_id: { eq: profileId } },
-            };
-
-            console.log(`Deleting from ${tableName}:`, deleteVariables);
-            await executeMutation(deleteMutation, deleteVariables);
-
-            // 2. 새 데이터 삽입 (데이터가 있는 경우에만)
-            if (relationData && relationData.length > 0) {
-              const insertMutation = `
-                mutation Insert${
-                  tableName.charAt(0).toUpperCase() + tableName.slice(1)
-                }($objects: [${tableName}InsertInput!]!) {
-                  insertInto${tableName}Collection(objects: $objects) {
-                    affectedCount
-                    records {
-                      ${this.getTableIdField(tableName)}
-                    }
-                  }
-                }
-              `;
-
-              const insertVariables = {
-                objects: relationData.map((item: any) => ({
-                  ...item,
-                  profile_id: profileId,
-                })),
-              };
-
-              console.log(`Inserting into ${tableName}:`, insertVariables);
-              await executeMutation(insertMutation, insertVariables);
-            }
-          } catch (error) {
-            console.error(`Error processing ${tableName}:`, error);
-            // 관계 테이블 오류는 메인 업데이트를 막지 않음
-          }
-        }
+        await this.processRelationTables(
+          profileId,
+          relationTableData,
+          formConfig,
+          variables,
+        );
       }
 
       return {
@@ -484,6 +372,198 @@ export class GraphQLDataService {
     };
 
     return idFieldMap[tableName] || `${tableName}_id`;
+  }
+
+  /**
+   * 관계 테이블 데이터 처리
+   */
+  private async processRelationTables(
+    profileId: string,
+    relationTableData: Map<string, unknown[]>,
+    formConfig: FormConfig,
+    variables?: Record<string, unknown>,
+  ): Promise<void> {
+    // REST API로 처리할 테이블들과 GraphQL로 처리할 테이블들을 분리
+    const restTables: Array<{
+      tableName: string;
+      relationData: unknown[];
+      fieldConfig: FormFieldConfig;
+    }> = [];
+    const graphqlTables: Array<{ tableName: string; relationData: unknown[] }> =
+      [];
+
+    // formConfig에서 각 필드의 relationHandler 설정을 확인
+    for (const [tableName, relationData] of relationTableData) {
+      const fieldConfig = formConfig.fields.find(
+        (field) => field.columnInfo?.table === tableName,
+      );
+
+      if (fieldConfig?.relationHandler) {
+        if (fieldConfig.relationHandler.type === 'rest') {
+          restTables.push({ tableName, relationData, fieldConfig });
+        } else {
+          graphqlTables.push({ tableName, relationData });
+        }
+      } else {
+        // 기본적으로 GraphQL로 처리
+        graphqlTables.push({ tableName, relationData });
+      }
+    }
+
+    // REST API로 처리할 테이블들 먼저 처리 (ID 조회/생성이 필요한 경우)
+    for (const { tableName, relationData, fieldConfig } of restTables) {
+      try {
+        await this.processRestRelationTable(
+          tableName,
+          relationData,
+          fieldConfig,
+          profileId,
+          variables,
+        );
+      } catch (error) {
+        console.error(`Error processing REST table ${tableName}:`, error);
+        // REST 처리 실패는 전체 작업을 중단하지 않음
+      }
+    }
+
+    // GraphQL로 처리할 테이블들을 mutation block으로 한번에 처리
+    if (graphqlTables.length > 0) {
+      await this.processGraphQLRelationTables(profileId, graphqlTables);
+    }
+  }
+
+  /**
+   * REST API로 관계 테이블 처리
+   */
+  private async processRestRelationTable(
+    tableName: string,
+    relationData: unknown[],
+    fieldConfig: FormFieldConfig,
+    profileId: string,
+    variables?: Record<string, unknown>,
+  ): Promise<void> {
+    if (!fieldConfig.relationHandler?.handler) {
+      console.warn(`No handler specified for REST table ${tableName}`);
+      return;
+    }
+
+    console.log(`Processing ${tableName} via REST API with handler function`);
+
+    // 핸들러 함수 직접 호출
+    const handler = fieldConfig.relationHandler.handler;
+
+    // 기존 데이터 가져오기
+    const existingData = this.getOriginalRelationData(tableName);
+
+    // 데이터 변환 (필드 설정에 따라)
+    let processedData: unknown[];
+    switch (tableName) {
+      case 'profile_skills':
+        processedData = (relationData as Array<{ skill_name: string }>)
+          .map((item) => item.skill_name)
+          .filter(Boolean);
+        break;
+      case 'student_certificates':
+        processedData = (
+          relationData as Array<{
+            certificate_name?: string;
+            certificates?: { certificate_name: string };
+          }>
+        )
+          .map(
+            (item) =>
+              item.certificate_name || item.certificates?.certificate_name,
+          )
+          .filter(Boolean);
+        break;
+      case 'profile_competitions':
+        processedData = (relationData as Array<{ prize: string }>)
+          .map((item) => item.prize)
+          .filter(Boolean);
+        break;
+      case 'profile_link':
+        processedData = (relationData as Array<{ link: string; alt?: string }>)
+          .map((item) => ({
+            link: item.link,
+            alt: item.alt || '',
+          }))
+          .filter((item) => item.link);
+        break;
+      default:
+        processedData = relationData;
+    }
+
+    // 핸들러 호출
+    const targetId = fieldConfig.relationHandler?.requiresIdLookup
+      ? (variables?.owner as string) || profileId
+      : profileId;
+    await handler(targetId, processedData, existingData);
+  }
+
+  /**
+   * GraphQL mutation block으로 여러 관계 테이블 처리
+   */
+  private async processGraphQLRelationTables(
+    profileId: string,
+    graphqlTables: Array<{ tableName: string; relationData: unknown[] }>,
+  ): Promise<void> {
+    if (graphqlTables.length === 0) return;
+
+    console.log('Processing GraphQL relation tables with mutation block');
+
+    // Mutation block 구성
+    let mutationBlock = 'mutation UpdateRelations(';
+    const variables: Record<string, unknown> = {};
+    const selectionFields: string[] = [];
+
+    // 각 테이블에 대한 변수와 필드 추가
+    graphqlTables.forEach(({ tableName, relationData }, index) => {
+      const varName = `${tableName}Filter${index}`;
+      const objectsVarName = `${tableName}Objects${index}`;
+
+      // Delete mutation용 변수
+      mutationBlock += `$${varName}: ${tableName}Filter!, `;
+      variables[varName] = { profile_id: { eq: profileId } };
+
+      // Insert: $objects에 owner와 is_team 포함 (새로 생성하므로 필요)
+      const mergedMainData = { ...relationData, ...variables };
+      console.log(
+        'Save Data - Merged Main Data (Insert):',
+        JSON.stringify(mergedMainData, null, 2),
+      );
+
+      variables[objectsVarName] = (relationData as unknown[]).map((item) => ({
+        ...(item as Record<string, unknown>),
+        profile_id: profileId,
+      }));
+
+      // Selection 필드
+      const deleteFieldName = `delete${
+        tableName.charAt(0).toUpperCase() + tableName.slice(1)
+      }`;
+      selectionFields.push(
+        `${deleteFieldName}: deleteFrom${tableName}Collection(filter: $${varName}) { affectedCount }`,
+      );
+
+      if (relationData && relationData.length > 0) {
+        const insertFieldName = `insert${
+          tableName.charAt(0).toUpperCase() + tableName.slice(1)
+        }`;
+        selectionFields.push(
+          `${insertFieldName}: insertInto${tableName}Collection(objects: $${objectsVarName}) { affectedCount }`,
+        );
+      }
+    });
+
+    // Mutation block 완성
+    mutationBlock = mutationBlock.slice(0, -2) + ') {\n'; // 마지막 ', ' 제거하고 괄호 닫기
+    mutationBlock += selectionFields.join('\n  ') + '\n}';
+
+    console.log('Generated GraphQL mutation block:', mutationBlock);
+    console.log('Variables:', JSON.stringify(variables, null, 2));
+
+    // Mutation 실행
+    await executeMutation(mutationBlock, variables);
   }
 }
 
