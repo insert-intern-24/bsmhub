@@ -33,6 +33,7 @@ export const profileConfig: FormConfig = {
               profile_competitionsCollection {
                 edges {
                   node {
+                    competition_id
                     prize
                   }
                 }
@@ -82,7 +83,7 @@ export const profileConfig: FormConfig = {
           }
         }
       }
-    `
+    `,
   },
   fields: [
     {

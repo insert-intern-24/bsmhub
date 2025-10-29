@@ -14,6 +14,7 @@ import {
   updateProfileSkills,
   updateStudentCertificates,
   updateProfileCompetitions,
+  updateProfileLinks,
 } from '@/utils/graphQL/relationTableHelper';
 
 /**
@@ -31,6 +32,7 @@ export interface Result {
  */
 export class GraphQLDataService {
   private currentProfileId: string | null = null; // 현재 로드된 프로필 ID 저장
+  private originalRelationData: Map<string, any[]> = new Map(); // 관계 테이블 데이터 캐시
 
   /**
    * 데이터 로드
@@ -112,6 +114,9 @@ export class GraphQLDataService {
       }
 
       console.log('Merged Node Data:', JSON.stringify(mainNode, null, 2));
+
+      // 관계 테이블 데이터 캐싱 (업데이트 시 재사용)
+      this.setOriginalRelationData(mainNode);
 
       // edges 배열을 다시 구성
       const mergedCollectionData = {
@@ -245,7 +250,10 @@ export class GraphQLDataService {
               const skillNames = relationData
                 .map((item) => item.skill_name)
                 .filter(Boolean);
-              await updateProfileSkills(profileId, skillNames);
+              const existingSkills = this.getOriginalRelationData(
+                'profile_skills',
+              ) as Array<{ skill_id: number; skill_name: string }>;
+              await updateProfileSkills(profileId, skillNames, existingSkills);
               continue;
             }
 
@@ -258,9 +266,13 @@ export class GraphQLDataService {
                     item.certificates?.certificate_name,
                 )
                 .filter(Boolean);
+              const existingCerts = this.getOriginalRelationData(
+                'student_certificates',
+              ) as Array<{ certificate_id: number; certificate_name: string }>;
               await updateStudentCertificates(
                 variables?.owner || profileId,
                 certNames,
+                existingCerts,
               );
               continue;
             }
@@ -270,7 +282,29 @@ export class GraphQLDataService {
               const prizes = relationData
                 .map((item) => item.prize)
                 .filter(Boolean);
-              await updateProfileCompetitions(profileId, prizes);
+              const existingPrizes = this.getOriginalRelationData(
+                'profile_competitions',
+              ) as Array<{ competition_id: number; prize: string }>;
+              await updateProfileCompetitions(
+                profileId,
+                prizes,
+                existingPrizes,
+              );
+              continue;
+            }
+
+            if (tableName === 'profile_link') {
+              console.log(`Processing ${tableName} via Supabase REST API`);
+              const links = relationData
+                .map((item) => ({
+                  link: item.link,
+                  alt: item.alt || '',
+                }))
+                .filter((item) => item.link);
+              const existingLinks = this.getOriginalRelationData(
+                'profile_link',
+              ) as Array<{ link: string; alt: string }>;
+              await updateProfileLinks(profileId, links, existingLinks);
               continue;
             }
 
@@ -361,6 +395,81 @@ export class GraphQLDataService {
     });
 
     return formData;
+  }
+
+  /**
+   * 기존 관계 테이블 데이터 저장
+   * GraphQL 응답에서 관계 테이블 데이터를 추출하여 저장
+   */
+  private setOriginalRelationData(mainNode: Record<string, unknown>): void {
+    this.originalRelationData.clear();
+
+    // profile_skills 캐싱 (skill_id도 함께 저장)
+    if (mainNode.profile_skillsCollection) {
+      const skillsData = (
+        mainNode.profile_skillsCollection as {
+          edges: Array<{
+            node: { skill_id: number; skills: { skill_name: string } };
+          }>;
+        }
+      ).edges.map((edge) => ({
+        skill_id: edge.node.skill_id,
+        skill_name: edge.node.skills.skill_name,
+      }));
+      this.originalRelationData.set('profile_skills', skillsData);
+      console.log('Cached profile_skills:', skillsData);
+    }
+
+    // student_certificates 캐싱 (certificate_id도 함께 저장)
+    if (mainNode.student_certificatesCollection) {
+      const certsData = (
+        mainNode.student_certificatesCollection as {
+          edges: Array<{
+            node: {
+              certificate_id: number;
+              certificates: { certificate_name: string };
+            };
+          }>;
+        }
+      ).edges.map((edge) => ({
+        certificate_id: edge.node.certificate_id,
+        certificate_name: edge.node.certificates.certificate_name,
+      }));
+      this.originalRelationData.set('student_certificates', certsData);
+      console.log('Cached student_certificates:', certsData);
+    }
+
+    // profile_competitions 캐싱 (competition_id도 함께 저장)
+    if (mainNode.profile_competitionsCollection) {
+      const compsData = (
+        mainNode.profile_competitionsCollection as {
+          edges: Array<{ node: { competition_id: number; prize: string } }>;
+        }
+      ).edges.map((edge) => ({
+        competition_id: edge.node.competition_id,
+        prize: edge.node.prize,
+      }));
+      this.originalRelationData.set('profile_competitions', compsData);
+      console.log('Cached profile_competitions:', compsData);
+    }
+
+    // profile_link 캐싱
+    if (mainNode.profile_linkCollection) {
+      const linksData = (
+        mainNode.profile_linkCollection as {
+          edges: Array<{ node: { link: string; alt: string } }>;
+        }
+      ).edges.map((edge) => ({ link: edge.node.link, alt: edge.node.alt }));
+      this.originalRelationData.set('profile_link', linksData);
+      console.log('Cached profile_link:', linksData);
+    }
+  }
+
+  /**
+   * 캐시된 관계 테이블 데이터 가져오기
+   */
+  getOriginalRelationData(tableName: string): unknown[] {
+    return this.originalRelationData.get(tableName) || [];
   }
 
   /**
