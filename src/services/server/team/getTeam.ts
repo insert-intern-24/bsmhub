@@ -18,8 +18,8 @@ export const getAllTeams = async (): Promise<TeamData[] | null> => {
         link,
         alt
       ),
-      team_member!team_member_team_id_fkey (
-        profile!team_member_profile_id_fkey (
+      team_member!team_member_profile_id_fkey (
+        profile!team_member_participant_id_fkey (
           profile_id,
           profile_image
         )
