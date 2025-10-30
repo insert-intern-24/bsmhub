@@ -11,7 +11,9 @@ const PortfolioPage = async ({ params, searchParams }: PortfolioProps) => {
   const profileName = (await params).profileName;
   const path = (await searchParams).path ?? 'home';
 
-  return <Portfolio profileName={profileName} path={path} />;
+  return (
+    <Portfolio profileName={decodeURIComponent(profileName)} path={path} />
+  );
 };
 
 export default PortfolioPage;
