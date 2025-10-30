@@ -4,10 +4,7 @@ import { createClient } from '@/utils/supabase/client';
 function generateRandomFileName(originalName: string): string {
   const hasExt = originalName.includes('.');
   const ext = hasExt ? `.${originalName.split('.').pop()}` : '';
-  const uuid =
-    typeof crypto !== 'undefined' && 'randomUUID' in crypto
-      ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  const uuid = `${Date.now()}-${crypto.randomUUID()}`;
   return `${uuid}${ext}`;
 }
 
