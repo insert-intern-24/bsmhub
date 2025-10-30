@@ -1,8 +1,4 @@
 import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
-import {
-  updateProfileSkills,
-  updateProfileCompetitions,
-} from '@/utils/graphQL/relationTableHelper';
 
 export const teamProfileConfig: FormConfig = {
   graphql: {
