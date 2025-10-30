@@ -5,7 +5,7 @@ import { Body, Label, TitleEN } from '@/app/components/system/text';
 import { TeamData } from './types';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import { getFoundedYear } from '@/utils/date';
-import getMySession from '@/services/server/auth/getMySession';
+import getMyAccount from '@/services/server/auth/getMyAccount';
 import PortfolioEditButton from '@/app/components/card/portfolio/PortfolioEditButton';
 
 interface TeamSidebarProps {
@@ -14,7 +14,7 @@ interface TeamSidebarProps {
 }
 
 const TeamSidebar = async ({ teamDetail, projectCount }: TeamSidebarProps) => {
-  const currentSession = await getMySession();
+  const currentSession = await getMyAccount();
   return (
     <aside
       className="pt-[4.5rem] w-[21.75rem] min-h-[50rem] 
@@ -26,9 +26,7 @@ const TeamSidebar = async ({ teamDetail, projectCount }: TeamSidebarProps) => {
         <Body className="text-gray-base flex-col justify-end">
           {teamDetail?.description}
         </Body>
-        {currentSession?.user.id == teamDetail?.owner && (
-          <PortfolioEditButton />
-        )}
+        {currentSession.id == teamDetail?.owner && <PortfolioEditButton />}
       </div>
       <hr className="border-light-gray-outline" />
       <div className="flex-col gap-2.5">
