@@ -1,11 +1,14 @@
 import { createClient } from '@/utils/supabase/client';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
-import { PortfolioData, ProfileWithProjects } from '@/app/(box-layout)/portfolio/types';
+import {
+  PortfolioData,
+  ProfileWithProjects,
+} from '@/app/(box-layout)/portfolio/types';
 import { PaginatedPortfolioResponse } from '@/types/pagination';
 
 export async function getPaginatedPortfolioData(
   page: number = 1,
-  limit: number = 5
+  limit: number = 5,
 ): Promise<PaginatedPortfolioResponse> {
   const supabase = await createClient();
   const offset = (page - 1) * limit;
@@ -52,7 +55,7 @@ export async function getPaginatedPortfolioData(
           status
         )
       ),
-      student(
+      profile_owner_fkey1(
         name,
         join_at,
         graduate_at,
@@ -99,7 +102,7 @@ export async function getPaginatedPortfolioData(
     return {
       profile: {
         name: data.profile_name,
-        role: data.student.student_jobs?.map(({ job }) => job.job_name) || [],
+        role: data.student?.student_jobs?.map(({ job }) => job.job_name) || [],
         bio: data.description!,
         status: '구직 중',
         profile_image: convertFromDatabaseImageURL(data.profile_image),
