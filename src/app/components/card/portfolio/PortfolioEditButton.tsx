@@ -9,7 +9,7 @@ export default function PortfolioEditButton() {
   const { openModal, closeModal } = useModal();
   return (
     <button
-      className="rounded-3xl h-10 flex justify-center items-center gap-4 bg-black text-white"
+      className="rounded-3xl h-10 flex justify-center items-center gap-4 bg-black text-white w-full"
       onClick={() =>
         openModal(
           <InputOfModal

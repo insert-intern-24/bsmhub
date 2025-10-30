@@ -13,6 +13,7 @@ export const getTeamDetail = async (teamName: string): Promise<TeamData | null> 
       profile_image,
       description,
       created_at,
+      owner,
       profile_link (
         link,
         alt
