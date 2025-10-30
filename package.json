@@ -10,9 +10,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@apollo/client": "^4.0.7",
-    "@graphql-codegen/cli": "^6.0.1",
-    "@graphql-codegen/client-preset": "^5.1.1",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.76.1",
     "@tabler/icons-react": "^3.35.0",
