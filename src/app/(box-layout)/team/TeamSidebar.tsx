@@ -5,13 +5,16 @@ import { Body, Label, TitleEN } from '@/app/components/system/text';
 import { TeamData } from './types';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import { getFoundedYear } from '@/utils/date';
+import getMySession from '@/services/server/auth/getMySession';
+import PortfolioEditButton from '@/app/components/card/portfolio/PortfolioEditButton';
 
 interface TeamSidebarProps {
   teamDetail: TeamData;
   projectCount: number;
 }
 
-const TeamSidebar = ({ teamDetail, projectCount }: TeamSidebarProps) => {
+const TeamSidebar = async ({ teamDetail, projectCount }: TeamSidebarProps) => {
+  const currentSession = await getMySession();
   return (
     <aside
       className="pt-[4.5rem] w-[21.75rem] min-h-[50rem] 
@@ -23,6 +26,9 @@ const TeamSidebar = ({ teamDetail, projectCount }: TeamSidebarProps) => {
         <Body className="text-gray-base flex-col justify-end">
           {teamDetail?.description}
         </Body>
+        {currentSession?.user.id == teamDetail?.owner && (
+          <PortfolioEditButton />
+        )}
       </div>
       <hr className="border-light-gray-outline" />
       <div className="flex-col gap-2.5">
