@@ -13,6 +13,7 @@ export const getProfile = async (profile_name: string): Promise<ProfileType> => 
       profile_name,
       description,
       profile_image,
+      owner,
       student (
         name,
         student_number,

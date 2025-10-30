@@ -11,6 +11,8 @@ import { convertStudentNumber } from '@/utils/convertStudentNumber';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import { getProfile } from '@/services/server/profile/getProfile';
 import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
+import getMySession from '@/services/server/auth/getMySession';
+import PortfolioEditButton from '@/app/components/card/portfolio/PortfolioEditButton';
 
 interface PortfolioProps {
   profileName: string;
@@ -21,6 +23,7 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
   const profile = (await getProfile(profileName)) ?? notFound();
   const uuid = profile.profile_id;
   const studentInfo = profile.student[0];
+  const currentSession = await getMySession();
 
   const profileDetail = await getProfileDetail(profileName);
   const cooperationProjects = await getCooperationProjects(uuid);
@@ -60,9 +63,10 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
       <ProfileIcon image={profile.profile_image} />
       <TitleEN className="mobile:mb-2">{profile.profile_name}</TitleEN>
       <div className={`${containerCss} responsive-portfolioHome`}>
-        <Body className="text-gray-base flex-col justify-end">
+        <Body className="text-gray-base flex-col justify-end gap-4">
           {convertStudentNumber(studentInfo.student_number)} {studentInfo.name}{' '}
           | {studentInfo.departments.department_name}
+          {currentSession?.user.id == profile.owner && <PortfolioEditButton />}
         </Body>
 
         <div className={`${isHome ? 'max-w-[46rem]' : ''} mobile:hidden`}>
