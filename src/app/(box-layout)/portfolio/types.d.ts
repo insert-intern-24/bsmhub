@@ -49,7 +49,7 @@ export type ProfileWithProjects = MergeDeep<
             >;
           }[])
       | null;
-    student:
+    student?:
       | Pick<Tables<'student'>, 'name' | 'join_at' | 'graduate_at'> & {
           department: Tables<'departments'>;
           student_jobs:
