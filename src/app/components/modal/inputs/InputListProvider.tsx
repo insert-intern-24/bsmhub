@@ -130,6 +130,10 @@ const InputListProvider = ({
     });
   };
 
+  const handleDeleteInput = (index: number) => {
+    dispatch({ type: 'DELETE_INPUT', index });
+  };
+
   // const canAddMore = !maxInputs || inputs.length < maxInputs
 
   return (
@@ -159,6 +163,8 @@ const InputListProvider = ({
               suggestions={suggestions}
               onInputChange={handleInputChange}
               tableData={tableData}
+              onDelete={handleDeleteInput}
+              groupIndex={index}
             />
           </div>
         );

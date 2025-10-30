@@ -28,6 +28,8 @@ interface MultiInputProps {
   suggestions?: Record<string, unknown>[];
   onInputChange?: (value: string) => void;
   tableData?: Record<string, unknown>[];
+  onDelete?: (index: number) => void;
+  groupIndex?: number;
 }
 
 function MultiInput({
@@ -36,6 +38,8 @@ function MultiInput({
   suggestions = [],
   onInputChange,
   tableData = [],
+  onDelete,
+  groupIndex,
 }: MultiInputProps) {
   return (
     <div className="flex flex-row gap-2 w-full relative">
@@ -67,16 +71,12 @@ function MultiInput({
               <div
                 key={index}
                 style={widthStyle}
-                className="flex items-center gap-2 px-2.5 py-1 text-gray-base text-body bg-light-gray-outline rounded"
+                className="flex items-center gap-2 px-2.5 py-1 text-gray-base text-body bg-light-gray-outline rounded input-common"
               >
                 <span>{displayName}</span>
                 <button
                   type="button"
-                  onClick={() =>
-                    inputProps.onChange?.({
-                      target: { value: '' },
-                    } as React.ChangeEvent<HTMLInputElement>)
-                  }
+                  onClick={() => onDelete?.(groupIndex!)}
                   className="text-gray-500 hover:text-gray-700"
                 >
                   ×
