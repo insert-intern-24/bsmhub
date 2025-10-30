@@ -6,7 +6,7 @@ import { TeamData } from './types';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import { getFoundedYear } from '@/utils/date';
 import getMyAccount from '@/services/server/auth/getMyAccount';
-import PortfolioEditButton from '@/app/components/card/portfolio/PortfolioEditButton';
+import TeamProfileEditButton from '@/app/components/card/portfolio/TeamProfileEditButton';
 
 interface TeamSidebarProps {
   teamDetail: TeamData;
@@ -26,7 +26,12 @@ const TeamSidebar = async ({ teamDetail, projectCount }: TeamSidebarProps) => {
         <Body className="text-gray-base flex-col justify-end">
           {teamDetail?.description}
         </Body>
-        {currentSession.id == teamDetail?.owner && <PortfolioEditButton />}
+        {currentSession.id == teamDetail?.owner && (
+          <TeamProfileEditButton
+            profileId={teamDetail?.profile_id || ''}
+            profileName={teamDetail?.profile_name}
+          />
+        )}
       </div>
       <hr className="border-light-gray-outline" />
       <div className="flex-col gap-2.5">

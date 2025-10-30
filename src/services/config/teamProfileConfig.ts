@@ -7,8 +7,8 @@ import {
 export const teamProfileConfig: FormConfig = {
   graphql: {
     read: `
-      query GetTeamProfile($owner: String!) {
-        profileCollection(filter: { owner: { eq: $owner }, is_team: { eq: true } }) {
+      query GetTeamProfile($profile_id: String!) {
+        profileCollection(filter: { profile_id: { eq: $profile_id }, is_team: { eq: true } }) {
           edges {
             node {
               profile_id
@@ -207,42 +207,42 @@ export const teamProfileConfig: FormConfig = {
         ],
       },
     },
-    {
-      fieldName: 'profile_competitions',
-      label: '수상이력',
-      type: 'inputList',
-      required: false,
-      columnInfo: { table: 'profile_competitions', column: '*' },
-      relationHandler: {
-        type: 'rest',
-        handler: updateProfileCompetitions,
-        identifierIsStudnetId: false,
-      },
-      inputConfig: {
-        onlyOne: false,
-        inputs: [
-          {
-            name: 'prize',
-            type: 'text',
-            placeholder: '수상내역을 입력하세요',
-            required: true,
-          },
-        ],
-      },
-    },
-    {
-      fieldName: 'profile_skills',
-      label: '기술스택',
-      type: 'skillTag',
-      required: false,
-      columnInfo: { table: 'profile_skills', column: '*' },
-      relationHandler: {
-        type: 'rest',
-        handler: updateProfileSkills,
-        identifierIsStudnetId: false,
-      },
-      valuePath: 'skill_id',
-      white: false,
-    },
+    // {
+    //   fieldName: 'profile_competitions',
+    //   label: '수상이력',
+    //   type: 'inputList',
+    //   required: false,
+    //   columnInfo: { table: 'profile_competitions', column: '*' },
+    //   relationHandler: {
+    //     type: 'rest',
+    //     handler: updateProfileCompetitions,
+    //     identifierIsStudnetId: false,
+    //   },
+    //   inputConfig: {
+    //     onlyOne: false,
+    //     inputs: [
+    //       {
+    //         name: 'prize',
+    //         type: 'text',
+    //         placeholder: '수상내역을 입력하세요',
+    //         required: true,
+    //       },
+    //     ],
+    //   },
+    // },
+    // {
+    //   fieldName: 'profile_skills',
+    //   label: '기술스택',
+    //   type: 'skillTag',
+    //   required: false,
+    //   columnInfo: { table: 'profile_skills', column: '*' },
+    //   relationHandler: {
+    //     type: 'rest',
+    //     handler: updateProfileSkills,
+    //     identifierIsStudnetId: false,
+    //   },
+    //   valuePath: 'skill_id',
+    //   white: false,
+    // },
   ],
 };

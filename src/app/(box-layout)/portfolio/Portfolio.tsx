@@ -12,7 +12,7 @@ import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter
 import { getProfile } from '@/services/server/profile/getProfile';
 import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
 import getMyAccount from '@/services/server/auth/getMyAccount';
-import PortfolioEditButton from '@/app/components/card/portfolio/PortfolioEditButton';
+import ProfileEditButton from '@/app/components/card/portfolio/ProfileEditButton';
 
 interface PortfolioProps {
   profileName: string;
@@ -66,7 +66,12 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
         <Body className="text-gray-base flex-col justify-end gap-4">
           {convertStudentNumber(studentInfo.student_number)} {studentInfo.name}{' '}
           | {studentInfo.departments.department_name}
-          {currentUser.id == profile.owner && <PortfolioEditButton />}
+          {currentUser.id == profile.owner && (
+            <ProfileEditButton
+              ownerId={profile.owner}
+              profileName={profile.profile_name}
+            />
+          )}
         </Body>
 
         <div className={`${isHome ? 'max-w-[46rem]' : ''} mobile:hidden`}>
