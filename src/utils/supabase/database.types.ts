@@ -459,7 +459,7 @@ export type Database = {
         Insert: {
           certificate_id?: number
           certificate_name: string
-          is_software: boolean
+          is_software?: boolean
         }
         Update: {
           certificate_id?: number
@@ -894,7 +894,14 @@ export type Database = {
           profile_image?: string
           profile_name?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profile_owner_fkey1"
+            columns: ["owner"]
+            referencedRelation: "student"
+            referencedColumns: ["student_id"]
+          },
+        ]
       }
       profile_competitions: {
         Row: {
@@ -1027,12 +1034,6 @@ export type Database = {
             columns: ["profile_id"]
             referencedRelation: "profile"
             referencedColumns: ["profile_id"]
-          },
-          {
-            foreignKeyName: "profile_skills_skill_id_fkey"
-            columns: ["skill_id"]
-            referencedRelation: "skills"
-            referencedColumns: ["skill_id"]
           },
         ]
       }
@@ -1439,27 +1440,27 @@ export type Database = {
       }
       team_member: {
         Row: {
+          participant_id: string
           profile_id: string
-          team_id: string
         }
         Insert: {
+          participant_id: string
           profile_id: string
-          team_id: string
         }
         Update: {
+          participant_id?: string
           profile_id?: string
-          team_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "team_member_profile_id_fkey"
-            columns: ["profile_id"]
+            foreignKeyName: "team_member_participant_id_fkey"
+            columns: ["participant_id"]
             referencedRelation: "profile"
             referencedColumns: ["profile_id"]
           },
           {
-            foreignKeyName: "team_member_team_id_fkey"
-            columns: ["team_id"]
+            foreignKeyName: "team_member_profile_id_fkey"
+            columns: ["profile_id"]
             referencedRelation: "profile"
             referencedColumns: ["profile_id"]
           },
@@ -1566,12 +1567,6 @@ export type Database = {
             columns: ["profile_id"]
             referencedRelation: "profile"
             referencedColumns: ["profile_id"]
-          },
-          {
-            foreignKeyName: "profile_skills_skill_id_fkey"
-            columns: ["skill_id"]
-            referencedRelation: "skills"
-            referencedColumns: ["skill_id"]
           },
         ]
       }
