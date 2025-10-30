@@ -133,6 +133,17 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
                     />
                   );
                 }
+                if(field.type === 'dropdownInputList'){
+                  return (
+                    <InputListProvider
+                      config={field.inputConfig}
+                      dropdownInputConfig={field.dropdownInputConfig}
+                      onInputsChange={onChange}
+                      initialValue={value as MultiInputItem[][] | undefined}
+                      onlyOne={field.inputConfig.onlyOne}
+                    />
+                  );
+                }
                 
                 // Always return a React element
                 return <></>;

@@ -1,5 +1,5 @@
 import { ChangeEvent } from 'react';
-import { InputConfig } from '../InputListProvider';
+import { DropdownInputConfig, InputConfig } from '../InputListProvider';
 
 // GraphQL 쿼리 생성을 위한 컬럼 정보
 export interface ColumnInfo {
@@ -95,6 +95,12 @@ interface InputListFieldConfig extends BaseFieldConfig {
   inputConfig: InputConfig;
 }
 
+interface DropdownInputListFieldConfig extends BaseFieldConfig {
+  type: 'dropdownInputList';
+  inputConfig: InputConfig
+  dropdownInputConfig: DropdownInputConfig
+}
+
 // SkillTag 타입
 interface SkillTagFieldConfig extends BaseFieldConfig {
   type: 'skillTag';
@@ -121,7 +127,8 @@ export type FormFieldConfig =
   | InputListFieldConfig
   | SkillTagFieldConfig
   | CheckboxFieldConfig
-  | PictureFieldConfig;
+  | PictureFieldConfig
+  | DropdownInputListFieldConfig;
 
 // 전체 폼 설정
 export interface FormConfig {

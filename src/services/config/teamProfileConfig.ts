@@ -203,6 +203,30 @@ export const teamProfileConfig: FormConfig = {
         ],
       },
     },
+    {
+      fieldName: 'team_members',
+      label: '팀원',
+      type: 'dropdownInputList',
+      required: true,
+      inputConfig: {
+        inputs: [
+          {
+            placeholder: '팀원을 검색하세요',
+            required: true,
+          },
+        ],
+      },
+      dropdownInputConfig: {
+        tableName: 'profile',
+        nameColumnName: 'profile_name',
+        valueColumnName: 'profile_id',
+      },
+      columnInfo: { table: 'team_member', column: '*' },
+      relationHandler: {
+        type: 'graphql',
+        identifierIsStudnetId: false,
+      },
+    },
     // {
     //   fieldName: 'profile_competitions',
     //   label: '수상이력',
