@@ -79,7 +79,7 @@ export const useInputList = (initialConfig?: MultiInputItem[] | MultiInputItem[]
       ? [initialConfig as MultiInputItem[]]
       : [[{ value: '' } as MultiInputItem]]
 
-  console.log('useInputList initialInputs:', initialInputs);
+  // console.log('useInputList initialInputs:', initialInputs);
 
   return useReducer(reducer, {
     inputs: initialInputs,

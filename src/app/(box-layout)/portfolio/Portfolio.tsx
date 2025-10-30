@@ -20,7 +20,7 @@ interface PortfolioProps {
 const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
   const profile = (await getProfile(profileName)) ?? notFound();
   const uuid = profile.profile_id;
-  const studentInfo = profile.student[0];
+  const studentInfo = profile.student;
 
   const profileDetail = await getProfileDetail(profileName);
   const cooperationProjects = await getCooperationProjects(uuid);
