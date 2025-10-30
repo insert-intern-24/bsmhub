@@ -367,6 +367,15 @@ export class GraphQLDataService {
       this.originalRelationData.set('profile_link', linksData);
       console.log('Cached profile_link:', linksData);
     }
+    if (mainNode.team_memberCollection) {
+      const membersData = (
+        mainNode.team_memberCollection as {
+          edges: Array<{ node: { participant_id: string } }>;
+        }
+      ).edges.map((edge) => ({ participant_id: edge.node.participant_id }));
+      this.originalRelationData.set('team_member', membersData);
+      console.log('Cached team_member:', membersData);
+    }
   }
 
   /**
@@ -374,20 +383,6 @@ export class GraphQLDataService {
    */
   getOriginalRelationData(tableName: string): unknown[] {
     return this.originalRelationData.get(tableName) || [];
-  }
-
-  /**
-   * 테이블의 ID 필드명 반환 (실제 데이터베이스 스키마 기반)
-   */
-  private getTableIdField(tableName: string): string {
-    const idFieldMap: Record<string, string> = {
-      profile_link: 'profile_id', // profile_link는 별도 ID 없음, profile_id만 있음
-      profile_skills: 'profile_id', // profile_skills는 별도 ID 없음, profile_id와 skill_id만 있음
-      profile_competitions: 'competition_id', // competition_id가 있음
-      student_certificates: 'certificate_id', // certificate_id가 있음
-    };
-
-    return idFieldMap[tableName] || `${tableName}_id`;
   }
 
   /**

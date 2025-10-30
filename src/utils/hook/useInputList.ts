@@ -15,6 +15,7 @@ type InputAction =
   | { type: 'UPDATE_VALUE'; index: number; value: string | number | undefined; subIndex: number }
   | { type: 'SET_ACTIVE'; index: number | null }
   | { type: 'ADD_INPUT'; multiInputConfig: MultiInputItem[] }
+  | { type: 'DELETE_INPUT'; index: number }
 
 // 커스텀 훅: 비즈니스 로직 분리
 export const useInputList = (initialConfig?: MultiInputItem[] | MultiInputItem[][]) => {
@@ -23,7 +24,7 @@ export const useInputList = (initialConfig?: MultiInputItem[] | MultiInputItem[]
 
   const isInputEmpty = (input: MultiInputItem[]): boolean => {
     // 모든 입력이 비어있는지 확인
-    return input.every(item => isEmpty(item.value))
+    return input && input.every(item => isEmpty(item.value))
   }
 
   const reducer = produce((draft: InputListState, action: InputAction) => {
@@ -63,6 +64,18 @@ export const useInputList = (initialConfig?: MultiInputItem[] | MultiInputItem[]
         
         draft.inputs.push(action.multiInputConfig)
         draft.activeIndex = draft.inputs.length - 1
+        break
+      }
+      
+      case 'DELETE_INPUT': {
+        if (action.index >= 0 && action.index < draft.inputs.length) {
+          draft.inputs.splice(action.index, 1)
+          if (draft.activeIndex === action.index) {
+            draft.activeIndex = null
+          } else if (draft.activeIndex !== null && draft.activeIndex > action.index) {
+            draft.activeIndex -= 1
+          }
+        }
         break
       }
     }

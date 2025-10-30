@@ -20,21 +20,10 @@ export const teamProfileConfig: FormConfig = {
                   }
                 }
               }
-              profile_skillsCollection {
+              team_memberCollection {
                 edges {
                   node {
-                    skill_id
-                    skills {
-                      skill_name
-                    }
-                  }
-                }
-              }
-              profile_competitionsCollection {
-                edges {
-                  node {
-                    competition_id
-                    prize
+                    participant_id
                   }
                 }
               }
@@ -207,11 +196,11 @@ export const teamProfileConfig: FormConfig = {
       fieldName: 'team_members',
       label: '팀원',
       type: 'dropdownInputList',
-      required: true,
+      required: false,
       inputConfig: {
         inputs: [
           {
-            name: 'profile_id',
+            name: 'participant_id',
             placeholder: '팀원을 검색하세요',
             required: true,
           },
@@ -226,19 +215,18 @@ export const teamProfileConfig: FormConfig = {
       relationHandler: {
         type: 'graphql',
         identifierIsStudnetId: false,
-        dataTransformer: (data: unknown[]) =>{
-          console.log("dataTransformer called with:", data);
-          return (data as Array<{ profile_id: string }>).map((item) => ({
-            profile_id: item.profile_id,
-            team_id: 'example-team',
+        dataTransformer: (data: unknown[]) => {
+          console.log('dataTransformer called with:', data);
+          return (data as Array<{ participant_id: string }>).map((item) => ({
+            participant_id: item.participant_id,
           }));
         },
         deleteFilterGenerator: (
           item: Record<string, unknown>,
-          teamId: string,
+          profileId: string,
         ) => ({
-          team_id: { eq: teamId },
-          profile_id: { eq: item.profile_id },
+          participant_id: { eq: item.participant_id },
+          profile_id: { eq: profileId },
         }),
         changeCalculator: (
           newData: unknown[],
@@ -247,13 +235,15 @@ export const teamProfileConfig: FormConfig = {
           const toDelete: Record<string, unknown>[] = [];
           const toInsert: Record<string, unknown>[] = [];
 
-          const existingIds = existingData as Array<{ profile_id: string }>;
-          const newIds = newData as Array<{ profile_id: string }>;
+          const existingIds = existingData as Array<{ participant_id: string }>;
+          const newIds = newData as Array<{ participant_id: string }>;
+
+          console.log('datasssss :', { newData, existingData });
 
           // 삭제할 항목: 기존에 있지만 새로운 데이터에 없는 것
           existingIds.forEach((existing) => {
             const stillExists = newIds.some(
-              (newItem) => newItem.profile_id === existing.profile_id,
+              (newItem) => newItem.participant_id === existing.participant_id,
             );
             if (!stillExists) {
               toDelete.push(existing);
@@ -263,7 +253,7 @@ export const teamProfileConfig: FormConfig = {
           // 추가할 항목: 새로운 데이터에 있지만 기존에 없는 것
           newIds.forEach((newItem) => {
             const alreadyExists = existingIds.some(
-              (existing) => existing.profile_id === newItem.profile_id,
+              (existing) => existing.participant_id === newItem.participant_id,
             );
             if (!alreadyExists) {
               toInsert.push(newItem);

@@ -85,7 +85,7 @@ export function graphqlToFormData(
     }
 
     // InputList 타입 처리
-    if (field.type === 'inputList') {
+    if (field.type === 'inputList' || field.type === 'dropdownInputList') {
       const { inputConfig } = field;
 
       // 관계 테이블인 경우
@@ -223,7 +223,7 @@ export function formDataToGraphQL(
     }
 
     // InputList 타입 처리
-    if (field.type === 'inputList') {
+    if (field.type === 'inputList' || field.type === 'dropdownInputList') {
       const { inputConfig } = field;
       const items = fieldValue as MultiInputItem[][];
 
@@ -238,9 +238,11 @@ export function formDataToGraphQL(
               );
             })
             .map((item) => {
+              if(field.type === 'dropdownInputList') console.log("dropdownInputList item:", item);
               const obj: Record<string, unknown> = {};
               item.forEach((input, index) => {
                 const inputDef = inputConfig.inputs[index];
+                if (field.type === 'dropdownInputList') console.log("dropdownInputList inputDef:", inputDef, input);
                 if (inputDef && inputDef.name && input.value) {
                   // "certificates.certificate_name" 같은 형식 처리
                   const nameParts = inputDef.name.split('.');
@@ -255,8 +257,10 @@ export function formDataToGraphQL(
                       current = current[key] as Record<string, unknown>;
                     }
                     current[nameParts[nameParts.length - 1]] = input.value as unknown;
+                    if(field.type === 'dropdownInputList') console.log("dropdownInputList current:", current);
                   } else {
                     obj[inputDef.name] = input.value;
+                    if(field.type === 'dropdownInputList') console.log("dropdownInputList obj:", obj);
                   }
                 }
               });
@@ -266,6 +270,9 @@ export function formDataToGraphQL(
           if (relationItems.length > 0) {
             relationTableData.set(table, relationItems);
           }
+        } else {
+          // 빈 배열일 때도 relationTableData에 빈 배열 설정 (삭제 처리용)
+          relationTableData.set(table, []);
         }
       } else {
         // 메인 테이블의 컬럼인 경우 (onlyOne)
