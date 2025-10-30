@@ -1,10 +1,5 @@
 import { FormConfig, ColumnInfo } from '@/app/components/modal/inputs/types/inputTypes';
-import { Database } from '@/utils/supabase/database.types';
-
-// Supabase의 타입 시스템 활용
-type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
-type InsertDto<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Insert'];
-type UpdateDto<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Update'];
+ 
 
 /**
  * 테이블의 메타데이터 정보

@@ -45,7 +45,7 @@ const SkillTagProvider = ({
           setSkills(data as unknown as Tables<'skills'>[]);
         }
       });
-  }, []);
+  }, [supabase]);
 
   const skillMap = React.useMemo(() => {
     if (!skills) return new Map<number, string>();

@@ -31,30 +31,26 @@ export class ProfileGraphQLService {
    * @param profileId - 프로필 ID (업데이트인 경우)
    */
   async saveProfileData(
-    formData: Record<string, any>,
+    formData: Record<
+      string,
+      import('@/app/components/modal/inputs/MultiInput').MultiInputItem[][] |
+        string[] |
+        boolean |
+        File |
+        number[] |
+        null |
+        string
+    >,
     userId: string,
     profileId?: string
   ): Promise<Result> {
     try {
-      // 프로필 이름 중복 검사 (선택적)
-      if (!profileId) {
-        const isNameAvailable = await this.checkProfileNameAvailability(
-          formData.profile_full_name
-        );
-        if (!isNameAvailable) {
-          return {
-            success: false,
-            message: '이미 사용 중인 프로필 이름입니다.',
-          };
-        }
-      }
-
       // 범용 서비스를 통한 저장
       return await this.dataService.saveData(
         profileConfig,
         formData,
-        profileId,
-        userId
+        { owner: userId, is_team: false },
+        Boolean(profileId)
       );
     } catch (error) {
       console.error('Failed to save profile data:', error);
@@ -65,16 +61,7 @@ export class ProfileGraphQLService {
     }
   }
 
-  /**
-   * 프로필 이름 중복 검사
-   * @param profileName - 확인할 프로필 이름
-   * @returns 사용 가능하면 true
-   */
-  private async checkProfileNameAvailability(profileName: string): Promise<boolean> {
-    // TODO: 실제 중복 검사 로직 구현
-    // GraphQL 쿼리로 같은 이름이 있는지 확인
-    return true;
-  }
+  // 이름 중복 검사는 현재 사용하지 않음
 
   /**
    * 프로필 ID로 데이터 로드
@@ -95,7 +82,7 @@ export class ProfileGraphQLService {
    * 프로필 삭제
    * @param profileId - 삭제할 프로필 ID
    */
-  async deleteProfile(profileId: string): Promise<Result> {
+  async deleteProfile(): Promise<Result> {
     // TODO: 삭제 로직 구현
     return {
       success: false,

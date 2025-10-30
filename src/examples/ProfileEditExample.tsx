@@ -4,6 +4,7 @@ import React from 'react';
 import { profileConfig } from '@/services/config/profileConfig';
 import { useFormConfigData } from '@/utils/hook/useFormConfigData';
 import InputOfModal from '@/app/components/modal/inputs/InputOfModal';
+import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
 
 /**
  * 프로필 편집 모달 사용 예시
@@ -12,7 +13,7 @@ import InputOfModal from '@/app/components/modal/inputs/InputOfModal';
 export default function ProfileEditExample() {
   // 사용자 ID (실제로는 auth에서 가져와야 함)
   const userId = 'current-user-id';
-  const profileId = 'existing-profile-id'; // 업데이트인 경우
+  
 
   // 범용 Hook 사용
   const { initialValues, isLoading, saveData } = useFormConfigData(
@@ -20,16 +21,26 @@ export default function ProfileEditExample() {
     { owner: userId }, // 필터 조건
   );
 
-  const handleSubmit = async (data: any) => {
-    const result = await saveData(data);
+  const handleSubmit = (
+    data: Record<
+      string,
+      MultiInputItem[][] | string[] | boolean | File | number[] | null | string
+    >,
+  ): void => {
+    void (async () => {
+      const result = await saveData(
+        data as unknown as Record<
+          string,
+          MultiInputItem[][] | string[] | boolean | File | null | string
+        >,
+      );
 
-    if (result.success) {
-      console.log('프로필 저장 성공!', result.data);
-      // 성공 처리 (모달 닫기 등)
-    } else {
-      console.error('프로필 저장 실패:', result.message);
-      // 에러 처리
-    }
+      if (result.success) {
+        console.log('프로필 저장 성공!', result.data);
+      } else {
+        console.error('프로필 저장 실패:', result.message);
+      }
+    })();
   };
 
   if (isLoading) {

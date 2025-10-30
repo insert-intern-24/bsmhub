@@ -20,7 +20,7 @@ import {
 export interface Result {
   success: boolean;
   message?: string;
-  data?: any;
+  data?: unknown;
 }
 
 /**
@@ -29,7 +29,7 @@ export interface Result {
  */
 export class GraphQLDataService {
   private currentProfileId: string | null = null; // 현재 로드된 프로필 ID 저장
-  private originalRelationData: Map<string, any[]> = new Map(); // 관계 테이블 데이터 캐시
+  private originalRelationData: Map<string, unknown[]> = new Map(); // 관계 테이블 데이터 캐시
 
   /**
    * 데이터 로드
@@ -39,13 +39,13 @@ export class GraphQLDataService {
    */
   async loadData(
     formConfig: FormConfig,
-    variables?: Record<string, any>,
+    variables?: Record<string, unknown>,
   ): Promise<
     Record<string, MultiInputItem[][] | string[] | boolean | File | null>
   > {
     try {
       const query = buildReadQuery(formConfig);
-      const response = await executeQuery(query, variables);
+      const response = await executeQuery<Record<string, unknown>>(query, variables);
 
       console.log('GraphQL Response:', JSON.stringify(response, null, 2));
 
@@ -64,7 +64,9 @@ export class GraphQLDataService {
 
       // 첫 번째 컬렉션을 메인 데이터로 사용
       const mainCollectionKey = collectionKeys[0];
-      const mainCollection = response[mainCollectionKey];
+      const mainCollection = (response as Record<string, unknown>)[
+        mainCollectionKey
+      ] as { edges?: Array<{ node: Record<string, unknown> }> } | undefined;
 
       console.log(
         `Main Collection (${mainCollectionKey}):`,
@@ -77,18 +79,21 @@ export class GraphQLDataService {
       }
 
       // 메인 데이터 노드
-      const mainNode = mainCollection.edges[0].node;
+      const mainNode = mainCollection.edges[0].node as Record<string, unknown>;
 
       // profile_id 저장 (업데이트 시 사용)
-      if (mainNode.profile_id) {
-        this.currentProfileId = mainNode.profile_id;
+      const pid = (mainNode as { profile_id?: unknown }).profile_id;
+      if (typeof pid === 'string' && pid) {
+        this.currentProfileId = pid;
         console.log('Saved profile_id for updates:', this.currentProfileId);
       }
 
       // 다른 컬렉션들의 데이터를 메인 노드에 병합
       for (let i = 1; i < collectionKeys.length; i++) {
         const additionalKey = collectionKeys[i];
-        const additionalCollection = response[additionalKey];
+        const additionalCollection = (response as Record<string, unknown>)[
+          additionalKey
+        ] as { edges?: Array<{ node: Record<string, unknown> }> } | undefined;
 
         if (
           additionalCollection?.edges &&
@@ -141,8 +146,8 @@ export class GraphQLDataService {
    */
   async saveData(
     formConfig: FormConfig,
-    formData: Record<string, any>,
-    variables?: Record<string, any>,
+    formData: Record<string, MultiInputItem[][] | string[] | boolean | File | number[] | null | string>,
+    variables?: Record<string, unknown>,
     isUpdate: boolean = false,
   ): Promise<Result> {
     try {
@@ -169,7 +174,7 @@ export class GraphQLDataService {
       console.log('Save Data - Mutation:', mutation.substring(0, 300) + '...');
       console.log('Save Data - Is Update:', isUpdate);
 
-      let finalVariables: Record<string, any>;
+      let finalVariables: Record<string, unknown>;
 
       if (isUpdate) {
         // Update: $set에는 실제 변경할 필드만 포함 (owner, is_team 제외)
@@ -227,7 +232,7 @@ export class GraphQLDataService {
       // 디버깅: mutation 전체 출력
       console.log('Save Data - Full Mutation:', mutation);
 
-      const response = await executeMutation(mutation, finalVariables);
+      const response = await executeMutation<unknown>(mutation, finalVariables);
 
       console.log('Save Data - Response:', JSON.stringify(response, null, 2));
 
@@ -235,16 +240,27 @@ export class GraphQLDataService {
       if (isUpdate && relationTableData.size > 0) {
         console.log('Processing relation tables...');
 
+        const resp = response as
+          | {
+              updateprofileCollection?: {
+                records?: Array<{ profile_id?: string }>;
+              };
+            }
+          | undefined;
         const profileId =
-          response?.updateprofileCollection?.records?.[0]?.profile_id ||
-          variables?.owner;
+          resp?.updateprofileCollection?.records?.[0]?.profile_id ||
+          (variables?.owner as string | undefined);
 
-        await this.processRelationTables(
-          profileId,
-          relationTableData,
-          formConfig,
-          variables,
-        );
+        if (profileId) {
+          await this.processRelationTables(
+            profileId,
+            relationTableData,
+            formConfig,
+            variables,
+          );
+        } else {
+          console.warn('Skipping relation table processing: missing profileId');
+        }
       }
 
       return {

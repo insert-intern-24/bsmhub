@@ -8,22 +8,17 @@ import { buildReadQuery, buildInsertMutation, buildUpdateMutation } from './quer
 
 // 프로필 조회 쿼리 생성 테스트
 console.log('=== Profile Read Query ===');
-const readQuery = buildReadQuery(profileConfig, {
-  owner: { eq: 'user-123' },
-});
+const readQuery = buildReadQuery(profileConfig);
 console.log(readQuery);
 
 // 프로필 Insert Mutation 테스트
 console.log('\n=== Profile Insert Mutation ===');
-const insertMutation = buildInsertMutation(profileConfig, {
-  profile_name: 'John Doe',
-  description: 'Software Engineer',
-});
+const insertMutation = buildInsertMutation(profileConfig);
 console.log(insertMutation);
 
 // 프로필 Update Mutation 테스트
 console.log('\n=== Profile Update Mutation ===');
-const updateMutation = buildUpdateMutation(profileConfig, 'profile-123');
+const updateMutation = buildUpdateMutation(profileConfig);
 console.log(updateMutation);
 
 export { readQuery, insertMutation, updateMutation };

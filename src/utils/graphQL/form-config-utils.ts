@@ -77,10 +77,11 @@ function transformSkillTagData(
   return tableData
     .map((item) => {
       // JOIN된 구조에서 skill_name 추출
+      const record = item as Record<string, unknown>;
       const skillName =
-        (item as any).skills?.skill_name ||
-        (item as any).skill_name ||
-        (item as any).name ||
+        (record.skills as Record<string, unknown> | undefined)?.skill_name ||
+        (record.skill_name as string | undefined) ||
+        (record.name as string | undefined) ||
         '';
       return String(skillName);
     })
@@ -103,10 +104,15 @@ function transformInputListData(
       // JOIN된 구조에서 값 추출 (예: certificates.certificate_name)
       if (input.name && input.name.includes('.')) {
         const [tableName, columnName] = input.name.split('.');
-        value = (item as any)[tableName]?.[columnName] || '';
+        const nested = (item as Record<string, unknown>)[
+          tableName
+        ] as Record<string, unknown> | undefined;
+        value = (nested?.[columnName] as string | undefined) || '';
       } else {
         // 직접 필드 접근
-        value = String(item[input.name || ''] || '');
+        value = String(
+          (item as Record<string, unknown>)[input.name || ''] || '',
+        );
       }
 
       return { value: String(value) };

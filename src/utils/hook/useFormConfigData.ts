@@ -17,7 +17,7 @@ export type FormMode = 'create' | 'update' | 'read';
 
 export function useFormConfigData(
   formConfig: FormConfig,
-  variables?: Record<string, any>, // GraphQL variables (owner, filter 등)
+  variables?: Record<string, unknown>, // GraphQL variables (owner, filter 등)
   options?: {
     autoLoad?: boolean; // 자동으로 데이터 로드 (기본: true)
     mode?: FormMode; // 모달의 동작 모드 (기본: 'create')
@@ -77,7 +77,7 @@ export function useFormConfigData(
         string,
         MultiInputItem[][] | string[] | boolean | File | null | string
       >,
-      additionalVariables?: Record<string, any>,
+      additionalVariables?: Record<string, unknown>,
     ): Promise<Result> => {
       if (!canSave) {
         return {
