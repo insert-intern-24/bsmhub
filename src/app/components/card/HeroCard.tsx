@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function HeroCard() {
   return (
     <section className="h-full w-[26rem] mobile:w-full mobile:h-auto bg-white rounded-[0.25rem] border border-gray-200 p-5 flex flex-col justify-between">
@@ -9,18 +11,18 @@ export default function HeroCard() {
       </header>
 
       <div className="flex items-center gap-2 mt-3">
-        <a
+        <Link
           href="/portfolio"
           className="px-3 py-2 rounded-[0.25rem] bg-black text-white text-label"
         >
           포트폴리오 살펴보기
-        </a>
-        <a
+        </Link>
+        <Link
           href="/project"
           className="px-3 py-2 rounded-[0.25rem] border border-gray-300 text-label text-gray-800 bg-white"
         >
           프로젝트 올리기
-        </a>
+        </Link>
       </div>
 
       <footer className="mt-3 flex items-center gap-2">

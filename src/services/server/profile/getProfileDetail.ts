@@ -12,13 +12,11 @@ export const getProfileDetail = async (profileName: string): Promise<PortfolioDe
         link,
         alt
       ),
-      profile_permission (
-        student (
-          student_certificates (
-            certificates (
-              certificate_id,
-              certificate_name
-            )
+      student (
+        student_certificates (
+          certificates (
+            certificate_id,
+            certificate_name
           )
         )
       ),
@@ -54,7 +52,7 @@ export const getProfileDetail = async (profileName: string): Promise<PortfolioDe
     },
     {
       mode: 'certificate',
-      datas: (data?.profile_permission[0].student.student_certificates ?? []).map((item) => ({
+      datas: (data?.student[0].student_certificates ?? []).map((item) => ({
         value: item.certificates.certificate_name
       }))
     },
