@@ -8,22 +8,33 @@ export function useInfinitePortfolio() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   const loadMore = useCallback(async () => {
-    if (isLoading) return;
+    if (isLoading || !hasMore) return;
 
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/portfolio/paginated?page=${page}&limit=5`);
+      const response = await fetch(
+        `/api/portfolio/paginated?page=${page}&limit=5`,
+      );
       const result = await response.json();
 
-      if (result.data) {
+      if (result.data && result.data.length > 0) {
         setData((prev) => {
           const existing = new Set(prev.map((item) => item.profile.name));
-          const newData = result.data.filter((item: PortfolioData) => !existing.has(item.profile.name));
+          const newData = result.data.filter(
+            (item: PortfolioData) => !existing.has(item.profile.name),
+          );
           return [...prev, ...newData];
         });
         setPage((prev) => prev + 1);
+
+        if (result.data.length < 5) {
+          setHasMore(false);
+        }
+      } else {
+        setHasMore(false);
       }
     } catch (err) {
       console.error('Failed to load portfolio data', err);
@@ -31,11 +42,11 @@ export function useInfinitePortfolio() {
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, page]);
+  }, [isLoading, page, hasMore]);
 
   useEffect(() => {
     loadMore();
-  }, [loadMore]);
+  }, []);
 
-  return { data, isLoading, error, loadMore };
+  return { data, isLoading, error, loadMore, hasMore };
 }
