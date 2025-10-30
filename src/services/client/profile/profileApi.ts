@@ -46,9 +46,6 @@ export const getProfileByStudentId = async (studentId: string) => {
 export const getProfileWithDetails = async (userId: string) => {
   const supabase = createClient();
   
-  // 현재 사용자 정보 확인
-  const { data: { user } } = await supabase.auth.getUser();
-  
   const { data, error } = await supabase
     .from('profile')
     .select(`
@@ -79,8 +76,17 @@ export const getProfileWithDetails = async (userId: string) => {
   }
   
   // 데이터 구조 평면화: student_certificates를 최상위로 이동
-  if (data && (data as any).student && (data as any).student.length > 0) {
-    (data as any).student_certificates = (data as any).student[0].student_certificates || [];
+  if (
+    data &&
+    (data as unknown as { student?: Array<{ student_certificates?: unknown[] }> })
+      .student &&
+    (data as unknown as { student: unknown[] }).student.length > 0
+  ) {
+    const studentArr = (data as unknown as {
+      student: Array<{ student_certificates?: unknown[] }>;
+    }).student;
+    (data as Record<string, unknown>).student_certificates =
+      studentArr[0].student_certificates || [];
   }
   
   return data;

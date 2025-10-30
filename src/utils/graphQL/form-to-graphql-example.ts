@@ -46,9 +46,15 @@ export function example() {
         type: 'picture',
         required: false,
         columnInfo: { table: 'profile', column: 'profile_image' },
+        bucket: 'profile',
         aspectRatio: '1:1'
       }
-    ]
+    ],
+    graphql: {
+      read: '',
+      insert: '',
+      update: ''
+    }
   };
   
   // GraphQL 쿼리 생성

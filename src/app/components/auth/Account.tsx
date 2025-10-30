@@ -1,13 +1,14 @@
 'use client';
 
 import { createClient } from '@/utils/supabase/client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useModal } from '@/app/components/modal';
 import InputOfModal from '@/app/components/modal/inputs/InputOfModal';
 import { Dropdown, DropdownItem } from '@/app/components/dropdown/DropDown';
 import { profileConfig } from '@/services/config/profileConfig';
 import Image from 'next/image';
 import { User } from '@supabase/supabase-js';
+import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
 import {
   checkProfileExistence,
   getProfileByStudentId,
@@ -21,43 +22,7 @@ const Account = () => {
   const { openModal, closeModal } = useModal();
   const [profileLink, setProfileLink] = useState<string | null>(null);
 
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setUserProfile(session?.user || null);
-      // 첫 로그인 시 프로필 존재 여부 확인
-      if (event === 'SIGNED_IN') {
-        if (!session?.user?.id) return;
-        checkProfileExistence(session.user.id).then((exists) => {
-          if (exists) return;
-          handleMakeProfile();
-        });
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const handleGoogleLogin = async () => {
-    const popup = window.open(
-      `${window.location.origin}/auth/login`,
-      '_blank',
-      'popup,scrollbars=yes,resizable=yes,width=500,height=800',
-    );
-
-    popup?.focus();
-
-    const handleMessage = (event: MessageEvent) => {
-      if (event.origin !== window.location.origin) return;
-      if (event.data === 'success') {
-        popup?.close();
-        window.removeEventListener('message', handleMessage);
-      }
-    };
-    window.addEventListener('message', handleMessage);
-  };
-
-  const handleMakeProfile = async () => {
+  const handleMakeProfile = useCallback(async () => {
     if (!userProfile?.id) {
       console.error('User ID not available');
       return;
@@ -79,11 +44,23 @@ const Account = () => {
           },
         );
 
-      const handleProfileSubmit = async (formData: any) => {
-        const result = await saveData(formData, {
-          owner: userProfile.id,
-          is_team: false,
-        });
+      const handleProfileSubmit = (
+        formData: Record<
+          string,
+          MultiInputItem[][] | string[] | boolean | File | number[] | null
+        >,
+      ): void => {
+        void (async () => {
+          const result = await saveData(
+            formData as unknown as Record<
+              string,
+              MultiInputItem[][] | string[] | boolean | File | null | string
+            >,
+            {
+            owner: userProfile.id,
+            is_team: false,
+            },
+          );
 
         if (result.success) {
           console.log('프로필이 성공적으로 저장되었습니다.');
@@ -92,22 +69,29 @@ const Account = () => {
           // 저장된 프로필 이름을 응답에서 가져오기
           let profileName = null;
           if (result.data) {
+            type UpdateResp = {
+              updateprofileCollection?: { records?: Array<{ profile_name?: string }> };
+            };
+            type InsertResp = {
+              insertIntoprofileCollection?: { records?: Array<{ profile_name?: string }> };
+            };
+            const data = result.data as UpdateResp & InsertResp;
             // Update의 경우 records에서 profile_name 가져오기
             if (
               mode === 'update' &&
-              result.data.updateprofileCollection?.records?.[0]?.profile_name
+              data.updateprofileCollection?.records?.[0]?.profile_name
             ) {
               profileName =
-                result.data.updateprofileCollection.records[0].profile_name;
+                data.updateprofileCollection!.records?.[0]?.profile_name ?? null;
             }
             // Insert의 경우 records에서 profile_name 가져오기
             else if (
               mode === 'create' &&
-              result.data.insertIntoprofileCollection?.records?.[0]
-                ?.profile_name
+              data.insertIntoprofileCollection?.records?.[0]?.profile_name
             ) {
               profileName =
-                result.data.insertIntoprofileCollection.records[0].profile_name;
+                data.insertIntoprofileCollection!.records?.[0]?.profile_name ??
+                null;
             }
           }
 
@@ -143,6 +127,7 @@ const Account = () => {
 
           alert(`저장 중 오류가 발생했습니다:\n${errorMessage}`);
         }
+        })();
       };
 
       if (isLoading) {
@@ -168,7 +153,45 @@ const Account = () => {
     };
 
     openModal(<ProfileEditModal />);
+  }, [userProfile?.id, closeModal, openModal]);
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setUserProfile(session?.user || null);
+      // 첫 로그인 시 프로필 존재 여부 확인
+      if (event === 'SIGNED_IN') {
+        if (!session?.user?.id) return;
+        checkProfileExistence(session.user.id).then((exists) => {
+          if (exists) return;
+          handleMakeProfile();
+        });
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [supabase, handleMakeProfile]);
+
+  const handleGoogleLogin = async () => {
+    const popup = window.open(
+      `${window.location.origin}/auth/login`,
+      '_blank',
+      'popup,scrollbars=yes,resizable=yes,width=500,height=800',
+    );
+
+    popup?.focus();
+
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data === 'success') {
+        popup?.close();
+        window.removeEventListener('message', handleMessage);
+      }
+    };
+    window.addEventListener('message', handleMessage);
   };
+
+  
 
   useEffect(() => {
     // 컴포넌트 언마운트 시 setState 호출을 방지하기 위한 플래그

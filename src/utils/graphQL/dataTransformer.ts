@@ -9,7 +9,7 @@ import { isRelationshipTable } from './metadataExtractor';
  * @returns React Hook Form이 사용할 수 있는 형식의 데이터
  */
 export function graphqlToFormData(
-  graphqlData: any,
+  graphqlData: Record<string, unknown>,
   formConfig: FormConfig,
 ): Record<string, MultiInputItem[][] | string[] | boolean | File | null> {
   const formData: Record<
@@ -18,7 +18,9 @@ export function graphqlToFormData(
   > = {};
 
   // GraphQL 응답에서 edges.node 추출
-  const mainData = graphqlData?.edges?.[0]?.node || graphqlData;
+  const mainData =
+    (graphqlData as { edges?: Array<{ node: Record<string, unknown> }> })
+      .edges?.[0]?.node || graphqlData;
   console.log(
     'graphqlToFormData - mainData:',
     JSON.stringify(mainData, null, 2),
@@ -41,37 +43,42 @@ export function graphqlToFormData(
 
     // Picture 타입 처리
     if (field.type === 'picture') {
-      formData[field.fieldName] = mainData?.[column] || null;
+      const pic = (mainData as Record<string, unknown>)[column];
+      formData[field.fieldName] = (pic as File) ?? null;
       return;
     }
 
     // Checkbox 타입 처리
     if (field.type === 'checkbox') {
-      formData[field.fieldName] = mainData?.[column] || false;
+      const val = (mainData as Record<string, unknown>)[column];
+      formData[field.fieldName] = Boolean(val);
       return;
     }
 
     // SkillTag 타입 처리
     if (field.type === 'skillTag') {
-      const relationTableData = mainData?.[`${table}Collection`]?.edges || [];
+      const collection = (mainData as Record<string, unknown>)[
+        `${table}Collection`
+      ] as { edges?: Array<{ node: Record<string, unknown> }> } | undefined;
+      const relationTableData = collection?.edges || [];
 
       // valuePath를 사용하여 중첩된 값 추출
       const valuePath = field.valuePath || column;
       const skillNames: string[] = relationTableData
-        .map((edge: any) => {
+        .map((edge: { node: Record<string, unknown> }) => {
           const node = edge.node;
 
           // valuePath를 따라 중첩된 객체 탐색 (예: 'skill.skill_name')
           const pathParts = valuePath.split('.');
-          let value = node;
+          let value: unknown = node;
           for (const part of pathParts) {
-            value = value?.[part];
+            value = (value as Record<string, unknown> | undefined)?.[part];
             if (value === undefined || value === null) break;
           }
 
-          return value || '';
+          return String(value ?? '');
         })
-        .filter(Boolean);
+        .filter((v) => v.trim() !== '');
 
       formData[field.fieldName] = skillNames;
       return;
@@ -83,7 +90,10 @@ export function graphqlToFormData(
 
       // 관계 테이블인 경우
       if (isRelationshipTable(table)) {
-        const relationData = mainData?.[`${table}Collection`]?.edges || [];
+        const collection = (mainData as Record<string, unknown>)[
+          `${table}Collection`
+        ] as { edges?: Array<{ node: Record<string, unknown> }> } | undefined;
+        const relationData = collection?.edges || [];
 
         console.log(`Processing InputList for ${table}:`, {
           tableName: table,
@@ -104,15 +114,15 @@ export function graphqlToFormData(
                   return { value: '' };
                 }
                 const nameParts = input.name.split('.');
-                let value = firstItem;
+                let value: unknown = firstItem;
                 for (const part of nameParts) {
-                  value = value?.[part];
+                  value = (value as Record<string, unknown> | undefined)?.[part];
                 }
                 console.log(
                   `Field ${field.fieldName}, input ${input.name}, extracted value:`,
                   value,
                 );
-                return { value: value || '' };
+                return { value: String(value ?? '') };
               },
             );
             formData[field.fieldName] = [multiInputItems];
@@ -121,22 +131,22 @@ export function graphqlToFormData(
           }
         } else {
           // 여러 아이템
-          const items: MultiInputItem[][] = relationData.map((edge: any) => {
+          const items: MultiInputItem[][] = relationData.map((edge: { node: Record<string, unknown> }) => {
             const node = edge.node;
             return inputConfig.inputs.map((input) => {
               if (!input.name) {
                 return { value: '' };
               }
               const nameParts = input.name.split('.');
-              let value = node;
+              let value: unknown = node;
               for (const part of nameParts) {
-                value = value?.[part];
+                value = (value as Record<string, unknown> | undefined)?.[part];
               }
               console.log(
                 `Field ${field.fieldName}, input ${input.name}, extracted value from node:`,
                 value,
               );
-              return { value: value || '' };
+              return { value: String(value ?? '') };
             });
           });
           formData[field.fieldName] = items;
@@ -148,7 +158,7 @@ export function graphqlToFormData(
           const value = mainData?.[column];
           const multiInputItems: MultiInputItem[] = inputConfig.inputs.map(
             () => ({
-              value: value || '',
+              value: String(value ?? ''),
             }),
           );
           formData[field.fieldName] = [multiInputItems];
@@ -169,14 +179,14 @@ export function graphqlToFormData(
  * @returns GraphQL mutation에 사용할 수 있는 형식의 데이터
  */
 export function formDataToGraphQL(
-  formData: Record<string, any>,
+  formData: Record<string, MultiInputItem[][] | string[] | boolean | File | number[] | null | string>,
   formConfig: FormConfig,
 ): {
-  mainTableData: Record<string, any>;
-  relationTableData: Map<string, any[]>;
+  mainTableData: Record<string, unknown>;
+  relationTableData: Map<string, Record<string, unknown>[]>;
 } {
-  const mainTableData: Record<string, any> = {};
-  const relationTableData = new Map<string, any[]>();
+  const mainTableData: Record<string, unknown> = {};
+  const relationTableData = new Map<string, Record<string, unknown>[]>();
 
   console.log('formDataToGraphQL - Input:', JSON.stringify(formData, null, 2));
 
@@ -228,7 +238,7 @@ export function formDataToGraphQL(
               );
             })
             .map((item) => {
-              const obj: Record<string, any> = {};
+              const obj: Record<string, unknown> = {};
               item.forEach((input, index) => {
                 const inputDef = inputConfig.inputs[index];
                 if (inputDef && inputDef.name && input.value) {
@@ -236,14 +246,15 @@ export function formDataToGraphQL(
                   const nameParts = inputDef.name.split('.');
                   if (nameParts.length > 1) {
                     // nested 객체 생성
-                    let current = obj;
+                    let current = obj as Record<string, unknown>;
                     for (let i = 0; i < nameParts.length - 1; i++) {
-                      if (!current[nameParts[i]]) {
-                        current[nameParts[i]] = {};
+                      const key = nameParts[i];
+                      if (!current[key]) {
+                        current[key] = {} as Record<string, unknown>;
                       }
-                      current = current[nameParts[i]];
+                      current = current[key] as Record<string, unknown>;
                     }
-                    current[nameParts[nameParts.length - 1]] = input.value;
+                    current[nameParts[nameParts.length - 1]] = input.value as unknown;
                   } else {
                     obj[inputDef.name] = input.value;
                   }
@@ -281,7 +292,7 @@ export function formDataToGraphQL(
 /**
  * 빈 값인지 확인
  */
-export function isEmpty(value: any): boolean {
+export function isEmpty(value: unknown): boolean {
   if (value === null || value === undefined) return true;
   if (typeof value === 'string') return value.trim() === '';
   if (Array.isArray(value)) return value.length === 0;
@@ -292,10 +303,10 @@ export function isEmpty(value: any): boolean {
  * 두 객체를 비교하여 변경된 필드만 추출
  */
 export function getChangedFields(
-  oldData: Record<string, any>,
-  newData: Record<string, any>,
-): Record<string, any> {
-  const changes: Record<string, any> = {};
+  oldData: Record<string, unknown>,
+  newData: Record<string, unknown>,
+): Record<string, unknown> {
+  const changes: Record<string, unknown> = {};
 
   Object.keys(newData).forEach((key) => {
     if (JSON.stringify(oldData[key]) !== JSON.stringify(newData[key])) {

@@ -32,9 +32,11 @@ interface SkillsData {
   language: boolean | null;
 }
 
+type Supa = ReturnType<typeof createClient>;
+
 async function getOrCreateSkillIds(
   skillNames: string[],
-  supabase: any,
+  supabase: Supa,
 ): Promise<number[]> {
   if (skillNames.length === 0) return [];
 
@@ -72,7 +74,7 @@ async function getOrCreateSkillIds(
 
 async function getOrCreateCertificateIds(
   certificateNames: string[],
-  supabase: any,
+  supabase: Supa,
 ): Promise<number[]> {
   if (certificateNames.length === 0) return [];
 
@@ -114,7 +116,7 @@ async function getOrCreateCertificateIds(
 
 async function getOrCreateCompetitionIds(
   prizes: string[],
-  supabase: any,
+  supabase: Supa,
 ): Promise<number[]> {
   if (prizes.length === 0) return [];
 
@@ -167,7 +169,7 @@ export interface ProfileSaveData {
 }
 
 export function transformFormDataToSaveFormat(
-  formData: Record<string, any>,
+  formData: Record<string, unknown>,
   formConfig: FormConfig,
   userId: string,
 ): ProfileSaveData {
@@ -198,7 +200,7 @@ export function transformFormDataToSaveFormat(
           : result.student;
 
       // inputList 타입 처리
-      let processedValue: string = value;
+      let processedValue: string = value as string;
       if (
         Array.isArray(value) &&
         value.length > 0 &&
@@ -228,7 +230,9 @@ export function transformFormDataToSaveFormat(
         }
       }
       if (fieldName === 'profile_skills') {
-        result.profileSkills = Array.isArray(value) ? value : [];
+        result.profileSkills = Array.isArray(value)
+          ? (value as unknown[]).map(String)
+          : [];
       }
       if (fieldName === 'student_certificates') {
         if (Array.isArray(value) && value.length > 0) {

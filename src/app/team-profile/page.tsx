@@ -34,21 +34,45 @@ const TeamProfilePage = () => {
 
   console.log('initialValues:', initialValues);
 
-  const handleSave = async (formData: any) => {
-    try {
-      const result = await saveData(formData, {
-        owner,
-        is_team: true,
-      });
-      if (result.success) {
-        alert('저장되었습니다!');
-      } else {
+  const handleSave = (
+    formData: Record<
+      string,
+      import('@/app/components/modal/inputs/MultiInput').MultiInputItem[][] |
+        string[] |
+        boolean |
+        File |
+        number[] |
+        null |
+        string
+    >,
+  ): void => {
+    void (async () => {
+      try {
+        const result = await saveData(
+          formData as unknown as Record<
+            string,
+            import('@/app/components/modal/inputs/MultiInput').MultiInputItem[][] |
+              string[] |
+              boolean |
+              File |
+              null |
+              string
+          >,
+          {
+          owner,
+          is_team: true,
+          },
+        );
+        if (result.success) {
+          alert('저장되었습니다!');
+        } else {
+          alert('저장 실패');
+        }
+      } catch (err) {
+        console.error('저장 실패:', err);
         alert('저장 실패');
       }
-    } catch (err) {
-      console.error('저장 실패:', err);
-      alert('저장 실패');
-    }
+    })();
   };
 
   if (isLoading) {

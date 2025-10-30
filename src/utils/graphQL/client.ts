@@ -1,22 +1,15 @@
 import { createClient } from '@/utils/supabase/client';
+import type { GraphQLResponse } from './types';
 
 /**
  * GraphQL 에러 응답 타입
  */
-interface GraphQLError {
-  message: string;
-  locations?: { line: number; column: number }[];
-  path?: string[];
-  extensions?: Record<string, any>;
-}
+// Deprecated local types removed in favor of shared types
 
 /**
  * GraphQL 응답 타입
  */
-interface GraphQLResponse<T = any> {
-  data?: T;
-  errors?: GraphQLError[];
-}
+// Use shared GraphQLResponse<T>
 
 /**
  * Supabase GraphQL 클라이언트
@@ -38,9 +31,9 @@ export class SupabaseGraphQLClient {
   /**
    * GraphQL 쿼리 실행
    */
-  async executeQuery<T = any>(
+  async executeQuery<T = unknown>(
     query: string,
-    variables?: Record<string, any>,
+    variables?: Record<string, unknown>,
   ): Promise<GraphQLResponse<T>> {
     return this.execute<T>(query, variables);
   }
@@ -48,9 +41,9 @@ export class SupabaseGraphQLClient {
   /**
    * GraphQL Mutation 실행
    */
-  async executeMutation<T = any>(
+  async executeMutation<T = unknown>(
     mutation: string,
-    variables: Record<string, any>,
+    variables: Record<string, unknown>,
   ): Promise<GraphQLResponse<T>> {
     return this.execute<T>(mutation, variables);
   }
@@ -60,7 +53,7 @@ export class SupabaseGraphQLClient {
    */
   private async execute<T>(
     query: string,
-    variables?: Record<string, any>,
+    variables?: Record<string, unknown>,
   ): Promise<GraphQLResponse<T>> {
     try {
       // Supabase 세션 토큰 가져오기
@@ -126,8 +119,8 @@ export class SupabaseGraphQLClient {
    * 배치 쿼리 실행 (여러 쿼리를 한 번에)
    */
   async executeBatch(
-    queries: { query: string; variables?: Record<string, any> }[],
-  ): Promise<GraphQLResponse[]> {
+    queries: { query: string; variables?: Record<string, unknown> }[],
+  ): Promise<GraphQLResponse<unknown>[]> {
     const promises = queries.map((q) => this.execute(q.query, q.variables));
     return Promise.all(promises);
   }
@@ -149,9 +142,9 @@ export function getGraphQLClient(): SupabaseGraphQLClient {
 /**
  * 편의 함수: 쿼리 실행
  */
-export async function executeQuery<T = any>(
+export async function executeQuery<T = unknown>(
   query: string,
-  variables?: Record<string, any>,
+  variables?: Record<string, unknown>,
 ): Promise<T> {
   const client = getGraphQLClient();
   const response = await client.executeQuery<T>(query, variables);
@@ -161,9 +154,9 @@ export async function executeQuery<T = any>(
 /**
  * 편의 함수: Mutation 실행
  */
-export async function executeMutation<T = any>(
+export async function executeMutation<T = unknown>(
   mutation: string,
-  variables: Record<string, any>,
+  variables: Record<string, unknown>,
 ): Promise<T> {
   const client = getGraphQLClient();
   const response = await client.executeMutation<T>(mutation, variables);
