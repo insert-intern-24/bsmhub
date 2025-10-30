@@ -15,7 +15,7 @@ export default function DefaultLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="w-full min-h-dvh bg-white">
+    <main className="w-full min-h-dvh bg-white pt-14 mobile:pt-0">
       <div className="max-w-[109rem] mobile:p-3 min-h-screen mobile:pb-12 pb-[4rem] mx-auto">
         {children}
       </div>

@@ -12,9 +12,9 @@ interface MetaInfoProps {
 
 const MetaInfo = ({ description, authors }: MetaInfoProps) => {
   return (
-    <figcaption className="flex-x-center">
-      <Label className="text-gray-base">{description}</Label>
-      <div className="flex-y-center gap-1">
+    <figcaption className="flex-x-center gap-4">
+      <Label className="text-gray-base truncate">{description}</Label>
+      <div className="flex-y-center gap-1 shrink-0">
         {authors.length === 1 ? (
           // 작성자가 1명인 경우: 프로필 사진 + 이름
           <>

@@ -13,13 +13,11 @@ export const getProfile = async (profile_name: string): Promise<ProfileType> => 
       profile_name,
       description,
       profile_image,
-      profile_permission (
-        student (
-          name,
-          student_number,
-          departments (
-            department_name
-          )
+      student (
+        name,
+        student_number,
+        departments (
+          department_name
         )
       )
     `)
@@ -28,7 +26,7 @@ export const getProfile = async (profile_name: string): Promise<ProfileType> => 
     .maybeSingle<ProfileType>()
 
   if (!data || error) {
-    throw new Error('학생 정보 조회 중 오류')
+    throw new Error('학생 프로필 조회 중 오류');
   }
 
   return data;
