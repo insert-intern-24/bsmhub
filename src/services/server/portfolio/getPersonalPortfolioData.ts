@@ -1,6 +1,9 @@
 import { createClient } from '@/utils/supabase/client';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
-import { PortfolioData, ProfileWithProjects } from '@/app/(box-layout)/portfolio/types';
+import {
+  PortfolioData,
+  ProfileWithProjects,
+} from '@/app/(box-layout)/portfolio/types';
 
 export async function getPersonalPortfolioData(): Promise<PortfolioData[]> {
   const supabase = await createClient();
@@ -64,7 +67,7 @@ export async function getPersonalPortfolioData(): Promise<PortfolioData[]> {
     return {
       profile: {
         name: data.profile_name,
-        role: data.student.student_jobs?.map(({ job }) => job.job_name) || [],
+        role: data.student?.student_jobs?.map(({ job }) => job.job_name) || [],
         bio: data.description!,
         status: '구직 중',
         profile_image: convertFromDatabaseImageURL(data.profile_image),
