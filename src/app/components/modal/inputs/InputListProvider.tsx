@@ -158,6 +158,7 @@ const InputListProvider = ({
               dropdownInputConfig={dropdownInputConfig}
               suggestions={suggestions}
               onInputChange={handleInputChange}
+              tableData={tableData}
             />
           </div>
         );

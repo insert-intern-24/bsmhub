@@ -1,18 +1,6 @@
 'use client';
 import React, { useRef, useEffect } from 'react';
-import {
-  IconCheck,
-  IconSearch,
-  IconCalendarWeekFilled,
-} from '@tabler/icons-react';
 import { StandardInputProps } from './types/inputTypes';
-import { DropdownInputConfig } from './InputListProvider';
-
-const iconMap: Record<string, React.ReactNode> = {
-  check: <IconCheck size={20} className="text-gray-base" />,
-  search: <IconSearch size={20} className="text-gray-base" />,
-  calendar: <IconCalendarWeekFilled size={20} className="text-gray-base" />,
-};
 
 function Inputs({
   mode = 'write',
@@ -23,15 +11,7 @@ function Inputs({
   name,
   required = false,
   id = '',
-  icon,
-  suggestions = [],
-  onInputChange,
-  dropdownInputConfig,
-}: StandardInputProps & {
-  suggestions?: Record<string, unknown>[];
-  onInputChange?: (value: string) => void;
-  dropdownInputConfig?: DropdownInputConfig;
-}) {
+}: StandardInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const isReadOnly = mode === 'read';
 
@@ -45,7 +25,7 @@ function Inputs({
     <div
       className={`flex-row input-common px-2.5 ${
         isReadOnly ? '!bg-white' : ''
-      } transition-colors relative`}
+      } transition-colors`}
     >
       <input
         ref={inputRef}
@@ -53,10 +33,7 @@ function Inputs({
         type={type}
         placeholder={placeholder}
         value={value}
-        onChange={(e) => {
-          onChange?.(e);
-          onInputChange?.(e.target.value);
-        }}
+        onChange={onChange}
         name={name}
         required={required}
         readOnly={isReadOnly}
@@ -65,28 +42,6 @@ function Inputs({
         ${isReadOnly ? 'bg-white cursor-default' : 'bg-light-gray-outline'}
       `}
       />
-      {icon && iconMap[icon] && <button type="button">{iconMap[icon]}</button>}
-      {suggestions.length > 0 && dropdownInputConfig && (
-        <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-auto min-w-64 top-full">
-          {suggestions.map((item, index) => (
-            <li
-              key={index}
-              className="px-3 py-2 cursor-pointer hover:bg-gray-100"
-              onMouseDown={(e) => {
-                e.preventDefault();
-                onChange?.({
-                  target: {
-                    value: item[dropdownInputConfig.valueColumnName] as string,
-                  },
-                } as React.ChangeEvent<HTMLInputElement>);
-                onInputChange?.('');
-              }}
-            >
-              {item[dropdownInputConfig.nameColumnName] as string}
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 }
