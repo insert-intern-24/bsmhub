@@ -42,7 +42,7 @@ const SkillTagProvider = ({
         if (error) {
           console.error('Error fetching skills:', error);
         } else {
-          setSkills(data as unknown as Tables<'skills'>[]);
+          setSkills(data as Tables<'skills'>[]);
         }
       });
   }, [supabase]);
