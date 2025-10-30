@@ -20,7 +20,7 @@ export type { Project };
 export interface PortfolioData {
   profile: Profile;
   projects: Project[];
-  student: ProfileWithProjects['profile_permission']['student'];
+  student: ProfileWithProjects['student'];
 }
 
 export type ProfileWithProjects = MergeDeep<
@@ -87,7 +87,7 @@ export type ProfileType = Pick<
   Tables<'profile'>,
   'profile_id' | 'profile_name' | 'description' | 'profile_image' | 'owner'
 > & {
-  student: (Pick<Tables<'student'>, 'name' | 'student_number'> & {
+  student: Pick<Tables<'student'>, 'name' | 'student_number'> & {
     departments: Pick<Tables<'departments'>, 'department_name'>;
-  })[];
+  };
 };
