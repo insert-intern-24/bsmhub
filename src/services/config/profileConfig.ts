@@ -3,6 +3,9 @@ import {
   updateProfileSkills,
   updateStudentCertificates,
   updateProfileCompetitions,
+  createDataTransformer,
+  createDeleteFilterGenerator,
+  createChangeCalculator,
 } from '@/utils/graphQL/relationTableHelper';
 
 export const profileConfig: FormConfig = {
@@ -145,66 +148,12 @@ export const profileConfig: FormConfig = {
       relationHandler: {
         type: 'graphql',
         identifierIsStudnetId: false,
-        dataTransformer: (data: unknown[]) =>
-          (data as Array<{ link: string; alt?: string }>)
-            .map((item) => ({
-              link: item.link,
-              alt: item.alt || '',
-            }))
-            .filter((item) => item.link),
-        deleteFilterGenerator: (
-          item: Record<string, unknown>,
-          profileId: string,
-        ) => ({
-          profile_id: { eq: profileId },
-          link: { eq: item.link },
-          alt: { eq: item.alt },
-        }),
-        changeCalculator: (
-          newData: unknown[],
-          existingData: Record<string, unknown>[],
-        ) => {
-          console.log('changeCalculator called with:', {
-            newData,
-            existingData,
-          });
-          const toDelete: Record<string, unknown>[] = [];
-          const toInsert: Record<string, unknown>[] = [];
-
-          const existingLinks = existingData as Array<{
-            link: string;
-            alt: string;
-          }>;
-          const newLinks = newData as Array<{ link: string; alt: string }>;
-
-          console.log('existingLinks:', existingLinks);
-          console.log('newLinks:', newLinks);
-
-          // 삭제할 항목: 기존에 있지만 새로운 데이터에 없는 것
-          existingLinks.forEach((existing) => {
-            const stillExists = newLinks.some(
-              (newItem) =>
-                newItem.link === existing.link && newItem.alt === existing.alt,
-            );
-            if (!stillExists) {
-              toDelete.push(existing);
-            }
-          });
-
-          // 추가할 항목: 새로운 데이터에 있지만 기존에 없는 것
-          newLinks.forEach((newItem) => {
-            const alreadyExists = existingLinks.some(
-              (existing) =>
-                existing.link === newItem.link && existing.alt === newItem.alt,
-            );
-            if (!alreadyExists) {
-              toInsert.push(newItem);
-            }
-          });
-
-          console.log('changeCalculator result:', { toDelete, toInsert });
-          return { toDelete, toInsert };
-        },
+        dataTransformer: createDataTransformer(
+          { link: 'link', alt: 'alt' },
+          (item) => Boolean(item.link),
+        ),
+        deleteFilterGenerator: createDeleteFilterGenerator(['link', 'alt']),
+        changeCalculator: createChangeCalculator(['link', 'alt']),
       },
       inputConfig: {
         onlyOne: false,

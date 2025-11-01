@@ -272,3 +272,80 @@ export async function updateProfileCompetitions(
     }
   }
 }
+
+// GraphQL relation handler 헬퍼 함수들
+
+/**
+ * 일반적인 데이터 변환 함수 생성
+ * @param fieldMappings - 필드 매핑 객체 (예: { link: 'link', alt: 'alt' })
+ * @param filterFn - 필터링 함수 (선택사항)
+ */
+export function createDataTransformer(
+  fieldMappings: Record<string, string>,
+  filterFn?: (item: Record<string, unknown>) => boolean,
+) {
+  return (data: unknown[]) => {
+    const transformed = (data as Record<string, unknown>[]).map((item) => {
+      const result: Record<string, unknown> = {};
+      Object.entries(fieldMappings).forEach(([key, value]) => {
+        result[key] = item[value] || '';
+      });
+      return result;
+    });
+    return filterFn ? transformed.filter(filterFn) : transformed;
+  };
+}
+
+/**
+ * 일반적인 삭제 필터 생성 함수 생성
+ * @param profileIdField - 프로필 ID 필드명 (기본값: 'profile_id')
+ * @param itemFields - 아이템의 필드명들
+ */
+export function createDeleteFilterGenerator(
+  itemFields: string[],
+  profileIdField: string = 'profile_id',
+) {
+  return (item: Record<string, unknown>, profileId: string) => {
+    const filter: Record<string, unknown> = {
+      [profileIdField]: { eq: profileId },
+    };
+    itemFields.forEach((field) => {
+      filter[field] = { eq: item[field] };
+    });
+    return filter;
+  };
+}
+
+/**
+ * 일반적인 변경 계산 함수 생성
+ * @param compareFields - 비교할 필드명들
+ */
+export function createChangeCalculator(compareFields: string[]) {
+  return (newData: unknown[], existingData: Record<string, unknown>[]) => {
+    const toDelete: Record<string, unknown>[] = [];
+    const toInsert: Record<string, unknown>[] = [];
+
+    // 삭제할 항목: 기존에 있지만 새로운 데이터에 없는 것
+    existingData.forEach((existing) => {
+      const stillExists = (newData as Record<string, unknown>[]).some(
+        (newItem) =>
+          compareFields.every((field) => newItem[field] === existing[field]),
+      );
+      if (!stillExists) {
+        toDelete.push(existing);
+      }
+    });
+
+    // 추가할 항목: 새로운 데이터에 있지만 기존에 없는 것
+    (newData as Record<string, unknown>[]).forEach((newItem) => {
+      const alreadyExists = existingData.some((existing) =>
+        compareFields.every((field) => existing[field] === newItem[field]),
+      );
+      if (!alreadyExists) {
+        toInsert.push(newItem);
+      }
+    });
+
+    return { toDelete, toInsert };
+  };
+}

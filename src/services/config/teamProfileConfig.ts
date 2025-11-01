@@ -1,5 +1,10 @@
 import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
 import { createClient } from '@/utils/supabase/client';
+import {
+  createDataTransformer,
+  createDeleteFilterGenerator,
+  createChangeCalculator,
+} from '@/utils/graphQL/relationTableHelper';
 
 export const teamProfileConfig: FormConfig = {
   graphql: {
@@ -114,66 +119,12 @@ export const teamProfileConfig: FormConfig = {
       relationHandler: {
         type: 'graphql',
         identifierIsStudnetId: false,
-        dataTransformer: (data: unknown[]) =>
-          (data as Array<{ link: string; alt?: string }>)
-            .map((item) => ({
-              link: item.link,
-              alt: item.alt || '',
-            }))
-            .filter((item) => item.link),
-        deleteFilterGenerator: (
-          item: Record<string, unknown>,
-          profileId: string,
-        ) => ({
-          profile_id: { eq: profileId },
-          link: { eq: item.link },
-          alt: { eq: item.alt },
-        }),
-        changeCalculator: (
-          newData: unknown[],
-          existingData: Record<string, unknown>[],
-        ) => {
-          console.log('changeCalculator called with:', {
-            newData,
-            existingData,
-          });
-          const toDelete: Record<string, unknown>[] = [];
-          const toInsert: Record<string, unknown>[] = [];
-
-          const existingLinks = existingData as Array<{
-            link: string;
-            alt: string;
-          }>;
-          const newLinks = newData as Array<{ link: string; alt: string }>;
-
-          console.log('existingLinks:', existingLinks);
-          console.log('newLinks:', newLinks);
-
-          // 삭제할 항목: 기존에 있지만 새로운 데이터에 없는 것
-          existingLinks.forEach((existing) => {
-            const stillExists = newLinks.some(
-              (newItem) =>
-                newItem.link === existing.link && newItem.alt === existing.alt,
-            );
-            if (!stillExists) {
-              toDelete.push(existing);
-            }
-          });
-
-          // 추가할 항목: 새로운 데이터에 있지만 기존에 없는 것
-          newLinks.forEach((newItem) => {
-            const alreadyExists = existingLinks.some(
-              (existing) =>
-                existing.link === newItem.link && existing.alt === newItem.alt,
-            );
-            if (!alreadyExists) {
-              toInsert.push(newItem);
-            }
-          });
-
-          console.log('changeCalculator result:', { toDelete, toInsert });
-          return { toDelete, toInsert };
-        },
+        dataTransformer: createDataTransformer(
+          { link: 'link', alt: 'alt' },
+          (item) => Boolean(item.link),
+        ),
+        deleteFilterGenerator: createDeleteFilterGenerator(['link', 'alt']),
+        changeCalculator: createChangeCalculator(['link', 'alt']),
       },
       inputConfig: {
         onlyOne: false,
@@ -227,53 +178,11 @@ export const teamProfileConfig: FormConfig = {
       relationHandler: {
         type: 'graphql',
         identifierIsStudnetId: false,
-        dataTransformer: (data: unknown[]) => {
-          console.log('dataTransformer called with:', data);
-          return (data as Array<{ participant_id: string }>).map((item) => ({
-            participant_id: item.participant_id,
-          }));
-        },
-        deleteFilterGenerator: (
-          item: Record<string, unknown>,
-          profileId: string,
-        ) => ({
-          participant_id: { eq: item.participant_id },
-          profile_id: { eq: profileId },
+        dataTransformer: createDataTransformer({
+          participant_id: 'participant_id',
         }),
-        changeCalculator: (
-          newData: unknown[],
-          existingData: Record<string, unknown>[],
-        ) => {
-          const toDelete: Record<string, unknown>[] = [];
-          const toInsert: Record<string, unknown>[] = [];
-
-          const existingIds = existingData as Array<{ participant_id: string }>;
-          const newIds = newData as Array<{ participant_id: string }>;
-
-          console.log('datasssss :', { newData, existingData });
-
-          // 삭제할 항목: 기존에 있지만 새로운 데이터에 없는 것
-          existingIds.forEach((existing) => {
-            const stillExists = newIds.some(
-              (newItem) => newItem.participant_id === existing.participant_id,
-            );
-            if (!stillExists) {
-              toDelete.push(existing);
-            }
-          });
-
-          // 추가할 항목: 새로운 데이터에 있지만 기존에 없는 것
-          newIds.forEach((newItem) => {
-            const alreadyExists = existingIds.some(
-              (existing) => existing.participant_id === newItem.participant_id,
-            );
-            if (!alreadyExists) {
-              toInsert.push(newItem);
-            }
-          });
-
-          return { toDelete, toInsert };
-        },
+        deleteFilterGenerator: createDeleteFilterGenerator(['participant_id']),
+        changeCalculator: createChangeCalculator(['participant_id']),
       },
     },
     // {
