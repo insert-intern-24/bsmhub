@@ -95,11 +95,26 @@ const InputListProvider = ({
   // 추천 필터링 함수
   const handleInputChange = (value: string) => {
     if (dropdownInputConfig && tableData.length > 0) {
-      const filtered = tableData.filter((item) =>
-        (item[dropdownInputConfig.nameColumnName] as string)
-          ?.toLowerCase()
-          .includes(value.toLowerCase()),
+      // 이미 선택된 값들을 추출
+      const selectedValues = new Set(
+        inputs
+          .flat()
+          .map((item) => item.value)
+          .filter(Boolean),
       );
+
+      const filtered = tableData.filter((item) => {
+        const itemValue = item[dropdownInputConfig.valueColumnName] as string;
+        const itemName = (
+          item[dropdownInputConfig.nameColumnName] as string
+        )?.toLowerCase();
+
+        // 이미 선택된 값은 제외하고, 입력값으로 필터링
+        return (
+          !selectedValues.has(itemValue) &&
+          itemName?.includes(value.toLowerCase())
+        );
+      });
       setSuggestions(filtered);
     } else {
       setSuggestions([]);
