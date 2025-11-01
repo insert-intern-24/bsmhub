@@ -11,8 +11,6 @@ import { convertStudentNumber } from '@/utils/convertStudentNumber';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import { getProfile } from '@/services/server/profile/getProfile';
 import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
-import getMyAccount from '@/services/server/auth/getMyAccount';
-import ProfileEditButton from '@/app/components/card/portfolio/ProfileEditButton';
 
 interface PortfolioProps {
   profileName: string;
@@ -23,7 +21,6 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
   const profile = (await getProfile(profileName)) ?? notFound();
   const uuid = profile.profile_id;
   const studentInfo = profile.student;
-  const currentUser = await getMyAccount();
 
   const profileDetail = await getProfileDetail(profileName);
   const cooperationProjects = await getCooperationProjects(uuid);
