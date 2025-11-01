@@ -1,17 +1,6 @@
 'use client';
 import React, { useRef, useEffect } from 'react';
-import {
-  IconCheck,
-  IconSearch,
-  IconCalendarWeekFilled,
-} from '@tabler/icons-react';
 import { StandardInputProps } from './types/inputTypes';
-
-const iconMap: Record<string, React.ReactNode> = {
-  check: <IconCheck size={20} className='text-gray-base'/>,
-  search: <IconSearch size={20} className='text-gray-base'/>,
-  calendar: <IconCalendarWeekFilled size={20} className='text-gray-base'/>,
-};
 
 function Inputs({
   mode = 'write',
@@ -22,7 +11,6 @@ function Inputs({
   name,
   required = false,
   id = '',
-  icon,
 }: StandardInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const isReadOnly = mode === 'read';
@@ -34,7 +22,11 @@ function Inputs({
   }, [mode]);
 
   return (
-    <div className={`flex-row input-common px-2.5 ${isReadOnly ? '!bg-white' : ''} transition-colors`}>
+    <div
+      className={`flex-row input-common px-2.5 ${
+        isReadOnly ? '!bg-white' : ''
+      } transition-colors`}
+    >
       <input
         ref={inputRef}
         id={id}
@@ -50,9 +42,6 @@ function Inputs({
         ${isReadOnly ? 'bg-white cursor-default' : 'bg-light-gray-outline'}
       `}
       />
-      {icon && iconMap[icon] && (
-        <button type="button">{iconMap[icon]}</button>
-      )}
     </div>
   );
 }

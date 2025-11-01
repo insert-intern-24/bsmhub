@@ -1,18 +1,16 @@
 import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
+import { createClient } from '@/utils/supabase/client';
 import {
-  updateProfileSkills,
-  updateStudentCertificates,
-  updateProfileCompetitions,
   createDataTransformer,
   createDeleteFilterGenerator,
   createChangeCalculator,
 } from '@/utils/graphQL/relationTableHelper';
 
-export const profileConfig: FormConfig = {
+export const teamProfileConfig: FormConfig = {
   graphql: {
     read: `
-      query GetProfile($owner: String!) {
-        profileCollection(filter: { owner: { eq: $owner }, is_team: { eq: false } }) {
+      query GetTeamProfile($profile_id: String!) {
+        profileCollection(filter: { profile_id: { eq: $profile_id }, is_team: { eq: true } }) {
           edges {
             node {
               profile_id
@@ -28,37 +26,10 @@ export const profileConfig: FormConfig = {
                   }
                 }
               }
-              profile_skillsCollection {
+              team_memberCollection {
                 edges {
                   node {
-                    skill_id
-                    skills {
-                      skill_name
-                    }
-                  }
-                }
-              }
-              profile_competitionsCollection {
-                edges {
-                  node {
-                    competition_id
-                    prize
-                  }
-                }
-              }
-            }
-          }
-        }
-        studentCollection(filter: { student_id: { eq: $owner } }) {
-          edges {
-            node {
-              student_certificatesCollection {
-                edges {
-                  node {
-                    certificate_id
-                    certificates {
-                      certificate_name
-                    }
+                    participant_id
                   }
                 }
               }
@@ -68,7 +39,7 @@ export const profileConfig: FormConfig = {
       }
     `,
     insert: `
-      mutation InsertProfile($objects: [profileInsertInput!]!) {
+      mutation InsertTeamProfile($objects: [profileInsertInput!]!) {
         insertIntoprofileCollection(objects: $objects) {
           affectedCount
           records {
@@ -78,7 +49,7 @@ export const profileConfig: FormConfig = {
       }
     `,
     update: `
-      mutation UpdateProfile($set: profileUpdateInput!, $filter: profileFilter!) {
+      mutation UpdateTeamProfile($set: profileUpdateInput!, $filter: profileFilter!) {
         updateprofileCollection(set: $set, filter: $filter) {
           affectedCount
           records {
@@ -174,64 +145,82 @@ export const profileConfig: FormConfig = {
       },
     },
     {
-      fieldName: 'student_certificates',
-      label: '자격증',
-      type: 'inputList',
+      fieldName: 'team_members',
+      label: '팀원',
+      type: 'dropdownInputList',
       required: false,
-      columnInfo: { table: 'student_certificates', column: '*' },
-      relationHandler: {
-        type: 'rest',
-        handler: updateStudentCertificates,
-        identifierIsStudnetId: true,
-      },
       inputConfig: {
-        onlyOne: false,
         inputs: [
           {
-            name: 'certificates.certificate_name',
-            type: 'text',
-            placeholder: '자격증명을 입력하세요',
+            name: 'participant_id',
+            placeholder: '팀원을 검색하세요',
             required: true,
           },
         ],
       },
-    },
-    {
-      fieldName: 'profile_competitions',
-      label: '수상이력',
-      type: 'inputList',
-      required: false,
-      columnInfo: { table: 'profile_competitions', column: '*' },
+      dropdownInputConfig: {
+        nameColumnName: 'profile_name',
+        valueColumnName: 'profile_id',
+        query: async () => {
+          const supabase = await createClient();
+          const { data, error } = await supabase
+            .from('profile')
+            .select('profile_id, profile_name')
+            .eq('is_team', false);
+          if (error) {
+            console.error('Error fetching data:', error);
+            return [];
+          }
+          return data || [];
+        },
+      },
+      columnInfo: { table: 'team_member', column: '*' },
       relationHandler: {
-        type: 'rest',
-        handler: updateProfileCompetitions,
+        type: 'graphql',
         identifierIsStudnetId: false,
-      },
-      inputConfig: {
-        onlyOne: false,
-        inputs: [
-          {
-            name: 'prize',
-            type: 'text',
-            placeholder: '수상내역을 입력하세요',
-            required: true,
-          },
-        ],
+        dataTransformer: createDataTransformer({
+          participant_id: 'participant_id',
+        }),
+        deleteFilterGenerator: createDeleteFilterGenerator(['participant_id']),
+        changeCalculator: createChangeCalculator(['participant_id']),
       },
     },
-    {
-      fieldName: 'profile_skills',
-      label: '기술스택',
-      type: 'skillTag',
-      required: false,
-      columnInfo: { table: 'profile_skills', column: '*' },
-      relationHandler: {
-        type: 'rest',
-        handler: updateProfileSkills,
-        identifierIsStudnetId: false,
-      },
-      valuePath: 'skill_id',
-      white: false,
-    },
+    // {
+    //   fieldName: 'profile_competitions',
+    //   label: '수상이력',
+    //   type: 'inputList',
+    //   required: false,
+    //   columnInfo: { table: 'profile_competitions', column: '*' },
+    //   relationHandler: {
+    //     type: 'rest',
+    //     handler: updateProfileCompetitions,
+    //     identifierIsStudnetId: false,
+    //   },
+    //   inputConfig: {
+    //     onlyOne: false,
+    //     inputs: [
+    //       {
+    //         name: 'prize',
+    //         type: 'text',
+    //         placeholder: '수상내역을 입력하세요',
+    //         required: true,
+    //       },
+    //     ],
+    //   },
+    // },
+    // {
+    //   fieldName: 'profile_skills',
+    //   label: '기술스택',
+    //   type: 'skillTag',
+    //   required: false,
+    //   columnInfo: { table: 'profile_skills', column: '*' },
+    //   relationHandler: {
+    //     type: 'rest',
+    //     handler: updateProfileSkills,
+    //     identifierIsStudnetId: false,
+    //   },
+    //   valuePath: 'skill_id',
+    //   white: false,
+    // },
   ],
 };

@@ -33,7 +33,7 @@ export async function getPersonalPortfolioData(): Promise<PortfolioData[]> {
           status
         )
       ),
-      student(
+      student!profile_owner_fkey1 (
         name,
         join_at,
         graduate_at,

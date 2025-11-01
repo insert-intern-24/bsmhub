@@ -20,7 +20,7 @@ interface PortfolioProps {
 const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
   const profile = (await getProfile(profileName)) ?? notFound();
   const uuid = profile.profile_id;
-  const studentInfo = profile.student[0];
+  const studentInfo = profile.student;
 
   const profileDetail = await getProfileDetail(profileName);
   const cooperationProjects = await getCooperationProjects(uuid);
@@ -42,6 +42,8 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
         content={profile.description ?? ''}
         details={profileDetail}
         projects={personalProjects}
+        ownerId={profile.owner ?? ''}
+        profile_name={profile.profile_name}
       />
     );
     containerCss = 'grid grid-cols-[22rem_1fr] grid-rows-[auto_auto] gap-7';
@@ -60,7 +62,7 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
       <ProfileIcon image={profile.profile_image} />
       <TitleEN className="mobile:mb-2">{profile.profile_name}</TitleEN>
       <div className={`${containerCss} responsive-portfolioHome`}>
-        <Body className="text-gray-base flex-col justify-end">
+        <Body className="text-gray-base flex-col justify-end gap-4">
           {convertStudentNumber(studentInfo.student_number)} {studentInfo.name}{' '}
           | {studentInfo.departments.department_name}
         </Body>

@@ -37,7 +37,7 @@ export default function SearchTab({
     if (!searchTerm) return true;
     return (
       data.profile.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      data.student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      data.student?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       data.projects.some(
         (project) =>
           project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -100,7 +100,7 @@ export default function SearchTab({
       {/* 검색 및 필터 사이드바 */}
       <aside className="flex-col gap-3 min-w-[25rem]">
         <Inputs
-          icon='search'
+          icon="search"
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search"
         />

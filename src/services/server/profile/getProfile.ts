@@ -13,7 +13,8 @@ export const getProfile = async (profile_name: string): Promise<ProfileType> => 
       profile_name,
       description,
       profile_image,
-      student (
+      owner,
+      student!profile_owner_fkey1 (
         name,
         student_number,
         departments (
