@@ -70,7 +70,7 @@ export type PortfolioDetailType = {
         'certificate_id' | 'certificate_name'
       >;
     }[];
-  }[];
+  };
   profile_competitions: {
     prize: Pick<Tables<'student_competitions'>, 'prize'>;
     competitions: Pick<
