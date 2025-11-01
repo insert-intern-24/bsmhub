@@ -4,7 +4,6 @@ import React from 'react';
 import { useInputList } from '@utils/hook/useInputList';
 import MultiInput, { type MultiInputItem } from './MultiInput';
 import { InputType, InputHTMLType, InputMode } from './types/inputTypes';
-import { createClient } from '@/utils/supabase/client';
 
 // Input 설정 타입 - inputs 배열로 통일
 export type InputConfig = {
@@ -25,9 +24,9 @@ export type InputConfig = {
 };
 
 export type DropdownInputConfig = {
-  tableName: string;
   nameColumnName: string;
   valueColumnName: string;
+  query?: () => Promise<Record<string, unknown>[]>;
 };
 
 interface InputListProviderProps {
@@ -80,20 +79,15 @@ const InputListProvider = ({
 
   // dropdownInputConfig가 있으면 테이블 데이터 로드
   React.useEffect(() => {
-    if (dropdownInputConfig) {
-      // setLoading(true)
-      const supabase = createClient();
-      supabase
-        .from(dropdownInputConfig.tableName)
-        .select('*')
-        .then(({ data, error }) => {
-          if (error) {
-            // setError(error.message)
-            console.error('Error fetching data:', error);
-          } else {
-            setTableData(data || []);
-          }
-          // setLoading(false)
+    if (dropdownInputConfig?.query) {
+      // 커스텀 쿼리 함수가 있으면 사용
+      dropdownInputConfig
+        .query()
+        .then((data) => {
+          setTableData(data);
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
         });
     }
   }, [dropdownInputConfig]);

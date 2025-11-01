@@ -1,4 +1,5 @@
 import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
+import { createClient } from '@/utils/supabase/client';
 
 export const teamProfileConfig: FormConfig = {
   graphql: {
@@ -207,9 +208,20 @@ export const teamProfileConfig: FormConfig = {
         ],
       },
       dropdownInputConfig: {
-        tableName: 'profile',
         nameColumnName: 'profile_name',
         valueColumnName: 'profile_id',
+        query: async () => {
+          const supabase = await createClient();
+          const { data, error } = await supabase
+            .from('profile')
+            .select('profile_id, profile_name')
+            .eq('is_team', false);
+          if (error) {
+            console.error('Error fetching data:', error);
+            return [];
+          }
+          return data || [];
+        },
       },
       columnInfo: { table: 'team_member', column: '*' },
       relationHandler: {
