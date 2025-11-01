@@ -45,6 +45,8 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
         content={profile.description ?? ''}
         details={profileDetail}
         projects={personalProjects}
+        ownerId={profile.owner ?? ''}
+        profile_name={profile.profile_name}
       />
     );
     containerCss = 'grid grid-cols-[22rem_1fr] grid-rows-[auto_auto] gap-7';
@@ -66,12 +68,6 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
         <Body className="text-gray-base flex-col justify-end gap-4">
           {convertStudentNumber(studentInfo.student_number)} {studentInfo.name}{' '}
           | {studentInfo.departments.department_name}
-          {currentUser.id == profile.owner && (
-            <ProfileEditButton
-              ownerId={profile.owner}
-              profileName={profile.profile_name}
-            />
-          )}
         </Body>
 
         <div className={`${isHome ? 'max-w-[46rem]' : ''} mobile:hidden`}>

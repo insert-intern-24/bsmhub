@@ -4,17 +4,27 @@ import Card from '../project/ProjectCard';
 
 import { PortfolioDetailProps } from '@/app/(box-layout)/portfolio/types';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
+import ProfileEditButton from './ProfileEditButton';
 
 interface PortfolioHomeProps {
   content: string;
   details: PortfolioDetailProps[];
   projects: CardProps[];
+  ownerId: string;
+  profile_name: string;
 }
 
-const PortfolioHome = ({ content, details, projects }: PortfolioHomeProps) => {
+const PortfolioHome = ({
+  content,
+  details,
+  projects,
+  ownerId,
+  profile_name,
+}: PortfolioHomeProps) => {
   return (
     <>
-      <aside>
+      <aside className="flex-col gap-6 sticky top-24 self-start">
+        <ProfileEditButton ownerId={ownerId} profileName={profile_name} />
         <PortfolioItems details={details} />
       </aside>
       <section className="flex-col gap-5">
