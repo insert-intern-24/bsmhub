@@ -8,12 +8,13 @@ interface CheckboxProps {
 
 const Checkbox = ({ checked, onChange, label = '체크박스' }: CheckboxProps) => {
   const [state, setState] = useState(false);
+  const isChecked = checked ?? state;
   
   return (
     <label
       className="flex flex-row items-center gap-2 cursor-pointer select-none"
       onClick={() => {
-        const next = !(checked ?? state);
+        const next = !isChecked;
         setState(next);
         onChange?.(next);
       }}
@@ -21,10 +22,13 @@ const Checkbox = ({ checked, onChange, label = '체크박스' }: CheckboxProps) 
       <span 
         className="material-symbols-outlined text-[24px] transition-colors"
         style={{ 
-          fontVariationSettings: `'FILL' ${(checked ?? state) ? 1 : 0}, 'wght' 400, 'GRAD' 0, 'opsz' 24`
+          fontVariationSettings: `'FILL' ${isChecked ? 1 : 0}, 'wght' 400, 'GRAD' 0, 'opsz' 24`,
+          fontFamily: "'Material Symbols Outlined'",
+          fontWeight: 'normal',
+          fontStyle: 'normal',
         }}
       >
-        {(checked ?? state) ? 'check_box' : 'check_box_outline_blank'}
+        {isChecked ? 'check_box' : 'check_box_outline_blank'}
       </span>
       {label}
     </label>
