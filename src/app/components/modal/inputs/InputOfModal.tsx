@@ -1,11 +1,11 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { Title } from '@components/system/text'
 import LabelOfInputs from './LabelOfInputs'
 import InputListProvider from './InputListProvider'
-// import SkillTagProvider from './SkillTagProvider'
+import SkillTagProvider from './SkillTagProvider'
 import Checkbox from './Checkbox'
 import Buttons from './Buttons'
 import PictureUpload from './PictureUpload'
@@ -15,14 +15,18 @@ import { MultiInputItem } from '@utils/hook/useInputList'
 interface InputOfModalProps {
   title?: string;
   config: FormConfig;
-  onSubmit?: (data: Record<string, MultiInputItem[][] | string[] | boolean | File | null>) => void;
+  onSubmit?: (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>) => void;
   submitButtonText?: string;
+  initialValues?: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>;
 }
 
-const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '제출하기' }: InputOfModalProps) => {
-  const { control, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][] | string[] | boolean | File | null>, field) => {
-      if (field.type === 'checkbox') {
+const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '제출하기', initialValues }: InputOfModalProps) => {
+  const { control, handleSubmit, formState: { errors }, reset } = useForm({
+    defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>, field) => {
+      // 초기값이 제공된 경우 사용, 그렇지 않으면 기본값 사용
+      if (initialValues && initialValues[field.fieldName] !== undefined) {
+        acc[field.fieldName] = initialValues[field.fieldName];
+      } else if (field.type === 'checkbox') {
         acc[field.fieldName] = false;
       } else if (field.type === 'picture') {
         acc[field.fieldName] = null;
@@ -33,7 +37,15 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
     }, {} as Record<string, MultiInputItem[][] | string[] | boolean | File | null>)
   });
 
-  const onFormSubmit = (data: Record<string, MultiInputItem[][] | string[] | boolean | File | null>) => {
+  // initialValues가 변경될 때마다 폼을 리셋
+  useEffect(() => {
+    if (initialValues) {
+      reset(initialValues);
+    }
+  }, [initialValues, reset]);
+
+  const onFormSubmit = (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>) => {
+    console.log('인풋모달 제출값:', data);
     onSubmit?.(data);
   };
 
@@ -79,14 +91,15 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
               }}
               render={({ field: { onChange, value } }) => {
                 // SkillTag 컴포넌트
-                // if (field.type === 'skillTag') {
-                //   return (
-                //     <SkillTagProvider
-                //       onTagsChange={(tags: string[]) => onChange(tags.map(tag => [{ value: tag }]))}
-                //       white={field.white}
-                //     />
-                //   );
-                // }
+                if (field.type === 'skillTag') {
+                  return (
+                    <SkillTagProvider
+                      onTagsChange={(tags: number[]) => onChange(tags)}
+                      white={field.white}
+                      initialTags={value as number[]}
+                    />
+                  );
+                }
                 
                 // Checkbox 컴포넌트
                 if (field.type === 'checkbox') {
@@ -115,6 +128,18 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
                     <InputListProvider
                       config={field.inputConfig}
                       onInputsChange={onChange}
+                      initialValue={value as MultiInputItem[][] | undefined}
+                      onlyOne={field.inputConfig.onlyOne}
+                    />
+                  );
+                }
+                if(field.type === 'dropdownInputList'){
+                  return (
+                    <InputListProvider
+                      config={field.inputConfig}
+                      dropdownInputConfig={field.dropdownInputConfig}
+                      onInputsChange={onChange}
+                      initialValue={value as MultiInputItem[][] | undefined}
                       onlyOne={field.inputConfig.onlyOne}
                     />
                   );

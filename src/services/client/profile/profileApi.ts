@@ -42,3 +42,52 @@ export const getProfileByStudentId = async (studentId: string) => {
 
   return data;
 };
+
+export const getProfileWithDetails = async (userId: string) => {
+  const supabase = createClient();
+  
+  const { data, error } = await supabase
+    .from('profile')
+    .select(`
+      *,
+      profile_link(*),
+      profile_skills(
+        skill_id,
+        skills(skill_name)
+      ),
+      profile_competitions(*),
+      student(*,
+        student_certificates(
+          certificate_id,
+          certificates(
+            certificate_name,
+            is_software
+          )
+        )
+      )
+    `)
+    .eq('owner', userId)
+    .eq('is_team', false)
+    .maybeSingle();
+  
+  if (error) {
+    console.error('Error fetching profile with details:', error);
+    return null;
+  }
+  
+  // 데이터 구조 평면화: student_certificates를 최상위로 이동
+  if (
+    data &&
+    (data as unknown as { student?: Array<{ student_certificates?: unknown[] }> })
+      .student &&
+    (data as unknown as { student: unknown[] }).student.length > 0
+  ) {
+    const studentArr = (data as unknown as {
+      student: Array<{ student_certificates?: unknown[] }>;
+    }).student;
+    (data as Record<string, unknown>).student_certificates =
+      studentArr[0].student_certificates || [];
+  }
+  
+  return data;
+};

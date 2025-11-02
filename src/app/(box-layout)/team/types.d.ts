@@ -3,7 +3,7 @@ import { Tables } from "@/utils/supabase/database.types";
 import { MergeDeep } from "type-fest";
 
 export type TeamData = MergeDeep<
-  Omit<Tables<'profile'>, 'email' | 'is_team' | 'owner' | 'link'>,
+  Omit<Tables<'profile'>, 'email' | 'is_team' | 'link'>,
   {
     profile_link: Pick<Tables<'profile_link'>, 'link' | 'alt'>[];
     team_member: {

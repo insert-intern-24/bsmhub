@@ -12,25 +12,28 @@ interface InputListState {
 }
 
 type InputAction =
-  | { type: 'UPDATE_VALUE'; index: number; value: string; subIndex: number }
-  | { type: 'SET_ACTIVE'; index: number }
+  | { type: 'UPDATE_VALUE'; index: number; value: string | number | undefined; subIndex: number }
+  | { type: 'SET_ACTIVE'; index: number | null }
   | { type: 'ADD_INPUT'; multiInputConfig: MultiInputItem[] }
+  | { type: 'DELETE_INPUT'; index: number }
 
 // 커스텀 훅: 비즈니스 로직 분리
-export const useInputList = (initialConfig?: MultiInputItem[]) => {
+export const useInputList = (initialConfig?: MultiInputItem[] | MultiInputItem[][]) => {
   const isEmpty = (value?: string | number | null) => 
     !value || String(value).trim() === ''
 
   const isInputEmpty = (input: MultiInputItem[]): boolean => {
     // 모든 입력이 비어있는지 확인
-    return input.every(item => isEmpty(item.value))
+    return input && input.every(item => isEmpty(item.value))
   }
 
   const reducer = produce((draft: InputListState, action: InputAction) => {
     switch (action.type) {
       case 'UPDATE_VALUE': {
-        const input = draft.inputs[action.index]
-        input[action.subIndex].value = action.value
+        if (draft.inputs[action.index]) {
+          const input = draft.inputs[action.index]
+          input[action.subIndex].value = action.value
+        }
         break
       }
       
@@ -43,8 +46,11 @@ export const useInputList = (initialConfig?: MultiInputItem[]) => {
         if (shouldRemoveEmpty) {
           const removedIndex = draft.activeIndex!
           draft.inputs.splice(removedIndex, 1)
+          if (action.index != null && action.index > removedIndex) {
+            action.index--
+          }
         }
-        draft.activeIndex = action.index % draft.inputs.length
+        draft.activeIndex = action.index
         break
       }
       
@@ -60,13 +66,36 @@ export const useInputList = (initialConfig?: MultiInputItem[]) => {
         draft.activeIndex = draft.inputs.length - 1
         break
       }
+      
+      case 'DELETE_INPUT': {
+        if (action.index >= 0 && action.index < draft.inputs.length) {
+          draft.inputs.splice(action.index, 1)
+          if (draft.activeIndex === action.index) {
+            draft.activeIndex = null
+          } else if (draft.activeIndex !== null && draft.activeIndex > action.index) {
+            draft.activeIndex -= 1
+          }
+        }
+        break
+      }
     }
   })
 
-  const initialInputs = initialConfig || [{ value: '' } as MultiInputItem]
+  // initialConfig가 2차원 배열인지 확인
+  const is2DArray = Array.isArray(initialConfig) && 
+    initialConfig.length > 0 && 
+    Array.isArray(initialConfig[0])
+
+  const initialInputs = is2DArray 
+    ? initialConfig as MultiInputItem[][]
+    : initialConfig && initialConfig.length > 0
+      ? [initialConfig as MultiInputItem[]]
+      : [[{ value: '' } as MultiInputItem]]
+
+  // console.log('useInputList initialInputs:', initialInputs);
 
   return useReducer(reducer, {
-    inputs: [initialInputs],
+    inputs: initialInputs,
     activeIndex: null
   })
 }

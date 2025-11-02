@@ -2,8 +2,7 @@
 
 import Script from 'next/script';
 import { createClient } from '@/utils/supabase/client';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 // google 전역 객체에 대한 타입 정의
 declare global {
@@ -26,7 +25,6 @@ interface CredentialResponse {
 
 const OneTapComponent = () => {
   const supabase = createClient();
-  const router = useRouter();
   const [isGoogleLoaded, setIsGoogleLoaded] = useState(false);
 
   const generateNonce = async (): Promise<string[]> => {
@@ -44,9 +42,9 @@ const OneTapComponent = () => {
     return [nonce, hashedNonce];
   };
 
-  const initializeGoogleOneTap = async () => {
+  const initializeGoogleOneTap = useCallback(async () => {
     if (!isGoogleLoaded) return;
-    
+
     console.log('Initializing Google One Tap');
 
     const [nonce, hashedNonce] = await generateNonce();
@@ -84,13 +82,13 @@ const OneTapComponent = () => {
     });
 
     window.google.accounts.id.prompt();
-  };
+  }, [isGoogleLoaded, supabase]);
 
   useEffect(() => {
     if (isGoogleLoaded) {
       initializeGoogleOneTap();
     }
-  }, [isGoogleLoaded, router, supabase.auth]);
+  }, [isGoogleLoaded, initializeGoogleOneTap]);
 
   return (
     <>

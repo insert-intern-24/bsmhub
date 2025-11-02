@@ -1,17 +1,19 @@
 'use client';
 
 import { createClient } from '@/utils/supabase/client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useModal } from '@/app/components/modal';
 import InputOfModal from '@/app/components/modal/inputs/InputOfModal';
 import { Dropdown, DropdownItem } from '@/app/components/dropdown/DropDown';
 import { profileConfig } from '@/services/config/profileConfig';
 import Image from 'next/image';
 import { User } from '@supabase/supabase-js';
+import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
 import {
   checkProfileExistence,
   getProfileByStudentId,
 } from '@/services/client/profile/profileApi';
+import { useFormConfigData } from '@/utils/hook/useFormConfigData';
 import Link from 'next/link';
 
 const Account = () => {
@@ -19,6 +21,139 @@ const Account = () => {
   const [userProfile, setUserProfile] = useState<User | null>(null);
   const { openModal, closeModal } = useModal();
   const [profileLink, setProfileLink] = useState<string | null>(null);
+
+  const handleMakeProfile = useCallback(async () => {
+    if (!userProfile?.id) {
+      console.error('User ID not available');
+      return;
+    }
+
+    // 프로필 존재 여부 확인
+    const profileExists = await checkProfileExistence(userProfile.id);
+
+    // 프로필 편집 모달 컴포넌트
+    const ProfileEditModal = () => {
+      // 새로운 범용 Hook 사용 (사용자 정의 쿼리 + 데이터 매핑)
+      const { initialValues, isLoading, saveData, error, mode, canSave } =
+        useFormConfigData(
+          profileConfig,
+          { owner: userProfile.id }, // GraphQL variables
+          {
+            autoLoad: true, // 자동 로드
+            mode: profileExists ? 'update' : 'create', // 명확한 모드 설정
+          },
+        );
+
+      const handleProfileSubmit = (
+        formData: Record<
+          string,
+          MultiInputItem[][] | string[] | boolean | File | number[] | null
+        >,
+      ): void => {
+        void (async () => {
+          const result = await saveData(
+            formData as unknown as Record<
+              string,
+              MultiInputItem[][] | string[] | boolean | File | null | string
+            >,
+            {
+            owner: userProfile.id,
+            is_team: false,
+            },
+          );
+
+        if (result.success) {
+          console.log('프로필이 성공적으로 저장되었습니다.');
+          console.log('Save result:', result);
+
+          // 저장된 프로필 이름을 응답에서 가져오기
+          let profileName = null;
+          if (result.data) {
+            type UpdateResp = {
+              updateprofileCollection?: { records?: Array<{ profile_name?: string }> };
+            };
+            type InsertResp = {
+              insertIntoprofileCollection?: { records?: Array<{ profile_name?: string }> };
+            };
+            const data = result.data as UpdateResp & InsertResp;
+            // Update의 경우 records에서 profile_name 가져오기
+            if (
+              mode === 'update' &&
+              data.updateprofileCollection?.records?.[0]?.profile_name
+            ) {
+              profileName =
+                data.updateprofileCollection!.records?.[0]?.profile_name ?? null;
+            }
+            // Insert의 경우 records에서 profile_name 가져오기
+            else if (
+              mode === 'create' &&
+              data.insertIntoprofileCollection?.records?.[0]?.profile_name
+            ) {
+              profileName =
+                data.insertIntoprofileCollection!.records?.[0]?.profile_name ??
+                null;
+            }
+          }
+
+          // 프로필 이름이 있으면 링크 업데이트, 없으면 기존 방식 사용
+          if (profileName) {
+            setProfileLink(`/portfolio/${profileName}`);
+          } else {
+            // 백업: 기존 방식으로 프로필 다시 가져오기
+            const profile = await getProfileByStudentId(userProfile.id);
+            if (profile) {
+              setProfileLink(`/portfolio/${profile.profile_name}`);
+            }
+          }
+
+          closeModal();
+        } else {
+          console.error('프로필 저장 실패:', result.message);
+
+          // 에러 메시지를 사용자 친화적으로 변환
+          let errorMessage =
+            result.message || '알 수 없는 오류가 발생했습니다.';
+
+          if (
+            errorMessage.includes('duplicate key') ||
+            errorMessage.includes('profile_name_key')
+          ) {
+            errorMessage =
+              '이미 사용 중인 프로필 이름입니다. 다른 이름을 사용해주세요.';
+          } else if (errorMessage.includes('unique constraint')) {
+            errorMessage =
+              '중복된 데이터가 존재합니다. 입력 내용을 확인해주세요.';
+          }
+
+          alert(`저장 중 오류가 발생했습니다:\n${errorMessage}`);
+        }
+        })();
+      };
+
+      if (isLoading) {
+        return (
+          <div className="p-8 text-center">프로필 정보를 불러오는 중...</div>
+        );
+      }
+
+      if (error) {
+        return (
+          <div className="p-8 text-center text-red-500">오류: {error}</div>
+        );
+      }
+
+      return (
+        <InputOfModal
+          title={mode === 'update' ? '프로필 수정' : '프로필 만들기'}
+          config={profileConfig}
+          initialValues={initialValues}
+          onSubmit={canSave ? handleProfileSubmit : undefined}
+        />
+      );
+    };
+
+    openModal(<ProfileEditModal />);
+  }, [userProfile?.id, closeModal, openModal]);
 
   useEffect(() => {
     const {
@@ -35,7 +170,7 @@ const Account = () => {
       }
     });
     return () => subscription.unsubscribe();
-  }, []);
+  }, [supabase, handleMakeProfile]);
 
   const handleGoogleLogin = async () => {
     const popup = window.open(
@@ -56,15 +191,7 @@ const Account = () => {
     window.addEventListener('message', handleMessage);
   };
 
-  const handleMakeProfile = () => {
-    openModal(
-      <InputOfModal
-        title="프로필 설정"
-        config={profileConfig}
-        onSubmit={() => closeModal()}
-      />,
-    );
-  };
+  
 
   useEffect(() => {
     // 컴포넌트 언마운트 시 setState 호출을 방지하기 위한 플래그
