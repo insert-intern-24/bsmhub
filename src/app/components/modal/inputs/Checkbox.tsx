@@ -20,12 +20,9 @@ const Checkbox = ({ checked, onChange, label = '체크박스' }: CheckboxProps) 
       }}
     >
       <span 
-        className="material-symbols-outlined text-[24px] transition-colors"
+        className="icon-checkbox font-material-symbols transition-colors"
         style={{ 
-          fontVariationSettings: `'FILL' ${isChecked ? 1 : 0}, 'wght' 400, 'GRAD' 0, 'opsz' 24`,
-          fontFamily: "'Material Symbols Outlined'",
-          fontWeight: 'normal',
-          fontStyle: 'normal',
+          fontVariationSettings: `'FILL' ${isChecked ? 1 : 0}, 'wght' 400, 'GRAD' 0, 'opsz' 24`
         }}
       >
         {isChecked ? 'check_box' : 'check_box_outline_blank'}

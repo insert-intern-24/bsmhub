@@ -45,6 +45,7 @@ const config: Config = {
       },
       fontFamily: {
         threat: ['Threat', 'sans-serif'],
+        'material-symbols': ['Material Symbols Outlined', 'sans-serif'],
       },
       maxWidth: {
         outer: '92.5rem',
@@ -105,6 +106,20 @@ const config: Config = {
           display: 'inline-flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+        },
+        '.icon-checkbox': {
+          fontWeight: 'normal',
+          fontStyle: 'normal',
+          fontSize: '24px',
+          lineHeight: 1,
+          letterSpacing: 'normal',
+          textTransform: 'none',
+          display: 'inline-block',
+          whiteSpace: 'nowrap',
+          wordWrap: 'normal',
+          direction: 'ltr',
+          WebkitFontFeatureSettings: "'liga'",
+          WebkitFontSmoothing: 'antialiased',
         },
       });
     },
