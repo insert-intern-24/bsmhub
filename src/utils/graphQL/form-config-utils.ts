@@ -193,7 +193,9 @@ export function transformDataToInitialValues(
     }
   }
 
-  console.log('transformDataToInitialValues result:', result);
+  if (process.env.NODE_ENV === 'development') {
+    console.log('transformDataToInitialValues result:', result);
+  }
 
   return result;
 }
