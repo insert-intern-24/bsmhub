@@ -108,7 +108,6 @@ const config: Config = {
           alignItems: 'center',
         },
         '.icon-checkbox': {
-          fontFamily: "'Material Symbols Outlined'",
           fontWeight: 'normal',
           fontStyle: 'normal',
           fontSize: '24px',
