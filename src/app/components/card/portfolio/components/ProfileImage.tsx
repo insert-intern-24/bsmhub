@@ -2,11 +2,11 @@ import React from 'react';
 import Image from 'next/image';
 
 type Size = 'tiny' | 'small' | 'medium' | 'large';
-const sizeMap: Record<Size, { width: number; height: number }> = {
-  tiny: { width: 15, height: 15 },
-  small: { width: 45, height: 45 },
-  medium: { width: 54, height: 54 },
-  large: { width: 75, height: 75 },
+const sizeMap: Record<Size, number> = {
+  tiny: 15,
+  small: 45,
+  medium: 54,
+  large: 75,
 };
 interface ProfileImageProps {
   src: string;
@@ -23,13 +23,28 @@ function ProfileImage({
   className,
   style,
 }: ProfileImageProps) {
+  const dimension = sizeMap[size];
+  const mergedClassName = [
+    'relative overflow-hidden rounded-full min-w-fit',
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  const mergedStyle: React.CSSProperties = {
+    width: dimension,
+    height: dimension,
+    ...style,
+  };
+
   return (
-    <div className={className ?? 'min-w-fit'} style={style}>
+    <div className={mergedClassName} style={mergedStyle}>
       <Image
         src={src}
-        alt={`${name} 프로필`}
-        {...sizeMap[size]}
-        className="object-cover rounded-full"
+        alt={`${name ?? '사용자'} 프로필`}
+        fill
+        sizes={`${dimension}px`}
+        className="object-cover"
       />
     </div>
   );

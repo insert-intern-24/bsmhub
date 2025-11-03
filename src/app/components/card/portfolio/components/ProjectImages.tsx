@@ -11,12 +11,18 @@ const ProjectImages = ({ projects, variant }: ProjectImagesProps) => {
   const containerClass =
     variant === 'default'
       ? 'h-[5.75rem] flex gap-1 w-full'
-      : 'h-[5.75rem] flex gap-1 overflow-x-scroll';
+      : 'h-[5.75rem] flex gap-1 overflow-x-auto';
 
-  const imageClass =
+  const imageClass = [
+    'relative h-[5.75rem] overflow-hidden rounded',
     variant === 'default'
-      ? 'relative min-w-[6.625rem] w-full h-[5.75rem]'
-      : 'relative w-[9.375rem] h-[5.75rem] flex-shrink-0';
+      ? 'min-w-[6.625rem] w-full flex-shrink-0'
+      : 'w-[9.375rem] flex-shrink-0',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  const imageSizes = variant === 'default' ? '106px' : '150px';
 
   return (
     <div className={containerClass}>
@@ -27,7 +33,8 @@ const ProjectImages = ({ projects, variant }: ProjectImagesProps) => {
               src={project.projectImage}
               alt={project.title}
               fill
-              className="object-cover rounded"
+              sizes={imageSizes}
+              className="object-cover"
             />
           </div>
         ),

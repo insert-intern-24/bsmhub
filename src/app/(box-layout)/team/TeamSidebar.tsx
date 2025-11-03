@@ -64,7 +64,7 @@ const TeamSidebar = async ({ teamDetail, projectCount }: TeamSidebarProps) => {
               alt="팀원 프로필 사진"
               width={32}
               height={32}
-              className="rounded-full"
+              className="rounded-full object-cover"
             />
           ))}
         </div>
