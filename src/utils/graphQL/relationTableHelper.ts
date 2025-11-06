@@ -127,6 +127,36 @@ export async function getOrCreateCompetitionIds(
 }
 
 /**
+ * skill_id 배열을 skill_name 배열로 변환
+ * @param skillIds - 스킬 ID 배열
+ * @returns 스킬 이름 배열
+ */
+export async function getSkillNamesByIds(
+  skillIds: number[],
+): Promise<string[]> {
+  if (skillIds.length === 0) return [];
+
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('skills')
+    .select('skill_id, skill_name')
+    .in('skill_id', skillIds);
+
+  if (error) {
+    console.error('Error fetching skill names:', error);
+    return [];
+  }
+
+  // skill_id 순서 유지
+  const skillMap = new Map(
+    (data || []).map((skill) => [skill.skill_id, skill.skill_name]),
+  );
+  return skillIds
+    .map((id) => skillMap.get(id))
+    .filter((name): name is string => Boolean(name));
+}
+
+/**
  * profile_skills 테이블 업데이트 (ID 기반)
  * @param profileId - 프로필 ID
  * @param skillIds - 새로운 스킬 ID 배열

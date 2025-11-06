@@ -214,10 +214,18 @@ export function formDataToGraphQL(
     if (field.type === 'skillTag') {
       const skillIds = fieldValue as number[];
       if (skillIds && skillIds.length > 0) {
-        const skillData = skillIds.map((skillId) => ({
-          skill_id: skillId,
-        }));
-        relationTableData.set(table, skillData);
+        // relationTableData에 skill_ids를 저장 (나중에 skill_name으로 변환)
+        // table이 관계 테이블이면 relationTableData에, 메인 테이블 필드면 별도 처리
+        if (isRelationshipTable(table)) {
+          const skillData = skillIds.map((skillId) => ({
+            skill_id: skillId,
+          }));
+          relationTableData.set(table, skillData);
+        } else {
+          // 메인 테이블 필드인 경우 (예: projects.skills)
+          // skill_id 배열을 저장해두고 나중에 변환
+          relationTableData.set(`__skills_${table}_${column}`, skillIds as unknown as Record<string, unknown>[]);
+        }
       }
       return;
     }
