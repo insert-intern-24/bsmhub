@@ -27,13 +27,6 @@ export const projectConfig: FormConfig = {
                 category_id
                 category_name
               }
-              project_html_descriptionCollection {
-                edges {
-                  node {
-                    html_content
-                  }
-                }
-              }
               project_contributorsCollection {
                 edges {
                   node {
@@ -152,18 +145,34 @@ export const projectConfig: FormConfig = {
     },
     {
       fieldName: 'project_link',
-      label: '프로젝트 링크',
+      label: '링크',
       type: 'inputList',
       required: false,
-      columnInfo: { table: 'projects', column: 'link' },
+      columnInfo: { table: 'profile_link', column: '*' },
+      relationHandler: {
+        type: 'graphql',
+        identifierIsStudnetId: false,
+        dataTransformer: createDataTransformer(
+          { link: 'link', alt: 'alt' },
+          (item) => Boolean(item.link),
+        ),
+        deleteFilterGenerator: createDeleteFilterGenerator(['link', 'alt']),
+        changeCalculator: createChangeCalculator(['link', 'alt']),
+      },
       inputConfig: {
-        onlyOne: true,
+        onlyOne: false,
         inputs: [
           {
             name: 'link',
-            type: 'url',
-            placeholder: '프로젝트 링크를 입력하세요 (예: https://example.com)',
-            required: false,
+            type: 'text',
+            placeholder: '링크 URL을 입력하세요',
+            required: true,
+          },
+          {
+            name: 'alt',
+            type: 'text',
+            placeholder: '링크 제목을 입력하세요',
+            required: true,
           },
         ],
       },
@@ -238,34 +247,34 @@ export const projectConfig: FormConfig = {
       columnInfo: { table: 'projects', column: 'skills' },
       white: false,
     },
-    {
-      fieldName: 'project_html_description',
-      label: '프로젝트 상세 설명',
-      type: 'inputList',
-      required: false,
-      columnInfo: { table: 'project_html_description', column: '*' },
-      relationHandler: {
-        type: 'graphql',
-        identifierIsStudnetId: false,
-        dataTransformer: createDataTransformer(
-          { html_content: 'html_content' },
-          (item) => Boolean(item.html_content),
-        ),
-        deleteFilterGenerator: createDeleteFilterGenerator(['html_content']),
-        changeCalculator: createChangeCalculator(['html_content']),
-      },
-      inputConfig: {
-        onlyOne: true,
-        inputs: [
-          {
-            name: 'html_content',
-            type: 'text',
-            placeholder: '프로젝트 상세 설명을 HTML 형식으로 입력하세요',
-            required: false,
-          },
-        ],
-      },
-    },
+    // {
+    //   fieldName: 'project_html_description',
+    //   label: '프로젝트 상세 설명',
+    //   type: 'inputList',
+    //   required: false,
+    //   columnInfo: { table: 'project_html_description', column: '*' },
+    //   relationHandler: {
+    //     type: 'graphql',
+    //     identifierIsStudnetId: false,
+    //     dataTransformer: createDataTransformer(
+    //       { html_content: 'html_content' },
+    //       (item) => Boolean(item.html_content),
+    //     ),
+    //     deleteFilterGenerator: createDeleteFilterGenerator(['html_content']),
+    //     changeCalculator: createChangeCalculator(['html_content']),
+    //   },
+    //   inputConfig: {
+    //     onlyOne: true,
+    //     inputs: [
+    //       {
+    //         name: 'html_content',
+    //         type: 'text',
+    //         placeholder: '프로젝트 상세 설명을 HTML 형식으로 입력하세요',
+    //         required: false,
+    //       },
+    //     ],
+    //   },
+    // },
     {
       fieldName: 'project_contributors',
       label: '프로젝트 기여자',
