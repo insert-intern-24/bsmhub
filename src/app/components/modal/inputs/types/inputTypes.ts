@@ -77,7 +77,8 @@ interface BaseFieldConfig {
     dataTransformer?: (data: unknown[]) => unknown[]; // 데이터 변환 함수
     deleteFilterGenerator?: (
       item: Record<string, unknown>,
-      profileId: string,
+      identifier: string | number, // 메인 엔티티의 ID (profileId, projectId 등)
+      identifierField?: string, // 외래키 필드명 (기본값: 'profile_id')
     ) => Record<string, unknown>; // 삭제 필터 생성 함수
     changeCalculator?: (
       newData: unknown[],
@@ -139,4 +140,7 @@ export interface FormConfig {
     insert: string; // 삽입 mutation
     update: string; // 업데이트 mutation
   };
+  // 메인 테이블 정보 (선택사항, relation table 처리에 사용)
+  mainTable?: string; // 메인 테이블 이름 (예: 'projects', 'profile')
+  idField?: string; // 메인 테이블의 ID 필드명 (예: 'project_id', 'profile_id')
 }
