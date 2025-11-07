@@ -65,8 +65,16 @@ const InputListProvider = ({
     value: '',
   })) as MultiInputItem[];
 
+  // onlyOne이 false이고 initialValue가 없거나 빈 배열이면, 최소 하나의 빈 그룹 생성
+  const defaultInitialValue = 
+    initialValue && initialValue.length > 0
+      ? initialValue
+      : onlyOne
+        ? initialConfig
+        : [initialConfig];
+
   const [{ inputs, activeIndex }, dispatch] = useInputList(
-    initialValue || initialConfig,
+    defaultInitialValue,
   );
 
   // 테이블 데이터 및 추천 상태
