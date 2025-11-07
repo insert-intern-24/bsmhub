@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Body } from '@/app/components/system/text';
 import type { ProjectDetailViewModel } from './types';
 import {
@@ -10,6 +10,9 @@ import {
 } from './project-sidebar/ProjectSummarySection';
 import { ProjectTeamSection } from './project-sidebar/ProjectTeamSection';
 import ProfileIcon from '../../card/portfolio/ProfileIcon';
+import { useModal } from '../../modal';
+import ProjectEditModal from './ProjectEditModal';
+import { projectConfig } from '@/services/config/projectConfig';
 
 interface ProjectSidebarProps {
   project: ProjectDetailViewModel;
@@ -23,6 +26,23 @@ const ProjectSidebar = ({
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [shouldFoldSidebar, setShouldFoldSidebar] = useState(false);
   const sidebarRef = useRef<HTMLElement>(null);
+  const { openModal, closeModal } = useModal();
+
+  const handleProjectEdit = useCallback(() => {
+    if (!hasEditPermission || !project.id) {
+      console.error('User not authorized to edit this project');
+      return;
+    }
+
+    openModal(
+      <ProjectEditModal
+        config={projectConfig}
+        variables={{ project_id: project.id }}
+        mode="update"
+        onClose={closeModal}
+      />,
+    );
+  }, [project.id, hasEditPermission, openModal, closeModal]);
 
   useEffect(() => {
     const checkSidebarHeight = () => {
@@ -57,6 +77,8 @@ const ProjectSidebar = ({
           title={project.title}
           description={project.introduction}
           hasEditPermission={hasEditPermission}
+          projectId={project.id}
+          onEdit={handleProjectEdit}
         />
 
         {/* 링크, 기술스택, 기여자 컨테이너 */}
