@@ -48,7 +48,7 @@ const ProjectSidebar = ({
   return (
     <aside
       ref={sidebarRef}
-      className="relative flex-shrink-0 w-[21.75rem] min-h-[50rem] min-w-[21.75rem] border-r-[1px] border-light-gray-outline pr-[2.625rem] mobile:w-full mobile:min-w-0 mobile:border-0 mobile:px-0 mobile:pb-8"
+      className="relative flex-shrink-0 w-[21.75rem] min-h-[50rem] min-w-[21.75rem] mobile:w-full mobile:min-w-0 mobile:border-0 mobile:px-0 mobile:pb-8"
     >
       <ProfileIcon image={project.iconImage} />
 
