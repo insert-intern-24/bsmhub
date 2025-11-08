@@ -36,7 +36,7 @@ const ProjectActions = ({
 }: {
   hasEditPermission?: boolean;
 }) => (
-  <div className="flex w-full gap-1">
+  <div className="flex w-full gap-1 mt-3">
     <PlayButton hasEditPermission={hasEditPermission} />
     <AddToPlaylistButton />
   </div>

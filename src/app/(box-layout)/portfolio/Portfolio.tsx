@@ -46,7 +46,8 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
         profile_name={profile.profile_name}
       />
     );
-    containerCss = 'grid grid-cols-[22rem_1fr] grid-rows-[auto_auto] gap-7';
+    containerCss =
+      'grid grid-cols-[22rem_1fr] grid-rows-[auto_auto] gap-x-8 gap-y-4 -mt-[0.375rem]';
   } else {
     Content = (
       <PortfolioProject
@@ -54,7 +55,7 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
         cooperationProjects={cooperationProjects}
       />
     );
-    containerCss = 'flex-col gap-6 mt-5';
+    containerCss = 'flex-col gap-6 mt-[0.375rem]';
   }
 
   return (
@@ -62,7 +63,7 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
       <ProfileIcon image={profile.profile_image} />
       <TitleEN className="mobile:mb-2">{profile.profile_name}</TitleEN>
       <div className={`${containerCss} responsive-portfolioHome`}>
-        <Body className="text-gray-base flex-col justify-end gap-4">
+        <Body className="text-gray-base flex-col justify-end gap-4]">
           {convertStudentNumber(studentInfo.student_number)} {studentInfo.name}{' '}
           | {studentInfo.departments.department_name}
         </Body>
