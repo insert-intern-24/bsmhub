@@ -335,9 +335,13 @@ export function createDeleteFilterGenerator(
   itemFields: string[],
   profileIdField: string = 'profile_id',
 ) {
-  return (item: Record<string, unknown>, profileId: string) => {
+  return (
+    item: Record<string, unknown>,
+    identifier: string | number,
+    identifierField?: string,
+  ) => {
     const filter: Record<string, unknown> = {
-      [profileIdField]: { eq: profileId },
+      [identifierField || profileIdField]: { eq: identifier },
     };
     itemFields.forEach((field) => {
       filter[field] = { eq: item[field] };
