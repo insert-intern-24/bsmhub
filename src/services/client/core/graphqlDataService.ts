@@ -418,6 +418,15 @@ export class GraphQLDataService {
       this.originalRelationData.set('team_member', membersData);
       console.log('Cached team_member:', membersData);
     }
+    if(mainNode.project_contributorsCollection){
+      const contributorsData = (
+        mainNode.project_contributorsCollection as {
+          edges: Array<{ node: { contributor_id: string } }>;
+        }
+      ).edges.map((edge) => ({ contributor_id: edge.node.contributor_id }));
+      this.originalRelationData.set('project_contributors', contributorsData);
+      console.log('Cached project_contributors:', contributorsData);
+    }
   }
 
   /**
