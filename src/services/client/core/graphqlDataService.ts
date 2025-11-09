@@ -45,7 +45,10 @@ export class GraphQLDataService {
   > {
     try {
       const query = buildReadQuery(formConfig);
-      const response = await executeQuery<Record<string, unknown>>(query, variables);
+      const response = await executeQuery<Record<string, unknown>>(
+        query,
+        variables,
+      );
 
       console.log('GraphQL Response:', JSON.stringify(response, null, 2));
 
@@ -146,7 +149,10 @@ export class GraphQLDataService {
    */
   async saveData(
     formConfig: FormConfig,
-    formData: Record<string, MultiInputItem[][] | string[] | boolean | File | number[] | null | string>,
+    formData: Record<
+      string,
+      MultiInputItem[][] | string[] | boolean | File | number[] | null | string
+    >,
     variables?: Record<string, unknown>,
     isUpdate: boolean = false,
   ): Promise<Result> {
@@ -159,7 +165,7 @@ export class GraphQLDataService {
         formData,
         formConfig,
       );
-      
+
       // skillTag가 메인 테이블 필드로 사용된 경우 처리 (예: projects.skills)
       const skillKeysToProcess: string[] = [];
       for (const [key, value] of relationTableData.entries()) {
@@ -168,21 +174,21 @@ export class GraphQLDataService {
           const parts = key.replace('__skills_', '').split('_');
           const columnName = parts.slice(1).join('_');
           const skillIds = value as unknown as number[];
-          
+
           // skill_id 배열을 skill_name 배열로 변환 (기존 함수 재사용)
           const { getSkillNamesByIds } = await import(
             '@/utils/graphQL/relationTableHelper'
           );
           const skillNames = await getSkillNamesByIds(skillIds);
-          
+
           // 메인 테이블 데이터에 skill_name 배열 저장
           mainTableData[columnName] = skillNames;
         }
       }
-      
+
       // 처리된 skill 키들을 relationTableData에서 제거
       skillKeysToProcess.forEach((key) => relationTableData.delete(key));
-      
+
       console.log('Save Data - Transformed Data:', {
         mainTableData,
         relationTableData: Array.from(relationTableData.entries()).map(
@@ -208,6 +214,7 @@ export class GraphQLDataService {
         // 업데이트 시 변경하면 안 되는 필드 제거
         delete updateSet.owner;
         delete updateSet.is_team;
+        delete updateSet.project_id;
 
         console.log(
           'Save Data - Update Set (after filtering):',
@@ -226,8 +233,13 @@ export class GraphQLDataService {
 
         // 🔥 핵심 수정: profile_id로 필터링 (owner 대신)
         // profile_id가 있으면 사용하고, 없으면 owner 사용
-        const filterField = this.currentProfileId ? 'profile_id' : 'owner';
-        const filterValue = this.currentProfileId || variables?.owner;
+        const filterField = this.currentProfileId
+          ? 'profile_id'
+          : variables?.project_id
+          ? 'project_id'
+          : 'owner';
+        const filterValue =
+          this.currentProfileId || variables?.project_id || variables?.owner;
 
         console.log(`Using filter: ${filterField} = ${filterValue}`);
 
