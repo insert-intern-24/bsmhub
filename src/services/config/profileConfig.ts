@@ -6,6 +6,8 @@ import {
   createDataTransformer,
   createDeleteFilterGenerator,
   createChangeCalculator,
+  processRestRelationTables,
+  processGraphQLRelationTables,
 } from '@/utils/graphQL/relationTableHelper';
 
 export const profileConfig: FormConfig = {
@@ -246,10 +248,6 @@ export const profileConfig: FormConfig = {
   }) => {
     console.log('[profileConfig] afterSave started');
     console.log('[profileConfig] recordId:', recordId);
-    console.log(
-      '[profileConfig] relationTableData:',
-      Array.from(relationTableData.entries()),
-    );
 
     const profileId = recordId as string;
 
@@ -312,168 +310,21 @@ export const profileConfig: FormConfig = {
       }
     }
 
-    // REST API로 처리할 테이블들 먼저 처리
-    for (const {
-      tableName,
-      relationData,
-      handler,
-      identifierIsStudentId,
-      dataTransformer,
-    } of restTables) {
-      if (!handler) continue;
+    // REST API 처리
+    await processRestRelationTables(
+      restTables,
+      profileId,
+      variables,
+      originalRelationData,
+    );
 
-      console.log(`[profileConfig] Processing REST table: ${tableName}`);
-
-      const existingData = originalRelationData.get(tableName) || [];
-
-      // 데이터 변환
-      let processedData: unknown[];
-      if (dataTransformer) {
-        processedData = dataTransformer(relationData);
-      } else {
-        // 기본 변환 로직 (하위 호환성)
-        switch (tableName) {
-          case 'profile_skills':
-            processedData = (relationData as Array<{ skill_id: number }>)
-              .map((item) => item.skill_id)
-              .filter(Boolean);
-            break;
-          case 'student_certificates':
-            processedData = (
-              relationData as Array<{
-                certificate_name?: string;
-                certificates?: { certificate_name: string };
-              }>
-            )
-              .map(
-                (item) =>
-                  item.certificate_name || item.certificates?.certificate_name,
-              )
-              .filter(Boolean);
-            break;
-          case 'profile_competitions':
-            processedData = (relationData as Array<{ prize: string }>)
-              .map((item) => item.prize)
-              .filter(Boolean);
-            break;
-          default:
-            processedData = relationData;
-        }
-      }
-
-      // 핸들러 호출
-      const targetId = identifierIsStudentId
-        ? (variables?.owner as string) || profileId
-        : profileId;
-
-      await handler(targetId, processedData, existingData);
-    }
-
-    // GraphQL로 처리할 테이블들
-    if (graphqlTables.length > 0) {
-      console.log('[profileConfig] Processing GraphQL tables');
-
-      // Mutation block 구성
-      let mutationBlock = 'mutation UpdateRelations(';
-      const mutationVariables: Record<string, unknown> = {};
-      const selectionFields: string[] = [];
-
-      const processedTables: Array<{
-        tableName: string;
-        changes: {
-          toDelete: Record<string, unknown>[];
-          toInsert: Record<string, unknown>[];
-        };
-      }> = [];
-
-      graphqlTables.forEach(
-        ({ tableName, relationData, dataTransformer, changeCalculator }) => {
-          const existingData =
-            (originalRelationData.get(tableName) as Record<
-              string,
-              unknown
-            >[]) || [];
-
-          // 데이터 변환
-          const processedData = dataTransformer
-            ? dataTransformer(relationData)
-            : relationData;
-
-          // 변경사항 계산
-          const changes = changeCalculator
-            ? changeCalculator(processedData, existingData)
-            : { toDelete: [], toInsert: [] };
-
-          if (changes.toDelete.length > 0 || changes.toInsert.length > 0) {
-            processedTables.push({ tableName, changes });
-          }
-        },
-      );
-
-      // Mutation 생성
-      processedTables.forEach(({ tableName, changes }, index) => {
-        // Delete mutations
-        if (changes.toDelete.length > 0) {
-          const deleteFilterGen = graphqlTables.find(
-            (t) => t.tableName === tableName,
-          )?.deleteFilterGenerator;
-
-          changes.toDelete.forEach((item, itemIndex) => {
-            const deleteVarName = `${tableName}DeleteFilter${index}_${itemIndex}`;
-            mutationBlock += `$${deleteVarName}: ${tableName}Filter!, `;
-
-            const deleteFilter = deleteFilterGen
-              ? deleteFilterGen(item, profileId, 'profile_id')
-              : { profile_id: { eq: profileId }, ...item };
-
-            mutationVariables[deleteVarName] = deleteFilter;
-
-            const deleteFieldName = `delete${
-              tableName.charAt(0).toUpperCase() + tableName.slice(1)
-            }${index}_${itemIndex}`;
-            selectionFields.push(
-              `${deleteFieldName}: deleteFrom${tableName}Collection(filter: $${deleteVarName}) { affectedCount }`,
-            );
-          });
-        }
-
-        // Insert mutations
-        if (changes.toInsert.length > 0) {
-          const insertVarName = `${tableName}InsertObjects${index}`;
-          mutationBlock += `$${insertVarName}: [${tableName}InsertInput!]!, `;
-          mutationVariables[insertVarName] = changes.toInsert.map((item) => ({
-            ...item,
-            profile_id: profileId,
-          }));
-
-          const insertFieldName = `insert${
-            tableName.charAt(0).toUpperCase() + tableName.slice(1)
-          }`;
-          selectionFields.push(
-            `${insertFieldName}: insertInto${tableName}Collection(objects: $${insertVarName}) { affectedCount }`,
-          );
-        }
-      });
-
-      if (selectionFields.length > 0) {
-        mutationBlock = mutationBlock.slice(0, -2) + ') {\n';
-        mutationBlock += selectionFields.join('\n  ') + '\n}';
-
-        console.log(
-          '[profileConfig] Executing GraphQL mutation:',
-          mutationBlock,
-        );
-        console.log(
-          '[profileConfig] Variables:',
-          JSON.stringify(mutationVariables, null, 2),
-        );
-
-        const { executeMutation } = await import('@/utils/graphQL/client');
-        await executeMutation(mutationBlock, mutationVariables);
-
-        console.log('[profileConfig] GraphQL mutation executed successfully');
-      }
-    }
+    // GraphQL 처리
+    await processGraphQLRelationTables(
+      graphqlTables,
+      profileId,
+      'profile_id',
+      originalRelationData,
+    );
 
     console.log('[profileConfig] afterSave completed');
   },

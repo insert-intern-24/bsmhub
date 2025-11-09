@@ -4,6 +4,7 @@ import {
   createDataTransformer,
   createDeleteFilterGenerator,
   createChangeCalculator,
+  processGraphQLRelationTables,
 } from '@/utils/graphQL/relationTableHelper';
 
 export const teamProfileConfig: FormConfig = {
@@ -230,14 +231,10 @@ export const teamProfileConfig: FormConfig = {
   afterSave: async ({ recordId, relationTableData, originalRelationData }) => {
     console.log('[teamProfileConfig] afterSave started');
     console.log('[teamProfileConfig] recordId (profile_id):', recordId);
-    console.log(
-      '[teamProfileConfig] relationTableData:',
-      Array.from(relationTableData.entries()),
-    );
 
     const profileId = recordId as string;
 
-    // GraphQL로 처리할 테이블들
+    // GraphQL로 처리할 테이블 정보 수집
     const graphqlTables: Array<{
       tableName: string;
       relationData: unknown[];
@@ -274,111 +271,13 @@ export const teamProfileConfig: FormConfig = {
       }
     }
 
-    if (graphqlTables.length === 0) {
-      console.log('[teamProfileConfig] No GraphQL tables to process');
-      return;
-    }
-
-    console.log('[teamProfileConfig] Processing GraphQL tables');
-
-    // Mutation block 구성
-    let mutationBlock = 'mutation UpdateRelations(';
-    const mutationVariables: Record<string, unknown> = {};
-    const selectionFields: string[] = [];
-
-    const processedTables: Array<{
-      tableName: string;
-      changes: {
-        toDelete: Record<string, unknown>[];
-        toInsert: Record<string, unknown>[];
-      };
-    }> = [];
-
-    graphqlTables.forEach(
-      ({ tableName, relationData, dataTransformer, changeCalculator }) => {
-        const existingData =
-          (originalRelationData.get(tableName) as Record<string, unknown>[]) ||
-          [];
-
-        // 데이터 변환
-        const processedData = dataTransformer
-          ? dataTransformer(relationData)
-          : relationData;
-
-        // 변경사항 계산
-        const changes = changeCalculator
-          ? changeCalculator(processedData, existingData)
-          : { toDelete: [], toInsert: [] };
-
-        if (changes.toDelete.length > 0 || changes.toInsert.length > 0) {
-          processedTables.push({ tableName, changes });
-        }
-      },
+    // GraphQL 처리
+    await processGraphQLRelationTables(
+      graphqlTables,
+      profileId,
+      'profile_id',
+      originalRelationData,
     );
-
-    // Mutation 생성
-    processedTables.forEach(({ tableName, changes }, index) => {
-      // Delete mutations
-      if (changes.toDelete.length > 0) {
-        const deleteFilterGen = graphqlTables.find(
-          (t) => t.tableName === tableName,
-        )?.deleteFilterGenerator;
-
-        changes.toDelete.forEach((item, itemIndex) => {
-          const deleteVarName = `${tableName}DeleteFilter${index}_${itemIndex}`;
-          mutationBlock += `$${deleteVarName}: ${tableName}Filter!, `;
-
-          const deleteFilter = deleteFilterGen
-            ? deleteFilterGen(item, profileId, 'profile_id')
-            : { profile_id: { eq: profileId }, ...item };
-
-          mutationVariables[deleteVarName] = deleteFilter;
-
-          const deleteFieldName = `delete${
-            tableName.charAt(0).toUpperCase() + tableName.slice(1)
-          }${index}_${itemIndex}`;
-          selectionFields.push(
-            `${deleteFieldName}: deleteFrom${tableName}Collection(filter: $${deleteVarName}) { affectedCount }`,
-          );
-        });
-      }
-
-      // Insert mutations
-      if (changes.toInsert.length > 0) {
-        const insertVarName = `${tableName}InsertObjects${index}`;
-        mutationBlock += `$${insertVarName}: [${tableName}InsertInput!]!, `;
-        mutationVariables[insertVarName] = changes.toInsert.map((item) => ({
-          ...item,
-          profile_id: profileId,
-        }));
-
-        const insertFieldName = `insert${
-          tableName.charAt(0).toUpperCase() + tableName.slice(1)
-        }`;
-        selectionFields.push(
-          `${insertFieldName}: insertInto${tableName}Collection(objects: $${insertVarName}) { affectedCount }`,
-        );
-      }
-    });
-
-    if (selectionFields.length > 0) {
-      mutationBlock = mutationBlock.slice(0, -2) + ') {\n';
-      mutationBlock += selectionFields.join('\n  ') + '\n}';
-
-      console.log(
-        '[teamProfileConfig] Executing GraphQL mutation:',
-        mutationBlock,
-      );
-      console.log(
-        '[teamProfileConfig] Variables:',
-        JSON.stringify(mutationVariables, null, 2),
-      );
-
-      const { executeMutation } = await import('@/utils/graphQL/client');
-      await executeMutation(mutationBlock, mutationVariables);
-
-      console.log('[teamProfileConfig] GraphQL mutation executed successfully');
-    }
 
     console.log('[teamProfileConfig] afterSave completed');
   },

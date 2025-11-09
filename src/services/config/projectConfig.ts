@@ -4,6 +4,7 @@ import {
   createDataTransformer,
   createDeleteFilterGenerator,
   createChangeCalculator,
+  processGraphQLRelationTables,
 } from '@/utils/graphQL/relationTableHelper';
 
 export const projectConfig: FormConfig = {
@@ -335,112 +336,53 @@ export const projectConfig: FormConfig = {
   afterSave: async ({ recordId, relationTableData, originalRelationData }) => {
     console.log('[projectConfig] afterSave started');
     console.log('[projectConfig] recordId (project_id):', recordId);
-    console.log(
-      '[projectConfig] relationTableData:',
-      Array.from(relationTableData.entries()),
-    );
 
     const projectId = recordId as number;
 
-    // project_contributors만 GraphQL로 처리
-    const contributorsData = relationTableData.get('project_contributors');
-    if (!contributorsData || contributorsData.length === 0) {
-      console.log('[projectConfig] No contributors data to process');
-      return;
-    }
+    // GraphQL로 처리할 테이블 정보 수집
+    const graphqlTables: Array<{
+      tableName: string;
+      relationData: unknown[];
+      dataTransformer?: (data: unknown[]) => unknown[];
+      deleteFilterGenerator?: (
+        item: Record<string, unknown>,
+        identifier: string | number,
+        identifierField?: string,
+      ) => Record<string, unknown>;
+      changeCalculator?: (
+        newData: unknown[],
+        existingData: Record<string, unknown>[],
+      ) => {
+        toDelete: Record<string, unknown>[];
+        toInsert: Record<string, unknown>[];
+      };
+    }> = [];
 
-    const fieldConfig = projectConfig.fields.find(
-      (field) => field.fieldName === 'project_contributors',
-    );
-
-    if (!fieldConfig?.relationHandler) {
-      console.warn(
-        '[projectConfig] No relationHandler for project_contributors',
+    // fields에서 각 테이블의 설정 정보 가져오기
+    for (const [tableName, relationData] of relationTableData) {
+      const fieldConfig = projectConfig.fields.find(
+        (field) => field.columnInfo?.table === tableName,
       );
-      return;
+
+      if (fieldConfig?.relationHandler?.type === 'graphql') {
+        graphqlTables.push({
+          tableName,
+          relationData,
+          dataTransformer: fieldConfig.relationHandler.dataTransformer,
+          deleteFilterGenerator:
+            fieldConfig.relationHandler.deleteFilterGenerator,
+          changeCalculator: fieldConfig.relationHandler.changeCalculator,
+        });
+      }
     }
 
-    // 기존 데이터
-    const existingData =
-      (originalRelationData.get('project_contributors') as Record<
-        string,
-        unknown
-      >[]) || [];
-
-    // 데이터 변환
-    const processedData = fieldConfig.relationHandler.dataTransformer
-      ? fieldConfig.relationHandler.dataTransformer(contributorsData)
-      : contributorsData;
-
-    // 변경사항 계산
-    const changes = fieldConfig.relationHandler.changeCalculator
-      ? fieldConfig.relationHandler.changeCalculator(
-          processedData,
-          existingData,
-        )
-      : { toDelete: [], toInsert: [] };
-
-    console.log('[projectConfig] Changes:', changes);
-
-    if (changes.toDelete.length === 0 && changes.toInsert.length === 0) {
-      console.log('[projectConfig] No changes to apply');
-      return;
-    }
-
-    // Mutation 생성
-    let mutationBlock = 'mutation UpdateProjectContributors(';
-    const mutationVariables: Record<string, unknown> = {};
-    const selectionFields: string[] = [];
-
-    // Delete mutations
-    if (
-      changes.toDelete.length > 0 &&
-      fieldConfig.relationHandler.deleteFilterGenerator
-    ) {
-      changes.toDelete.forEach((item, itemIndex) => {
-        const deleteVarName = `deleteFilter${itemIndex}`;
-        mutationBlock += `$${deleteVarName}: project_contributorsFilter!, `;
-
-        // project_id 필드를 사용하여 필터 생성
-        const deleteFilter = fieldConfig.relationHandler!
-          .deleteFilterGenerator!(item, projectId, 'project_id');
-
-        mutationVariables[deleteVarName] = deleteFilter;
-
-        const deleteFieldName = `deleteContributor${itemIndex}`;
-        selectionFields.push(
-          `${deleteFieldName}: deleteFromproject_contributorsCollection(filter: $${deleteVarName}) { affectedCount }`,
-        );
-      });
-    }
-
-    // Insert mutations
-    if (changes.toInsert.length > 0) {
-      const insertVarName = 'insertObjects';
-      mutationBlock += `$${insertVarName}: [project_contributorsInsertInput!]!, `;
-
-      mutationVariables[insertVarName] = changes.toInsert.map((item) => ({
-        ...item,
-        project_id: projectId,
-      }));
-
-      selectionFields.push(
-        `insertContributors: insertIntoproject_contributorsCollection(objects: $${insertVarName}) { affectedCount }`,
-      );
-    }
-
-    // Mutation 완성
-    mutationBlock = mutationBlock.slice(0, -2) + ') {\n';
-    mutationBlock += selectionFields.join('\n  ') + '\n}';
-
-    console.log('[projectConfig] Executing GraphQL mutation:', mutationBlock);
-    console.log(
-      '[projectConfig] Variables:',
-      JSON.stringify(mutationVariables, null, 2),
+    // GraphQL 처리
+    await processGraphQLRelationTables(
+      graphqlTables,
+      projectId,
+      'project_id',
+      originalRelationData,
     );
-
-    const { executeMutation } = await import('@/utils/graphQL/client');
-    await executeMutation(mutationBlock, mutationVariables);
 
     console.log('[projectConfig] afterSave completed');
   },
