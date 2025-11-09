@@ -421,9 +421,12 @@ export class GraphQLDataService {
     if(mainNode.project_contributorsCollection){
       const contributorsData = (
         mainNode.project_contributorsCollection as {
-          edges: Array<{ node: { contributor_id: string } }>;
+          edges: Array<{ node: { profile_id: string; description: string } }>;
         }
-      ).edges.map((edge) => ({ contributor_id: edge.node.contributor_id }));
+      ).edges.map((edge) => ({
+        profile_id: edge.node.profile_id,
+        description: edge.node.description,
+      }));
       this.originalRelationData.set('project_contributors', contributorsData);
       console.log('Cached project_contributors:', contributorsData);
     }
