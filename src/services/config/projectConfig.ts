@@ -28,6 +28,14 @@ export const projectConfig: FormConfig = {
                 category_id
                 category_name
               }
+              project_linkCollection {
+                edges {
+                  node {
+                    link
+                    alt
+                  }
+                }
+              }
               project_contributorsCollection {
                 edges {
                   node {
@@ -149,15 +157,31 @@ export const projectConfig: FormConfig = {
       label: '링크',
       type: 'inputList',
       required: false,
-      columnInfo: { table: 'projects', column: 'link' },
+      columnInfo: { table: 'project_link', column: '*' },
+      relationHandler: {
+        type: 'graphql',
+        identifierIsStudnetId: false,
+        dataTransformer: createDataTransformer(
+          { link: 'link', alt: 'alt' },
+          (item) => Boolean(item.link),
+        ),
+        deleteFilterGenerator: createDeleteFilterGenerator(['link', 'alt']),
+        changeCalculator: createChangeCalculator(['link', 'alt']),
+      },
       inputConfig: {
-        onlyOne: true,
+        onlyOne: false,
         inputs: [
           {
             name: 'link',
             type: 'text',
-            placeholder: '링크 URL을 입력하세요 (예: GitHub 저장소)',
-            required: false,
+            placeholder: '링크 URL을 입력하세요',
+            required: true,
+          },
+          {
+            name: 'alt',
+            type: 'text',
+            placeholder: '링크 제목을 입력하세요',
+            required: true,
           },
         ],
       },

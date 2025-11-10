@@ -430,6 +430,17 @@ export class GraphQLDataService {
       this.originalRelationData.set('project_contributors', contributorsData);
       console.log('Cached project_contributors:', contributorsData);
     }
+
+    // project_link 캐싱
+    if (mainNode.project_linkCollection) {
+      const projectLinksData = (
+        mainNode.project_linkCollection as {
+          edges: Array<{ node: { link: string; alt: string | null } }>;
+        }
+      ).edges.map((edge) => ({ link: edge.node.link, alt: edge.node.alt }));
+      this.originalRelationData.set('project_link', projectLinksData);
+      console.log('Cached project_link:', projectLinksData);
+    }
   }
 
   /**
