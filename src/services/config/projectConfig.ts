@@ -171,7 +171,7 @@ export const projectConfig: FormConfig = {
       columnInfo: { table: 'project_link', column: '*' },
       relationHandler: {
         type: 'graphql',
-        identifierIsStudnetId: false,
+        identifierIsStudentId: false,
         dataTransformer: createDataTransformer(
           { link: 'link', alt: 'alt' },
           (item) => Boolean(item.link),
