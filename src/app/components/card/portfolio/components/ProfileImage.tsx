@@ -1,44 +1,37 @@
-import React from 'react';
 import Image from 'next/image';
+import { type CSSProperties } from 'react';
 
 type Size = 'tiny' | 'small' | 'medium' | 'large';
-const sizeMap: Record<Size, number> = {
+
+const SIZE_MAP: Record<Size, number> = {
   tiny: 15,
   small: 45,
   medium: 54,
   large: 75,
-};
+} as const;
+
 interface ProfileImageProps {
   src: string;
   name?: string;
   size: Size;
   className?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
-function ProfileImage({
+const ProfileImage = ({
   src,
   name,
   size,
-  className,
+  className = '',
   style,
-}: ProfileImageProps) {
-  const dimension = sizeMap[size];
-  const mergedClassName = [
-    'relative overflow-hidden rounded-full',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
-  const mergedStyle: React.CSSProperties = {
-    width: dimension,
-    height: dimension,
-    ...style,
-  };
+}: ProfileImageProps) => {
+  const dimension = SIZE_MAP[size];
 
   return (
-    <div className={mergedClassName} style={mergedStyle}>
+    <div
+      className={`relative overflow-hidden rounded-full ${className}`.trim()}
+      style={{ width: dimension, height: dimension, ...style }}
+    >
       <Image
         src={src}
         alt={`${name ?? '사용자'} 프로필`}
@@ -48,6 +41,6 @@ function ProfileImage({
       />
     </div>
   );
-}
+};
 
 export default ProfileImage;

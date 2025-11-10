@@ -1,21 +1,24 @@
 import Image from 'next/image';
 import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 
-const ProfileIcon = ({ image }: { image: string }) => {
-  const size = (120 / 16) * 14; // maintain existing px calculation
-  const imageUrl = convertFromDatabaseImageURL(image);
+const PROFILE_ICON_SIZE = 105; // (120 / 16) * 14
 
+interface ProfileIconProps {
+  image: string;
+}
+
+const ProfileIcon = ({ image }: ProfileIconProps) => {
   return (
     <div
       className="absolute -top-20 rounded-sm overflow-hidden"
-      style={{ width: size, height: size }}
+      style={{ width: PROFILE_ICON_SIZE, height: PROFILE_ICON_SIZE }}
     >
       <Image
-        src={imageUrl}
+        src={convertFromDatabaseImageURL(image)}
         alt="프로필 사진"
         fill
         className="object-cover"
-        sizes={`${size}px`}
+        sizes={`${PROFILE_ICON_SIZE}px`}
         priority
       />
     </div>
