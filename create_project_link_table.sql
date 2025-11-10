@@ -23,15 +23,16 @@ CREATE POLICY "Anyone can view project links"
   USING (true);
 
 -- Allow project owners to insert/update/delete their project links
--- This policy assumes you have a way to check project ownership
+-- projects.owner is profile_id, and profile.owner is auth.uid()
 CREATE POLICY "Project owners can manage their project links"
   ON project_link
   FOR ALL
   USING (
     EXISTS (
       SELECT 1 FROM projects
+      INNER JOIN profile ON projects.owner = profile.profile_id
       WHERE projects.project_id = project_link.project_id
-      AND projects.owner = auth.uid()::text
+      AND profile.owner = auth.uid()::text
     )
   );
 
