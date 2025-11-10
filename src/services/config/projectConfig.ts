@@ -275,7 +275,7 @@ export const projectConfig: FormConfig = {
         deleteFilterGenerator: createDeleteFilterGenerator(['skill_id']),
         changeCalculator: createChangeCalculator(['skill_id']),
       },
-      valuePath: 'skills.skill_name',
+      valuePath: 'skill_id',
       white: false,
     },
     // {
