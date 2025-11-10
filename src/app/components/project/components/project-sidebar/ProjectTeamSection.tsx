@@ -11,9 +11,7 @@ interface TeamMemberItemProps {
 
 const TeamMemberItem = ({ member }: TeamMemberItemProps) => {
   const profileImageUrl = member.profileImage 
-    ? (member.profileImage.includes('{{supabaseHost}}') 
-        ? convertFromDatabaseImageURL(member.profileImage) 
-        : member.profileImage)
+    ? convertFromDatabaseImageURL(member.profileImage)
     : FALLBACK_PROFILE;
 
   return (

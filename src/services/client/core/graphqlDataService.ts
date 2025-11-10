@@ -1,7 +1,4 @@
-import {
-  FormConfig,
-  FormFieldConfig,
-} from '@/app/components/modal/inputs/types/inputTypes';
+import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
 import { MultiInputItem } from '@/utils/hook/useInputList';
 import { executeQuery, executeMutation } from '@/utils/graphQL/client';
 import {
@@ -32,6 +29,13 @@ export class GraphQLDataService {
   private originalRelationData: Map<string, unknown[]> = new Map(); // 관계 테이블 데이터 캐시
 
   /**
+   * 캐시된 관계 테이블 데이터를 외부에서 접근할 수 있도록 제공
+   */
+  getOriginalRelationDataMap(): Map<string, unknown[]> {
+    return this.originalRelationData;
+  }
+
+  /**
    * 데이터 로드
    * @param formConfig - 폼 설정 (사용자 정의 쿼리 포함)
    * @param variables - GraphQL variables
@@ -45,7 +49,10 @@ export class GraphQLDataService {
   > {
     try {
       const query = buildReadQuery(formConfig);
-      const response = await executeQuery<Record<string, unknown>>(query, variables);
+      const response = await executeQuery<Record<string, unknown>>(
+        query,
+        variables,
+      );
 
       console.log('GraphQL Response:', JSON.stringify(response, null, 2));
 
@@ -146,7 +153,10 @@ export class GraphQLDataService {
    */
   async saveData(
     formConfig: FormConfig,
-    formData: Record<string, MultiInputItem[][] | string[] | boolean | File | number[] | null | string>,
+    formData: Record<
+      string,
+      MultiInputItem[][] | string[] | boolean | File | number[] | null | string
+    >,
     variables?: Record<string, unknown>,
     isUpdate: boolean = false,
   ): Promise<Result> {
@@ -159,6 +169,30 @@ export class GraphQLDataService {
         formData,
         formConfig,
       );
+
+      // skillTag가 메인 테이블 필드로 사용된 경우 처리 (예: projects.skills)
+      const skillKeysToProcess: string[] = [];
+      for (const [key, value] of relationTableData.entries()) {
+        if (key.startsWith('__skills_')) {
+          skillKeysToProcess.push(key);
+          const parts = key.replace('__skills_', '').split('_');
+          const columnName = parts.slice(1).join('_');
+          const skillIds = value as unknown as number[];
+
+          // skill_id 배열을 skill_name 배열로 변환 (기존 함수 재사용)
+          const { getSkillNamesByIds } = await import(
+            '@/utils/graphQL/relationTableHelper'
+          );
+          const skillNames = await getSkillNamesByIds(skillIds);
+
+          // 메인 테이블 데이터에 skill_name 배열 저장
+          mainTableData[columnName] = skillNames;
+        }
+      }
+
+      // 처리된 skill 키들을 relationTableData에서 제거
+      skillKeysToProcess.forEach((key) => relationTableData.delete(key));
+
       console.log('Save Data - Transformed Data:', {
         mainTableData,
         relationTableData: Array.from(relationTableData.entries()).map(
@@ -184,6 +218,7 @@ export class GraphQLDataService {
         // 업데이트 시 변경하면 안 되는 필드 제거
         delete updateSet.owner;
         delete updateSet.is_team;
+        delete updateSet.project_id;
 
         console.log(
           'Save Data - Update Set (after filtering):',
@@ -202,8 +237,13 @@ export class GraphQLDataService {
 
         // 🔥 핵심 수정: profile_id로 필터링 (owner 대신)
         // profile_id가 있으면 사용하고, 없으면 owner 사용
-        const filterField = this.currentProfileId ? 'profile_id' : 'owner';
-        const filterValue = this.currentProfileId || variables?.owner;
+        const filterField = this.currentProfileId
+          ? 'profile_id'
+          : variables?.project_id
+          ? 'project_id'
+          : 'owner';
+        const filterValue =
+          this.currentProfileId || variables?.project_id || variables?.owner;
 
         console.log(`Using filter: ${filterField} = ${filterValue}`);
 
@@ -240,26 +280,28 @@ export class GraphQLDataService {
       if (isUpdate && relationTableData.size > 0) {
         console.log('Processing relation tables...');
 
-        const resp = response as
-          | {
-              updateprofileCollection?: {
-                records?: Array<{ profile_id?: string }>;
-              };
-            }
-          | undefined;
-        const profileId =
-          resp?.updateprofileCollection?.records?.[0]?.profile_id ||
-          (variables?.owner as string | undefined);
+        // FormConfig의 afterSave 콜백이 있으면 호출
+        if (formConfig.afterSave) {
+          // 응답에서 레코드 ID 추출 (동적으로 처리)
+          const recordId = this.extractRecordId(response, variables);
 
-        if (profileId) {
-          await this.processRelationTables(
-            profileId,
-            relationTableData,
-            formConfig,
-            variables,
-          );
+          if (recordId) {
+            await formConfig.afterSave({
+              recordId,
+              relationTableData,
+              response,
+              variables,
+              originalRelationData: this.originalRelationData,
+            });
+          } else {
+            console.warn(
+              'Skipping relation table processing: missing recordId',
+            );
+          }
         } else {
-          console.warn('Skipping relation table processing: missing profileId');
+          console.warn(
+            'No afterSave handler defined in FormConfig - skipping relation table processing',
+          );
         }
       }
 
@@ -376,6 +418,18 @@ export class GraphQLDataService {
       this.originalRelationData.set('team_member', membersData);
       console.log('Cached team_member:', membersData);
     }
+    if(mainNode.project_contributorsCollection){
+      const contributorsData = (
+        mainNode.project_contributorsCollection as {
+          edges: Array<{ node: { profile_id: string; description: string } }>;
+        }
+      ).edges.map((edge) => ({
+        profile_id: edge.node.profile_id,
+        description: edge.node.description,
+      }));
+      this.originalRelationData.set('project_contributors', contributorsData);
+      console.log('Cached project_contributors:', contributorsData);
+    }
   }
 
   /**
@@ -386,379 +440,55 @@ export class GraphQLDataService {
   }
 
   /**
-   * 관계 테이블 데이터 처리
+   * GraphQL 응답에서 레코드 ID 추출
+   * 다양한 응답 형식을 지원하여 profile_id, project_id 등을 동적으로 추출
    */
-  private async processRelationTables(
-    profileId: string,
-    relationTableData: Map<string, unknown[]>,
-    formConfig: FormConfig,
+  private extractRecordId(
+    response: unknown,
     variables?: Record<string, unknown>,
-  ): Promise<void> {
-    // REST API로 처리할 테이블들과 GraphQL로 처리할 테이블들을 분리
-    const restTables: Array<{
-      tableName: string;
-      relationData: unknown[];
-      fieldConfig: FormFieldConfig;
-    }> = [];
-    const graphqlTables: Array<{
-      tableName: string;
-      relationData: unknown[];
-      fieldConfig: FormFieldConfig;
-    }> = [];
-
-    // formConfig에서 각 필드의 relationHandler 설정을 확인
-    for (const [tableName, relationData] of relationTableData) {
-      console.log(`Checking relation table: ${tableName}, data:`, relationData);
-
-      const fieldConfig = formConfig.fields.find(
-        (field) => field.columnInfo?.table === tableName,
-      );
-
-      console.log(
-        `Field config for ${tableName}:`,
-        fieldConfig?.relationHandler,
-      );
-
-      if (fieldConfig?.relationHandler) {
-        if (fieldConfig.relationHandler.type === 'rest') {
-          restTables.push({ tableName, relationData, fieldConfig });
-          console.log(`${tableName} added to REST tables`);
-        } else {
-          graphqlTables.push({ tableName, relationData, fieldConfig });
-          console.log(`${tableName} added to GraphQL tables`);
-        }
-      } else {
-        console.log(`${tableName} has no relationHandler, skipping`);
-      }
+  ): string | number | null {
+    // 먼저 캐시된 profile_id가 있으면 사용
+    if (this.currentProfileId) {
+      return this.currentProfileId;
     }
 
-    // REST API로 처리할 테이블들 먼저 처리 (ID 조회/생성이 필요한 경우)
-    for (const { tableName, relationData, fieldConfig } of restTables) {
-      try {
-        await this.processRestRelationTable(
-          tableName,
-          relationData,
-          fieldConfig,
-          profileId,
-          variables,
-        );
-      } catch (error) {
-        console.error(`Error processing REST table ${tableName}:`, error);
-        // REST 처리 실패는 전체 작업을 중단하지 않음
-      }
+    // variables에서 project_id 확인
+    if (variables?.project_id) {
+      return variables.project_id as string | number;
     }
 
-    // GraphQL로 처리할 테이블들을 mutation block으로 한번에 처리
-    if (graphqlTables.length > 0) {
-      await this.processGraphQLRelationTables(profileId, graphqlTables);
-    }
-  }
-
-  /**
-   * REST API로 관계 테이블 처리
-   */
-  private async processRestRelationTable(
-    tableName: string,
-    relationData: unknown[],
-    fieldConfig: FormFieldConfig,
-    profileId: string,
-    variables?: Record<string, unknown>,
-  ): Promise<void> {
-    if (!fieldConfig.relationHandler?.handler) {
-      console.warn(`No handler specified for REST table ${tableName}`);
-      return;
+    // variables에서 owner 확인
+    if (variables?.owner) {
+      return variables.owner as string | number;
     }
 
-    console.log(`Processing ${tableName} via REST API with handler function`);
+    // 응답 객체에서 ID 찾기
+    const resp = response as Record<string, unknown> | undefined;
+    if (!resp) return null;
 
-    // 핸들러 함수 직접 호출
-    const handler = fieldConfig.relationHandler.handler;
+    // updateXXXCollection 패턴의 키 찾기
+    const updateKey = Object.keys(resp).find(
+      (key) => key.startsWith('update') && key.endsWith('Collection'),
+    );
 
-    // 기존 데이터 가져오기
-    const existingData = this.getOriginalRelationData(tableName);
-
-    // 데이터 변환 (필드 설정에 따라)
-    let processedData: unknown[];
-    if (fieldConfig.relationHandler?.dataTransformer) {
-      processedData = fieldConfig.relationHandler.dataTransformer(relationData);
-    } else {
-      // 기본 변환 로직 (하위 호환성)
-      switch (tableName) {
-        case 'profile_skills':
-          processedData = (relationData as Array<{ skill_id: number }>)
-            .map((item) => item.skill_id)
-            .filter(Boolean);
-          break;
-        case 'student_certificates':
-          processedData = (
-            relationData as Array<{
-              certificate_name?: string;
-              certificates?: { certificate_name: string };
-            }>
-          )
-            .map(
-              (item) =>
-                item.certificate_name || item.certificates?.certificate_name,
-            )
-            .filter(Boolean);
-          break;
-        case 'profile_competitions':
-          processedData = (relationData as Array<{ prize: string }>)
-            .map((item) => item.prize)
-            .filter(Boolean);
-          break;
-        case 'profile_link':
-          processedData = (
-            relationData as Array<{ link: string; alt?: string }>
-          )
-            .map((item) => ({
-              link: item.link,
-              alt: item.alt || '',
-            }))
-            .filter((item) => item.link);
-          break;
-        default:
-          processedData = relationData;
-      }
-    }
-
-    // 핸들러 호출
-    const targetId = fieldConfig.relationHandler?.identifierIsStudnetId
-      ? (variables?.owner as string) || profileId
-      : profileId;
-    await handler(targetId, processedData, existingData);
-  }
-
-  /**
-   * GraphQL mutation block으로 여러 관계 테이블 처리
-   */
-  private async processGraphQLRelationTables(
-    profileId: string,
-    graphqlTables: Array<{
-      tableName: string;
-      relationData: unknown[];
-      fieldConfig: FormFieldConfig;
-    }>,
-  ): Promise<void> {
-    if (graphqlTables.length === 0) return;
-
-    console.log('Processing GraphQL relation tables with mutation block');
-
-    // Mutation block 구성
-    let mutationBlock = 'mutation UpdateRelations(';
-    const variables: Record<string, unknown> = {};
-    const selectionFields: string[] = [];
-
-    // 각 테이블에 대한 변수와 필드 추가
-    const processedTables: Array<{
-      tableName: string;
-      changes: {
-        toDelete: Record<string, unknown>[];
-        toInsert: Record<string, unknown>[];
-      };
-      fieldConfig: FormFieldConfig;
-    }> = [];
-
-    graphqlTables.forEach(({ tableName, relationData, fieldConfig }) => {
-      console.log(
-        `Processing GraphQL table: ${tableName}, data:`,
-        relationData,
-      );
-
-      // 기존 데이터 가져오기
-      const existingData = this.getOriginalRelationData(tableName) as Record<
-        string,
-        unknown
-      >[];
-      console.log(`Existing data for ${tableName}:`, existingData);
-
-      // 데이터 변환
-      const processedData = fieldConfig.relationHandler?.dataTransformer
-        ? fieldConfig.relationHandler.dataTransformer(relationData)
-        : relationData;
-      console.log(`Processed data for ${tableName}:`, processedData);
-
-      // 변경사항 계산
-      const changes = this.calculateRelationChanges(
-        tableName,
-        processedData,
-        existingData,
-        fieldConfig,
-      );
-      console.log(`Changes for ${tableName}:`, changes);
-
-      if (changes.toDelete.length === 0 && changes.toInsert.length === 0) {
-        console.log(`No changes for ${tableName}, skipping`);
-        return;
-      }
-
-      processedTables.push({ tableName, changes, fieldConfig });
-    });
-
-    // 실제 mutation 생성은 processedTables를 사용
-    processedTables.forEach(({ tableName, changes, fieldConfig }, index) => {
-      // Delete mutations (변경사항이 있는 경우에만)
-      if (changes.toDelete.length > 0) {
-        changes.toDelete.forEach((item, itemIndex) => {
-          const deleteVarName = `${tableName}DeleteFilter${index}_${itemIndex}`;
-          mutationBlock += `$${deleteVarName}: ${tableName}Filter!, `;
-
-          // 필드 설정에서 삭제 필터 생성 함수 사용
-          const deleteFilter = fieldConfig.relationHandler
-            ?.deleteFilterGenerator
-            ? fieldConfig.relationHandler.deleteFilterGenerator(item, profileId)
-            : this.createDeleteFilter(tableName, item, profileId);
-
-          variables[deleteVarName] = deleteFilter;
-
-          const deleteFieldName = `delete${
-            tableName.charAt(0).toUpperCase() + tableName.slice(1)
-          }${index}_${itemIndex}`;
-          selectionFields.push(
-            `${deleteFieldName}: deleteFrom${tableName}Collection(filter: $${deleteVarName}) { affectedCount }`,
-          );
-        });
-      }
-
-      // Insert mutations
-      if (changes.toInsert.length > 0) {
-        const insertVarName = `${tableName}InsertObjects${index}`;
-        mutationBlock += `$${insertVarName}: [${tableName}InsertInput!]!, `;
-        variables[insertVarName] = changes.toInsert.map((item) => ({
-          ...item,
-          profile_id: profileId,
-        }));
-
-        const insertFieldName = `insert${
-          tableName.charAt(0).toUpperCase() + tableName.slice(1)
-        }`;
-        selectionFields.push(
-          `${insertFieldName}: insertInto${tableName}Collection(objects: $${insertVarName}) { affectedCount }`,
-        );
-      }
-    });
-
-    // Mutation이 없으면 실행하지 않음
-    if (selectionFields.length === 0) {
-      console.log('No mutations to execute');
-      return;
-    }
-
-    // Mutation block 완성
-    mutationBlock = mutationBlock.slice(0, -2) + ') {\n'; // 마지막 ', ' 제거하고 괄호 닫기
-    mutationBlock += selectionFields.join('\n  ') + '\n}';
-
-    console.log('Generated GraphQL mutation block:', mutationBlock);
-    console.log('Variables:', JSON.stringify(variables, null, 2));
-
-    // Mutation 실행
-    console.log('About to execute GraphQL mutation');
-    await executeMutation(mutationBlock, variables);
-    console.log('GraphQL mutation executed successfully');
-  }
-
-  /**
-   * 관계 테이블 변경사항 계산 (기존 REST 핸들러 방식)
-   */
-  private calculateRelationChanges(
-    tableName: string,
-    newData: unknown[],
-    existingData: Record<string, unknown>[],
-    fieldConfig: FormFieldConfig,
-  ): {
-    toDelete: Record<string, unknown>[];
-    toInsert: Record<string, unknown>[];
-  } {
-    const toDelete: Record<string, unknown>[] = [];
-    const toInsert: Record<string, unknown>[] = [];
-
-    // 필드 설정에서 변경사항 계산 함수 사용 (있는 경우)
-    if (fieldConfig.relationHandler?.changeCalculator) {
-      console.log(`Using changeCalculator for ${tableName}`);
-      const result = fieldConfig.relationHandler.changeCalculator(
-        newData,
-        existingData,
-      );
-      console.log(`changeCalculator result for ${tableName}:`, result);
-      return result;
-    }
-
-    // 기본 비교 로직 (하위 호환성)
-    switch (tableName) {
-      case 'profile_link':
-        console.log(`Using default logic for profile_link`);
-        const existingLinks = existingData as Array<{
-          link: string;
-          alt: string;
-        }>;
-        const newLinks = newData as Array<{ link: string; alt: string }>;
-
-        // 삭제할 항목: 기존에 있지만 새로운 데이터에 없는 것
-        existingLinks.forEach((existing) => {
-          const stillExists = newLinks.some(
-            (newItem) =>
-              newItem.link === existing.link && newItem.alt === existing.alt,
-          );
-          if (!stillExists) {
-            toDelete.push(existing);
+    if (updateKey) {
+      const collection = resp[updateKey] as
+        | {
+            records?: Array<Record<string, unknown>>;
           }
-        });
+        | undefined;
 
-        // 추가할 항목: 새로운 데이터에 있지만 기존에 없는 것
-        newLinks.forEach((newItem) => {
-          const alreadyExists = existingLinks.some(
-            (existing) =>
-              existing.link === newItem.link && existing.alt === newItem.alt,
-          );
-          if (!alreadyExists) {
-            toInsert.push(newItem);
-          }
-        });
-        break;
-
-      default:
-        // 다른 테이블들은 아직 구현되지 않음
-        console.warn(`Change calculation not implemented for ${tableName}`);
-        break;
+      if (collection?.records && collection.records.length > 0) {
+        const record = collection.records[0];
+        // profile_id, project_id 등 다양한 ID 필드 지원
+        return (record.profile_id || record.project_id || record.id || null) as
+          | string
+          | number
+          | null;
+      }
     }
 
-    return { toDelete, toInsert };
-  }
-
-  /**
-   * 삭제 필터 생성
-   */
-  private createDeleteFilter(
-    tableName: string,
-    item: Record<string, unknown>,
-    profileId: string,
-  ): Record<string, unknown> {
-    const filter: Record<string, unknown> = { profile_id: { eq: profileId } };
-
-    // 테이블별로 추가 필터 조건
-    switch (tableName) {
-      case 'profile_link':
-        filter['link'] = { eq: item.link };
-        filter['alt'] = { eq: item.alt };
-        break;
-      case 'profile_skills':
-        if (item.skill_id) {
-          filter['skill_id'] = { eq: item.skill_id };
-        }
-        break;
-      case 'student_certificates':
-        if (item.certificate_id) {
-          filter['certificate_id'] = { eq: item.certificate_id };
-        }
-        break;
-      case 'profile_competitions':
-        if (item.competition_id) {
-          filter['competition_id'] = { eq: item.competition_id };
-        }
-        break;
-    }
-
-    return filter;
+    return null;
   }
 }
 

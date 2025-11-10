@@ -4,6 +4,7 @@ import {
   createDataTransformer,
   createDeleteFilterGenerator,
   createChangeCalculator,
+  processGraphQLRelationTables,
 } from '@/utils/graphQL/relationTableHelper';
 
 export const teamProfileConfig: FormConfig = {
@@ -223,4 +224,61 @@ export const teamProfileConfig: FormConfig = {
     //   white: false,
     // },
   ],
+
+  /**
+   * Team Profile 전용 관계 테이블 처리 핸들러
+   */
+  afterSave: async ({ recordId, relationTableData, originalRelationData }) => {
+    console.log('[teamProfileConfig] afterSave started');
+    console.log('[teamProfileConfig] recordId (profile_id):', recordId);
+
+    const profileId = recordId as string;
+
+    // GraphQL로 처리할 테이블 정보 수집
+    const graphqlTables: Array<{
+      tableName: string;
+      relationData: unknown[];
+      dataTransformer?: (data: unknown[]) => unknown[];
+      deleteFilterGenerator?: (
+        item: Record<string, unknown>,
+        identifier: string | number,
+        identifierField?: string,
+      ) => Record<string, unknown>;
+      changeCalculator?: (
+        newData: unknown[],
+        existingData: Record<string, unknown>[],
+      ) => {
+        toDelete: Record<string, unknown>[];
+        toInsert: Record<string, unknown>[];
+      };
+    }> = [];
+
+    // fields에서 각 테이블의 설정 정보 가져오기
+    for (const [tableName, relationData] of relationTableData) {
+      const fieldConfig = teamProfileConfig.fields.find(
+        (field) => field.columnInfo?.table === tableName,
+      );
+
+      if (fieldConfig?.relationHandler?.type === 'graphql') {
+        graphqlTables.push({
+          tableName,
+          relationData,
+          dataTransformer: fieldConfig.relationHandler.dataTransformer,
+          deleteFilterGenerator:
+            fieldConfig.relationHandler.deleteFilterGenerator,
+          changeCalculator: fieldConfig.relationHandler.changeCalculator,
+        });
+      }
+    }
+
+    // GraphQL 처리
+    await processGraphQLRelationTables(
+      graphqlTables,
+      profileId,
+      'profile_id',
+      originalRelationData,
+    );
+
+    console.log('[teamProfileConfig] afterSave completed');
+  },
 };

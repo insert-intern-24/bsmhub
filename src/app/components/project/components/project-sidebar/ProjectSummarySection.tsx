@@ -1,3 +1,5 @@
+'use client';
+
 import { Body, Body2, Label, TitleEN } from '@/app/components/system/text';
 import SkillTag from '@/app/components/contents/SkillTag';
 import {
@@ -17,33 +19,60 @@ interface ProjectSummarySectionProps {
   title: string;
   description: string;
   hasEditPermission?: boolean;
+  projectId?: number;
+  onEdit?: () => void;
 }
 
 export const ProjectSummarySection = ({
   title,
   description,
   hasEditPermission,
+  projectId,
+  onEdit,
 }: ProjectSummarySectionProps) => (
   <section className="flex-col w-full gap-[0.375rem]">
     <TitleEN>{title}</TitleEN>
     <Body className="text-detail">{description}</Body>
-    <ProjectActions hasEditPermission={hasEditPermission} />
+    <ProjectActions
+      hasEditPermission={hasEditPermission}
+      projectId={projectId}
+      onEdit={onEdit}
+    />
   </section>
 );
 
 const ProjectActions = ({
   hasEditPermission,
+  projectId,
+  onEdit,
 }: {
   hasEditPermission?: boolean;
+  projectId?: number;
+  onEdit?: () => void;
 }) => (
   <div className="flex w-full gap-1 mt-3">
-    <PlayButton hasEditPermission={hasEditPermission} />
+    <PlayButton
+      hasEditPermission={hasEditPermission}
+      projectId={projectId}
+      onEdit={onEdit}
+    />
     <AddToPlaylistButton />
   </div>
 );
 
-const PlayButton = ({ hasEditPermission }: { hasEditPermission?: boolean }) => (
-  <button className="relative flex-1 cursor-pointer">
+const PlayButton = ({
+  hasEditPermission,
+  projectId,
+  onEdit,
+}: {
+  hasEditPermission?: boolean;
+  projectId?: number;
+  onEdit?: () => void;
+}) => (
+  <button
+    className="relative flex-1 cursor-pointer"
+    onClick={hasEditPermission && onEdit ? onEdit : undefined}
+  >
     <div
       className="relative flex h-10 items-center justify-center gap-1 overflow-hidden rounded-3xl z-10"
       style={{ opacity: 0.8, backdropFilter: 'blur(33.5px)' }}

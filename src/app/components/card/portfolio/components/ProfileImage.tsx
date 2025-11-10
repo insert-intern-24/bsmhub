@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 
 type Size = 'tiny' | 'small' | 'medium' | 'large';
 const sizeMap: Record<Size, { width: number; height: number }> = {
@@ -23,10 +24,11 @@ function ProfileImage({
   className,
   style,
 }: ProfileImageProps) {
+  const imageUrl = convertFromDatabaseImageURL(src);
   return (
     <div className={className ?? 'min-w-fit'} style={style}>
       <Image
-        src={src}
+        src={imageUrl}
         alt={`${name} 프로필`}
         {...sizeMap[size]}
         className="object-cover rounded-full"

@@ -18,7 +18,9 @@ const iconMap: Record<string, React.ReactNode> = {
 interface DropdownInputProps extends StandardInputProps {
   suggestions: Record<string, unknown>[];
   onInputChange: (value: string) => void;
+  onInputFocus?: () => void;
   dropdownInputConfig: DropdownInputConfig;
+  onOptionSelect?: () => void;
 }
 
 function DropdownInput({
@@ -33,7 +35,9 @@ function DropdownInput({
   icon,
   suggestions,
   onInputChange,
+  onInputFocus,
   dropdownInputConfig,
+  onOptionSelect,
 }: DropdownInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const isReadOnly = mode === 'read';
@@ -60,6 +64,7 @@ function DropdownInput({
           onChange?.(e);
           onInputChange?.(e.target.value);
         }}
+        onFocus={onInputFocus}
         name={name}
         required={required}
         readOnly={isReadOnly}
@@ -83,6 +88,7 @@ function DropdownInput({
                   },
                 } as React.ChangeEvent<HTMLInputElement>);
                 onInputChange?.('');
+                onOptionSelect?.();
               }}
             >
               {item[dropdownInputConfig.nameColumnName] as string}
