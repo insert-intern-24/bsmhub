@@ -7,7 +7,6 @@ import ProfileImage from './components/ProfileImage';
 
 const PortfolioCard = ({ profile, projects }: PortfolioCardProps) => {
   return (
-    
     <div className="@container w-full h-fit rounded border border-light-gray-outline bg-white p-4"
        style={{
         background:
