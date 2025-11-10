@@ -5,7 +5,7 @@ const ProfileIcon = ({ image }: { image: string }) => {
     <ProfileImage
       src={image}
       size={{ width: (120 / 16) * 14, height: (120 / 16) * 14 }}
-      variant="rounded"
+      shape="rounded"
       className="absolute -top-20"
     />
   );

@@ -13,7 +13,7 @@ const sizeMap: Record<PresetSize, { width: number; height: number }> = {
   large: { width: 75, height: 75 },
 };
 
-type Variant = 'circle' | 'square' | 'rounded';
+type Shape = 'circle' | 'square' | 'rounded';
 
 const DEFAULT_FALLBACK_PROFILE =
   process.env.NEXT_PUBLIC_PROJECT_FALLBACK_PROFILE ?? '/default-avatar.svg';
@@ -23,12 +23,12 @@ interface ProfileImageProps {
   /** 프로필 이름 (alt 텍스트 생성에 사용) */
   name?: string;
   size: Size;
-  variant?: Variant;
+  shape?: Shape;
   className?: string;
 }
 
-const getVariantClassName = (variant: Variant): string => {
-  switch (variant) {
+const getShapeClassName = (shape: Shape): string => {
+  switch (shape) {
     case 'circle':
       return 'rounded-full';
     case 'square':
@@ -44,7 +44,7 @@ function ProfileImage({
   src,
   name,
   size,
-  variant = 'circle',
+  shape = 'circle',
   className,
 }: ProfileImageProps) {
   const { width, height } = typeof size === 'string' ? sizeMap[size] : size;
@@ -57,7 +57,7 @@ function ProfileImage({
   
   const imageAlt = name ? `${name} 프로필` : '프로필 사진';
 
-  const variantClassName = getVariantClassName(variant);
+  const shapeClassName = getShapeClassName(shape);
 
   return (
     <div 
@@ -69,12 +69,12 @@ function ProfileImage({
         alt={imageAlt}
         width={width}
         height={height}
-        className={`object-cover ${variantClassName} w-full h-full`}
+        className={`object-cover ${shapeClassName} w-full h-full`}
       />
     </div>
   );
 }
 
 export default ProfileImage;
-export type { ProfileImageProps, Size, Variant };
+export type { ProfileImageProps, Size, Shape };
 export { DEFAULT_FALLBACK_PROFILE };

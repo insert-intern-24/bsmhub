@@ -15,7 +15,7 @@ const TeamMemberItem = ({ member }: TeamMemberItemProps) => {
           src={member.profileImage}
           name={member.name}
           size={{ width: 40, height: 40 }}
-          variant="circle"
+          shape="circle"
         />
       </Link>
     <div className="flex-col">
