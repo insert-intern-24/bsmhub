@@ -23,7 +23,7 @@ const PortfolioHome = ({
 }: PortfolioHomeProps) => {
   return (
     <>
-      <aside className="flex-col gap-6 sticky top-24 self-start w-full">
+      <aside className="flex-col gap-6 sticky top-24 self-start w-[21.75rem] mobile:w-full">
         <ProfileEditButton ownerId={ownerId} profileName={profile_name} />
         <PortfolioItems details={details} />
       </aside>

@@ -8,7 +8,6 @@ import { getPersonalProjects } from '@/services/server/project/getPersonalProjec
 import { notFound } from 'next/navigation';
 import { getCooperationProjects } from '@/services/server/project/getCooperationProjects';
 import { convertStudentNumber } from '@/utils/convertStudentNumber';
-import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import { getProfile } from '@/services/server/profile/getProfile';
 import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
 
@@ -24,12 +23,7 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
 
   const profileDetail = await getProfileDetail(profileName);
   const cooperationProjects = await getCooperationProjects(uuid);
-  const personalProjects = (await getPersonalProjects(uuid)).map((project) => ({
-    ...project,
-    authors: [
-      { profileImage: convertFromDatabaseImageURL(profile.profile_image) }, // getPersonalProjects 함수에서 Join으로 가져오지 않은 개인 프로필 이미지 추가
-    ],
-  }));
+  const personalProjects = await getPersonalProjects(uuid);
 
   const isHome = path === 'home';
 
@@ -46,7 +40,8 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
         profile_name={profile.profile_name}
       />
     );
-    containerCss = 'grid grid-cols-[22rem_1fr] grid-rows-[auto_auto] gap-7';
+    containerCss =
+      'grid grid-cols-[22rem_1fr] grid-rows-[auto_auto] gap-x-8 gap-y-4 -mt-[0.375rem]';
   } else {
     Content = (
       <PortfolioProject
@@ -54,7 +49,7 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
         cooperationProjects={cooperationProjects}
       />
     );
-    containerCss = 'flex-col gap-6 mt-5';
+    containerCss = 'flex-col gap-6 mt-[0.375rem]';
   }
 
   return (
@@ -62,7 +57,7 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
       <ProfileIcon image={profile.profile_image} />
       <TitleEN className="mobile:mb-2">{profile.profile_name}</TitleEN>
       <div className={`${containerCss} responsive-portfolioHome`}>
-        <Body className="text-gray-base flex-col justify-end gap-4">
+        <Body className="text-gray-base flex-col justify-end gap-4]">
           {convertStudentNumber(studentInfo.student_number)} {studentInfo.name}{' '}
           | {studentInfo.departments.department_name}
         </Body>

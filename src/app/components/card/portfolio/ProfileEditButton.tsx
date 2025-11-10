@@ -49,7 +49,7 @@ export default function ProfileEditButton({
 
   return (
     <button
-      className="rounded-3xl h-10 flex justify-center items-center gap-4 bg-black text-white w-full"
+      className="rounded-3xl h-10 flex justify-center items-center gap-3 bg-black text-white w-full"
       onClick={handleProfileEdit}
       disabled={!currentUser || !isOwner}
     >

@@ -16,7 +16,7 @@ const Team = async ({ teamName }: { teamName: string }) => {
       <ProfileIcon image={teamDetail.profile_image} />
       <TeamSidebar teamDetail={teamDetail} projectCount={teamProjects.length} />
       <section className="w-full">
-        <div className="px-[3.5rem] pt-[4.5rem] grid grid-cols-auto-fit-card gap-6 responsive-teamProjects">
+        <div className="pl-[3rem] pt-[4.5rem] grid grid-cols-auto-fit-card gap-6 responsive-teamProjects">
           {teamProjects.map((project) => (
             <Card
               key={project.project_id}
