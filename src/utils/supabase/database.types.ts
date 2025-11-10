@@ -1061,7 +1061,7 @@ export type Database = {
         Insert: {
           description?: string | null
           profile_id?: string
-          project_id?: number
+          project_id: number
         }
         Update: {
           description?: string | null
@@ -1124,6 +1124,59 @@ export type Database = {
             columns: ["project_id"]
             referencedRelation: "projects"
             referencedColumns: ["project_id"]
+          },
+        ]
+      }
+      project_link: {
+        Row: {
+          alt: string | null
+          link: string
+          project_id: number
+        }
+        Insert: {
+          alt?: string | null
+          link: string
+          project_id: number
+        }
+        Update: {
+          alt?: string | null
+          link?: string
+          project_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_link_project_id_fkey"
+            columns: ["project_id"]
+            referencedRelation: "projects"
+            referencedColumns: ["project_id"]
+          },
+        ]
+      }
+      project_skills: {
+        Row: {
+          project_id: number
+          skill_id: number
+        }
+        Insert: {
+          project_id: number
+          skill_id: number
+        }
+        Update: {
+          project_id?: number
+          skill_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_skills_project_id_fkey"
+            columns: ["project_id"]
+            referencedRelation: "projects"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "project_skills_skill_id_fkey"
+            columns: ["skill_id"]
+            referencedRelation: "skills"
+            referencedColumns: ["skill_id"]
           },
         ]
       }
