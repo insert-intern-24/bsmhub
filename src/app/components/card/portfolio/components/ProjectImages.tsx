@@ -14,7 +14,7 @@ const ProjectImages = ({ projects, variant }: ProjectImagesProps) => {
       : 'h-[5.75rem] flex gap-1 overflow-x-auto';
 
   const imageClass = [
-    'relative h-[5.75rem] overflow-hidden rounded',
+    'relative overflow-hidden rounded',
     variant === 'default'
       ? 'min-w-[6.625rem] w-full flex-shrink-0'
       : 'w-[9.375rem] flex-shrink-0',
