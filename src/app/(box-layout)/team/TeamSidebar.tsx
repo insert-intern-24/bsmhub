@@ -17,13 +17,12 @@ const TeamSidebar = async ({ teamDetail, projectCount }: TeamSidebarProps) => {
   const currentSession = await getMyAccount();
   return (
     <aside
-      className="pt-[4.5rem] w-[21.75rem] min-h-[50rem] 
-        pr-[2.6rem] border-r-[1px] border-light-gray-outline
+      className="pt-[4.5rem] w-[21.75rem] min-w-[21.75rem] min-h-[50rem] 
         flex-col gap-[1.6rem] responsive-teamSidebar"
     >
-      <div>
+      <div className="flex-col gap-[0.375rem]">
         <TitleEN className="mobile:mb-2">{teamDetail?.profile_name}</TitleEN>
-        <Body className="text-gray-base flex-col justify-end">
+        <Body className="text-detail flex-col justify-end">
           {teamDetail?.description}
         </Body>
         {currentSession?.id == teamDetail?.owner && (

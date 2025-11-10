@@ -5,15 +5,19 @@ import Inputs from '@/app/components/modal/inputs/SingleInput';
 import InfinitePagination from '@/app/project/[project_name]/components/pagination/Pagination';
 import Tabs, { TabMode } from '@/app/components/layout/Tabs';
 import Card, { CardProps } from '@/app/components/card/project/ProjectCard';
+import PortfolioCard from '@/app/components/card/portfolio/PortfolioCard';
+import { PortfolioCardProps } from '@/app/components/card/portfolio/types';
 import { useSearchParams } from 'next/navigation';
 
 interface CollectClientProps {
-  initialProjects: CardProps[];
+  initialProjects?: CardProps[];
+  initialPortfolios?: PortfolioCardProps[];
   type?: 'project' | 'team';
 }
 
 export default function CollectClient({
-  initialProjects,
+  initialProjects = [],
+  initialPortfolios = [],
   type = 'project',
 }: CollectClientProps) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -24,27 +28,29 @@ export default function CollectClient({
     setSearchTerm(e.target.value);
   };
 
-  const filteredProjects = useMemo(() => {
-    // 타입이 팀인 경우 카테고리 필터링 스킵
-    if (type === 'team') {
-      let filtered = initialProjects;
+  const filteredPortfolios = useMemo(() => {
+    if (type !== 'team') return [];
 
-      // 검색어 필터링
-      if (searchTerm) {
-        filtered = filtered.filter(
-          (project) =>
-            (project.title ?? '')
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()) ||
-            project.description
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()) ||
-            project.ownerName.toLowerCase().includes(searchTerm.toLowerCase()),
-        );
-      }
+    let filtered = initialPortfolios;
 
-      return filtered;
+    // 검색어 필터링
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (portfolio) =>
+          portfolio.profile.name
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          portfolio.profile.bio
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()),
+      );
     }
+
+    return filtered;
+  }, [initialPortfolios, searchTerm, type]);
+
+  const filteredProjects = useMemo(() => {
+    if (type === 'team') return [];
 
     // 프로젝트 타입인 경우 기존 로직 유지
     const categoryMap: Record<TabMode, string | null> = {
@@ -93,6 +99,18 @@ export default function CollectClient({
     [filteredProjects],
   );
 
+  const fetchPortfolios = useCallback(
+    async ({ pageParam }: { pageParam: number }) => {
+      return {
+        data: filteredPortfolios,
+        totalPages: 1,
+        currentPage: pageParam,
+        hasNextPage: false,
+      };
+    },
+    [filteredPortfolios],
+  );
+
   return (
     <div className="flex flex-col items-start gap-6 flex-1 shrink-0">
       <div className="w-full max-w-[25rem] mobile:max-w-full">
@@ -109,24 +127,40 @@ export default function CollectClient({
         <Tabs tabs={['all', 'web', 'desktop', 'mobile']} />
       )}
 
-      <InfinitePagination<CardProps>
-        queryKey={['projects', searchTerm, currentTab, type]}
-        queryFn={fetchProjects}
-        enabled={true}
-        renderItem={(project) => (
-          <Card
-            key={project.id}
-            id={project.id}
-            title={project.title}
-            description={project.description}
-            projectImage={project.projectImage}
-            ownerName={project.ownerName}
-            isTeam={project.isTeam}
-            category={project.category}
-            authors={project.authors}
-          />
-        )}
-      />
+      {/* 팀 타입일 때는 포트폴리오 카드로 렌더링 */}
+      {type === 'team' ? (
+        <InfinitePagination<PortfolioCardProps>
+          queryKey={['portfolios', searchTerm, type]}
+          queryFn={fetchPortfolios}
+          enabled={true}
+          renderItem={(portfolio, index) => (
+            <PortfolioCard
+              key={index}
+              profile={portfolio.profile}
+              projects={portfolio.projects}
+            />
+          )}
+        />
+      ) : (
+        <InfinitePagination<CardProps>
+          queryKey={['projects', searchTerm, currentTab, type]}
+          queryFn={fetchProjects}
+          enabled={true}
+          renderItem={(project) => (
+            <Card
+              key={project.id}
+              id={project.id}
+              title={project.title}
+              description={project.description}
+              projectImage={project.projectImage}
+              ownerName={project.ownerName}
+              isTeam={project.isTeam}
+              category={project.category}
+              authors={project.authors}
+            />
+          )}
+        />
+      )}
     </div>
   );
 }
