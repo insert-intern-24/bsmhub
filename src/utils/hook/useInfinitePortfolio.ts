@@ -1,14 +1,14 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { PortfolioData } from '@/app/(box-layout)/portfolio/types';
 
 export function useInfinitePortfolio() {
   const [data, setData] = useState<PortfolioData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const pageRef = useRef(1);
 
   const loadMore = useCallback(async () => {
     if (isLoading || !hasMore) return;
@@ -16,7 +16,7 @@ export function useInfinitePortfolio() {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `/api/portfolio/paginated?page=${page}&limit=5`,
+        `/api/portfolio/paginated?page=${pageRef.current}&limit=5`,
       );
       const result = await response.json();
 
@@ -28,7 +28,7 @@ export function useInfinitePortfolio() {
           );
           return [...prev, ...newData];
         });
-        setPage((prev) => prev + 1);
+        pageRef.current += 1;
 
         if (result.data.length < 5) {
           setHasMore(false);
@@ -42,11 +42,11 @@ export function useInfinitePortfolio() {
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, page, hasMore]);
+  }, [isLoading, hasMore]);
 
   useEffect(() => {
     loadMore();
-  }, []);
+  }, [loadMore]);
 
   return { data, isLoading, error, loadMore, hasMore };
 }
