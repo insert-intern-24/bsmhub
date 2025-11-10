@@ -8,8 +8,7 @@ export type Author = {
 
 /**
  * 프로젝트의 기여자와 오너 정보를 기반으로 authors 배열을 생성합니다.
- * 기여자가 있으면 기여자만 포함하고, 없으면 오너만 포함합니다.
- * 오너는 기여자 목록에서 제외됩니다.
+ * 오너를 제외한 기여자가 있으면 기여자만 포함하고, 없으면 오너만 포함합니다.
  */
 export function createAuthorsFromProject(
   project: ProjectWithContributors,
