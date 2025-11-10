@@ -172,7 +172,7 @@ const Account = () => {
     // 프로젝트 생성 모달 컴포넌트
     const ProjectCreateModal = () => {
       // 프로젝트 생성 모드 (variables 없음, autoLoad false)
-      const { initialValues, isLoading, saveData, error, mode, canSave } =
+      const { initialValues, isLoading, saveData, error, canSave } =
         useFormConfigData(
           projectConfig,
           undefined, // 생성 모드이므로 variables 없음
