@@ -25,7 +25,7 @@ function ProfileImage({
 }: ProfileImageProps) {
   const dimension = sizeMap[size];
   const mergedClassName = [
-    'relative overflow-hidden rounded-full min-w-fit',
+    'relative overflow-hidden rounded-full',
     className,
   ]
     .filter(Boolean)
