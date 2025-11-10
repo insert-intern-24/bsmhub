@@ -8,7 +8,6 @@ import { getPersonalProjects } from '@/services/server/project/getPersonalProjec
 import { notFound } from 'next/navigation';
 import { getCooperationProjects } from '@/services/server/project/getCooperationProjects';
 import { convertStudentNumber } from '@/utils/convertStudentNumber';
-import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import { getProfile } from '@/services/server/profile/getProfile';
 import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
 
@@ -24,12 +23,7 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
 
   const profileDetail = await getProfileDetail(profileName);
   const cooperationProjects = await getCooperationProjects(uuid);
-  const personalProjects = (await getPersonalProjects(uuid)).map((project) => ({
-    ...project,
-    authors: [
-      { profileImage: convertFromDatabaseImageURL(profile.profile_image) }, // getPersonalProjects 함수에서 Join으로 가져오지 않은 개인 프로필 이미지 추가
-    ],
-  }));
+  const personalProjects = await getPersonalProjects(uuid);
 
   const isHome = path === 'home';
 
