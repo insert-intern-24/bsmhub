@@ -66,7 +66,8 @@ export const getProfileDetail = async (profileName: string): Promise<PortfolioDe
     {
       mode: 'skill',
       datas: (data?.profile_skills ?? []).map((item) => ({
-        value: item.skills.skill_name
+        value: item.skills.skill_name,
+        skillId: item.skills.skill_id
       }))
     }
   ]
