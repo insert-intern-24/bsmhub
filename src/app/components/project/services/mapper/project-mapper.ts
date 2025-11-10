@@ -21,7 +21,7 @@ export const toViewModel = (
     detailDescription,
     githubUrl: project.link,
     iconImage: project.project_logo,
-    technologies: project.skills ?? [],
+    technologies: project.skills?.map(Number).filter((id): id is number => !isNaN(id)) ?? [],
     team: (project.project_contributors ?? []).map((contributor, index) => ({
       id: contributor.profile_id ?? `member-${index}`,
       name: contributor.profile?.profile_name ?? '이름 미정',
