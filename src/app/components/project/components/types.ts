@@ -2,6 +2,7 @@ import { Tables } from '@/utils/supabase/database.types';
 
 export type ProjectDetailRow = Tables<'projects'> & {
   project_html_description: Tables<'project_html_description'> | null;
+  project_link: Array<Tables<'project_link'>> | null;
   project_contributors: Array<
     Tables<'project_contributors'> & {
       profile: Tables<'profile'> | null;
@@ -15,7 +16,7 @@ export type ProjectDetailViewModel = {
   title: string;
   introduction: string;
   detailDescription: string;
-  githubUrl?: string | null;
+  links: Array<{ url: string; title: string | null }>;
   iconImage: string;
   technologies: string[];
   team: Array<{

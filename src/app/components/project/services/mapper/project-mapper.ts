@@ -19,7 +19,10 @@ export const toViewModel = (
     title: project.project_name,
     introduction: project.description ?? '소개 정보가 없습니다.',
     detailDescription,
-    githubUrl: project.link,
+    links: (project.project_link ?? []).map((link) => ({
+      url: link.link,
+      title: link.alt,
+    })),
     iconImage: project.project_logo,
     technologies: project.skills ?? [],
     team: (project.project_contributors ?? []).map((contributor, index) => ({

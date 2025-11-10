@@ -13,6 +13,7 @@ export const fetchFromSupabase = async (
       `
         *,
         project_html_description(*),
+        project_link(*),
         project_contributors(
           *,
           profile(*)

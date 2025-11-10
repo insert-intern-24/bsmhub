@@ -89,7 +89,7 @@ const ProjectSidebar = ({
               : ''
           }`}
         >
-          <ProjectLinkSection url={project.githubUrl} />
+          <ProjectLinkSection links={project.links} />
           <ProjectTechnologiesSection technologies={project.technologies} />
           <ProjectTeamSection members={project.team} />
 
