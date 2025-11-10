@@ -267,7 +267,7 @@ export const projectConfig: FormConfig = {
       columnInfo: { table: 'project_skills', column: '*' },
       relationHandler: {
         type: 'graphql',
-        identifierIsStudnetId: false,
+        identifierIsStudentId: false,
         dataTransformer: (data: unknown[]) => {
           // skill_id를 숫자로 유지하는 커스텀 transformer
           return (data as Array<{ skill_id: number }>)
