@@ -350,7 +350,7 @@ export const projectConfig: FormConfig = {
       },
       relationHandler: {
         type: 'graphql',
-        identifierIsStudnetId: false,
+        identifierIsStudentId: false,
         dataTransformer: createDataTransformer(
           { profile_id: 'profile_id', description: 'description' },
           (item) => Boolean(item.profile_id),
