@@ -16,7 +16,6 @@ const TeamMemberItem = ({ member }: TeamMemberItemProps) => {
           name={member.name}
           size={{ width: 40, height: 40 }}
           variant="circle"
-          className="relative h-10 w-10 overflow-hidden"
         />
       </Link>
     <div className="flex-col">

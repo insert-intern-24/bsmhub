@@ -60,13 +60,18 @@ function ProfileImage({
   const variantClassName = getVariantClassName(variant);
 
   return (
-    <Image
-      src={imageSrc}
-      alt={imageAlt}
-      width={width}
-      height={height}
-      className={`object-cover ${variantClassName} w-full h-full ${className ?? ''}`}
-    />
+    <div 
+      className={`shrink-0 ${className ?? ''}`}
+      style={{ width: `${width}px`, height: `${height}px` }}
+    >
+      <Image
+        src={imageSrc}
+        alt={imageAlt}
+        width={width}
+        height={height}
+        className={`object-cover ${variantClassName} w-full h-full`}
+      />
+    </div>
   );
 }
 
