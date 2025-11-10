@@ -58,7 +58,6 @@ const ProfileHeader = ({ card }: { card: BusinessCardData }) => {
           src={card.profileImage}
           name={card.name}
           size={{ width: 27, height: 27 }}
-          className="shrink-0"
         />
         <div className="flex flex-col grow items-start leading-[1.25] text-[#24292f]">
           <p className="font-bold text-[12px] tracking-[-0.8px] w-full">
