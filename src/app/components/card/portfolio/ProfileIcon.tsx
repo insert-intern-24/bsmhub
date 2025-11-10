@@ -1,14 +1,12 @@
-import Image from 'next/image';
-import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
+import ProfileImage from './components/ProfileImage';
 
 const ProfileIcon = ({ image }: { image: string }) => {
   return (
-    <Image
-      width={(120 / 16) * 14}
-      height={(120 / 16) * 14}
-      alt="프로필 사진"
-      src={convertFromDatabaseImageURL(image)}
-      className="rounded-sm absolute -top-20"
+    <ProfileImage
+      src={image}
+      size={{ width: (120 / 16) * 14, height: (120 / 16) * 14 }}
+      variant="rounded"
+      className="absolute -top-20"
     />
   );
 };
