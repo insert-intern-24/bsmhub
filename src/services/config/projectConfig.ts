@@ -268,10 +268,14 @@ export const projectConfig: FormConfig = {
       relationHandler: {
         type: 'graphql',
         identifierIsStudnetId: false,
-        dataTransformer: createDataTransformer(
-          { skill_id: 'skill_id' },
-          (item) => Boolean(item.skill_id),
-        ),
+        dataTransformer: (data: unknown[]) => {
+          // skill_id를 숫자로 유지하는 커스텀 transformer
+          return (data as Array<{ skill_id: number }>)
+            .filter((item) => Boolean(item.skill_id))
+            .map((item) => ({
+              skill_id: Number(item.skill_id), // 명시적으로 숫자로 변환
+            }));
+        },
         deleteFilterGenerator: createDeleteFilterGenerator(['skill_id']),
         changeCalculator: createChangeCalculator(['skill_id']),
       },
