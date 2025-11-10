@@ -36,6 +36,17 @@ export const projectConfig: FormConfig = {
                   }
                 }
               }
+              project_skillsCollection {
+                edges {
+                  node {
+                    skill_id
+                    skills {
+                      skill_id
+                      skill_name
+                    }
+                  }
+                }
+              }
               project_contributorsCollection {
                 edges {
                   node {
@@ -253,7 +264,18 @@ export const projectConfig: FormConfig = {
       label: '기술 스택',
       type: 'skillTag',
       required: false,
-      columnInfo: { table: 'projects', column: 'skills' },
+      columnInfo: { table: 'project_skills', column: '*' },
+      relationHandler: {
+        type: 'graphql',
+        identifierIsStudnetId: false,
+        dataTransformer: createDataTransformer(
+          { skill_id: 'skill_id' },
+          (item) => Boolean(item.skill_id),
+        ),
+        deleteFilterGenerator: createDeleteFilterGenerator(['skill_id']),
+        changeCalculator: createChangeCalculator(['skill_id']),
+      },
+      valuePath: 'skills.skill_name',
       white: false,
     },
     // {

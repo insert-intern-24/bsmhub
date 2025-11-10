@@ -441,6 +441,22 @@ export class GraphQLDataService {
       this.originalRelationData.set('project_link', projectLinksData);
       console.log('Cached project_link:', projectLinksData);
     }
+
+    // project_skills 캐싱 (skill_id도 함께 저장)
+    if (mainNode.project_skillsCollection) {
+      const projectSkillsData = (
+        mainNode.project_skillsCollection as {
+          edges: Array<{
+            node: { skill_id: number; skills: { skill_name: string } };
+          }>;
+        }
+      ).edges.map((edge) => ({
+        skill_id: edge.node.skill_id,
+        skill_name: edge.node.skills.skill_name,
+      }));
+      this.originalRelationData.set('project_skills', projectSkillsData);
+      console.log('Cached project_skills:', projectSkillsData);
+    }
   }
 
   /**
