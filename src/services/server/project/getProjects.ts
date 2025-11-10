@@ -45,7 +45,7 @@ const PROJECT_SELECT_QUERY = `
   )
 `;
 
-async function fetchProjects(limit?: number): Promise<CardProps[]> {
+export async function getProjects(limit?: number): Promise<CardProps[]> {
   const supabase = await createClient();
   let query = supabase.from('projects').select(PROJECT_SELECT_QUERY);
   
@@ -75,7 +75,3 @@ async function fetchProjects(limit?: number): Promise<CardProps[]> {
 
   return projects || [];
 }
-
-export const getProjects = async (limit?: number): Promise<CardProps[]> => {
-  return fetchProjects(limit);
-};
