@@ -149,31 +149,15 @@ export const projectConfig: FormConfig = {
       label: '링크',
       type: 'inputList',
       required: false,
-      columnInfo: { table: 'profile_link', column: '*' },
-      relationHandler: {
-        type: 'graphql',
-        identifierIsStudnetId: false,
-        dataTransformer: createDataTransformer(
-          { link: 'link', alt: 'alt' },
-          (item) => Boolean(item.link),
-        ),
-        deleteFilterGenerator: createDeleteFilterGenerator(['link', 'alt']),
-        changeCalculator: createChangeCalculator(['link', 'alt']),
-      },
+      columnInfo: { table: 'projects', column: 'link' },
       inputConfig: {
-        onlyOne: false,
+        onlyOne: true,
         inputs: [
           {
             name: 'link',
             type: 'text',
-            placeholder: '링크 URL을 입력하세요',
-            required: true,
-          },
-          {
-            name: 'alt',
-            type: 'text',
-            placeholder: '링크 제목을 입력하세요',
-            required: true,
+            placeholder: '링크 URL을 입력하세요 (예: GitHub 저장소)',
+            required: false,
           },
         ],
       },

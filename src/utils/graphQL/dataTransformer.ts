@@ -57,6 +57,20 @@ export function graphqlToFormData(
 
     // SkillTag 타입 처리
     if (field.type === 'skillTag') {
+      // 메인 테이블 필드인 경우 (예: projects.skills)
+      if (!isRelationshipTable(table)) {
+        const skillsArray = (mainData as Record<string, unknown>)[column];
+        if (Array.isArray(skillsArray)) {
+          formData[field.fieldName] = skillsArray.filter(
+            (skill) => typeof skill === 'string' && skill.trim() !== '',
+          ) as string[];
+        } else {
+          formData[field.fieldName] = [];
+        }
+        return;
+      }
+
+      // 관계 테이블인 경우
       const collection = (mainData as Record<string, unknown>)[
         `${table}Collection`
       ] as { edges?: Array<{ node: Record<string, unknown> }> } | undefined;
