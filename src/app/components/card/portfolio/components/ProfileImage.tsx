@@ -16,7 +16,7 @@ const sizeMap: Record<PresetSize, { width: number; height: number }> = {
 type Variant = 'circle' | 'square' | 'rounded';
 
 const DEFAULT_FALLBACK_PROFILE =
-  process.env.NEXT_PUBLIC_PROJECT_FALLBACK_PROFILE ?? '/card/dummy-profile.png';
+  process.env.NEXT_PUBLIC_PROJECT_FALLBACK_PROFILE ?? '/default-avatar.svg';
 
 interface ProfileImageProps {
   src?: string | null;
