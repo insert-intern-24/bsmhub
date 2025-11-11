@@ -22,7 +22,7 @@ export type ProjectDetailViewModel = {
   detailDescription: string;
   links: Array<{ url: string; title: string | null }>;
   iconImage: string;
-  technologies: number[];
+  technologies: string[];
   team: Array<{
     id: string;
     name: string;
