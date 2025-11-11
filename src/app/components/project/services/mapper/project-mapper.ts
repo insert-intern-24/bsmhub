@@ -19,9 +19,14 @@ export const toViewModel = (
     title: project.project_name,
     introduction: project.description ?? '소개 정보가 없습니다.',
     detailDescription,
-    githubUrl: project.link,
+    links: (project.project_link ?? []).map((link) => ({
+      url: link.link,
+      title: link.alt,
+    })),
     iconImage: project.project_logo,
-    technologies: project.skills?.map(Number).filter((id): id is number => !isNaN(id)) ?? [],
+    technologies: (project.project_skills ?? [])
+      .map((ps) => ps.skill_id)
+      .filter((id): id is number => !!id),
     team: (project.project_contributors ?? []).map((contributor, index) => ({
       id: contributor.profile_id ?? `member-${index}`,
       name: contributor.profile?.profile_name ?? '이름 미정',

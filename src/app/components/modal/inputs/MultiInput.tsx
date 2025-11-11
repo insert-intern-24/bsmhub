@@ -27,9 +27,13 @@ interface MultiInputProps {
   dropdownInputConfig?: DropdownInputConfig;
   suggestions?: Record<string, unknown>[];
   onInputChange?: (value: string) => void;
+  onInputFocus?: () => void;
   tableData?: Record<string, unknown>[];
   onDelete?: (index: number) => void;
   groupIndex?: number;
+  onlyOne?: boolean;
+  required?: boolean;
+  onOptionSelect?: () => void;
 }
 
 function MultiInput({
@@ -37,9 +41,15 @@ function MultiInput({
   dropdownInputConfig,
   suggestions = [],
   onInputChange,
+  onInputFocus,
   tableData = [],
   onDelete,
   groupIndex,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onlyOne = false,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  required = false,
+  onOptionSelect,
 }: MultiInputProps) {
   return (
     <div className="flex flex-row gap-2 w-full relative">
@@ -57,16 +67,19 @@ function MultiInput({
 
         // 첫 번째 input이고 dropdownInputConfig가 있으면 특별 처리
         if (index === 0 && dropdownInputConfig) {
-          const value = inputProps.value as string;
+          const value = inputProps.value as string | number;
+          // value를 문자열로 변환하여 비교 (숫자 0도 처리)
+          const valueStr = String(value);
           const selectedItem = tableData.find(
-            (item) => item[dropdownInputConfig.valueColumnName] === value,
+            (item) => String(item[dropdownInputConfig.valueColumnName]) === valueStr,
           );
           const displayName = selectedItem
             ? (selectedItem[dropdownInputConfig.nameColumnName] as string)
             : '';
 
-          if (value && displayName) {
-            // 선택된 상태: 이름 표시 + X 버튼
+          // value가 0일 때도 처리할 수 있도록 조건 수정
+          if ((value !== undefined && value !== null && value !== '') && displayName) {
+            // 선택된 상태: 이름 표시 + X 버튼 (항상 표시)
             return (
               <div
                 key={index}
@@ -93,7 +106,9 @@ function MultiInput({
                   icon={icon}
                   suggestions={suggestions}
                   onInputChange={onInputChange!}
+                  onInputFocus={onInputFocus}
                   dropdownInputConfig={dropdownInputConfig}
+                  onOptionSelect={onOptionSelect}
                   {...inputProps}
                 />
               </div>

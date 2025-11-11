@@ -37,6 +37,7 @@ interface InputListProviderProps {
   initialValue?: MultiInputItem[][];
   // maxInputs?: number
   onlyOne?: boolean;
+  required?: boolean;
 }
 
 // 프레젠테이션 컴포넌트
@@ -47,7 +48,8 @@ const InputListProvider = ({
   onInputsChange,
   initialValue,
   // maxInputs,
-  onlyOne = false,
+  onlyOne = config.onlyOne ?? false,
+  required = false,
 }: InputListProviderProps) => {
   // config를 MultiInputItem으로 변환
   const initialConfig = config.inputs.map((input) => ({
@@ -63,8 +65,16 @@ const InputListProvider = ({
     value: '',
   })) as MultiInputItem[];
 
+  // onlyOne이 false이고 initialValue가 없거나 빈 배열이면, 최소 하나의 빈 그룹 생성
+  const defaultInitialValue = 
+    initialValue && initialValue.length > 0
+      ? initialValue
+      : onlyOne
+        ? initialConfig
+        : [initialConfig];
+
   const [{ inputs, activeIndex }, dispatch] = useInputList(
-    initialValue || initialConfig,
+    defaultInitialValue,
   );
 
   // 테이블 데이터 및 추천 상태
@@ -74,6 +84,7 @@ const InputListProvider = ({
   const [suggestions, setSuggestions] = React.useState<
     Record<string, unknown>[]
   >([]);
+  const [showSuggestions, setShowSuggestions] = React.useState(false);
   // const [loading, setLoading] = React.useState(false)
   // const [error, setError] = React.useState<string | null>(null)
 
@@ -92,6 +103,24 @@ const InputListProvider = ({
     }
   }, [dropdownInputConfig]);
 
+  // onlyOne일 때 input 클릭/포커스 시 모든 옵션 표시
+  const handleInputFocus = () => {
+    if (onlyOne && dropdownInputConfig && tableData.length > 0) {
+      const selectedValues = new Set(
+        inputs
+          .flat()
+          .map((item) => item.value)
+          .filter(Boolean),
+      );
+      const filtered = tableData.filter((item) => {
+        const itemValue = item[dropdownInputConfig.valueColumnName] as string;
+        return !selectedValues.has(itemValue);
+      });
+      setSuggestions(filtered);
+      setShowSuggestions(true);
+    }
+  };
+
   // 추천 필터링 함수
   const handleInputChange = (value: string) => {
     if (dropdownInputConfig && tableData.length > 0) {
@@ -102,6 +131,17 @@ const InputListProvider = ({
           .map((item) => item.value)
           .filter(Boolean),
       );
+
+      // onlyOne일 때 빈 값이면 모든 옵션 표시
+      if (onlyOne && value === '') {
+        const filtered = tableData.filter((item) => {
+          const itemValue = item[dropdownInputConfig.valueColumnName] as string;
+          return !selectedValues.has(itemValue);
+        });
+        setSuggestions(filtered);
+        setShowSuggestions(true);
+        return;
+      }
 
       const filtered = tableData.filter((item) => {
         const itemValue = item[dropdownInputConfig.valueColumnName] as string;
@@ -116,9 +156,17 @@ const InputListProvider = ({
         );
       });
       setSuggestions(filtered);
+      setShowSuggestions(filtered.length > 0);
     } else {
       setSuggestions([]);
+      setShowSuggestions(false);
     }
+  };
+
+  // 옵션 선택 후 드롭다운 닫기
+  const handleOptionSelect = () => {
+    setShowSuggestions(false);
+    setSuggestions([]);
   };
 
   // inputs가 변경될 때마다 콜백 호출
@@ -140,6 +188,41 @@ const InputListProvider = ({
   };
 
   const handleDeleteInput = (index: number) => {
+    // 필수 필드이고 드롭다운일 때 최소 하나는 남겨야 함
+    if (required && dropdownInputConfig && inputs.length <= 1) {
+      // onlyOne일 때는 삭제하지 않고 값만 지움
+      if (onlyOne) {
+        const input = inputs[index];
+        if (input && input.length > 0) {
+          input.forEach((_, subIndex) => {
+            dispatch({
+              type: 'UPDATE_VALUE',
+              index,
+              subIndex,
+              value: '',
+            });
+          });
+        }
+      }
+      return;
+    }
+    
+    // onlyOne일 때는 삭제하지 않고 값만 지움
+    if (onlyOne) {
+      const input = inputs[index];
+      if (input && input.length > 0) {
+        input.forEach((_, subIndex) => {
+          dispatch({
+            type: 'UPDATE_VALUE',
+            index,
+            subIndex,
+            value: '',
+          });
+        });
+      }
+      return;
+    }
+    
     dispatch({ type: 'DELETE_INPUT', index });
   };
 
@@ -160,20 +243,29 @@ const InputListProvider = ({
               config={input.map((item: MultiInputItem, subIndex: number) => ({
                 ...item,
                 mode: isReadOnly ? 'read' : item.mode || 'write',
-                onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
                   dispatch({
                     type: 'UPDATE_VALUE',
                     index,
                     subIndex,
                     value: e.target.value,
-                  }),
+                  });
+                  // 값이 변경되면 드롭다운 닫기 (옵션 선택 시)
+                  if (dropdownInputConfig && e.target.value) {
+                    handleOptionSelect();
+                  }
+                },
               }))}
               dropdownInputConfig={dropdownInputConfig}
-              suggestions={suggestions}
+              suggestions={showSuggestions ? suggestions : []}
               onInputChange={handleInputChange}
+              onInputFocus={handleInputFocus}
               tableData={tableData}
               onDelete={handleDeleteInput}
               groupIndex={index}
+              onlyOne={onlyOne}
+              required={required && dropdownInputConfig !== undefined}
+              onOptionSelect={handleOptionSelect}
             />
           </div>
         );

@@ -130,6 +130,7 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
                       onInputsChange={onChange}
                       initialValue={value as MultiInputItem[][] | undefined}
                       onlyOne={field.inputConfig.onlyOne}
+                      required={field.required}
                     />
                   );
                 }
@@ -141,6 +142,7 @@ const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '
                       onInputsChange={onChange}
                       initialValue={value as MultiInputItem[][] | undefined}
                       onlyOne={field.inputConfig.onlyOne}
+                      required={field.required}
                     />
                   );
                 }
