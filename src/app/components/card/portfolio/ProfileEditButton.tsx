@@ -33,7 +33,7 @@ export default function ProfileEditButton({ ownerId }: ProfileEditButtonProps) {
         onClose={closeModal}
       />,
     );
-  }, [ownerId, openModal, closeModal]);
+  }, [ownerId, openModal, closeModal, currentUser?.id]);
 
   // 로그인하지 않았거나 소유자가 아니면 버튼을 렌더링하지 않음
   if (!currentUser || !isOwner) {
