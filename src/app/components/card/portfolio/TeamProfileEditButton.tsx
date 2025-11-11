@@ -17,11 +17,6 @@ export default function TeamProfileEditButton({
   const currentUser = useCurrentUser();
   const { openModal, closeModal } = useModal();
 
-  // 로그인하지 않은 경우 버튼을 렌더링하지 않음
-  if (!currentUser) {
-    return null;
-  }
-
   const handleProfileEdit = useCallback(async () => {
     openModal(
       <ProfileEditModal
@@ -33,6 +28,11 @@ export default function TeamProfileEditButton({
       />,
     );
   }, [profileId, openModal, closeModal]);
+
+  // 로그인하지 않은 경우 버튼을 렌더링하지 않음
+  if (!currentUser) {
+    return null;
+  }
 
   return (
     <button
