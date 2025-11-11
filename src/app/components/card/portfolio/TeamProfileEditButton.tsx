@@ -19,6 +19,11 @@ export default function TeamProfileEditButton({
   const currentUser = useCurrentUser();
   const { openModal, closeModal } = useModal();
 
+  // 로그인하지 않은 경우 버튼을 렌더링하지 않음
+  if (!currentUser) {
+    return null;
+  }
+
   const handleProfileEdit = useCallback(async () => {
     if (!currentUser?.id) {
       console.error('User not logged in');
@@ -36,14 +41,10 @@ export default function TeamProfileEditButton({
     );
   }, [profileId, currentUser?.id, openModal, closeModal]);
 
-  // profileName은 현재 사용하지 않지만, 향후 로깅이나 디버깅에 사용할 수 있음
-  console.log('Editing team profile:', profileName);
-
   return (
     <button
       className="rounded-3xl h-10 flex justify-center items-center gap-4 bg-black text-white w-full"
       onClick={handleProfileEdit}
-      disabled={!currentUser}
     >
       <IconPencil size={12}></IconPencil>
       Edit
