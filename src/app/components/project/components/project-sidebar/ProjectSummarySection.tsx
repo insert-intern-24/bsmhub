@@ -19,7 +19,6 @@ interface ProjectSummarySectionProps {
   title: string;
   description: string;
   hasEditPermission?: boolean;
-  projectId?: number;
   onEdit?: () => void;
 }
 
@@ -27,7 +26,6 @@ export const ProjectSummarySection = ({
   title,
   description,
   hasEditPermission,
-  projectId,
   onEdit,
 }: ProjectSummarySectionProps) => (
   <section className="flex-col w-full gap-[0.375rem]">
@@ -35,7 +33,6 @@ export const ProjectSummarySection = ({
     <Body className="text-detail">{description}</Body>
     <ProjectActions
       hasEditPermission={hasEditPermission}
-      projectId={projectId}
       onEdit={onEdit}
     />
   </section>
@@ -43,17 +40,14 @@ export const ProjectSummarySection = ({
 
 const ProjectActions = ({
   hasEditPermission,
-  projectId,
   onEdit,
 }: {
   hasEditPermission?: boolean;
-  projectId?: number;
   onEdit?: () => void;
 }) => (
   <div className="flex w-full gap-1 mt-3">
     <PlayButton
       hasEditPermission={hasEditPermission}
-      projectId={projectId}
       onEdit={onEdit}
     />
     <AddToPlaylistButton />
@@ -62,11 +56,9 @@ const ProjectActions = ({
 
 const PlayButton = ({
   hasEditPermission,
-  projectId,
   onEdit,
 }: {
   hasEditPermission?: boolean;
-  projectId?: number;
   onEdit?: () => void;
 }) => (
   <button

@@ -45,8 +45,6 @@ function MultiInput({
   tableData = [],
   onDelete,
   groupIndex,
-  onlyOne = false,
-  required = false,
   onOptionSelect,
 }: MultiInputProps) {
   return (
