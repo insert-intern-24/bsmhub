@@ -3,6 +3,8 @@ import { CardProps } from "@/app/components/card/project/ProjectCard";
 import { createClient } from "@/utils/supabase/server";
 import { Tables } from "@/utils/supabase/database.types";
 import { convertFromDatabaseImageURL } from "@/utils/supabase/imageHostConverter";
+import type { ProjectContributor, ProjectOwnerProfile } from './types';
+import { createAuthorsFromProject } from './utils';
 
 export type PersonalProjectType = Pick<
   Tables<'projects'>,
@@ -10,7 +12,8 @@ export type PersonalProjectType = Pick<
 >;
 
 type PersonalProjectTypeWithProfile = PersonalProjectType & {
-  profile: Pick<Tables<'profile'>, 'profile_name' | 'is_team'>
+  profile: ProjectOwnerProfile;
+  project_contributors: ProjectContributor[];
 }
 
 export const getPersonalProjects = async (profile_id: string): Promise<CardProps[]> => {
@@ -24,8 +27,17 @@ export const getPersonalProjects = async (profile_id: string): Promise<CardProps
       description,
       project_thumbnail,
       profile!projects_owner_fkey (
+        profile_id,
         profile_name,
+        profile_image,
         is_team
+      ),
+      project_contributors (
+        profile (
+          profile_id,
+          profile_name,
+          profile_image
+        )
       )
     `)
     .eq('owner', profile_id)
@@ -41,9 +53,7 @@ export const getPersonalProjects = async (profile_id: string): Promise<CardProps
     projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
     ownerName: project.profile.profile_name,
     isTeam: project.profile.is_team,
-    authors: [
-      { profileImage: '' } // profile 페이지에서 따로 조회한 profileImage 사용
-    ],
+    authors: createAuthorsFromProject(project),
   }));
 
   return projects || [];

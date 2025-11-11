@@ -7,14 +7,15 @@ import ProfileImage from './components/ProfileImage';
 
 const PortfolioCard = ({ profile, projects }: PortfolioCardProps) => {
   return (
-    <div className="@container w-full h-fit rounded border-light-gray-outline bg-white p-4">
+    <div className="@container w-full h-fit rounded border border-light-gray-outline bg-white p-4"
+       style={{
+        background:
+          'linear-gradient(180deg, #f9f9fb 26%, #fff 67.5%, #fff 100%)',
+      }}>
       {/* 컨테이너가 450px 미만일 때: 세로 레이아웃 (기존 PortfolioCard) */}
       <div
         className="@[450px]:hidden w-full h-fit flex-col flex-center"
-        style={{
-          background:
-            'linear-gradient(180deg, #f9f9fb 26%, #fff 67.5%, #fff 100%)',
-        }}
+
       >
         {/* Project Images Header */}
         <ProjectImages projects={projects} variant="default" />

@@ -1,7 +1,7 @@
 'use client';
 
 import { Body, Body2, Label, TitleEN } from '@/app/components/system/text';
-import SkillTag from '@/app/components/contents/SkillTag';
+import SkillTagProvider from '@/app/components/modal/inputs/SkillTagProvider';
 import {
   PLAY_BUTTON_BORDER_STYLE,
   PLAY_BUTTON_BOTTOM_GLOW_STYLE,
@@ -150,23 +150,14 @@ export const ProjectLinkSection = ({ links }: ProjectLinkSectionProps) => (
   </section>
 );
 
-interface ProjectTechnologiesSectionProps {
-  technologies: string[];
-}
 
 export const ProjectTechnologiesSection = ({
   technologies,
-}: ProjectTechnologiesSectionProps) => (
+}: {
+  technologies: number[];
+}) => (
   <section className="flex-col gap-[0.375rem]">
     <Label>기술스택</Label>
-    <div className="flex-row flex-wrap gap-2">
-      {technologies.length > 0 ? (
-        technologies.map((tech) => (
-          <SkillTag key={tech} mode="default" value={tech} />
-        ))
-      ) : (
-        <Label className="text-detail">기술 스택 정보가 없습니다.</Label>
-      )}
-    </div>
+    <SkillTagProvider readOnly initialTags={technologies} />
   </section>
 );

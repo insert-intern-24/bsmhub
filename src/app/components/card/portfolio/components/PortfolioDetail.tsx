@@ -1,6 +1,6 @@
 import ProfileItem from '@/app/components/contents/ProfileItem';
-import SkillTag from '@/app/components/contents/SkillTag';
 import { Label } from '@/app/components/system/text';
+import SkillTagProvider from '@/app/components/modal/inputs/SkillTagProvider';
 
 import {
   PortfolioDetailProps,
@@ -25,11 +25,13 @@ const PortfolioDetail = ({ details }: PortfolioDetailDataProps) => {
         <div key={mode}>
           <Label>{modeTextMap[mode]}</Label>
           {mode === 'skill' ? (
-            <div className="flex flex-wrap gap-2">
-              {datas.map(({ value }) => (
-                <SkillTag key={value} mode="white" value={value} />
-              ))}
-            </div>
+            <SkillTagProvider
+              readOnly
+              white
+              initialTags={datas
+                .map((data) => ('skillId' in data ? data.skillId : undefined))
+                .filter((id): id is number => id !== undefined)}
+            />
           ) : (
             <div className="flex-col">
               {datas.map((data, index) => (

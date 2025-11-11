@@ -1,12 +1,11 @@
-import Image from 'next/image';
 import ProfileItem from '@/app/components/contents/ProfileItem';
 import TeamLabel from '@/app/components/contents/TeamLabel';
 import { Body, Label, TitleEN } from '@/app/components/system/text';
 import { TeamData } from './types';
-import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import { getFoundedYear } from '@/utils/date';
 import getMyAccount from '@/services/server/auth/getMyAccount';
 import TeamProfileEditButton from '@/app/components/card/portfolio/TeamProfileEditButton';
+import ProfileImage from '@/app/components/card/portfolio/components/ProfileImage';
 
 interface TeamSidebarProps {
   teamDetail: TeamData;
@@ -57,13 +56,11 @@ const TeamSidebar = async ({ teamDetail, projectCount }: TeamSidebarProps) => {
         <Label className="mb-1.5">팀원</Label>
         <div className="flex flex-wrap gap-2">
           {teamDetail?.team_member.map((member) => (
-            <Image
+            <ProfileImage
               key={member.profile.profile_id}
-              src={convertFromDatabaseImageURL(member.profile.profile_image)}
-              alt="팀원 프로필 사진"
-              width={32}
-              height={32}
-              className="rounded-full"
+              src={member.profile.profile_image}
+              size={{ width: 32, height: 32 }}
+              shape="circle"
             />
           ))}
         </div>

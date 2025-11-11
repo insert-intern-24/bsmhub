@@ -9,7 +9,7 @@ export interface ItemProps {
 
 export interface PortfolioDetailProps {
   mode: ItemProps['mode'] | 'skill';
-  datas: Array<Omit<ItemProps, 'mode'> | Omit<TagProps, 'mode'>>;
+  datas: Array<Omit<ItemProps, 'mode'> | (Omit<TagProps, 'mode'> & { skillId?: number })>;
 }
 
 import { Tables } from '@/utils/supabase/database.types';

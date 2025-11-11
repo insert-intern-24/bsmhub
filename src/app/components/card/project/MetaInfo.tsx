@@ -34,7 +34,7 @@ const MetaInfo = ({ description, authors }: MetaInfoProps) => {
                 src={author.profileImage}
                 name={author.name}
                 size="tiny"
-                style={{ zIndex: authors.length - index }}
+                className={`z-[${authors.length - index}]`}
               />
             ))}
           </div>

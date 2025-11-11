@@ -1,30 +1,22 @@
-import Image from 'next/image';
 import { Label, Label2 } from '@/app/components/system/text';
-import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
 import type { ProjectDetailViewModel } from '../types';
-import { FALLBACK_PROFILE } from './styles';
 import Link from 'next/link';
+import ProfileImage from '@/app/components/card/portfolio/components/ProfileImage';
 
 interface TeamMemberItemProps {
   member: ProjectDetailViewModel['team'][number];
 }
 
 const TeamMemberItem = ({ member }: TeamMemberItemProps) => {
-  const profileImageUrl = member.profileImage 
-    ? convertFromDatabaseImageURL(member.profileImage)
-    : FALLBACK_PROFILE;
-
   return (
     <article className="flex-row items-center gap-[0.375rem]">
       <Link href={`/portfolio/${member.name}`} className="cursor-pointer">
-        <div className="relative h-10 w-10 overflow-hidden rounded-full">
-          <Image
-            src={profileImageUrl}
-            alt={member.name}
-            fill
-            className="object-cover"
-          />
-        </div>
+        <ProfileImage
+          src={member.profileImage}
+          name={member.name}
+          size={{ width: 40, height: 40 }}
+          shape="circle"
+        />
       </Link>
     <div className="flex-col">
       <Link
