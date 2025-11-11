@@ -10,13 +10,9 @@ import { checkProfileExistence } from '@/services/client/profile/profileApi';
 
 interface ProfileEditButtonProps {
   ownerId: string;
-  profileName?: string;
 }
 
-export default function ProfileEditButton({
-  ownerId,
-  profileName,
-}: ProfileEditButtonProps) {
+export default function ProfileEditButton({ ownerId }: ProfileEditButtonProps) {
   const currentUser = useCurrentUser();
   const { openModal, closeModal } = useModal();
 
@@ -29,11 +25,6 @@ export default function ProfileEditButton({
   }
 
   const handleProfileEdit = useCallback(async () => {
-    if (!currentUser?.id || !isOwner) {
-      console.error('User not authorized to edit this profile');
-      return;
-    }
-
     // 프로필 존재 여부 확인
     const profileExists = await checkProfileExistence(ownerId);
 
@@ -47,7 +38,7 @@ export default function ProfileEditButton({
         onClose={closeModal}
       />,
     );
-  }, [ownerId, currentUser?.id, isOwner, openModal, closeModal]);
+  }, [ownerId, openModal, closeModal]);
 
   return (
     <button

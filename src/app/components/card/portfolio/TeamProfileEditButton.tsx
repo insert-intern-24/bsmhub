@@ -9,12 +9,10 @@ import ProfileEditModal from './ProfileEditModal';
 
 interface TeamProfileEditButtonProps {
   profileId: string;
-  profileName?: string;
 }
 
 export default function TeamProfileEditButton({
   profileId,
-  profileName,
 }: TeamProfileEditButtonProps) {
   const currentUser = useCurrentUser();
   const { openModal, closeModal } = useModal();
@@ -25,11 +23,6 @@ export default function TeamProfileEditButton({
   }
 
   const handleProfileEdit = useCallback(async () => {
-    if (!currentUser?.id) {
-      console.error('User not logged in');
-      return;
-    }
-
     openModal(
       <ProfileEditModal
         config={teamProfileConfig}
@@ -39,7 +32,7 @@ export default function TeamProfileEditButton({
         onClose={closeModal}
       />,
     );
-  }, [profileId, currentUser?.id, openModal, closeModal]);
+  }, [profileId, openModal, closeModal]);
 
   return (
     <button
