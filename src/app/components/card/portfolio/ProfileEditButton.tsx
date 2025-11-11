@@ -23,11 +23,6 @@ export default function ProfileEditButton({
   // 권한 확인: 현재 사용자가 프로필 소유자인지 확인
   const isOwner = currentUser?.id === ownerId;
 
-  // 로그인하지 않았거나 소유자가 아니면 버튼을 렌더링하지 않음
-  if (!currentUser || !isOwner) {
-    return null;
-  }
-
   const handleProfileEdit = useCallback(async () => {
     if (!currentUser?.id || !isOwner) {
       console.error('User not authorized to edit this profile');
@@ -48,6 +43,11 @@ export default function ProfileEditButton({
       />,
     );
   }, [ownerId, currentUser?.id, isOwner, openModal, closeModal]);
+
+  // 로그인하지 않았거나 소유자가 아니면 버튼을 렌더링하지 않음
+  if (!currentUser || !isOwner) {
+    return null;
+  }
 
   return (
     <button
