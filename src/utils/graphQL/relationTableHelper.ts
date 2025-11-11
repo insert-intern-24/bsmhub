@@ -149,7 +149,10 @@ export async function getSkillNamesByIds(
 
   // skill_id 순서 유지
   const skillMap = new Map(
-    (data || []).map((skill) => [skill.skill_id, skill.skill_name]),
+    (data || []).map((skill: { skill_id: number; skill_name: string }) => [
+      skill.skill_id,
+      skill.skill_name,
+    ]),
   );
   return skillIds
     .map((id) => skillMap.get(id))

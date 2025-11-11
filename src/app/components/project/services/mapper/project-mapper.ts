@@ -25,8 +25,8 @@ export const toViewModel = (
     })),
     iconImage: project.project_logo,
     technologies: (project.project_skills ?? [])
-      .map((ps) => ps.skills?.skill_name)
-      .filter((name): name is string => !!name),
+      .map((ps) => ps.skill_id)
+      .filter((id): id is number => !!id),
     team: (project.project_contributors ?? []).map((contributor, index) => ({
       id: contributor.profile_id ?? `member-${index}`,
       name: contributor.profile?.profile_name ?? '이름 미정',

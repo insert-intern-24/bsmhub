@@ -45,7 +45,9 @@ function MultiInput({
   tableData = [],
   onDelete,
   groupIndex,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onlyOne = false,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   required = false,
   onOptionSelect,
 }: MultiInputProps) {

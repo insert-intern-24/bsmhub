@@ -62,6 +62,7 @@ const ProjectActions = ({
 
 const PlayButton = ({
   hasEditPermission,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   projectId,
   onEdit,
 }: {
