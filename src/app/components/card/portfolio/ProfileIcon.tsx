@@ -1,6 +1,7 @@
 import ProfileImage from './components/ProfileImage';
 
 const ProfileIcon = ({ image }: { image: string }) => {
+  const imageUrl = convertFromDatabaseImageURL(image);
   return (
     <ProfileImage
       src={image}

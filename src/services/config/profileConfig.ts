@@ -6,6 +6,8 @@ import {
   createDataTransformer,
   createDeleteFilterGenerator,
   createChangeCalculator,
+  processRestRelationTables,
+  processGraphQLRelationTables,
 } from '@/utils/graphQL/relationTableHelper';
 
 export const profileConfig: FormConfig = {
@@ -234,4 +236,96 @@ export const profileConfig: FormConfig = {
       white: false,
     },
   ],
+
+  /**
+   * Profile 전용 관계 테이블 처리 핸들러
+   */
+  afterSave: async ({
+    recordId,
+    relationTableData,
+    variables,
+    originalRelationData,
+  }) => {
+    console.log('[profileConfig] afterSave started');
+    console.log('[profileConfig] recordId:', recordId);
+
+    const profileId = recordId as string;
+
+    // REST API로 처리할 테이블들과 GraphQL로 처리할 테이블들을 분리
+    const restTables: Array<{
+      tableName: string;
+      relationData: unknown[];
+      handler?: (
+        id: string,
+        data: unknown[],
+        existing: unknown[],
+      ) => Promise<void>;
+      identifierIsStudentId?: boolean;
+      dataTransformer?: (data: unknown[]) => unknown[];
+    }> = [];
+    const graphqlTables: Array<{
+      tableName: string;
+      relationData: unknown[];
+      dataTransformer?: (data: unknown[]) => unknown[];
+      deleteFilterGenerator?: (
+        item: Record<string, unknown>,
+        identifier: string | number,
+        identifierField?: string,
+      ) => Record<string, unknown>;
+      changeCalculator?: (
+        newData: unknown[],
+        existingData: Record<string, unknown>[],
+      ) => {
+        toDelete: Record<string, unknown>[];
+        toInsert: Record<string, unknown>[];
+      };
+    }> = [];
+
+    // fields에서 각 테이블의 설정 정보 가져오기
+    for (const [tableName, relationData] of relationTableData) {
+      const fieldConfig = profileConfig.fields.find(
+        (field) => field.columnInfo?.table === tableName,
+      );
+
+      if (fieldConfig?.relationHandler) {
+        if (fieldConfig.relationHandler.type === 'rest') {
+          restTables.push({
+            tableName,
+            relationData,
+            handler: fieldConfig.relationHandler.handler,
+            identifierIsStudentId:
+              fieldConfig.relationHandler.identifierIsStudnetId,
+            dataTransformer: fieldConfig.relationHandler.dataTransformer,
+          });
+        } else {
+          graphqlTables.push({
+            tableName,
+            relationData,
+            dataTransformer: fieldConfig.relationHandler.dataTransformer,
+            deleteFilterGenerator:
+              fieldConfig.relationHandler.deleteFilterGenerator,
+            changeCalculator: fieldConfig.relationHandler.changeCalculator,
+          });
+        }
+      }
+    }
+
+    // REST API 처리
+    await processRestRelationTables(
+      restTables,
+      profileId,
+      variables,
+      originalRelationData,
+    );
+
+    // GraphQL 처리
+    await processGraphQLRelationTables(
+      graphqlTables,
+      profileId,
+      'profile_id',
+      originalRelationData,
+    );
+
+    console.log('[profileConfig] afterSave completed');
+  },
 };
