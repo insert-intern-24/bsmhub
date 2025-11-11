@@ -1,3 +1,5 @@
+'use client';
+
 import { Body, Body2, Label, TitleEN } from '@/app/components/system/text';
 import SkillTagProvider from '@/app/components/modal/inputs/SkillTagProvider';
 import {
@@ -17,33 +19,61 @@ interface ProjectSummarySectionProps {
   title: string;
   description: string;
   hasEditPermission?: boolean;
+  projectId?: number;
+  onEdit?: () => void;
 }
 
 export const ProjectSummarySection = ({
   title,
   description,
   hasEditPermission,
+  projectId,
+  onEdit,
 }: ProjectSummarySectionProps) => (
   <section className="flex-col w-full gap-[0.375rem]">
     <TitleEN>{title}</TitleEN>
     <Body className="text-detail">{description}</Body>
-    <ProjectActions hasEditPermission={hasEditPermission} />
+    <ProjectActions
+      hasEditPermission={hasEditPermission}
+      projectId={projectId}
+      onEdit={onEdit}
+    />
   </section>
 );
 
 const ProjectActions = ({
   hasEditPermission,
+  projectId,
+  onEdit,
 }: {
   hasEditPermission?: boolean;
+  projectId?: number;
+  onEdit?: () => void;
 }) => (
   <div className="flex w-full gap-1 mt-3">
-    <PlayButton hasEditPermission={hasEditPermission} />
+    <PlayButton
+      hasEditPermission={hasEditPermission}
+      projectId={projectId}
+      onEdit={onEdit}
+    />
     <AddToPlaylistButton />
   </div>
 );
 
-const PlayButton = ({ hasEditPermission }: { hasEditPermission?: boolean }) => (
-  <button className="relative flex-1 cursor-pointer">
+const PlayButton = ({
+  hasEditPermission,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  projectId,
+  onEdit,
+}: {
+  hasEditPermission?: boolean;
+  projectId?: number;
+  onEdit?: () => void;
+}) => (
+  <button
+    className="relative flex-1 cursor-pointer"
+    onClick={hasEditPermission && onEdit ? onEdit : undefined}
+  >
     <div
       className="relative flex h-10 items-center justify-center gap-1 overflow-hidden rounded-3xl z-10"
       style={{ opacity: 0.8, backdropFilter: 'blur(33.5px)' }}
@@ -93,21 +123,28 @@ const AddToPlaylistButton = () => (
 );
 
 interface ProjectLinkSectionProps {
-  url?: string | null;
+  links: Array<{ url: string; title: string | null }>;
 }
 
-export const ProjectLinkSection = ({ url }: ProjectLinkSectionProps) => (
+export const ProjectLinkSection = ({ links }: ProjectLinkSectionProps) => (
   <section className="flex-col gap-[0.375rem]">
     <Label>링크</Label>
-    {url ? (
-      <a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-detail cursor-pointer hover:underline"
-      >
-        <Label className="text-detail">{url}</Label>
-      </a>
+    {links.length > 0 ? (
+      <div className="flex-col gap-2">
+        {links.map((link, index) => (
+          <a
+            key={index}
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-detail cursor-pointer hover:underline"
+          >
+            <Label className="text-detail">
+              {link.title || link.url}
+            </Label>
+          </a>
+        ))}
+      </div>
     ) : (
       <Label className="text-detail">등록된 링크가 없습니다.</Label>
     )}

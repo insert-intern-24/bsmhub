@@ -77,7 +77,8 @@ interface BaseFieldConfig {
     dataTransformer?: (data: unknown[]) => unknown[]; // 데이터 변환 함수
     deleteFilterGenerator?: (
       item: Record<string, unknown>,
-      profileId: string,
+      identifier: string | number, // 메인 엔티티의 ID (profileId, projectId 등)
+      identifierField?: string, // 외래키 필드명 (기본값: 'profile_id')
     ) => Record<string, unknown>; // 삭제 필터 생성 함수
     changeCalculator?: (
       newData: unknown[],
@@ -97,8 +98,8 @@ interface InputListFieldConfig extends BaseFieldConfig {
 
 interface DropdownInputListFieldConfig extends BaseFieldConfig {
   type: 'dropdownInputList';
-  inputConfig: InputConfig
-  dropdownInputConfig: DropdownInputConfig
+  inputConfig: InputConfig;
+  dropdownInputConfig: DropdownInputConfig;
 }
 
 // SkillTag 타입
@@ -139,4 +140,24 @@ export interface FormConfig {
     insert: string; // 삽입 mutation
     update: string; // 업데이트 mutation
   };
+  // 메인 테이블 정보 (선택사항, relation table 처리에 사용)
+  mainTable?: string; // 메인 테이블 이름 (예: 'projects', 'profile')
+  idField?: string; // 메인 테이블의 ID 필드명 (예: 'project_id', 'profile_id')
+
+  /**
+   * 관계 테이블 처리 콜백 (선택사항)
+   * 각 FormConfig에서 자체적으로 관계 테이블 업데이트 로직을 구현할 수 있음
+   * @param recordId - 업데이트된 레코드의 ID (profile_id, project_id 등)
+   * @param relationTableData - 관계 테이블 데이터 (Map<tableName, data[]>)
+   * @param response - GraphQL mutation 응답
+   * @param variables - 추가 변수들
+   * @param originalRelationData - 기존 관계 테이블 데이터 (변경사항 계산용)
+   */
+  afterSave?: (params: {
+    recordId: string | number;
+    relationTableData: Map<string, unknown[]>;
+    response: unknown;
+    variables?: Record<string, unknown>;
+    originalRelationData: Map<string, unknown[]>;
+  }) => Promise<void>;
 }
