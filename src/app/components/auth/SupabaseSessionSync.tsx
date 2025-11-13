@@ -4,35 +4,57 @@ import { useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client';
 
 /**
- * localStorage의 Supabase 세션을 쿠키로 동기화하는 컴포넌트
- * admin-web에서 로그인한 세션을 Next.js 앱에서 사용 가능하도록 함
+ * Supabase 세션을 쿠키와 localStorage 간 양방향 동기화하는 컴포넌트
+ * - admin-web(localStorage) ↔ bsmhub(cookie) 세션 공유
  */
 export default function SupabaseSessionSync() {
   useEffect(() => {
     const syncSession = async () => {
       try {
         const storageKey = 'sb-bsmhubsp-auth-token';
-        const storedSession = localStorage.getItem(storageKey);
-
-        if (!storedSession) {
-          return;
-        }
-
-        // localStorage에 세션이 있으면 Supabase 클라이언트 초기화
         const supabase = createClient();
 
-        // 현재 세션 확인
+        // 현재 세션 확인 (쿠키에서 읽음)
         const { data: { session } } = await supabase.auth.getSession();
+        const storedSession = localStorage.getItem(storageKey);
 
-        // 세션이 없거나 만료되었으면 localStorage에서 복원 시도
-        if (!session) {
+        // Case 1: localStorage만 있고 쿠키에 세션 없음 → localStorage → 쿠키 동기화
+        if (storedSession && !session) {
           const sessionData = JSON.parse(storedSession);
-
-          // localStorage의 세션을 Supabase에 설정
           await supabase.auth.setSession({
             access_token: sessionData.access_token,
             refresh_token: sessionData.refresh_token,
           });
+          return;
+        }
+
+        // Case 2: 쿠키에 세션 있고 localStorage 없음 → 쿠키 → localStorage 동기화
+        if (session && !storedSession) {
+          localStorage.setItem(storageKey, JSON.stringify({
+            access_token: session.access_token,
+            refresh_token: session.refresh_token,
+            expires_at: session.expires_at,
+            expires_in: session.expires_in,
+            token_type: session.token_type,
+            user: session.user,
+          }));
+          return;
+        }
+
+        // Case 3: 둘 다 있음 → 세션 업데이트 시 localStorage도 업데이트
+        if (session) {
+          const storedData = storedSession ? JSON.parse(storedSession) : null;
+          // access_token이 다르면 업데이트 (토큰 갱신됨)
+          if (!storedData || storedData.access_token !== session.access_token) {
+            localStorage.setItem(storageKey, JSON.stringify({
+              access_token: session.access_token,
+              refresh_token: session.refresh_token,
+              expires_at: session.expires_at,
+              expires_in: session.expires_in,
+              token_type: session.token_type,
+              user: session.user,
+            }));
+          }
         }
       } catch (error) {
         console.error('Failed to sync Supabase session:', error);
@@ -40,6 +62,31 @@ export default function SupabaseSessionSync() {
     };
 
     syncSession();
+
+    // 세션 변경 감지하여 동기화
+    const supabase = createClient();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      const storageKey = 'sb-bsmhubsp-auth-token';
+
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        if (session) {
+          localStorage.setItem(storageKey, JSON.stringify({
+            access_token: session.access_token,
+            refresh_token: session.refresh_token,
+            expires_at: session.expires_at,
+            expires_in: session.expires_in,
+            token_type: session.token_type,
+            user: session.user,
+          }));
+        }
+      } else if (event === 'SIGNED_OUT') {
+        localStorage.removeItem(storageKey);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   return null;
