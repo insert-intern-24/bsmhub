@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
+import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 
 type PresetSize = 'tiny' | 'small' | 'medium' | 'large';
 type CustomSize = { width: number; height: number };

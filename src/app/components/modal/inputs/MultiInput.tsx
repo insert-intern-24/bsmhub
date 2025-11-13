@@ -26,13 +26,13 @@ interface MultiInputProps {
   config: MultiInputItem[];
   dropdownInputConfig?: DropdownInputConfig;
   suggestions?: Record<string, unknown>[];
-  onInputChange?: (value: string) => void;
-  onInputFocus?: () => void;
   tableData?: Record<string, unknown>[];
-  onDelete?: (index: number) => void;
   groupIndex?: number;
   onlyOne?: boolean;
   required?: boolean;
+  onInputChange?: (value: string) => void;
+  onInputFocus?: () => void;
+  onDelete?: (index: number) => void;
   onOptionSelect?: () => void;
 }
 

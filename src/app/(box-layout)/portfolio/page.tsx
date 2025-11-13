@@ -1,6 +1,6 @@
 import SearchTab from './SearchTab';
-import { getPersonalPortfolioData } from '@/services/server/portfolio/getPersonalPortfolioData';
-import getJobs from '@/services/server/portfolio/getJobs';
+import { getPersonalPortfolioData } from '@/services/portfolio/getPersonalPortfolioData.server';
+import getJobs from '@/services/portfolio/getJobs.server';
 
 export default async function Portfolio() {
   const portfolioData = await getPersonalPortfolioData();

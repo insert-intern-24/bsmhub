@@ -3,7 +3,7 @@ import TeamLabel from '@/app/components/contents/TeamLabel';
 import { Body, Label, TitleEN } from '@/app/components/system/text';
 import { TeamData } from './types';
 import { getFoundedYear } from '@/utils/date';
-import getMyAccount from '@/services/server/auth/getMyAccount';
+import getAccount from '@/services/auth/getAccount.server';
 import TeamProfileEditButton from '@/app/components/card/portfolio/TeamProfileEditButton';
 import ProfileImage from '@/app/components/card/portfolio/components/ProfileImage';
 
@@ -13,7 +13,7 @@ interface TeamSidebarProps {
 }
 
 const TeamSidebar = async ({ teamDetail, projectCount }: TeamSidebarProps) => {
-  const currentSession = await getMyAccount();
+  const currentSession = await getAccount();
   return (
     <aside
       className="pt-[4.5rem] w-[21.75rem] min-w-[21.75rem] min-h-[50rem] 

@@ -1,6 +1,6 @@
 import React from 'react';
 import CollectClient from '@/app/components/collect/CollectClient';
-import { getProjects } from '@/services/server/project/getProjects';
+import { getProjects } from '@/services/project/getProjects.server';
 
 export default async function ProjectPage() {
   const projects = await getProjects();

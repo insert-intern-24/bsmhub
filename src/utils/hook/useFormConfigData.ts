@@ -6,8 +6,8 @@ import { MultiInputItem } from '@/utils/hook/useInputList';
 import {
   getGraphQLDataService,
   Result,
-} from '@/services/client/core/graphqlDataService';
-import uploadProfileImage from '@/services/client/profile/uploadProfileImage';
+} from '@/services/core/dataService.graphql.client';
+import uploadProfileImage from '@/services/profile/uploadProfileImage.client';
 
 /**
  * FormConfig 기반 데이터 관리 Hook

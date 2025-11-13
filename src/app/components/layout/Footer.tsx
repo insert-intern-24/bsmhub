@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Body, Heading } from '../system/text';
 
-export default function Footer() {
+const Footer = () => {
   return (
     <footer className="py-10 bg-light-gray-footer-bg text-gray-footer px-[33px] mobile:px-[0.6875rem]">
       <div className="max-w-[109rem] mx-auto flex justify-between items-center gap-6 responsive-footer">
@@ -42,4 +42,6 @@ export default function Footer() {
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

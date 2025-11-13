@@ -3,8 +3,8 @@
 import { useRef, useState } from 'react';
 
 interface PictureUploadProps {
-  aspectRatio?: string; // "1:1", "3:4", "16:9" 등 자유롭게 입력 가능
-  onFileChange?: (file: File | null) => void; // 파일 변경 콜백
+  aspectRatio?: string;
+  onFileChange?: (file: File | null) => void;
 }
 
 function PictureUpload({ aspectRatio = '1:1', onFileChange }: PictureUploadProps) {

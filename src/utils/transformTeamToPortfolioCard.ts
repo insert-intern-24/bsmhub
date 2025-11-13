@@ -3,7 +3,7 @@ import {
   PortfolioCardProps,
 } from '@/app/components/card/portfolio/types';
 import { TeamData } from '@/app/(box-layout)/team/types';
-import { convertFromDatabaseImageURL } from './supabase/imageHostConverter';
+import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 
 /**
  * 팀 데이터를 포트폴리오 카드 컴포넌트 props로 변환

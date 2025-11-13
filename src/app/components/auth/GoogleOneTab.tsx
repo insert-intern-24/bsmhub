@@ -1,7 +1,7 @@
 'use client';
 
 import Script from 'next/script';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/services/supabase/client';
 import { useEffect, useState, useCallback } from 'react';
 
 // google 전역 객체에 대한 타입 정의
