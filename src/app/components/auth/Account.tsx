@@ -2,10 +2,9 @@
 
 import { createClient } from '@/services/supabase/client';
 import { useCallback, useEffect, useState } from 'react';
-import {Dropdown, DropdownItem} from '../dropdown/DropDown';
+import {Dropdown, DropdownItem} from '../dropdown/Dropdown';
 import { useModal } from '@/app/components/modal';
 import { useCurrentUser } from '@/utils/hook/useCurrentUser';
-import { openProjectModal } from '@/utils/modal/openProjectModal';
 import { openProfileModal } from '@/utils/modal/openProfileModal';
 import { openGoogleLogin } from '@/utils/auth/googleLogin';
 import { checkProfileExistence, getProfileByStudentId } from '@/services/profile/getProfileApi.client';
@@ -22,11 +21,6 @@ const Account = () => {
     if (!currentUser?.id) return;
     void openProfileModal(currentUser.id, openModal, closeModal);
   }, [currentUser?.id, openModal, closeModal]);
-
-  const handleMakeProject = () => {
-    if (!currentUser?.id) return;
-    void openProjectModal(currentUser.id, openModal, closeModal);
-  };
 
   useEffect(() => {
     if (!currentUser?.id) return;
@@ -67,7 +61,6 @@ const Account = () => {
       ) : (
         <DropdownItem onSelect={handleMakeProfile}>프로필 만들기</DropdownItem>
       )}
-      <DropdownItem onSelect={handleMakeProject}>프로젝트 만들기</DropdownItem>
       <DropdownItem onSelect={() => supabase.auth.signOut()}>
         로그아웃
       </DropdownItem>

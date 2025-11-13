@@ -1,13 +1,35 @@
 'use client';
-import Dropdown, { DropdownItem } from '../dropdown/DropDown';
+
+import { useCallback } from 'react';
+import Dropdown, { DropdownItem } from '../dropdown/Dropdown';
 import { Label } from '../system/text';
+import { useModal } from '@/app/components/modal';
+import { useCurrentUser } from '@/utils/hook/useCurrentUser';
+import { openProjectModal } from '@/utils/modal/openProjectModal';
+import { openTeamModal } from '@/utils/modal/openTeamModal';
 
 const HeaderDropdown = () => {
+  const currentUser = useCurrentUser();
+  const { openModal, closeModal } = useModal();
+
+  const handleMakeProject = useCallback(() => {
+    if (!currentUser?.id) return;
+    void openProjectModal(currentUser.id, openModal, closeModal);
+  }, [currentUser?.id, openModal, closeModal]);
+
+  const handleMakeTeam = useCallback(() => {
+    if (!currentUser?.id) return;
+    void openTeamModal(currentUser.id, openModal, closeModal);
+  }, [currentUser?.id, openModal, closeModal]);
+
+  if (!currentUser) {
+    return null;
+  }
+
   return (
     <Dropdown trigger={<Label>+ 만들기</Label>}>
-      <DropdownItem onSelect={() => console.log('매뉴를 클릭했습니다.')}>
-        메뉴
-      </DropdownItem>
+      <DropdownItem onSelect={handleMakeProject}>프로젝트 만들기</DropdownItem>
+      <DropdownItem onSelect={handleMakeTeam}>동아리 만들기</DropdownItem>
     </Dropdown>
   );
 };
