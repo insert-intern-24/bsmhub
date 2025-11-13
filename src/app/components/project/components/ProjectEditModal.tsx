@@ -7,8 +7,9 @@ import type { FormConfig } from '@/app/components/modal/inputs/types/inputTypes'
 
 interface ProjectEditModalProps {
   config: FormConfig;
-  variables: Record<string, unknown>;
+  variables?: Record<string, unknown>;
   mode: 'create' | 'update';
+  owner?: string; // create 모드일 때 사용
   onClose: () => void;
 }
 
@@ -16,6 +17,7 @@ const ProjectEditModal = ({
   config,
   variables,
   mode,
+  owner,
   onClose,
 }: ProjectEditModalProps) => {
   // 모드 결정
@@ -24,7 +26,7 @@ const ProjectEditModal = ({
   // useFormConfigData 훅을 사용하여 데이터 로딩 및 저장
   const { initialValues, isLoading, saveData, error, canSave } =
     useFormConfigData(config, variables, {
-      autoLoad: true,
+      autoLoad: mode === 'update', // create 모드일 때는 autoLoad false
       mode: finalMode,
     });
 
@@ -40,6 +42,7 @@ const ProjectEditModal = ({
           string,
           MultiInputItem[][] | string[] | boolean | File | null | string
         >,
+        mode === 'create' && owner ? { owner } : undefined,
       );
 
       if (result.success) {
