@@ -36,7 +36,6 @@ const HeroCard = () => {
         </Link>
         <button
           onClick={(e) => {
-            e.preventDefault();
             void handleMakeProject();
           }}
           className="px-3 py-2 rounded-[0.25rem] border border-gray-300 text-label text-gray-800 bg-white"
