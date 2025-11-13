@@ -4,7 +4,7 @@ import { createClient } from '@/services/supabase/client';
 import { useEffect, useState, useCallback } from 'react';
 import { useModal } from '@/app/components/modal';
 import InputOfModal from '@/app/components/modal/inputs/InputOfModal';
-import { Dropdown, DropdownItem } from '@/app/components/dropdown/Dropdown';
+import { Dropdown, DropdownItem } from '../dropdown/Dropdown';
 import { profileConfig } from '@/services/config/profileConfig';
 import { projectConfig } from '@/services/config/projectConfig';
 import Image from 'next/image';
