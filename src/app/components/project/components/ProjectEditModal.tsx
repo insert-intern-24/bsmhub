@@ -46,6 +46,7 @@ const ProjectEditModal = ({
         console.log('프로젝트가 성공적으로 저장되었습니다.');
         console.log('Save result:', result);
         onClose();
+        window.location.reload();
       } else {
         console.error('프로젝트 저장 실패:', result.message);
 
@@ -68,6 +69,38 @@ const ProjectEditModal = ({
     })();
   };
 
+  const handleProjectDelete = (): void => {
+    void (async () => {
+      if (!config.graphql.delete) {
+        console.error('삭제 쿼리가 설정되지 않았습니다.');
+        return;
+      }
+
+      try {
+        const { createClient } = await import('@/services/supabase/client');
+        const supabase = await createClient();
+
+        const { data, error } = await supabase.graphql(config.graphql.delete, {
+          filter: { project_id: { eq: variables.project_id } },
+        });
+
+        if (error) {
+          console.error('프로젝트 삭제 실패:', error);
+          alert(`삭제 중 오류가 발생했습니다:\n${error.message}`);
+          return;
+        }
+
+        console.log('프로젝트가 성공적으로 삭제되었습니다.', data);
+        alert('프로젝트가 성공적으로 삭제되었습니다.');
+        onClose();
+        window.location.reload();
+      } catch (err) {
+        console.error('프로젝트 삭제 중 예외 발생:', err);
+        alert('삭제 중 오류가 발생했습니다.');
+      }
+    })();
+  };
+
   if (isLoading) {
     return (
       <div className="p-8 text-center">
@@ -86,6 +119,9 @@ const ProjectEditModal = ({
       config={config}
       initialValues={initialValues}
       onSubmit={canSave ? handleProjectSubmit : undefined}
+      onDelete={mode === 'update' ? handleProjectDelete : undefined}
+      mode={mode}
+      variables={variables}
     />
   );
 };

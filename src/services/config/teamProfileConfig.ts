@@ -8,6 +8,7 @@ import {
 } from '@/services/graphQL/relationTableHelper.graphql';
 
 export const teamProfileConfig: FormConfig = {
+  deleteable: true,
   graphql: {
     read: `
       query GetTeamProfile($profile_id: String!) {
@@ -60,6 +61,17 @@ export const teamProfileConfig: FormConfig = {
             description
             owner
             is_team
+          }
+        }
+      }
+    `,
+    delete: `
+      mutation DeleteTeamProfile($filter: profileFilter!) {
+        deleteFromprofileCollection(filter: $filter) {
+          affectedCount
+          records {
+            profile_id
+            profile_name
           }
         }
       }
