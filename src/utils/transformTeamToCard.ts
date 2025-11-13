@@ -1,5 +1,5 @@
 import { CardProps } from '@/app/components/card/project/ProjectCard';
-import { TeamData } from '../app/(box-layout)/team/types';
+import { TeamData } from '@/app/(box-layout)/team/types';
 import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 
 /**

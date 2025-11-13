@@ -2,7 +2,7 @@
 import { TeamData } from "@/app/(box-layout)/team/types";
 import { createClient } from "@/services/supabase/server";
 
-export const getTeamDetail = async (teamName: string): Promise<TeamData | null> => {
+export const getTeamData = async (teamName: string): Promise<TeamData | null> => {
   const supabase = await createClient();
 
   const { data, error} = await supabase

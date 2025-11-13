@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
-import ProjectMainContent from './components/ProjectMainContent';
-import ProjectSidebar from './components/ProjectSidebar';
-import { getProjectDetailViewModel } from './services/project-service';
-import projectEditPermissionChecker from './services/projectEditPermissionChecker';
+import ProjectMainContent from '@/app/components/project/components/ProjectMainContent';
+import ProjectSidebar from '@/app/components/project/components/ProjectSidebar';
+import { getProjectDetailViewModel } from '@/services/project/getProjectDetail.server';
+import checkProjectEditPermission from '@/services/project/checkProjectEditPermission.server';
 
 export interface ProjectDetailPageProps {
   params: Promise<{
@@ -19,7 +19,7 @@ const ProjectDetailPage = async ({ params }: ProjectDetailPageProps) => {
     (await getProjectDetailViewModel(projectName, profileName, teamName)) ??
     notFound();
 
-  const hasPermission = await projectEditPermissionChecker(viewModel.id);
+  const hasPermission = await checkProjectEditPermission(viewModel.id);
 
   return (
     <section className="w-full">

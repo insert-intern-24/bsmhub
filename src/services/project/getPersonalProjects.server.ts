@@ -3,8 +3,8 @@ import { CardProps } from "@/app/components/card/project/ProjectCard";
 import { createClient } from "@/services/supabase/server";
 import { Tables } from "@/services/supabase/database.types";
 import { convertFromDatabaseImageURL } from "@/services/supabase/imageHostConverter";
-import type { ProjectContributor, ProjectOwnerProfile } from './types';
-import { createAuthorsFromProject } from './utils';
+import type { ProjectContributor, ProjectOwnerProfile } from '@/services/project/types';
+import { createAuthorsFromProject } from '@/services/project/utils';
 
 export type PersonalProjectType = Pick<
   Tables<'projects'>,

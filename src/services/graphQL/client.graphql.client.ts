@@ -1,5 +1,5 @@
 import { createClient } from '@/services/supabase/client';
-import type { GraphQLResponse } from './types.graphql';
+import type { GraphQLResponse } from '@/services/graphQL/types.graphql';
 
 /**
  * GraphQL 에러 응답 타입

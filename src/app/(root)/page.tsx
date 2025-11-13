@@ -1,4 +1,4 @@
-import ProjectList from '@/app/components/ProjectList';
+import ProjectList from '@/app/components/HomeProjectList';
 import { getProjects } from '@/services/project/getProjects.server';
 import OneTapComponent from '@/app/components/auth/GoogleOneTab';
 import LoginBox from '@/app/components/auth/LoginBox';

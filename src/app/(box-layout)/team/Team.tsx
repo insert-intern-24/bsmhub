@@ -1,6 +1,6 @@
 'use server';
-import { getTeamDetail } from '@/services/team/getTeam.serverData';
-import { getTeamProjects } from '@/services/team/getTeam.serverProjects';
+import { getTeamData } from '@/services/team/getTeamData.server';
+import { getTeamProjects } from '@/services/team/getTeamProjects.server';
 import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 import { notFound } from 'next/navigation';
 import TeamSidebar from './TeamSidebar';
@@ -8,7 +8,7 @@ import Card from '@/app/components/card/project/ProjectCard';
 import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
 
 const Team = async ({ teamName }: { teamName: string }) => {
-  const teamDetail = (await getTeamDetail(teamName)) ?? notFound();
+  const teamDetail = (await getTeamData(teamName)) ?? notFound();
   const teamProjects = await getTeamProjects(teamName);
 
   return (

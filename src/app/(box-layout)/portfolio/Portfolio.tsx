@@ -3,7 +3,7 @@ import Tabs from '@/app/components/layout/Tabs';
 
 import PortfolioHome from '@/app/components/card/portfolio/PortfolioHome';
 import PortfolioProject from '@/app/components/card/portfolio/components/PortfolioProject';
-import { getProfileDetail } from '@/services/profile/getProfile.serverDetail';
+import { getProfileDetail } from '@/services/profile/getProfileDetail.server';
 import { getPersonalProjects } from '@/services/project/getPersonalProjects.server';
 import { notFound } from 'next/navigation';
 import { getCooperationProjects } from '@/services/project/getCooperationProjects.server';

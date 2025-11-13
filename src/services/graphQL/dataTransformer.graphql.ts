@@ -1,6 +1,6 @@
 import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
 import { MultiInputItem } from '@/utils/hook/useInputList';
-import { isRelationshipTable } from './metadataExtractor.graphql';
+import { isRelationshipTable } from '@/services/graphQL/metadataExtractor.graphql';
 
 /**
  * GraphQL 응답을 React Hook Form 형식으로 변환

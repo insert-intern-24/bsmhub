@@ -1,6 +1,6 @@
 'use server';
 import { createClient } from "@/services/supabase/server"
-import { PersonalProjectType } from "./getPersonalProjects";
+import { PersonalProjectType } from '@/services/project/getPersonalProjects.server';
 import { CardProps } from "@/app/components/card/project/ProjectCard";
 import { Tables } from "@/services/supabase/database.types";
 import { convertFromDatabaseImageURL } from "@/services/supabase/imageHostConverter";

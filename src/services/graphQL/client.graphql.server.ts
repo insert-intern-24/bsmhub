@@ -1,5 +1,5 @@
 import { createClient } from '@/services/supabase/server';
-import type { GraphQLResponse } from './types.graphql';
+import type { GraphQLResponse } from '@/services/graphQL/types.graphql';
 
 /**
  * Supabase GraphQL 서버 클라이언트
