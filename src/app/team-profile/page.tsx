@@ -32,8 +32,6 @@ const TeamProfilePage = () => {
       },
     );
 
-  console.log('initialValues:', initialValues);
-
   const handleSave = (
     formData: Record<
       string,
