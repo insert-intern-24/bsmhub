@@ -12,13 +12,6 @@ export default function SupabaseSessionSync() {
     const syncSession = async () => {
       try {
         const storageKey = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_KEY || 'sb-bsmhubsp-auth-token';
-        const storedSession = localStorage.getItem(storageKey);
-
-        if (!storedSession) {
-          return;
-        }
-
-        // localStorage에 세션이 있으면 Supabase 클라이언트 초기화
         const supabase = createClient();
 
         // 현재 세션 확인 (쿠키에서 읽음)
@@ -39,7 +32,6 @@ export default function SupabaseSessionSync() {
             return;
           }
 
-          // localStorage의 세션을 Supabase에 설정
           await supabase.auth.setSession({
             access_token: sessionData.access_token,
             refresh_token: sessionData.refresh_token,
@@ -80,12 +72,13 @@ export default function SupabaseSessionSync() {
       }
     };
 
+    // 초기 세션 동기화
     syncSession();
 
     // 세션 변경 감지하여 동기화
     const supabase = createClient();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      const storageKey = 'sb-bsmhubsp-auth-token';
+      const storageKey = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_KEY || 'sb-bsmhubsp-auth-token';
 
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         if (session) {
