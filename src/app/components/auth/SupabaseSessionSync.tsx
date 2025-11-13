@@ -9,6 +9,8 @@ import { createClient } from '@/utils/supabase/client';
  */
 export default function SupabaseSessionSync() {
   useEffect(() => {
+    const supabase = createClient();
+
     const syncSession = async () => {
       try {
         const storageKey = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_KEY || 'sb-bsmhubsp-auth-token';
@@ -17,9 +19,6 @@ export default function SupabaseSessionSync() {
         if (!storedSession) {
           return;
         }
-
-        // localStorage에 세션이 있으면 Supabase 클라이언트 초기화
-        const supabase = createClient();
 
         // 현재 세션 확인
         const { data: { session } } = await supabase.auth.getSession();
@@ -49,7 +48,21 @@ export default function SupabaseSessionSync() {
       }
     };
 
+    // 초기 세션 동기화
     syncSession();
+
+    // 세션 변경 감지 리스너 추가
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      // 세션이 만료되거나 로그아웃될 때 재동기화 시도
+      if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_OUT') {
+        syncSession();
+      }
+    });
+
+    // 클린업: 리스너 제거
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   return null;
