@@ -115,7 +115,6 @@ const ProjectEditModal = ({
       onSubmit={canSave ? handleProjectSubmit : undefined}
       onDelete={mode === 'update' ? handleProjectDelete : undefined}
       mode={mode}
-      variables={variables}
     />
   );
 };

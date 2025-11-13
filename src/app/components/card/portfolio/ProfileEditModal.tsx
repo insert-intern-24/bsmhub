@@ -131,7 +131,6 @@ const ProfileEditModal = ({
       onSubmit={canSave ? handleProfileSubmit : undefined}
       onDelete={mode === 'update' ? handleProfileDelete : undefined}
       mode={mode}
-      variables={variables}
     />
   );
 };
