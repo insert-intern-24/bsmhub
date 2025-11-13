@@ -138,6 +138,7 @@ export default function CollectClient({
               key={index}
               profile={portfolio.profile}
               projects={portfolio.projects}
+              src={`/team/${encodeURIComponent(portfolio.profile.name)}`}
             />
           )}
         />

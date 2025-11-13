@@ -17,4 +17,5 @@ export interface Profile {
 export interface PortfolioCardProps {
   profile: Profile;
   projects: Project[];
+  src?: string;
 }

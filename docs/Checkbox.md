@@ -7,7 +7,7 @@
 ## 주요 기능
 
 - ✅ **양방향 모드**: Controlled/Uncontrolled 모드 자동 지원
-- 🎨 **시각적 피드백**: Tabler Icons로 체크 상태 표시
+- 🎨 **시각적 피드백**: Google Material Symbols로 체크 상태 표시
 - 🖱️ **쉬운 상호작용**: 레이블 클릭으로 토글
 - 🔄 **상태 관리**: 내부 상태와 외부 상태 병합 처리
 - 📋 **필수 검증**: React Hook Form과 통합하여 required 검증 지원
@@ -20,9 +20,10 @@ import Checkbox from '@/app/components/modal/inputs/Checkbox'
 
 ### 필요한 의존성
 - React (Client Component)
-- @tabler/icons-react
-  - `IconSquareCheck` (미체크 상태)
-  - `IconSquareCheckFilled` (체크 상태)
+- Google Material Symbols (globals.css에 포함)
+  - `check_box_outline_blank` (미체크 상태)
+  - `check_box` (체크 상태)
+- Tailwind CSS (font-material-symbols 클래스)
 
 ## Props
 
@@ -240,7 +241,14 @@ rules={{
 ```tsx
 <label className="flex flex-row items-center gap-2 cursor-pointer select-none">
   {/* 아이콘 */}
-  {currentValue ? <IconSquareCheckFilled /> : <IconSquareCheck />}
+  <span 
+    className="icon-checkbox font-material-symbols transition-colors"
+    style={{ 
+      fontVariationSettings: `'FILL' ${isChecked ? 1 : 0}, 'wght' 400, 'GRAD' 0, 'opsz' 24`
+    }}
+  >
+    {isChecked ? 'check_box' : 'check_box_outline_blank'}
+  </span>
   {/* 레이블 */}
   {label}
 </label>
@@ -250,6 +258,9 @@ rules={{
 - **gap-2**: 적절한 간격 유지
 - **cursor-pointer**: 클릭 가능 표시
 - **select-none**: 텍스트 선택 방지
+- **font-material-symbols**: Google Material Symbols 폰트 적용
+- **fontVariationSettings**: FILL 속성으로 채워진/빈 상태 표현
+- **icon-checkbox**: 체크박스 아이콘 전용 스타일 (tailwind.config.ts에 정의)
 
 ### 커스텀 스타일 적용
 
@@ -418,7 +429,7 @@ return (
 - ✨ Controlled/Uncontrolled 모드 자동 지원
 - ✨ `checked ?? state` 패턴으로 단순화
 - ✨ InputOfModal required 검증 통합
-- 🎨 Tabler Icons 적용
+- 🎨 Google Material Symbols 적용
 - 📝 완전한 타입 정의
 
 ## 라이선스
