@@ -1,15 +1,15 @@
 import Footer from './components/layout/Footer';
 import './globals.css';
 import './responsive.css';
-import '@components/modal/inputs/common/common.css';
-import '@components/modal/modal.css';
-import Header from '@components/layout/Header';
-import { ModalProvider, Modal } from '@components/modal';
+import '@/app/components/modal/inputs/common/common.css';
+import '@/app/components/modal/modal.css';
+import Header from '@/app/components/layout/Header';
+import { ModalProvider, Modal } from '@/app/components/modal';
 import QueryProvider from './providers/QueryProvider';
-import Navigator from '@components/layout/Navigator';
+import Navigator from '@/app/components/layout/Navigator';
 // import Providers from './providers';
 import type { Metadata } from 'next';
-import GoogleOneTab from '@components/auth/GoogleOneTab';
+import GoogleOneTab from '@/app/components/auth/GoogleOneTab';
 import SupabaseSessionSync from './components/auth/SupabaseSessionSync';
 
 export const metadata: Metadata = {

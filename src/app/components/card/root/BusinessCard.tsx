@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import ProfileImage from '@components/card/portfolio/components/ProfileImage';
+import ProfileImage from '@/app/components/card/portfolio/components/ProfileImage';
 
 interface ProjectItem {
   id: string;

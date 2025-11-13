@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function HeroCard() {
+const HeroCard = () => {
   return (
     <section className="h-full w-[26rem] mobile:w-full mobile:h-auto bg-white rounded-[0.25rem] border border-gray-200 p-5 flex flex-col justify-between">
       <header className="flex flex-col gap-1">
@@ -33,6 +33,8 @@ export default function HeroCard() {
       </footer>
     </section>
   );
-}
+};
+
+export default HeroCard;
 
 

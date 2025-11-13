@@ -1,6 +1,6 @@
 // /middleware.ts
 import { type NextRequest } from 'next/server';
-import { updateSession } from '@/utils/supabase/middleware';
+import { updateSession } from '@/services/supabase/middleware.server';
 
 export async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);

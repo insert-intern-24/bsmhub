@@ -16,10 +16,10 @@ const iconMap: Record<string, React.ReactNode> = {
 };
 
 interface DropdownInputProps extends StandardInputProps {
+  dropdownInputConfig: DropdownInputConfig;
   suggestions: Record<string, unknown>[];
   onInputChange: (value: string) => void;
   onInputFocus?: () => void;
-  dropdownInputConfig: DropdownInputConfig;
   onOptionSelect?: () => void;
 }
 

@@ -3,7 +3,7 @@ import { Label } from '@/app/components/system/text';
 import SkillTagProvider from '@/app/components/modal/inputs/SkillTagProvider';
 
 import {
-  PortfolioDetailProps,
+  PortfolioDetailProps as PortfolioDetailType,
   ItemProps,
 } from '@/app/(box-layout)/portfolio/types';
 
@@ -14,11 +14,11 @@ const modeTextMap: Record<ItemProps['mode'] | 'skill', string> = {
   skill: '기술스택',
 };
 
-interface PortfolioDetailDataProps {
-  details: PortfolioDetailProps[];
+interface PortfolioDetailProps {
+  details: PortfolioDetailType[];
 }
 
-const PortfolioDetail = ({ details }: PortfolioDetailDataProps) => {
+const PortfolioDetail = ({ details }: PortfolioDetailProps) => {
   return (
     <div className="p-4 bg-light-gray-outline rounded-lg flex-col gap-10">
       {details.map(({ mode, datas }) => (

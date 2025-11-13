@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/services/supabase/client';
 
 /**
  * Supabase 세션을 쿠키와 localStorage 간 양방향 동기화하는 컴포넌트

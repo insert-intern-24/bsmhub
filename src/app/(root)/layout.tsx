@@ -1,7 +1,7 @@
 import '@/app/globals.css';
 import '@/app/responsive.css';
-import '@components/modal/inputs/common/common.css';
-import '@components/modal/modal.css';
+import '@/app/components/modal/inputs/common/common.css';
+import '@/app/components/modal/modal.css';
 
 export const metadata = {
   title: 'BSMHub',

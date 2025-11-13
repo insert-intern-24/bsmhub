@@ -1,5 +1,5 @@
 import ProfileImage from './components/ProfileImage';
-import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
+import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 
 const ProfileIcon = ({ image }: { image: string }) => {
   const imageUrl = convertFromDatabaseImageURL(image);

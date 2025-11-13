@@ -1,5 +1,5 @@
 import React from 'react';
-import { getAllTeams } from '@/services/server/team/getTeam';
+import { getAllTeams } from '@/services/team/getTeam.server';
 import { transformTeamToPortfolioCard } from '@/utils/transformTeamToPortfolioCard';
 import CollectClient from '@/app/components/collect/CollectClient';
 
