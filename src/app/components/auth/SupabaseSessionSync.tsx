@@ -96,7 +96,6 @@ export default function SupabaseSessionSync() {
       }
     });
 
-    // 클린업: 리스너 제거
     return () => {
       subscription.unsubscribe();
     };
