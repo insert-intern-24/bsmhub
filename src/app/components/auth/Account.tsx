@@ -11,6 +11,7 @@ import { openGoogleLogin } from '@/utils/auth/googleLogin';
 import { checkProfileExistence, getProfileByStudentId } from '@/services/profile/getProfileApi.client';
 import Image from 'next/image';
 import Link from 'next/link';
+import { IconUsersGroup, IconAssembly } from '@tabler/icons-react';
 
 const Account = () => {
   const supabase = createClient();
@@ -67,6 +68,16 @@ const Account = () => {
       ) : (
         <DropdownItem onSelect={handleMakeProfile}>프로필 만들기</DropdownItem>
       )}
+      <Link href="/team?mine=true">
+        <DropdownItem leadingIcon={<IconUsersGroup size={16} />}>
+          내 팀 보기
+        </DropdownItem>
+      </Link>
+      <Link href="/project?mine=true">
+        <DropdownItem leadingIcon={<IconAssembly size={16} />}>
+          내 프로젝트 보기
+        </DropdownItem>
+      </Link>
       <DropdownItem onSelect={handleMakeProject}>프로젝트 만들기</DropdownItem>
       <DropdownItem onSelect={() => supabase.auth.signOut()}>
         로그아웃
