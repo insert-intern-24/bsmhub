@@ -1,5 +1,5 @@
 'use client';
-import Dropdown, { DropdownItem } from '../dropdown/Dropdown';
+import Dropdown, { DropdownItem } from '../dropdown/DropDown';
 import { Label } from '../system/text';
 
 const HeaderDropdown = () => {
