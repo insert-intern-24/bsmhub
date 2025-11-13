@@ -45,3 +45,6 @@ next-env.d.ts
 # lighthouse ci
 .lighthouseci/
 .lighthouserc.json
+
+# storybook
+storybook-static
