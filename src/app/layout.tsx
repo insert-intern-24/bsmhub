@@ -10,6 +10,7 @@ import Navigator from '@components/layout/Navigator';
 // import Providers from './providers';
 import type { Metadata } from 'next';
 import GoogleOneTab from '@components/auth/GoogleOneTab';
+import SupabaseSessionSync from './components/auth/SupabaseSessionSync';
 
 export const metadata: Metadata = {
   title: 'BSMHub',
@@ -39,6 +40,7 @@ export default function RootLayout({
           <ModalProvider>
             <Header />
             <GoogleOneTab />
+            <SupabaseSessionSync />
             {children}
             <Navigator />
             <Footer />
