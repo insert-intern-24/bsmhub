@@ -1,48 +1,51 @@
 'use client';
 
 import { createClient } from '@/services/supabase/client';
-import { useEffect, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import {Dropdown, DropdownItem} from '../dropdown/Dropdown';
 import { useModal } from '@/app/components/modal';
 import { useCurrentUser } from '@/utils/hook/useCurrentUser';
-import { useProfileLink } from '@/utils/hook/useProfileLink';
 import { openProjectModal } from '@/utils/modal/openProjectModal';
 import { openProfileModal } from '@/utils/modal/openProfileModal';
 import { openGoogleLogin } from '@/utils/auth/googleLogin';
-import { checkProfileExistence } from '@/services/profile/getProfileApi.client';
+import { checkProfileExistence, getProfileByStudentId } from '@/services/profile/getProfileApi.client';
 import Image from 'next/image';
 import Link from 'next/link';
 
 const Account = () => {
   const supabase = createClient();
   const currentUser = useCurrentUser();
-  const profileLink = useProfileLink();
+  const [profileLink, setProfileLink] = useState<string | null>(null);
   const { openModal, closeModal } = useModal();
 
-  const handleMakeProfile = useCallback(async () => {
-    if (!currentUser?.id) {
-      alert('로그인이 필요합니다.');
-      return;
-    }
-    await openProfileModal(currentUser.id, openModal, closeModal);
-  }, [currentUser?.id, openModal, closeModal]);
+  const handleMakeProfile = () => {
+    if (!currentUser?.id) return;
+    void openProfileModal(currentUser.id, openModal, closeModal);
+  };
 
-  const handleMakeProject = useCallback(async () => {
-    if (!currentUser?.id) {
-      alert('로그인이 필요합니다.');
-      return;
-    }
-    await openProjectModal(currentUser.id, openModal, closeModal);
-  }, [currentUser?.id, openModal, closeModal]);
+  const handleMakeProject = () => {
+    if (!currentUser?.id) return;
+    void openProjectModal(currentUser.id, openModal, closeModal);
+  };
 
   useEffect(() => {
     if (!currentUser?.id) return;
-    checkProfileExistence(currentUser.id).then((exists) => {
-      if (!exists) {
-        void handleMakeProfile();
-      }
-    });
-  }, [currentUser?.id, handleMakeProfile]);
+    let mounted = true;
+
+    const init = async () => {
+      const [profile, exists] = await Promise.all([
+        getProfileByStudentId(currentUser.id),
+        checkProfileExistence(currentUser.id),
+      ]);
+
+      if (!mounted) return;
+      setProfileLink(profile ? `/portfolio/${profile.profile_name}` : null);
+      if (!exists) handleMakeProfile();
+    };
+    void init();
+
+    return () => { mounted = false; };
+  }, [currentUser?.id, openModal, closeModal]);
 
   return currentUser ? (
     <Dropdown
