@@ -25,10 +25,7 @@ const TeamSidebar = async ({ teamDetail, projectCount }: TeamSidebarProps) => {
           {teamDetail?.description}
         </Body>
         {currentSession?.id == teamDetail?.owner && (
-          <TeamProfileEditButton
-            profileId={teamDetail?.profile_id || ''}
-            profileName={teamDetail?.profile_name}
-          />
+          <TeamProfileEditButton profileId={teamDetail?.profile_id || ''} />
         )}
       </div>
       <hr className="border-light-gray-outline" />

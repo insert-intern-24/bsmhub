@@ -10,13 +10,9 @@ import { checkProfileExistence } from '@/services/client/profile/profileApi';
 
 interface ProfileEditButtonProps {
   ownerId: string;
-  profileName?: string;
 }
 
-export default function ProfileEditButton({
-  ownerId,
-  profileName,
-}: ProfileEditButtonProps) {
+export default function ProfileEditButton({ ownerId }: ProfileEditButtonProps) {
   const currentUser = useCurrentUser();
   const { openModal, closeModal } = useModal();
 
@@ -24,11 +20,6 @@ export default function ProfileEditButton({
   const isOwner = currentUser?.id === ownerId;
 
   const handleProfileEdit = useCallback(async () => {
-    if (!currentUser?.id || !isOwner) {
-      console.error('User not authorized to edit this profile');
-      return;
-    }
-
     // 프로필 존재 여부 확인
     const profileExists = await checkProfileExistence(ownerId);
 
@@ -42,16 +33,17 @@ export default function ProfileEditButton({
         onClose={closeModal}
       />,
     );
-  }, [ownerId, currentUser?.id, isOwner, openModal, closeModal]);
+  }, [ownerId, openModal, closeModal]);
 
-  // profileName은 현재 사용하지 않지만, 향후 로깅이나 디버깅에 사용할 수 있음
-  console.log('Editing profile:', profileName);
+  // 로그인하지 않았거나 소유자가 아니면 버튼을 렌더링하지 않음
+  if (!currentUser || !isOwner) {
+    return null;
+  }
 
   return (
     <button
       className="rounded-3xl h-10 flex justify-center items-center gap-3 bg-black text-white w-full"
       onClick={handleProfileEdit}
-      disabled={!currentUser || !isOwner}
     >
       <IconPencil size={12}></IconPencil>
       Edit
