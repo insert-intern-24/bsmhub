@@ -2,13 +2,15 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { Database } from './database.types';
 
-export async function createClient(
-  anon = false,
-) {
-  const cookieStore = !anon ? await cookies() : {
-    getAll() { return []; },
-    set() {}
-  };
+export async function createClient(anon = false) {
+  const cookieStore = !anon
+    ? await cookies()
+    : {
+        getAll() {
+          return [];
+        },
+        set() {},
+      };
 
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -25,7 +27,7 @@ export async function createClient(
               cookieStore.set(name, value, {
                 ...options,
                 path: '/',
-                sameSite: 'lax',
+                sameSite: options?.sameSite || 'lax',
               });
             });
           } catch {

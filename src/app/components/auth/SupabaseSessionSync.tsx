@@ -11,7 +11,7 @@ export default function SupabaseSessionSync() {
   useEffect(() => {
     const syncSession = async () => {
       try {
-        const storageKey = 'sb-bsmhubsp-auth-token';
+        const storageKey = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_KEY || 'sb-bsmhubsp-auth-token';
         const storedSession = localStorage.getItem(storageKey);
 
         if (!storedSession) {
@@ -27,6 +27,10 @@ export default function SupabaseSessionSync() {
         // 세션이 없거나 만료되었으면 localStorage에서 복원 시도
         if (!session) {
           const sessionData = JSON.parse(storedSession);
+          // access_token과 refresh_token이 모두 존재하는지 확인
+          if (!sessionData?.access_token || !sessionData?.refresh_token) {
+            return;
+          }
 
           // localStorage의 세션을 Supabase에 설정
           await supabase.auth.setSession({

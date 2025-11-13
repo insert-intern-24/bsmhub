@@ -25,7 +25,7 @@ export async function updateSession(request: NextRequest) {
             supabaseResponse.cookies.set(name, value, {
               ...options,
               path: '/',
-              sameSite: 'lax',
+              sameSite: options?.sameSite || 'lax',
             }),
           );
         },
