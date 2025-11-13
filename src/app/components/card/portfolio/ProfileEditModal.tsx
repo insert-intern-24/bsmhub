@@ -2,6 +2,7 @@
 
 import InputOfModal from '../../modal/inputs/InputOfModal';
 import { useFormConfigData } from '@/utils/hook/useFormConfigData';
+import { formatErrorMessage } from '@/utils/errorMessage';
 import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
 import type { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
 
@@ -56,21 +57,7 @@ const ProfileEditModal = ({
         onClose();
       } else {
         console.error('프로필 저장 실패:', result.message);
-
-        // 에러 메시지를 사용자 친화적으로 변환
-        let errorMessage = result.message || '알 수 없는 오류가 발생했습니다.';
-
-        if (
-          errorMessage.includes('duplicate key') ||
-          errorMessage.includes('profile_name_key')
-        ) {
-          errorMessage =
-            '이미 사용 중인 프로필 이름입니다. 다른 이름을 사용해주세요.';
-        } else if (errorMessage.includes('unique constraint')) {
-          errorMessage =
-            '중복된 데이터가 존재합니다. 입력 내용을 확인해주세요.';
-        }
-
+        const errorMessage = formatErrorMessage(result.message, 'profile');
         alert(`저장 중 오류가 발생했습니다:\n${errorMessage}`);
       }
     })();

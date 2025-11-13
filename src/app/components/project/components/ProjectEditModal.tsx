@@ -2,13 +2,15 @@
 
 import InputOfModal from '@/app/components/modal/inputs/InputOfModal';
 import { useFormConfigData } from '@/utils/hook/useFormConfigData';
+import { formatErrorMessage } from '@/utils/errorMessage';
 import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
 import type { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
 
 interface ProjectEditModalProps {
   config: FormConfig;
-  variables: Record<string, unknown>;
+  variables?: Record<string, unknown>;
   mode: 'create' | 'update';
+  owner?: string; // create 모드일 때 사용
   onClose: () => void;
 }
 
@@ -16,6 +18,7 @@ const ProjectEditModal = ({
   config,
   variables,
   mode,
+  owner,
   onClose,
 }: ProjectEditModalProps) => {
   // 모드 결정
@@ -24,7 +27,7 @@ const ProjectEditModal = ({
   // useFormConfigData 훅을 사용하여 데이터 로딩 및 저장
   const { initialValues, isLoading, saveData, error, canSave } =
     useFormConfigData(config, variables, {
-      autoLoad: true,
+      autoLoad: mode === 'update', // create 모드일 때는 autoLoad false
       mode: finalMode,
     });
 
@@ -40,6 +43,7 @@ const ProjectEditModal = ({
           string,
           MultiInputItem[][] | string[] | boolean | File | null | string
         >,
+        mode === 'create' && owner ? { owner } : undefined,
       );
 
       if (result.success) {
@@ -48,21 +52,7 @@ const ProjectEditModal = ({
         onClose();
       } else {
         console.error('프로젝트 저장 실패:', result.message);
-
-        // 에러 메시지를 사용자 친화적으로 변환
-        let errorMessage = result.message || '알 수 없는 오류가 발생했습니다.';
-
-        if (
-          errorMessage.includes('duplicate key') ||
-          errorMessage.includes('project_name_key')
-        ) {
-          errorMessage =
-            '이미 사용 중인 프로젝트 이름입니다. 다른 이름을 사용해주세요.';
-        } else if (errorMessage.includes('unique constraint')) {
-          errorMessage =
-            '중복된 데이터가 존재합니다. 입력 내용을 확인해주세요.';
-        }
-
+        const errorMessage = formatErrorMessage(result.message, 'project');
         alert(`저장 중 오류가 발생했습니다:\n${errorMessage}`);
       }
     })();
