@@ -22,7 +22,6 @@ interface InputOfModalProps {
   onSubmit?: (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>) => void;
   onDelete?: () => void;
   mode?: 'create' | 'update';
-  variables?: Record<string, unknown>;
 }
 
 const InputOfModal = ({
@@ -33,7 +32,6 @@ const InputOfModal = ({
   submitButtonText = '제출하기',
   initialValues,
   mode,
-  variables
 }: InputOfModalProps) => {
   const { control, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>, field) => {
