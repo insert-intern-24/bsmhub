@@ -2,13 +2,16 @@
 
 import { createClient } from '@/services/supabase/client';
 import { useCallback, useEffect, useState } from 'react';
-import {Dropdown, DropdownItem} from '../dropdown/DropDown';
+import { Dropdown, DropdownItem } from '../dropdown/DropDown';
 import { useModal } from '@/app/components/modal';
 import { useCurrentUser } from '@/utils/hook/useCurrentUser';
 import { openProjectModal } from '@/utils/modal/openProjectModal';
 import { openProfileModal } from '@/utils/modal/openProfileModal';
 import { openGoogleLogin } from '@/utils/auth/googleLogin';
-import { checkProfileExistence, getProfileByStudentId } from '@/services/profile/getProfileApi.client';
+import {
+  checkProfileExistence,
+  getProfileByStudentId,
+} from '@/services/profile/getProfileApi.client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { IconUsersGroup, IconAssembly } from '@tabler/icons-react';
@@ -45,7 +48,9 @@ const Account = () => {
     };
     void init();
 
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [currentUser?.id, handleMakeProfile]);
 
   return currentUser ? (
