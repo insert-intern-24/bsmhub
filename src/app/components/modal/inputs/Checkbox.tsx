@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 
 interface CheckboxProps {
@@ -20,8 +22,9 @@ const Checkbox = ({ checked, onChange, label = '체크박스' }: CheckboxProps) 
       }}
     >
       <span 
-        className="icon-checkbox font-material-symbols transition-colors"
+        className="material-symbols-outlined transition-colors"
         style={{ 
+          fontSize: '24px',
           fontVariationSettings: `'FILL' ${isChecked ? 1 : 0}, 'wght' 400, 'GRAD' 0, 'opsz' 24`
         }}
       >
