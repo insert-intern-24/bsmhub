@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import { Title } from '@components/system/text'
+import { Title } from '@/app/components/system/text'
 import LabelOfInputs from './LabelOfInputs'
 import InputListProvider from './InputListProvider'
 import SkillTagProvider from './SkillTagProvider'
@@ -10,14 +10,14 @@ import Checkbox from './Checkbox'
 import Buttons from './Buttons'
 import PictureUpload from './PictureUpload'
 import { FormConfig } from './types/inputTypes'
-import { MultiInputItem } from '@utils/hook/useInputList'
+import { MultiInputItem } from '@/utils/hook/useInputList'
 
 interface InputOfModalProps {
-  title?: string;
   config: FormConfig;
-  onSubmit?: (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>) => void;
-  submitButtonText?: string;
+  title?: string;
   initialValues?: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>;
+  submitButtonText?: string;
+  onSubmit?: (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>) => void;
 }
 
 const InputOfModal = ({ title = '제목', config, onSubmit, submitButtonText = '제출하기', initialValues }: InputOfModalProps) => {

@@ -1,18 +1,18 @@
 'use client';
 
 import React from 'react';
-import { useInputList } from '@utils/hook/useInputList';
+import { useInputList } from '@/utils/hook/useInputList';
 import SkillTag from './SkillTag';
 import { createClient } from '@/services/supabase/client';
 import { Tables } from '@/services/supabase/database.types';
 import { getOrCreateSkillId } from '@/services/graphQL/relationTableHelper.graphql';
 
 interface SkillTagProviderProps {
-  white?: boolean;
-  className?: string;
-  onTagsChange?: (tags: number[]) => void;
-  readOnly?: boolean;
   initialTags?: number[];
+  className?: string;
+  white?: boolean;
+  readOnly?: boolean;
+  onTagsChange?: (tags: number[]) => void;
 }
 
 const SkillTagProvider = ({

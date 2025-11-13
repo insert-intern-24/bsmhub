@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useInputList } from '@utils/hook/useInputList';
+import { useInputList } from '@/utils/hook/useInputList';
 import MultiInput, { type MultiInputItem } from './MultiInput';
 import { InputType, InputHTMLType, InputMode } from './types/inputTypes';
 
@@ -32,12 +32,11 @@ export type DropdownInputConfig = {
 interface InputListProviderProps {
   config: InputConfig;
   dropdownInputConfig?: DropdownInputConfig;
-  className?: string;
-  onInputsChange?: (inputs: MultiInputItem[][]) => void;
   initialValue?: MultiInputItem[][];
-  // maxInputs?: number
+  className?: string;
   onlyOne?: boolean;
   required?: boolean;
+  onInputsChange?: (inputs: MultiInputItem[][]) => void;
 }
 
 // 프레젠테이션 컴포넌트
