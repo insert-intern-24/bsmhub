@@ -2,7 +2,7 @@
 
 import { createClient } from '@/services/supabase/client';
 import { useEffect, useState } from 'react';
-import {Dropdown, DropdownItem} from '../dropdown/Dropdown';
+import {Dropdown, DropdownItem} from '../dropdown/DropDown';
 import { useModal } from '@/app/components/modal';
 import { useCurrentUser } from '@/utils/hook/useCurrentUser';
 import { openProjectModal } from '@/utils/modal/openProjectModal';
