@@ -14,14 +14,15 @@ interface ProfileEditModalProps {
   onClose: () => void;
 }
 
-export default function ProfileEditModal({
+const ProfileEditModal = ({
   config,
   variables,
   mode,
   ownerId,
-  isTeam = false,
+  isTeam,
   onClose,
-}: ProfileEditModalProps) {
+}: ProfileEditModalProps) => {
+  const isTeamValue = isTeam ?? false;
   // 모드 결정
   const finalMode = mode;
 
@@ -44,9 +45,9 @@ export default function ProfileEditModal({
           string,
           MultiInputItem[][] | string[] | boolean | File | null | string
         >,
-        isTeam
+        isTeamValue
           ? { profile_id: variables.profile_id }
-          : { owner: ownerId, is_team: isTeam },
+          : { owner: ownerId, is_team: isTeamValue },
       );
 
       if (result.success) {
@@ -78,7 +79,7 @@ export default function ProfileEditModal({
   if (isLoading) {
     return (
       <div className="p-8 text-center">
-        {isTeam
+        {isTeamValue
           ? '팀 프로필 정보를 불러오는 중...'
           : '프로필 정보를 불러오는 중...'}
       </div>
@@ -93,7 +94,7 @@ export default function ProfileEditModal({
     <InputOfModal
       title={
         mode === 'update'
-          ? isTeam
+          ? isTeamValue
             ? '팀 프로필 수정'
             : '프로필 수정'
           : '프로필 만들기'
@@ -103,4 +104,6 @@ export default function ProfileEditModal({
       onSubmit={canSave ? handleProfileSubmit : undefined}
     />
   );
-}
+};
+
+export default ProfileEditModal;
