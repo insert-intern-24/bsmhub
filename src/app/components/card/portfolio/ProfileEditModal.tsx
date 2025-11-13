@@ -85,18 +85,11 @@ const ProfileEditModal = ({
       }
 
       try {
-        const { createClient } = await import('@/services/supabase/client');
-        const supabase = await createClient();
+        const { executeMutation } = await import('@/services/graphQL/client.graphql.client');
 
-        const { data, error } = await supabase.graphql(config.graphql.delete, {
+        const data = await executeMutation(config.graphql.delete, {
           filter: { profile_id: { eq: variables.profile_id } },
         });
-
-        if (error) {
-          console.error('프로필 삭제 실패:', error);
-          alert(`삭제 중 오류가 발생했습니다:\n${error.message}`);
-          return;
-        }
 
         console.log('프로필이 성공적으로 삭제되었습니다.', data);
         alert('프로필이 성공적으로 삭제되었습니다.');
@@ -104,7 +97,8 @@ const ProfileEditModal = ({
         window.location.reload();
       } catch (err) {
         console.error('프로필 삭제 중 예외 발생:', err);
-        alert('삭제 중 오류가 발생했습니다.');
+        const errorMessage = err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.';
+        alert(`삭제 중 오류가 발생했습니다:\n${errorMessage}`);
       }
     })();
   };
