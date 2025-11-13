@@ -1,10 +1,22 @@
 'use client';
 
 import Link from "next/link";
-import { useCreateProject } from '@/utils/hook/useCreateProject';
+import { useCallback } from 'react';
+import { useModal } from '@/app/components/modal';
+import { useCurrentUser } from '@/utils/hook/useCurrentUser';
+import { openProjectModal } from '@/utils/modal/openProjectModal';
 
 const HeroCard = () => {
-  const handleMakeProject = useCreateProject();
+  const currentUser = useCurrentUser();
+  const { openModal, closeModal } = useModal();
+
+  const handleMakeProject = useCallback(async () => {
+    if (!currentUser?.id) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+    await openProjectModal(currentUser.id, openModal, closeModal);
+  }, [currentUser?.id, openModal, closeModal]);
 
   return (
     <section className="h-full w-[26rem] mobile:w-full mobile:h-auto bg-white rounded-[0.25rem] border border-gray-200 p-5 flex flex-col justify-between">
