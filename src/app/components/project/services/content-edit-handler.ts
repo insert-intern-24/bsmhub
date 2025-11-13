@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/services/supabase/client';
 
 export default async function projectContentEditHandler(
   project_id: number,

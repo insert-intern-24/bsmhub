@@ -1,15 +1,15 @@
 import ProjectList from '@/app/components/ProjectList';
-import { getProjects } from '@/services/server/project/getProjects';
+import { getProjects } from '@/services/project/getProjects.server';
 import OneTapComponent from '@/app/components/auth/GoogleOneTab';
 import LoginBox from '@/app/components/auth/LoginBox';
 import AutoSlidingBusinessCard from '../components/card/root/AutoSlidingBusinessCard';
 import HeroCard from '../components/card/HeroCard';
-import getMyAccount from '@/services/server/auth/getMyAccount';
+import getAccount from '@/services/auth/getAccount.server';
 
 export default async function Home() {
   const projects = await getProjects();
 
-  const user = await getMyAccount();
+  const user = await getAccount();
 
   return (
     <div className="flex-col gap-4 w-full">

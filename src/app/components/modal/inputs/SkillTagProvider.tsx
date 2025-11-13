@@ -3,9 +3,9 @@
 import React from 'react';
 import { useInputList } from '@utils/hook/useInputList';
 import SkillTag from './SkillTag';
-import { createClient } from '@/utils/supabase/client';
-import { Tables } from '@/utils/supabase/database.types';
-import { getOrCreateSkillId } from '@/utils/graphQL/relationTableHelper';
+import { createClient } from '@/services/supabase/client';
+import { Tables } from '@/services/supabase/database.types';
+import { getOrCreateSkillId } from '@/services/graphQL/relationTableHelper.graphql';
 
 interface SkillTagProviderProps {
   white?: boolean;

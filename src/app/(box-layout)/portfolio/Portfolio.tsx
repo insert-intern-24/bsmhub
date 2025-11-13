@@ -3,12 +3,12 @@ import Tabs from '@/app/components/layout/Tabs';
 
 import PortfolioHome from '@/app/components/card/portfolio/PortfolioHome';
 import PortfolioProject from '@/app/components/card/portfolio/components/PortfolioProject';
-import { getProfileDetail } from '@/services/server/profile/getProfileDetail';
-import { getPersonalProjects } from '@/services/server/project/getPersonalProjects';
+import { getProfileDetail } from '@/services/profile/getProfile.serverDetail';
+import { getPersonalProjects } from '@/services/project/getPersonalProjects.server';
 import { notFound } from 'next/navigation';
-import { getCooperationProjects } from '@/services/server/project/getCooperationProjects';
+import { getCooperationProjects } from '@/services/project/getCooperationProjects.server';
 import { convertStudentNumber } from '@/utils/convertStudentNumber';
-import { getProfile } from '@/services/server/profile/getProfile';
+import { getProfile } from '@/services/profile/getProfile.server';
 import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
 
 interface PortfolioProps {

@@ -12,7 +12,7 @@ export interface PortfolioDetailProps {
   datas: Array<Omit<ItemProps, 'mode'> | (Omit<TagProps, 'mode'> & { skillId?: number })>;
 }
 
-import { Tables } from '@/utils/supabase/database.types';
+import { Tables } from '@/services/supabase/database.types';
 import { MergeDeep } from 'type-fest';
 
 export type { Project };

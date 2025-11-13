@@ -1,7 +1,7 @@
 'use server';
-import { getTeamDetail } from '@/services/server/team/getTeamData';
-import { getTeamProjects } from '@/services/server/team/getTeamProjects';
-import { convertFromDatabaseImageURL } from '@/utils/supabase/imageHostConverter';
+import { getTeamDetail } from '@/services/team/getTeam.serverData';
+import { getTeamProjects } from '@/services/team/getTeam.serverProjects';
+import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 import { notFound } from 'next/navigation';
 import TeamSidebar from './TeamSidebar';
 import Card from '@/app/components/card/project/ProjectCard';

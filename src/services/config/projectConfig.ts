@@ -1,11 +1,11 @@
 import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/services/supabase/client';
 import {
   createDataTransformer,
   createDeleteFilterGenerator,
   createChangeCalculator,
   processGraphQLRelationTables,
-} from '@/utils/graphQL/relationTableHelper';
+} from '@/services/graphQL/relationTableHelper.graphql';
 
 export const projectConfig: FormConfig = {
   graphql: {

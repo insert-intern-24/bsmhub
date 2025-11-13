@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/services/supabase/server';
 import type { ProjectDetailRow } from '../../components/types';
 
 export const fetchFromSupabase = async (

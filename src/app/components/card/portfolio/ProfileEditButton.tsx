@@ -6,7 +6,7 @@ import { profileConfig } from '@/services/config/profileConfig';
 import { useModal } from '../../modal';
 import { useCurrentUser } from './useProfileEditor';
 import ProfileEditModal from './ProfileEditModal';
-import { checkProfileExistence } from '@/services/client/profile/profileApi';
+import { checkProfileExistence } from '@/services/profile/getProfileApi.client';
 
 interface ProfileEditButtonProps {
   ownerId: string;

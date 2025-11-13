@@ -1,4 +1,4 @@
-import { Tables } from '@/utils/supabase/database.types';
+import { Tables } from '@/services/supabase/database.types';
 
 export type ProjectDetailRow = Tables<'projects'> & {
   project_html_description: Tables<'project_html_description'> | null;

@@ -1,5 +1,5 @@
-import { PersonalProjectType } from "@/services/server/project/getPersonalProjects";
-import { Tables } from "@/utils/supabase/database.types";
+import { PersonalProjectType } from "@/services/project/getPersonalProjects.server";
+import { Tables } from "@/services/supabase/database.types";
 import { MergeDeep } from "type-fest";
 
 export type TeamData = MergeDeep<

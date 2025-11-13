@@ -3,7 +3,7 @@
 import { useFormConfigData } from '@/utils/hook/useFormConfigData';
 import InputOfModal from '@/app/components/modal/inputs/InputOfModal';
 import { teamProfileConfig } from '@/services/config/teamProfileConfig';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/services/supabase/client';
 import { useEffect, useState } from 'react';
 
 const TeamProfilePage = () => {
