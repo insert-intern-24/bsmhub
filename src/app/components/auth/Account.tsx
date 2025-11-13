@@ -1,7 +1,7 @@
 'use client';
 
 import { createClient } from '@/services/supabase/client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {Dropdown, DropdownItem} from '../dropdown/DropDown';
 import { useModal } from '@/app/components/modal';
 import { useCurrentUser } from '@/utils/hook/useCurrentUser';
@@ -18,10 +18,10 @@ const Account = () => {
   const [profileLink, setProfileLink] = useState<string | null>(null);
   const { openModal, closeModal } = useModal();
 
-  const handleMakeProfile = () => {
+  const handleMakeProfile = useCallback(() => {
     if (!currentUser?.id) return;
     void openProfileModal(currentUser.id, openModal, closeModal);
-  };
+  }, [currentUser?.id, openModal, closeModal]);
 
   const handleMakeProject = () => {
     if (!currentUser?.id) return;
@@ -45,7 +45,7 @@ const Account = () => {
     void init();
 
     return () => { mounted = false; };
-  }, [currentUser?.id, openModal, closeModal]);
+  }, [currentUser?.id, handleMakeProfile]);
 
   return currentUser ? (
     <Dropdown
