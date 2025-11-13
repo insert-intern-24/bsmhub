@@ -8,7 +8,7 @@ import {
   createChangeCalculator,
   processRestRelationTables,
   processGraphQLRelationTables,
-} from '@/utils/graphQL/relationTableHelper';
+} from '@/services/graphQL/relationTableHelper.graphql';
 
 export const profileConfig: FormConfig = {
   graphql: {

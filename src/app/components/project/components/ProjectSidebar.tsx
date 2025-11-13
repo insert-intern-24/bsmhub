@@ -2,15 +2,15 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Body } from '@/app/components/system/text';
-import type { ProjectDetailViewModel } from './types';
+import type { ProjectDetailViewModel } from '@/services/project/types';
 import {
   ProjectLinkSection,
   ProjectSummarySection,
   ProjectTechnologiesSection,
-} from './project-sidebar/ProjectSummarySection';
-import { ProjectTeamSection } from './project-sidebar/ProjectTeamSection';
-import ProfileIcon from '../../card/portfolio/ProfileIcon';
-import { useModal } from '../../modal';
+} from '@/app/components/project/sidebar/ProjectSummarySection';
+import { ProjectTeamSection } from '@/app/components/project/sidebar/ProjectTeamSection';
+import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
+import { useModal } from '@/app/components/modal';
 import ProjectEditModal from './ProjectEditModal';
 import { projectConfig } from '@/services/config/projectConfig';
 

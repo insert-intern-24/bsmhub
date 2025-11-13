@@ -4,15 +4,15 @@ import React, { useRef, useEffect, forwardRef, useImperativeHandle } from 'react
 
 interface AutosizeInputProps {
   type?: string;
-  placeholder?: string;
   value?: string;
+  placeholder?: string;
+  className?: string;
+  autoFocus?: boolean;
+  inputRef?: (ref: HTMLInputElement | null) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onCompositionStart?: () => void;
   onCompositionEnd?: () => void;
-  autoFocus?: boolean;
-  className?: string;
-  inputRef?: (ref: HTMLInputElement | null) => void;
 }
 
 const AutosizeInput = forwardRef<HTMLInputElement, AutosizeInputProps>(

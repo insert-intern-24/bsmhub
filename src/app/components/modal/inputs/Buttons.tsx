@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface ButtonsProps {
-  color?: 'black' | 'blue' | 'gray';
   text?: string;
+  color?: 'black' | 'blue' | 'gray';
   onClick?: () => void;
 }
 

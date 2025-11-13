@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import type { ProjectDetailViewModel } from './types';
+import type { ProjectDetailViewModel } from '@/services/project/types';
 import { IconPencil, IconCheck, IconX } from '@tabler/icons-react';
 import 'lexical-rich-text-editor/lexical-rich-text-editor.css';
 import { RichTextEditor } from 'lexical-rich-text-editor';
 import DOMPurify from 'isomorphic-dompurify';
-import projectContentEditHandler from '../services/content-edit-handler';
+import updateProjectContent from '@/services/project/updateProjectContent.client';
 
 interface ProjectMainContentProps {
   project: ProjectDetailViewModel;
@@ -45,7 +45,7 @@ const ProjectMainContent = ({ project, hasEditPermission }: ProjectMainContentPr
 
   const handleSaveClick = async () => {
     try {
-      await projectContentEditHandler(project.id, editedContent);
+      await updateProjectContent(project.id, editedContent);
       setIsEditing(false);
     } catch (error) {
       console.error('프로젝트 내용 저장 중 오류 발생:', error);

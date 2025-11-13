@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/services/supabase/server';
 
 const LogoutTemplate = async ({ children }: { children: React.ReactNode }) => {
   const supabase = await createClient();
