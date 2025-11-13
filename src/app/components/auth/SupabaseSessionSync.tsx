@@ -27,8 +27,14 @@ export default function SupabaseSessionSync() {
         // 세션이 없거나 만료되었으면 localStorage에서 복원 시도
         if (!session) {
           const sessionData = JSON.parse(storedSession);
+          // sessionData가 객체이며 null이 아닌지 확인
+          if (typeof sessionData !== 'object' || sessionData === null) {
+            console.warn('Invalid session data format in localStorage');
+            return;
+          }
           // access_token과 refresh_token이 모두 존재하는지 확인
-          if (!sessionData?.access_token || !sessionData?.refresh_token) {
+          if (!sessionData.access_token || !sessionData.refresh_token) {
+            console.warn('Session data missing access_token or refresh_token');
             return;
           }
 
