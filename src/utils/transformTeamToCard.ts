@@ -1,6 +1,6 @@
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 import { TeamData } from '../app/(box-layout)/team/types';
-import { convertFromDatabaseImageURL } from './supabase/imageHostConverter';
+import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 
 /**
  * 팀 데이터를 카드 컴포넌트 props로 변환
