@@ -1,10 +1,10 @@
 import { createClient } from '@/services/supabase/client';
 
-export default async function projectContentEditHandler(
+export default async function updateProjectContent(
   project_id: number,
   content: string,
 ) {
-  const supabase = await createClient();
+  const supabase = createClient();
   const { error } = await supabase
     .from('project_html_description')
     .update({ html_content: content } as never)
@@ -14,3 +14,4 @@ export default async function projectContentEditHandler(
   }
   return { success: true };
 }
+

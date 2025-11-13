@@ -1,7 +1,7 @@
 import type {
   ProjectDetailRow,
   ProjectDetailViewModel,
-} from '../../components/types';
+} from '@/services/project/types';
 
 export const toViewModel = (
   project: ProjectDetailRow,
@@ -35,3 +35,4 @@ export const toViewModel = (
     })),
   };
 };
+

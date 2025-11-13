@@ -1,7 +1,7 @@
 import { createClient } from '@/services/supabase/server';
-import type { ProjectDetailRow } from '../../components/types';
+import type { ProjectDetailRow } from '@/services/project/types';
 
-export const fetchFromSupabase = async (
+export const getProjectDetailRow = async (
   projectName: string,
   ownerName?: string,
 ) => {
@@ -42,3 +42,4 @@ export const fetchFromSupabase = async (
 
   return data;
 };
+

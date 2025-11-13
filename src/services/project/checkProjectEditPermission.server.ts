@@ -14,7 +14,7 @@ type ProfileWithOwner = {
  * 1. 사용자가 프로젝트의 기여자(contributor)인 경우
  * 2. 사용자가 프로젝트의 소유자(owner)인 경우
  */
-export default async function projectEditPermissionChecker(
+export default async function checkProjectEditPermission(
   projectId: number,
 ): Promise<boolean> {
   const supabase = await createClient();
@@ -73,3 +73,4 @@ export default async function projectEditPermissionChecker(
 
   return false;
 }
+
