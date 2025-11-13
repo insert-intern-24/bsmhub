@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useState } from 'react';
 import PortfolioCard from '@/app/components/card/portfolio/PortfolioCard';
 import { PortfolioData } from './types';
@@ -141,12 +140,12 @@ export default function SearchTab({
       <section className="flex-col gap-3 p-4 flex-1 bg-[#FAFAFA] rounded-lg">
         {filteredData.length > 0 ? (
           filteredData.map((data, index) => (
-            <Link
-              href={`/portfolio/${encodeURIComponent(data.profile.name)}`}
+            <PortfolioCard
               key={index}
-            >
-              <PortfolioCard profile={data.profile} projects={data.projects} />
-            </Link>
+              profile={data.profile}
+              projects={data.projects}
+              src={`/portfolio/${encodeURIComponent(data.profile.name)}`}
+            />
           ))
         ) : (
           <div className="text-center text-gray-500">

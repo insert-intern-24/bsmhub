@@ -1,12 +1,13 @@
 import React from 'react';
+import Link from 'next/link';
 import { PortfolioCardProps } from './types';
 import ProfileInfo from './components/ProfileInfo';
 import StatusBadge from './components/StatusBadge';
 import ProjectImages from './components/ProjectImages';
 import ProfileImage from './components/ProfileImage';
 
-const PortfolioCard = ({ profile, projects }: PortfolioCardProps) => {
-  return (
+const PortfolioCard = ({ profile, projects, src }: PortfolioCardProps) => {
+  const content = (
     <div className="@container w-full h-fit rounded border border-light-gray-outline bg-white p-4"
        style={{
         background:
@@ -62,6 +63,16 @@ const PortfolioCard = ({ profile, projects }: PortfolioCardProps) => {
       </div>
     </div>
   );
+
+  if (src) {
+    return (
+      <Link href={src} className="cursor-pointer">
+        {content}
+      </Link>
+    );
+  }
+
+  return content;
 };
 
 export default PortfolioCard;
