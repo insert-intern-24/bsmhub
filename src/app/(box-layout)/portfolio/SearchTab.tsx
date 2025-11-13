@@ -59,7 +59,7 @@ export default function SearchTab({
 
     if (showOnlyJobSeeking) {
       return JOB_SEEKING_STATUS.includes(status);
-    } 
+    }
 
     if (showOnlyEmployed) {
       return EMPLOYED_STATUS.includes(status);
