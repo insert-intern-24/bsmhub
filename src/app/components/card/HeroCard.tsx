@@ -1,6 +1,11 @@
+'use client';
+
 import Link from "next/link";
+import { useCreateProject } from '@/utils/hook/useCreateProject';
 
 const HeroCard = () => {
+  const handleMakeProject = useCreateProject();
+
   return (
     <section className="h-full w-[26rem] mobile:w-full mobile:h-auto bg-white rounded-[0.25rem] border border-gray-200 p-5 flex flex-col justify-between">
       <header className="flex flex-col gap-1">
@@ -17,12 +22,15 @@ const HeroCard = () => {
         >
           포트폴리오 살펴보기
         </Link>
-        <Link
-          href="/project"
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            void handleMakeProject();
+          }}
           className="px-3 py-2 rounded-[0.25rem] border border-gray-300 text-label text-gray-800 bg-white"
         >
           프로젝트 올리기
-        </Link>
+        </button>
       </div>
 
       <footer className="mt-3 flex items-center gap-2">
