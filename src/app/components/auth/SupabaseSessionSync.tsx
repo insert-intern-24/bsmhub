@@ -28,8 +28,14 @@ export default function SupabaseSessionSync() {
         // Case 1: localStorage만 있고 쿠키에 세션 없음 → localStorage → 쿠키 동기화
         if (storedSession && !session) {
           const sessionData = JSON.parse(storedSession);
+          // sessionData가 객체이며 null이 아닌지 확인
+          if (typeof sessionData !== 'object' || sessionData === null) {
+            console.warn('Invalid session data format in localStorage');
+            return;
+          }
           // access_token과 refresh_token이 모두 존재하는지 확인
-          if (!sessionData?.access_token || !sessionData?.refresh_token) {
+          if (!sessionData.access_token || !sessionData.refresh_token) {
+            console.warn('Session data missing access_token or refresh_token');
             return;
           }
 

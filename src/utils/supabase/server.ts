@@ -27,7 +27,7 @@ export async function createClient(anon = false) {
               cookieStore.set(name, value, {
                 ...options,
                 path: '/',
-                sameSite: options?.sameSite || 'lax',
+                sameSite: (options?.sameSite as 'lax' | 'strict' | 'none') || 'lax',
               });
             });
           } catch {
