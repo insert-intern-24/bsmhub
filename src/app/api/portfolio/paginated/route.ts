@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPaginatedPortfolioData } from '@/services/server/portfolio/getPaginatedPortfolioData';
+import { getPaginatedPortfolioData } from '@/services/portfolio/getPaginatedPortfolioData.server';
 
 export async function GET(request: NextRequest) {
   try {

@@ -1,6 +1,6 @@
 'use client';
 
-import InputOfModal from '../../modal/inputs/InputOfModal';
+import InputOfModal from '@/app/components/modal/inputs/InputOfModal';
 import { useFormConfigData } from '@/utils/hook/useFormConfigData';
 import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
 import type { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
@@ -12,12 +12,12 @@ interface ProjectEditModalProps {
   onClose: () => void;
 }
 
-export default function ProjectEditModal({
+const ProjectEditModal = ({
   config,
   variables,
   mode,
   onClose,
-}: ProjectEditModalProps) {
+}: ProjectEditModalProps) => {
   // 모드 결정
   const finalMode = mode;
 
@@ -88,4 +88,6 @@ export default function ProjectEditModal({
       onSubmit={canSave ? handleProjectSubmit : undefined}
     />
   );
-}
+};
+
+export default ProjectEditModal;

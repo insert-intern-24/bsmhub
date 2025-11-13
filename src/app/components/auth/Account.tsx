@@ -1,10 +1,10 @@
 'use client';
 
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/services/supabase/client';
 import { useEffect, useState, useCallback } from 'react';
 import { useModal } from '@/app/components/modal';
 import InputOfModal from '@/app/components/modal/inputs/InputOfModal';
-import { Dropdown, DropdownItem } from '@/app/components/dropdown/DropDown';
+import {Dropdown, DropdownItem} from '../dropdown/DropDown';
 import { profileConfig } from '@/services/config/profileConfig';
 import { projectConfig } from '@/services/config/projectConfig';
 import Image from 'next/image';
@@ -13,7 +13,7 @@ import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
 import {
   checkProfileExistence,
   getProfileByStudentId,
-} from '@/services/client/profile/profileApi';
+} from '@/services/profile/getProfileApi.client';
 import { useFormConfigData } from '@/utils/hook/useFormConfigData';
 import Link from 'next/link';
 

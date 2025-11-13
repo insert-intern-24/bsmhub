@@ -3,9 +3,9 @@
 import React, { useState } from 'react';
 
 interface CheckboxProps {
+  label?: string;
   checked?: boolean;
   onChange?: (checked: boolean) => void;
-  label?: string;
 }
 
 const Checkbox = ({ checked, onChange, label = '체크박스' }: CheckboxProps) => {
