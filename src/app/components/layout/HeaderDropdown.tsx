@@ -1,8 +1,8 @@
 'use client';
-import Dropdown, { DropdownItem } from '../dropdown/DropDown';
+import Dropdown, { DropdownItem } from '../dropdown/Dropdown';
 import { Label } from '../system/text';
 
-export default function HeaderDropdown() {
+const HeaderDropdown = () => {
   return (
     <Dropdown trigger={<Label>+ 만들기</Label>}>
       <DropdownItem onSelect={() => console.log('매뉴를 클릭했습니다.')}>
@@ -10,4 +10,6 @@ export default function HeaderDropdown() {
       </DropdownItem>
     </Dropdown>
   );
-}
+};
+
+export default HeaderDropdown;
