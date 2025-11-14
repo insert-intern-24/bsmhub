@@ -13,10 +13,20 @@ export default function QueryProvider({ children }: QueryProviderProps) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: Infinity, // 무제한 캐시
-            gcTime: Infinity, // 무제한 가비지 컬렉션 지연
+            staleTime: Infinity,
+            gcTime: Infinity,
             retry: 1,
             refetchOnWindowFocus: false,
+          },
+          mutations: {
+            onError: (error: Error) => {
+              if (typeof window !== 'undefined') {
+                const event = new CustomEvent('react-query-error', {
+                  detail: { error },
+                });
+                window.dispatchEvent(event);
+              }
+            },
           },
         },
       })
