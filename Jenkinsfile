@@ -6,7 +6,7 @@ pipeline {
         SUPABASE_KEY = credentials('NEXT_PUBLIC_SUPABASE_ANON_KEY')
         GOOGLE_CLIENT = credentials('NEXT_PUBLIC_GOOGLE_CLIENT_ID')
         NEXT_PUBLIC_SUPABASE_URL = 'https://bsmhubsp.obtuse.kr'
-        DEPLOY_SERVER = '10.3.0.127'
+        DEPLOY_SERVER = '10.59.0.106'
         DEPLOY_CREDS = credentials('DEPLOY_SERVER_CREDS')
         REPO_OWNER = 'insert-intern-24'
         REPO_NAME = 'bsmhub'
