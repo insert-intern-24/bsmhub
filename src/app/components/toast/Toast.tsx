@@ -31,6 +31,7 @@ interface ToastItemProps {
     title?: string;
     message: string;
     type?: 'success' | 'error' | 'info' | 'warning';
+    duration?: number;
   };
   onClose: () => void;
 }
@@ -50,14 +51,17 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
     if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
     if (animationTimerRef.current) clearTimeout(animationTimerRef.current);
     
-    // 2초 후 애니메이션 시작
+    // duration 속성 또는 기본값 사용
+    const duration = toast.duration || TOAST_DURATION;
+    
+    // 지정된 시간 후 애니메이션 시작
     closeTimerRef.current = setTimeout(() => {
       setIsClosing(true);
       // 애니메이션 완료 후 삭제
       animationTimerRef.current = setTimeout(() => {
         onClose();
       }, ANIMATION_DURATION);
-    }, TOAST_DURATION);
+    }, duration);
     
     return () => {
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
