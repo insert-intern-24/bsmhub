@@ -77,10 +77,6 @@ const ProfileEditModal = ({
     );
   }
 
-  if (error) {
-    return <div className="p-8 text-center text-red-500">오류: {error}</div>;
-  }
-
   return (
     <InputOfModal
       title={

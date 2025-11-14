@@ -70,10 +70,6 @@ const ProjectEditModal = ({
     );
   }
 
-  if (error) {
-    return <div className="p-8 text-center text-red-500">오류: {error}</div>;
-  }
-
   return (
     <InputOfModal
       title={mode === 'update' ? '프로젝트 수정' : '프로젝트 만들기'}
