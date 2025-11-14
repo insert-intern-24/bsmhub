@@ -17,7 +17,7 @@ const Toast = () => {
   const toast = toasts[0];
 
   return (
-    <div className="fixed bottom-0 z-50 right-[max(calc((100vw-109rem)/2+33px),33px)] mobile:right-[11px]">
+    <div className="fixed bottom-0 z-[10050] right-[max(calc((100vw-109rem)/2+33px),33px)] mobile:right-[11px]">
       <ToastItem key={toast.id} toast={toast} onClose={() => removeToast(toast.id)} />
     </div>
   );
@@ -102,7 +102,7 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
       />
 
       <div
-        className={`absolute bottom-[18%] left-0 top-[10%] w-[298px] h-[197px] min-w-[264px] 
+        className={`absolute bottom-[18%] left-0 top-[10%] w-[280px] h-[197px] min-w-[280px] 
                    rotate-[359deg] rounded-[5px] 
                    flex-col gap-[3px] items-start justify-start p-4 overflow-hidden
                    ${bgColor}`}
