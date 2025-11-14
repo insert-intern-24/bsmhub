@@ -21,7 +21,7 @@ pipeline {
     environment {
         REGISTRY = '10.3.0.130:5000'
         IMAGE_NAME = 'bsmhub'
-        DEPLOY_SERVER = '10.3.0.127'
+        DEPLOY_SERVER = '10.59.0.106'
         REPO_OWNER = 'insert-intern-24'
         REPO_NAME = 'bsmhub'
         GITHUB_APP = credentials('GITHUB_APP_CREDENTIALS')
