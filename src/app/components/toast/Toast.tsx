@@ -39,20 +39,42 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
   const [isClosing, setIsClosing] = useState(false);
   const [dragY, setDragY] = useState(0);
   const startY = useRef(0);
+  const closeTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const animationTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setIsClosing(false);
     setDragY(0);
-    const timer = setTimeout(() => {
+    
+    // 기존 타이머 정리
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    if (animationTimerRef.current) clearTimeout(animationTimerRef.current);
+    
+    // 2초 후 애니메이션 시작
+    closeTimerRef.current = setTimeout(() => {
       setIsClosing(true);
-      setTimeout(() => onClose(), ANIMATION_DURATION);
+      // 애니메이션 완료 후 삭제
+      animationTimerRef.current = setTimeout(() => {
+        onClose();
+      }, ANIMATION_DURATION);
     }, TOAST_DURATION);
-    return () => clearTimeout(timer);
+    
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+      if (animationTimerRef.current) clearTimeout(animationTimerRef.current);
+    };
   }, [toast.id, onClose]);
 
   const handleClose = () => {
+    // 기존 타이머 정리
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    if (animationTimerRef.current) clearTimeout(animationTimerRef.current);
+    
     setIsClosing(true);
-    setTimeout(() => onClose(), ANIMATION_DURATION);
+    // 애니메이션 완료 후 삭제
+    animationTimerRef.current = setTimeout(() => {
+      onClose();
+    }, ANIMATION_DURATION);
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
