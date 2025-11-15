@@ -40,17 +40,36 @@ export const useInputList = (initialConfig?: MultiInputItem[] | MultiInputItem[]
       case 'SET_ACTIVE': {
         if (draft.activeIndex === action.index) return
         
-        const shouldRemoveEmpty = draft.activeIndex !== null && 
-          isInputEmpty(draft.inputs[draft.activeIndex])
+        // 새로운 activeIndex를 계산하기 위한 변수
+        let newActiveIndex = action.index
         
+        // activeIndex가 null이 아닐 때: 현재 활성화된 인풋이 비어있으면 제거
+        if (draft.activeIndex !== null) {
+          const shouldRemoveEmpty = isInputEmpty(draft.inputs[draft.activeIndex])
         if (shouldRemoveEmpty) {
           const removedIndex = draft.activeIndex!
           draft.inputs.splice(removedIndex, 1)
-          if (action.index != null && action.index > removedIndex) {
-            action.index--
+            if (newActiveIndex != null && newActiveIndex > removedIndex) {
+              newActiveIndex--
+            }
           }
         }
-        draft.activeIndex = action.index
+        
+        // activeIndex가 null일 때: 클릭된 인덱스가 아닌 다른 빈 인풋들 제거
+        // 0번 인풋이 비어있을 때 다른 인풋을 클릭하면 0번 인풋이 제거되어야 함
+        if (draft.activeIndex === null && newActiveIndex !== null) {
+          // 역순으로 순회하여 인덱스 변경에 영향 없이 제거
+          for (let i = draft.inputs.length - 1; i >= 0; i--) {
+            if (i !== newActiveIndex && isInputEmpty(draft.inputs[i])) {
+              draft.inputs.splice(i, 1)
+              if (newActiveIndex > i) {
+                newActiveIndex--
+          }
+        }
+          }
+        }
+        
+        draft.activeIndex = newActiveIndex
         break
       }
       

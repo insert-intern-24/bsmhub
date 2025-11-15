@@ -139,14 +139,14 @@ export const ProjectLinkSection = ({ links }: ProjectLinkSectionProps) => (
             rel="noopener noreferrer"
             className="text-detail cursor-pointer hover:underline"
           >
-            <Label className="text-detail">
+            <Label className="text-detail !block">
               {link.title || link.url}
             </Label>
           </a>
         ))}
       </div>
     ) : (
-      <Label className="text-detail">등록된 링크가 없습니다.</Label>
+      <Label className="text-detail !block">등록된 정보가 없습니다.</Label>
     )}
   </section>
 );
@@ -159,6 +159,10 @@ export const ProjectTechnologiesSection = ({
 }) => (
   <section className="flex-col gap-[0.375rem]">
     <Label>기술스택</Label>
+    {technologies.length > 0 ? (
     <SkillTagProvider readOnly initialTags={technologies} />
+    ) : (
+      <Label className="text-detail !block">등록된 정보가 없습니다.</Label>
+    )}
   </section>
 );
