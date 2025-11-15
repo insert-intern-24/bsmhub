@@ -82,11 +82,9 @@ pipeline {
             }
         }
 
-
-
         stage('PR Preview Comment') {
             when {
-                expression { 
+                expression {
                     env.CHANGE_ID != null
                 }
             }
@@ -114,7 +112,7 @@ pipeline {
                     echo "Building Docker image: ${IMAGE_TAG}"
                     sh "DOCKER_BUILDKIT=1 docker build -t ${IMAGE_TAG} ."
                     echo '✅ Docker image built successfully'
-                    
+
                     // PR이 아닌 경우 빌드 확인만 하고 종료
                     if (env.CHANGE_ID == null) {
                         echo 'ℹ️  Non-PR branch detected - skipping deployment'
@@ -126,7 +124,7 @@ pipeline {
 
         stage('Stop and Remove Existing Container') {
             when {
-                expression { 
+                expression {
                     env.CHANGE_ID != null
                 }
             }
@@ -152,7 +150,7 @@ pipeline {
 
         stage('Deploy New Container') {
             when {
-                expression { 
+                expression {
                     env.CHANGE_ID != null
                 }
             }
@@ -186,7 +184,7 @@ pipeline {
 
         stage('Update PR Comment') {
             when {
-                expression { 
+                expression {
                     env.CHANGE_ID != null
                 }
             }
