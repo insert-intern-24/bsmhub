@@ -1,8 +1,7 @@
 import React from 'react';
-import { getAllTeams, getMyTeams } from '@/services/team/getTeam.server';
+import { getAllTeams, getTeamsByProfileName } from '@/services/team/getTeam.server';
 import { transformTeamToPortfolioCard } from '@/utils/transformTeamToPortfolioCard';
 import CollectClient from '@/app/components/collect/CollectClient';
-import getAccount from '@/services/auth/getAccount.server';
 
 interface TeamPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -10,17 +9,12 @@ interface TeamPageProps {
 
 export default async function TeamPage({ searchParams }: TeamPageProps) {
   const params = await searchParams;
-  const isMine = params.mine === 'true';
+  const profileName = params.profileName;
 
   let teams = null;
 
-  if (isMine) {
-    const user = await getAccount();
-    if (user?.id) {
-      teams = await getMyTeams(user.id);
-    } else {
-      teams = [];
-    }
+  if (profileName && typeof profileName === 'string') {
+    teams = await getTeamsByProfileName(profileName);
   } else {
     teams = await getAllTeams();
   }

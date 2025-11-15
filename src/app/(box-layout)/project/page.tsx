@@ -1,7 +1,6 @@
 import React from 'react';
 import CollectClient from '@/app/components/collect/CollectClient';
-import { getProjects, getMyProjects } from '@/services/project/getProjects.server';
-import getAccount from '@/services/auth/getAccount.server';
+import { getProjects, getProjectsByProfileName } from '@/services/project/getProjects.server';
 
 interface ProjectPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -9,15 +8,12 @@ interface ProjectPageProps {
 
 export default async function ProjectPage({ searchParams }: ProjectPageProps) {
   const params = await searchParams;
-  const isMine = params.mine === 'true';
+  const profileName = params.profileName;
 
   let projects = [];
 
-  if (isMine) {
-    const user = await getAccount();
-    if (user?.id) {
-      projects = await getMyProjects(user.id);
-    }
+  if (profileName && typeof profileName === 'string') {
+    projects = await getProjectsByProfileName(profileName);
   } else {
     projects = await getProjects();
   }

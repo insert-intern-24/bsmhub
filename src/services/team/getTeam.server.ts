@@ -36,14 +36,14 @@ export const getAllTeams = async (): Promise<TeamData[] | null> => {
   return data || null;
 };
 
-export const getMyTeams = async (studentId: string): Promise<TeamData[] | null> => {
+export const getTeamsByProfileName = async (profileName: string): Promise<TeamData[] | null> => {
   const supabase = await createClient();
 
-  // 먼저 현재 사용자의 프로필 ID를 찾습니다
+  // 먼저 profileName으로 사용자의 프로필 ID를 찾습니다
   const { data: userProfile, error: profileError } = await supabase
     .from('profile')
     .select('profile_id')
-    .eq('owner', studentId)
+    .eq('profile_name', profileName)
     .eq('is_team', false)
     .maybeSingle();
 
@@ -100,7 +100,7 @@ export const getMyTeams = async (studentId: string): Promise<TeamData[] | null> 
     .in('profile_id', teamIds);
 
   if (error) {
-    console.error('내 팀 데이터 조회 중 오류:', error);
+    console.error('프로필별 팀 데이터 조회 중 오류:', error);
     return null;
   }
 
