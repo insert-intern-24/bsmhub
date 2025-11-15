@@ -7,6 +7,7 @@ import {
   ProjectLinkSection,
   ProjectSummarySection,
   ProjectTechnologiesSection,
+  ProjectActions,
 } from '@/app/components/project/sidebar/ProjectSummarySection';
 import { ProjectTeamSection } from '@/app/components/project/sidebar/ProjectTeamSection';
 import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
@@ -25,7 +26,7 @@ const ProjectSidebar = ({
 }: ProjectSidebarProps) => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [shouldFoldSidebar, setShouldFoldSidebar] = useState(false);
-  const sidebarRef = useRef<HTMLElement>(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
   const { openModal, closeModal } = useModal();
 
   const handleProjectEdit = useCallback(() => {
@@ -66,32 +67,40 @@ const ProjectSidebar = ({
   }, [project]);
 
   return (
-    <aside
+    <div
       ref={sidebarRef}
-      className="flex-shrink-0 w-[21.75rem] min-h-[50rem] min-w-[21.75rem] sticky top-24 self-start mobile:static mobile:w-full mobile:min-w-0 mobile:border-0 mobile:px-0 mobile:pb-8"
+      className="flex-shrink-0 w-[21.75rem] min-w-[21.75rem] mobile:w-full mobile:min-w-0 mobile:border-0 mobile:px-0 mobile:pb-8"
     >
-      <ProfileIcon image={project.iconImage} />
+      <div className="relative">
+        <ProfileIcon image={project.iconImage} />
 
-      <div className="flex-col w-full gap-[1.625rem] pt-[4.5rem]">
-        <ProjectSummarySection
-          title={project.title}
-          description={project.introduction}
-          hasEditPermission={hasEditPermission}
-          projectId={project.id}
-          onEdit={handleProjectEdit}
-        />
+        <div className="flex-col w-full gap-[1.625rem] pt-[4.5rem]">
+          <ProjectSummarySection
+            title={project.title}
+            description={project.introduction}
+          />
+        </div>
+      </div>
 
-        {/* 링크, 기술스택, 기여자 컨테이너 */}
-        <div
-          className={`foldable-container relative flex-col w-full gap-[1.625rem] ${
-            shouldFoldSidebar && !isSidebarExpanded
-              ? 'mobile:max-h-[30vh] mobile:overflow-hidden'
-              : ''
-          }`}
-        >
-          <ProjectLinkSection links={project.links} />
-          <ProjectTechnologiesSection technologies={project.technologies} />
-          <ProjectTeamSection members={project.team} />
+      <aside className="sticky top-24 self-start mobile:static mt-[1.625rem]">
+        <div className="flex-col w-full gap-[1.625rem]">
+          <ProjectActions
+            hasEditPermission={hasEditPermission}
+            projectId={project.id}
+            onEdit={handleProjectEdit}
+          />
+
+          {/* 링크, 기술스택, 기여자 컨테이너 */}
+          <div
+            className={`foldable-container relative flex-col w-full gap-[1.625rem] ${
+              shouldFoldSidebar && !isSidebarExpanded
+                ? 'mobile:max-h-[30vh] mobile:overflow-hidden'
+                : ''
+            }`}
+          >
+            <ProjectLinkSection links={project.links} />
+            <ProjectTechnologiesSection technologies={project.technologies} />
+            <ProjectTeamSection members={project.team} />
 
           {/* 그라데이션 오버레이와 더보기 버튼 */}
           {shouldFoldSidebar && !isSidebarExpanded && (
@@ -111,6 +120,7 @@ const ProjectSidebar = ({
         </div>
       </div>
     </aside>
+    </div>
   );
 };
 
