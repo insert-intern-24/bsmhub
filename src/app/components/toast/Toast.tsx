@@ -144,6 +144,7 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
   const titleColor = isErrorWarning ? 'text-white' : 'text-black';
   const messageColor = isErrorWarning ? 'text-[#ffe2d8]' : 'text-gray-600';
 
+  // isClosing 상태일 때도 컴포넌트를 렌더링하여 애니메이션이 보이도록 함
   return (
     <div
       className={`relative cursor-grab select-none ${
@@ -152,7 +153,7 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
       style={{ 
         height: `${TOAST_LAYOUT.CONTAINER_HEIGHT}px`,
         width: `${TOAST_LAYOUT.CONTAINER_WIDTH}px`,
-        transform: dragY > 0 ? `translateY(${dragY}px)` : undefined 
+        transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
       }}
       onMouseDown={handleMouseDown}
       onKeyDown={handleKeyDown}
