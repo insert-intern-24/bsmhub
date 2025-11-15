@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ModalProvider, Modal } from '@/app/components/modal';
+import { ToastProvider, Toast } from '@/app/components/toast';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -22,8 +23,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ModalProvider>
-        {children}
-        <Modal />
+        <ToastProvider>
+          {children}
+          <Modal />
+          <Toast />
+        </ToastProvider>
       </ModalProvider>
     </QueryClientProvider>
   );
