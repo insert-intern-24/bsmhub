@@ -5,6 +5,8 @@ import { useFormConfigData } from '@/utils/hook/useFormConfigData';
 import { formatErrorMessage } from '@/utils/errorMessage';
 import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
 import type { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
+import { useRouter } from 'next/navigation';
+import { createDeleteHandler } from '@/services/graphQL/deleteHelper.graphql';
 
 interface ProjectEditModalProps {
   config: FormConfig;
@@ -21,6 +23,8 @@ const ProjectEditModal = ({
   owner,
   onClose,
 }: ProjectEditModalProps) => {
+  const router = useRouter();
+  
   // 모드 결정
   const finalMode = mode;
 
@@ -50,10 +54,32 @@ const ProjectEditModal = ({
         console.log('프로젝트가 성공적으로 저장되었습니다.');
         console.log('Save result:', result);
         onClose();
+        router.refresh();
       } else {
         console.error('프로젝트 저장 실패:', result.message);
         const errorMessage = formatErrorMessage(result.message, 'project');
         alert(`저장 중 오류가 발생했습니다:\n${errorMessage}`);
+      }
+    })();
+  };
+
+  const handleProjectDelete = (): void => {
+    void (async () => {
+      try {
+        if (!variables?.project_id) {
+          console.error('프로젝트 ID가 없습니다.');
+          return;
+        }
+        await createDeleteHandler(
+          config,
+          { project_id: { eq: variables.project_id } },
+          '프로젝트가 성공적으로 삭제되었습니다.'
+        );
+        onClose();
+        router.refresh();
+      } catch (err) {
+        // 에러는 이미 createDeleteHandler에서 처리됨
+        console.error('삭제 처리 중 오류:', err);
       }
     })();
   };
@@ -76,6 +102,8 @@ const ProjectEditModal = ({
       config={config}
       initialValues={initialValues}
       onSubmit={canSave ? handleProjectSubmit : undefined}
+      onDelete={mode === 'update' ? handleProjectDelete : undefined}
+      mode={mode}
     />
   );
 };

@@ -8,6 +8,7 @@ import {
 } from '@/services/graphQL/relationTableHelper.graphql';
 
 export const projectConfig: FormConfig = {
+  deleteable: true,
   graphql: {
     read: `
       query GetProject($project_id: Int!) {
@@ -103,6 +104,17 @@ export const projectConfig: FormConfig = {
             category_id
             skills
             status
+          }
+        }
+      }
+    `,
+    delete: `
+      mutation DeleteProject($filter: projectsFilter!) {
+        deleteFromprojectsCollection(filter: $filter) {
+          affectedCount
+          records {
+            project_id
+            project_name
           }
         }
       }
