@@ -89,7 +89,7 @@ export const getProjectsByProfileName = async (profileName: string, limit?: numb
     .select('profile_id')
     .eq('profile_name', profileName)
     .eq('is_team', false)
-    .maybeSingle();
+    .maybeSingle<{ profile_id: number }>();
 
   if (profileError) {
     console.error('사용자 프로필 조회 중 오류:', profileError);
