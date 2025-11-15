@@ -7,7 +7,7 @@ import LabelOfInputs from './LabelOfInputs'
 import InputListProvider from './InputListProvider'
 import SkillTagProvider from './SkillTagProvider'
 import Checkbox from './Checkbox'
-import Buttons from './Buttons'
+import Buttons from './Button'
 import PictureUpload from './PictureUpload'
 import DeleteConfirmModal from './DeleteConfirmModal'
 import { FormConfig } from './types/inputTypes'
@@ -200,7 +200,7 @@ const InputOfModal = ({
           <div className="flex-1">
             <Buttons
               color="gray"
-              text="삭제"
+              text="삭제하기"
               onClick={handleDeleteClick}
             />
           </div>

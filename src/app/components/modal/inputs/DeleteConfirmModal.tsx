@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Title, Body } from '@/app/components/system/text';
 import Checkbox from './Checkbox';
-import Buttons from './Buttons';
+import Buttons from './Button';
 
 interface DeleteConfirmModalProps {
   title?: string;
