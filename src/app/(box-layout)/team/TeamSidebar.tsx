@@ -14,7 +14,7 @@ interface TeamSidebarProps {
 
 const TeamSidebar = async ({ teamDetail, projectCount }: TeamSidebarProps) => {
   const currentSession = await getAccount();
-  const isOwner = currentSession?.id == teamDetail?.owner;
+  const isOwner = currentSession?.id === teamDetail?.owner;
 
   return (
     <div className="w-[21.75rem] min-w-[21.75rem] responsive-teamSidebar">
