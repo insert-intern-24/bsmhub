@@ -48,7 +48,7 @@ export const ProjectTeamSection = ({
               <TeamMemberItem key={member.id} member={member} />
             ))
           ) : (
-            <Label className="text-detail">참여자 정보가 없습니다.</Label>
+            <Label className="text-detail !block">등록된 정보가 없습니다.</Label>
           )}
         </div>
       </div>

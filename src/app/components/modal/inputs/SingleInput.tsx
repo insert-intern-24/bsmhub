@@ -2,7 +2,7 @@
 import React, { useRef, useEffect } from 'react';
 import { StandardInputProps } from './types/inputTypes';
 
-function Inputs({
+const Inputs = ({
   mode = 'write',
   type = 'text',
   placeholder,
@@ -11,7 +11,7 @@ function Inputs({
   name,
   required = false,
   id = '',
-}: StandardInputProps) {
+}: StandardInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const isReadOnly = mode === 'read';
 
@@ -44,6 +44,6 @@ function Inputs({
       />
     </div>
   );
-}
+};
 
 export default Inputs;

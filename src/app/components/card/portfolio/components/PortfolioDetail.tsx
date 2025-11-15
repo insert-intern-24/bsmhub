@@ -21,18 +21,29 @@ interface PortfolioDetailProps {
 const PortfolioDetail = ({ details }: PortfolioDetailProps) => {
   return (
     <div className="p-4 bg-light-gray-outline rounded-lg flex-col gap-10">
-      {details.map(({ mode, datas }) => (
+      {details.map(({ mode, datas }) => {
+        const hasData = datas.length > 0;
+        const skillIds =
+          mode === 'skill'
+            ? datas
+                .map((data) => ('skillId' in data ? data.skillId : undefined))
+                .filter((id): id is number => id !== undefined)
+            : [];
+
+        return (
         <div key={mode}>
           <Label>{modeTextMap[mode]}</Label>
           {mode === 'skill' ? (
+              skillIds.length > 0 ? (
             <SkillTagProvider
               readOnly
               white
-              initialTags={datas
-                .map((data) => ('skillId' in data ? data.skillId : undefined))
-                .filter((id): id is number => id !== undefined)}
+                  initialTags={skillIds}
             />
           ) : (
+                <Label className="text-detail !block">등록된 정보가 없습니다.</Label>
+              )
+            ) : hasData ? (
             <div className="flex-col">
               {datas.map((data, index) => (
                 <ProfileItem
@@ -44,9 +55,12 @@ const PortfolioDetail = ({ details }: PortfolioDetailProps) => {
                 />
               ))}
             </div>
+            ) : (
+              <Label className="text-detail !block">등록된 정보가 없습니다.</Label>
           )}
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

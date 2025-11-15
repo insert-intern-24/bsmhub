@@ -5,7 +5,9 @@ import '@/app/components/modal/inputs/common/common.css';
 import '@/app/components/modal/modal.css';
 import Header from '@/app/components/layout/Header';
 import { ModalProvider, Modal } from '@/app/components/modal';
+import { ToastProvider, Toast } from '@/app/components/toast';
 import QueryProvider from './providers/QueryProvider';
+import ErrorHandler from './providers/ErrorHandler';
 import Navigator from '@/app/components/layout/Navigator';
 // import Providers from './providers';
 import type { Metadata } from 'next';
@@ -38,13 +40,18 @@ export default function RootLayout({
       <body className="bg-[#F5F5F7] pt-14">
         <QueryProvider>
           <ModalProvider>
-            <Header />
-            <GoogleOneTab />
-            <SupabaseSessionSync />
-            {children}
-            <Navigator />
-            <Footer />
-            <Modal />
+            <ToastProvider>
+              <ErrorHandler>
+                <Header />
+                <GoogleOneTab />
+                <SupabaseSessionSync />
+                {children}
+                <Navigator />
+                <Footer />
+                <Modal />
+                <Toast />
+              </ErrorHandler>
+            </ToastProvider>
           </ModalProvider>
         </QueryProvider>
       </body>

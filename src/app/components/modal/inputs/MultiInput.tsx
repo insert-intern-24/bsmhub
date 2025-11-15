@@ -36,7 +36,7 @@ interface MultiInputProps {
   onOptionSelect?: () => void;
 }
 
-function MultiInput({
+const MultiInput = ({
   config,
   dropdownInputConfig,
   suggestions = [],
@@ -50,7 +50,7 @@ function MultiInput({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   required = false,
   onOptionSelect,
-}: MultiInputProps) {
+}: MultiInputProps) => {
   return (
     <div className="flex flex-row gap-2 w-full relative">
       {config.map((input, index) => {
@@ -128,6 +128,6 @@ function MultiInput({
       })}
     </div>
   );
-}
+};
 
 export default MultiInput;

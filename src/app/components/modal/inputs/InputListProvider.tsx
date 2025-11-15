@@ -4,6 +4,7 @@ import React from 'react';
 import { useInputList } from '@/utils/hook/useInputList';
 import MultiInput, { type MultiInputItem } from './MultiInput';
 import { InputType, InputHTMLType, InputMode } from './types/inputTypes';
+import { useToast } from '@/app/components/toast';
 
 // Input 설정 타입 - inputs 배열로 통일
 export type InputConfig = {
@@ -87,6 +88,8 @@ const InputListProvider = ({
   // const [loading, setLoading] = React.useState(false)
   // const [error, setError] = React.useState<string | null>(null)
 
+  const { showToast } = useToast();
+
   // dropdownInputConfig가 있으면 테이블 데이터 로드
   React.useEffect(() => {
     if (dropdownInputConfig?.query) {
@@ -97,10 +100,15 @@ const InputListProvider = ({
           setTableData(data);
         })
         .catch((error) => {
-          console.error('Error fetching data:', error);
+          showToast(
+            error instanceof Error ? error.message : '데이터를 불러오는 중 오류가 발생했습니다.',
+            'error',
+            3000,
+            '오류'
+          );
         });
     }
-  }, [dropdownInputConfig]);
+  }, [dropdownInputConfig, showToast]);
 
   // onlyOne일 때 input 클릭/포커스 시 모든 옵션 표시
   const handleInputFocus = () => {

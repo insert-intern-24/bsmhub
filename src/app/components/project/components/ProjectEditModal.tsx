@@ -2,9 +2,13 @@
 
 import InputOfModal from '@/app/components/modal/inputs/InputOfModal';
 import { useFormConfigData } from '@/utils/hook/useFormConfigData';
+import { useErrorToast } from '@/utils/hook/useErrorToast';
 import { formatErrorMessage } from '@/utils/errorMessage';
+import { useToast } from '@/app/components/toast';
 import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
 import type { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
+import { useRouter } from 'next/navigation';
+import { createDeleteHandler } from '@/services/graphQL/deleteHelper.graphql';
 
 interface ProjectEditModalProps {
   config: FormConfig;
@@ -21,15 +25,18 @@ const ProjectEditModal = ({
   owner,
   onClose,
 }: ProjectEditModalProps) => {
-  // 모드 결정
+  const router = useRouter();
+  const { showToast } = useToast();
+
   const finalMode = mode;
 
-  // useFormConfigData 훅을 사용하여 데이터 로딩 및 저장
   const { initialValues, isLoading, saveData, error, canSave } =
     useFormConfigData(config, variables, {
-      autoLoad: mode === 'update', // create 모드일 때는 autoLoad false
+      autoLoad: mode === 'update',
       mode: finalMode,
     });
+
+  useErrorToast(error);
 
   const handleProjectSubmit = (
     formData: Record<
@@ -47,13 +54,33 @@ const ProjectEditModal = ({
       );
 
       if (result.success) {
-        console.log('프로젝트가 성공적으로 저장되었습니다.');
-        console.log('Save result:', result);
         onClose();
+        router.refresh();
       } else {
-        console.error('프로젝트 저장 실패:', result.message);
         const errorMessage = formatErrorMessage(result.message, 'project');
-        alert(`저장 중 오류가 발생했습니다:\n${errorMessage}`);
+        showToast(errorMessage, 'error', 2000, '오류');
+      }
+    })();
+  };
+
+  const handleProjectDelete = (): void => {
+    void (async () => {
+      try {
+        if (!variables?.project_id) {
+          showToast('프로젝트 ID가 없습니다.', 'error', 3000, '오류');
+          return;
+        }
+        const successMessage = await createDeleteHandler(
+          config,
+          { project_id: { eq: variables.project_id } },
+          '프로젝트가 성공적으로 삭제되었습니다.'
+        );
+        showToast(successMessage, 'success', 3000, '성공');
+        onClose();
+        router.refresh();
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.';
+        showToast(errorMessage, 'error', 3000, '오류');
       }
     })();
   };
@@ -66,16 +93,14 @@ const ProjectEditModal = ({
     );
   }
 
-  if (error) {
-    return <div className="p-8 text-center text-red-500">오류: {error}</div>;
-  }
-
   return (
     <InputOfModal
       title={mode === 'update' ? '프로젝트 수정' : '프로젝트 만들기'}
       config={config}
       initialValues={initialValues}
       onSubmit={canSave ? handleProjectSubmit : undefined}
+      onDelete={mode === 'update' ? handleProjectDelete : undefined}
+      mode={mode}
     />
   );
 };

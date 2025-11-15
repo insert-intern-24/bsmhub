@@ -2,19 +2,23 @@
 
 import { createClient } from '@/services/supabase/client';
 import { useCallback, useEffect, useState } from 'react';
-import {Dropdown, DropdownItem} from '../dropdown/Dropdown';
+import { Dropdown, DropdownItem } from '../dropdown/Dropdown';
 import { useModal } from '@/app/components/modal';
 import { useCurrentUser } from '@/utils/hook/useCurrentUser';
 import { openProfileModal } from '@/utils/modal/openProfileModal';
 import { openGoogleLogin } from '@/utils/auth/googleLogin';
-import { checkProfileExistence, getProfileByStudentId } from '@/services/profile/getProfileApi.client';
+import {
+  checkProfileExistence,
+  getProfileByStudentId,
+} from '@/services/profile/getProfileApi.client';
 import Image from 'next/image';
 import Link from 'next/link';
+import { IconUsersGroup, IconAssembly } from '@tabler/icons-react';
 
 const Account = () => {
   const supabase = createClient();
   const currentUser = useCurrentUser();
-  const [profileLink, setProfileLink] = useState<string | null>(null);
+  const [profileName, setProfileName] = useState<string | null>(null);
   const { openModal, closeModal } = useModal();
 
   const handleMakeProfile = useCallback(() => {
@@ -33,12 +37,18 @@ const Account = () => {
       ]);
 
       if (!mounted) return;
-      setProfileLink(profile ? `/portfolio/${profile.profile_name}` : null);
+      if (profile) {
+        setProfileName(profile.profile_name);
+      } else {
+        setProfileName(null);
+      }
       if (!exists) handleMakeProfile();
     };
     void init();
 
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [currentUser?.id, handleMakeProfile]);
 
   return currentUser ? (
@@ -54,10 +64,18 @@ const Account = () => {
       }
       align="right"
     >
-      {profileLink ? (
-        <Link href={profileLink}>
-          <DropdownItem>내 프로필</DropdownItem>
-        </Link>
+      {profileName ? (
+        <>
+          <Link href={`/portfolio/${profileName}`}>
+            <DropdownItem>내 프로필</DropdownItem>
+          </Link>
+          <Link href={`/team?profileName=${profileName}`}>
+            <DropdownItem>내 동아리</DropdownItem>
+          </Link>
+          <Link href={`/project?profileName=${profileName}`}>
+            <DropdownItem>내 프로젝트</DropdownItem>
+          </Link>
+        </>
       ) : (
         <DropdownItem onSelect={handleMakeProfile}>프로필 만들기</DropdownItem>
       )}
