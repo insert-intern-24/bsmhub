@@ -27,7 +27,7 @@ const Checkbox = ({ checked, onChange, label = '체크박스' }: CheckboxProps) 
         alt={isChecked ? '체크됨' : '체크 안 됨'}
         width={20}
         height={20}
-        className="transition-opacity"
+        
       />
       {label}
     </label>
