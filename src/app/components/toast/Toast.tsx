@@ -135,7 +135,7 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
       <div
         className={`absolute bottom-[18%] left-0 top-[10%] w-[280px] h-[197px] min-w-[280px] 
                    rotate-[359deg] rounded-[5px] 
-                   flex-col gap-[3px] items-start justify-start p-4 overflow-hidden
+                   flex flex-col gap-[3px] items-start justify-start p-4 overflow-hidden
                    ${bgColor}`}
       >
         <Title className={titleColor}>{toast.title || 'title'}</Title>
