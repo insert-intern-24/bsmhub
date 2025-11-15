@@ -18,7 +18,7 @@ interface AutoCarouselProps {
  */
 export default function AutoCarousel({ interval = 3000 }: AutoCarouselProps) {
   // 현재는 하나의 이미지만 사용하지만, 확장을 위해 배열로 관리
-  const images = ['/icon/carousel.svg'];
+  const images = ['/icon/carousel.svg', '/icon/carousel.svg'];
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -49,7 +49,7 @@ export default function AutoCarousel({ interval = 3000 }: AutoCarouselProps) {
 
   return (
     <div
-      className="relative w-full h-full"
+      className="relative w-full h-full overflow-hidden rounded-[0.25rem]"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -59,10 +59,7 @@ export default function AutoCarousel({ interval = 3000 }: AutoCarouselProps) {
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {images.map((src, index) => (
-          <div
-            key={index}
-            className="relative flex-shrink-0 w-full h-full rounded-[0.25rem]"
-          >
+          <div key={index} className="relative flex-shrink-0 w-full h-full">
             <Image
               src={src}
               alt={`슬라이드 ${index + 1}`}
