@@ -75,12 +75,12 @@ const config: Config = {
           '100%': { transform: 'translateX(100%)', opacity: '0' },
         },
         'slide-up': {
-          '0%': { transform: 'translateY(100%)', opacity: '1' },
-          '100%': { transform: 'translateY(0%) rotate(0deg)', opacity: '1' },
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(0%) rotate(0deg)' },
         },
         'slide-down': {
-          '0%': { transform: 'translateY(0%) rotate(0deg)', opacity: '1' },
-          '100%': { transform: 'translateY(100%)', opacity: '1' },
+          '0%': { transform: 'translateY(0%) rotate(0deg)' },
+          '100%': { transform: 'translateY(100%)' },
         },
       },
       animation: {
