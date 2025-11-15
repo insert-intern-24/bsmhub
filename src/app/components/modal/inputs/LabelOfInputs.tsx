@@ -1,15 +1,15 @@
 import React from 'react';
 import { LabelInputsProps } from './types/inputTypes';
 
-function LabelOfInputs({
+const LabelOfInputs = ({
   label = 'Label',
   required = false,
-}: LabelInputsProps) {
+}: LabelInputsProps) => {
   return (
     <label className="text-black text-label">
       {label} {required && <span className="text-red-500">*</span>}
     </label>
   );
-}
+};
 
 export default LabelOfInputs;
