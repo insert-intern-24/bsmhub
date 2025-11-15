@@ -16,7 +16,7 @@ interface AutoCarouselProps {
  * - 좌/우 화살표로 수동 제어 가능합니다
  * - 하단 인디케이터로 현재 위치를 표시합니다
  */
-export default function AutoCarousel({ interval = 3000 }: AutoCarouselProps) {
+export default function AutoCarousel({ interval = 5000 }: AutoCarouselProps) {
   // 현재는 하나의 이미지만 사용하지만, 확장을 위해 배열로 관리
   const images = ['/icon/carousel.svg', '/icon/carousel.svg'];
   const [currentIndex, setCurrentIndex] = useState(0);
