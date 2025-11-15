@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
-import { useToast } from './ToastContext';
+import { useToast, type ToastItem } from './ToastContext';
 import { Title, Label } from '../system/text';
 
 const TOAST_DURATION = 2000;
@@ -50,13 +50,7 @@ const Toast = () => {
 export default Toast;
 
 interface ToastItemProps {
-  toast: {
-    id: string;
-    title?: string;
-    message: string;
-    type?: 'success' | 'error' | 'info' | 'warning';
-    duration?: number;
-  };
+  toast: ToastItem;
   onClose: () => void;
 }
 
@@ -66,6 +60,7 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
   const startY = useRef(0);
   const closeTimerRef = useRef<NodeJS.Timeout | null>(null);
   const animationTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const cleanupRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     setIsClosing(false);
@@ -90,6 +85,10 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
     return () => {
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
       if (animationTimerRef.current) clearTimeout(animationTimerRef.current);
+      // 컴포넌트 언마운트 시 이벤트 리스너 정리
+      if (cleanupRef.current) {
+        cleanupRef.current();
+      }
     };
   }, [toast.id, toast.duration, onClose]);
 
@@ -120,12 +119,24 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
       } else {
         setDragY(0);
       }
-      window.removeEventListener('mousemove', handleMove);
-      window.removeEventListener('mouseup', handleUp);
+      cleanup();
     };
 
+    const cleanup = () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseup', handleUp);
+      cleanupRef.current = null;
+    };
+
+    cleanupRef.current = cleanup;
     window.addEventListener('mousemove', handleMove);
     window.addEventListener('mouseup', handleUp);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape' || e.key === 'Enter') {
+      handleClose();
+    }
   };
 
   const isErrorWarning = toast.type === 'error' || toast.type === 'warning';
@@ -144,6 +155,10 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
         transform: dragY > 0 ? `translateY(${dragY}px)` : undefined 
       }}
       onMouseDown={handleMouseDown}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="alertdialog"
+      aria-label={toast.title || '알림'}
     >
       <Image 
         src="/card/ToastCard/bottom.svg" 
@@ -169,8 +184,12 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
           minWidth: `${TOAST_LAYOUT.CARD_WIDTH}px`,
           transform: `rotate(${TOAST_LAYOUT.CARD_ROTATION}deg)`
         }}
+        className={`absolute bottom-[18%] left-0 top-[10%] w-[280px] h-[197px] min-w-[280px] 
+                   rotate-[359deg] rounded-[5px] 
+                   flex flex-col gap-[3px] items-start justify-start p-4 overflow-hidden
+                   ${bgColor}`}
       >
-        <Title className={titleColor}>{toast.title || 'title'}</Title>
+        {toast.title && <Title className={titleColor}>{toast.title}</Title>}
         <Label className={messageColor}>{toast.message}</Label>
       </div>
 

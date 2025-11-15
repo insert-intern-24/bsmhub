@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useState, ReactNode, useCallback, useRef } from 'react';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
@@ -34,23 +34,33 @@ interface ToastProviderProps {
 
 export const ToastProvider = ({ children }: ToastProviderProps) => {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const removeToast = useCallback((id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  }, []);
 
   const showToast = useCallback(
     (message: string, type: ToastType = 'info', duration: number = 3000, title?: string) => {
+      // 기존 타이머 정리
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+
       const id = `${Date.now()}-${Math.random()}`;
       const newToast: ToastItem = { id, message, type, duration, title };
 
       // 기존 토스트를 모두 제거하고 새로운 토스트 하나만 표시
       setToasts([newToast]);
 
-      // Toast 컴포넌트에서 애니메이션과 함께 자동으로 제거하므로 여기서는 제거하지 않음
+      if (duration > 0) {
+        setTimeout(() => {
+          removeToast(id);
+        }, duration);
+      }
     },
-    []
+    [removeToast]
   );
-
-  const removeToast = useCallback((id: string) => {
-    setToasts((prev) => prev.filter((toast) => toast.id !== id));
-  }, []);
 
   return (
     <ToastContext.Provider value={{ toasts, showToast, removeToast }}>
