@@ -47,6 +47,7 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
   const startY = useRef(0);
   const closeTimerRef = useRef<NodeJS.Timeout | null>(null);
   const animationTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const cleanupRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     setIsClosing(false);
@@ -71,6 +72,10 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
     return () => {
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
       if (animationTimerRef.current) clearTimeout(animationTimerRef.current);
+      // 컴포넌트 언마운트 시 이벤트 리스너 정리
+      if (cleanupRef.current) {
+        cleanupRef.current();
+      }
     };
   }, [toast.id, onClose]);
 
@@ -101,10 +106,16 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
       } else {
         setDragY(0);
       }
-      window.removeEventListener('mousemove', handleMove);
-      window.removeEventListener('mouseup', handleUp);
+      cleanup();
     };
 
+    const cleanup = () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseup', handleUp);
+      cleanupRef.current = null;
+    };
+
+    cleanupRef.current = cleanup;
     window.addEventListener('mousemove', handleMove);
     window.addEventListener('mouseup', handleUp);
   };
