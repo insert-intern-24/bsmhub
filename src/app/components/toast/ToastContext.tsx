@@ -43,9 +43,13 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
       // 기존 토스트를 모두 제거하고 새로운 토스트 하나만 표시
       setToasts([newToast]);
 
-      // Toast 컴포넌트에서 애니메이션과 함께 자동으로 제거하므로 여기서는 제거하지 않음
+      if (duration > 0) {
+        setTimeout(() => {
+          removeToast(id);
+        }, duration);
+      }
     },
-    []
+    [removeToast]
   );
 
   const removeToast = useCallback((id: string) => {
