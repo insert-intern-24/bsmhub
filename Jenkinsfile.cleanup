@@ -24,7 +24,6 @@ pipeline {
         DEPLOY_SERVER = '10.59.0.106'
         REPO_OWNER = 'insert-intern-24'
         REPO_NAME = 'bsmhub'
-        GITHUB_APP = credentials('GITHUB_APP_CREDENTIALS')
     }
 
     stages {
@@ -104,9 +103,8 @@ pipeline {
                 script {
                     def prNumber = env.pr_number as Integer
                     def port = (4000 + (prNumber % 1000)).toString()
-                    echo "[DEBUG] GITHUB_APP_PSW: ${env.GITHUB_APP_PSW}"
-                    echo "[DEBUG] REPO_OWNER: ${env.REPO_OWNER}"
-                    echo "[DEBUG] REPO_NAME: ${env.REPO_NAME}"
+                    echo '[DEBUG] REPO_OWNER: insert-intern-24'
+                    echo '[DEBUG] REPO_NAME: bsmhub'
                     echo "[DEBUG] pr_number: ${env.pr_number}"
 
                     def cleanupMessage = env.pr_merged == 'true' ?
@@ -127,13 +125,23 @@ pipeline {
 
                     def payload = groovy.json.JsonOutput.toJson([body: cleanupMessage])
 
-                    def response = sh(script: """
-                        curl -w "%{http_code}" -s -X POST \\
-                        -H "Authorization: Bearer \$GITHUB_APP_PSW" \\
-                        -H "Accept: application/vnd.github.v3+json" \\
-                        https://api.github.com/repos/\$REPO_OWNER/\$REPO_NAME/issues/\$pr_number/comments \\
-                        -d '${payload}'
-                    """, returnStdout: true).trim()
+                    withCredentials([string(credentialsId: 'GITHUB_APP_CREDENTIALS', variable: 'GITHUB_TOKEN')]) {
+                        def response = sh(script: """
+                            curl -w "%{http_code}" -s -X POST \\
+                            -H "Authorization: Bearer \${GITHUB_TOKEN}" \\
+                            -H "Accept: application/vnd.github.v3+json" \\
+                            https://api.github.com/repos/insert-intern-24/bsmhub/issues/${env.pr_number}/comments \\
+                            -d '${payload}'
+                        """, returnStdout: true).trim()
+
+                        def httpCode = response.substring(response.length() - 3)
+                        if (httpCode.startsWith('20')) {
+                            echo '✅ Cleanup comment posted successfully'
+                        } else {
+                            echo "⚠️  Failed to post comment. HTTP Code: ${httpCode}"
+                            echo "Response: ${response}"
+                        }
+                    }
 
                     def httpCode = response.substring(response.length() - 3)
                     if (httpCode.startsWith('20')) {
@@ -162,13 +170,15 @@ pipeline {
                 def failureMessage = "⚠️ PR #${env.pr_number} 정리 과정에서 오류가 발생했습니다. 수동 확인이 필요할 수 있습니다."
                 def payload = groovy.json.JsonOutput.toJson([body: failureMessage])
                 node {
-                    sh """
-                        curl -X POST \\
-                        -H "Authorization: Bearer \$GITHUB_APP_PSW" \\
-                        -H "Accept: application/vnd.github.v3+json" \\
-                        https://api.github.com/repos/\$REPO_OWNER/\$REPO_NAME/issues/\$pr_number/comments \\
-                        -d '${payload}' || true
-                    """
+                    withCredentials([string(credentialsId: 'GITHUB_APP_CREDENTIALS', variable: 'GITHUB_TOKEN')]) {
+                        sh """
+                            curl -X POST \\
+                            -H "Authorization: Bearer \${GITHUB_TOKEN}" \\
+                            -H "Accept: application/vnd.github.v3+json" \\
+                            https://api.github.com/repos/insert-intern-24/bsmhub/issues/${env.pr_number}/comments \\
+                            -d '${payload}' || true
+                        """
+                    }
                 }
             }
         }
