@@ -2,7 +2,9 @@
 
 import InputOfModal from '../../modal/inputs/InputOfModal';
 import { useFormConfigData } from '@/utils/hook/useFormConfigData';
+import { useErrorToast } from '@/utils/hook/useErrorToast';
 import { formatErrorMessage } from '@/utils/errorMessage';
+import { useToast } from '@/app/components/toast';
 import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
 import type { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
 
@@ -23,16 +25,17 @@ const ProfileEditModal = ({
   isTeam,
   onClose,
 }: ProfileEditModalProps) => {
+  const { showToast } = useToast();
   const isTeamValue = isTeam ?? false;
-  // 모드 결정
   const finalMode = mode;
 
-  // useFormConfigData 훅을 사용하여 데이터 로딩 및 저장
   const { initialValues, isLoading, saveData, error, canSave } =
     useFormConfigData(config, variables, {
       autoLoad: true,
       mode: finalMode,
     });
+
+  useErrorToast(error);
 
   const handleProfileSubmit = (
     formData: Record<
@@ -52,13 +55,10 @@ const ProfileEditModal = ({
       );
 
       if (result.success) {
-        console.log('프로필이 성공적으로 저장되었습니다.');
-        console.log('Save result:', result);
         onClose();
       } else {
-        console.error('프로필 저장 실패:', result.message);
         const errorMessage = formatErrorMessage(result.message, 'profile');
-        alert(`저장 중 오류가 발생했습니다:\n${errorMessage}`);
+        showToast(errorMessage, 'error', 2000, '오류');
       }
     })();
   };
@@ -71,10 +71,6 @@ const ProfileEditModal = ({
           : '프로필 정보를 불러오는 중...'}
       </div>
     );
-  }
-
-  if (error) {
-    return <div className="p-8 text-center text-red-500">오류: {error}</div>;
   }
 
   return (
