@@ -7,6 +7,8 @@ import { formatErrorMessage } from '@/utils/errorMessage';
 import { useToast } from '@/app/components/toast';
 import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
 import type { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
+import { useRouter } from 'next/navigation';
+import { createDeleteHandler } from '@/services/graphQL/deleteHelper.graphql';
 
 interface ProfileEditModalProps {
   config: FormConfig;
@@ -25,8 +27,10 @@ const ProfileEditModal = ({
   isTeam,
   onClose,
 }: ProfileEditModalProps) => {
+  const router = useRouter();
   const { showToast } = useToast();
   const isTeamValue = isTeam ?? false;
+
   const finalMode = mode;
 
   const { initialValues, isLoading, saveData, error, canSave } =
@@ -56,9 +60,27 @@ const ProfileEditModal = ({
 
       if (result.success) {
         onClose();
+        router.refresh();
       } else {
         const errorMessage = formatErrorMessage(result.message, 'profile');
         showToast(errorMessage, 'error', 2000, '오류');
+      }
+    })();
+  };
+
+  const handleProfileDelete = (): void => {
+    void (async () => {
+      try {
+        await createDeleteHandler(
+          config,
+          { profile_id: { eq: variables.profile_id } },
+          '프로필이 성공적으로 삭제되었습니다.'
+        );
+        onClose();
+        router.refresh();
+      } catch (err) {
+        // 에러는 이미 createDeleteHandler에서 처리됨
+        console.error('삭제 처리 중 오류:', err);
       }
     })();
   };
@@ -85,6 +107,8 @@ const ProfileEditModal = ({
       config={config}
       initialValues={initialValues}
       onSubmit={canSave ? handleProfileSubmit : undefined}
+      onDelete={mode === 'update' ? handleProfileDelete : undefined}
+      mode={mode}
     />
   );
 };
