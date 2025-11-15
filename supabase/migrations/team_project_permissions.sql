@@ -139,6 +139,82 @@ USING (
 );
 
 -- ============================================================================
+-- 팀원도 팀 프로젝트의 링크/스킬/설명 삭제 가능
+-- ============================================================================
+
+-- 팀원도 팀 프로젝트의 링크 삭제 가능
+CREATE POLICY "Team members can delete team project links"
+ON project_link FOR DELETE
+USING (
+  EXISTS (
+    SELECT 1 FROM projects
+    WHERE projects.project_id = project_link.project_id
+    AND EXISTS (
+      SELECT 1 FROM profile AS team_profile
+      WHERE team_profile.profile_id = projects.owner
+      AND team_profile.is_team = true
+      AND EXISTS (
+        SELECT 1 FROM team_member
+        WHERE team_member.profile_id = team_profile.profile_id
+        AND EXISTS (
+          SELECT 1 FROM profile AS member_profile
+          WHERE member_profile.profile_id = team_member.participant_id
+          AND member_profile.owner = auth.uid()
+        )
+      )
+    )
+  )
+);
+
+-- 팀원도 팀 프로젝트의 스킬 삭제 가능
+CREATE POLICY "Team members can delete team project skills"
+ON project_skills FOR DELETE
+USING (
+  EXISTS (
+    SELECT 1 FROM projects
+    WHERE projects.project_id = project_skills.project_id
+    AND EXISTS (
+      SELECT 1 FROM profile AS team_profile
+      WHERE team_profile.profile_id = projects.owner
+      AND team_profile.is_team = true
+      AND EXISTS (
+        SELECT 1 FROM team_member
+        WHERE team_member.profile_id = team_profile.profile_id
+        AND EXISTS (
+          SELECT 1 FROM profile AS member_profile
+          WHERE member_profile.profile_id = team_member.participant_id
+          AND member_profile.owner = auth.uid()
+        )
+      )
+    )
+  )
+);
+
+-- 팀원도 팀 프로젝트의 설명 삭제 가능
+CREATE POLICY "Team members can delete team project descriptions"
+ON project_html_description FOR DELETE
+USING (
+  EXISTS (
+    SELECT 1 FROM projects
+    WHERE projects.project_id = project_html_description.project_id
+    AND EXISTS (
+      SELECT 1 FROM profile AS team_profile
+      WHERE team_profile.profile_id = projects.owner
+      AND team_profile.is_team = true
+      AND EXISTS (
+        SELECT 1 FROM team_member
+        WHERE team_member.profile_id = team_profile.profile_id
+        AND EXISTS (
+          SELECT 1 FROM profile AS member_profile
+          WHERE member_profile.profile_id = team_member.participant_id
+          AND member_profile.owner = auth.uid()
+        )
+      )
+    )
+  )
+);
+
+-- ============================================================================
 -- 인덱스 최적화 (선택사항)
 -- ============================================================================
 -- RLS 정책 성능 향상을 위한 인덱스
