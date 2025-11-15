@@ -157,13 +157,15 @@ pipeline {
                 // 실패 시에도 간단한 알림
                 def failureMessage = "⚠️ PR #${env.pr_number} 정리 과정에서 오류가 발생했습니다. 수동 확인이 필요할 수 있습니다."
                 def payload = groovy.json.JsonOutput.toJson([body: failureMessage])
-                sh """
-                    curl -X POST \\
-                    -H "Authorization: Bearer \$GITHUB_APP_PSW" \\
-                    -H "Accept: application/vnd.github.v3+json" \\
-                    https://api.github.com/repos/\$REPO_OWNER/\$REPO_NAME/issues/\$pr_number/comments \\
-                    -d '${payload}' || true
-                """
+                node {
+                    sh """
+                        curl -X POST \\
+                        -H "Authorization: Bearer \$GITHUB_APP_PSW" \\
+                        -H "Accept: application/vnd.github.v3+json" \\
+                        https://api.github.com/repos/\$REPO_OWNER/\$REPO_NAME/issues/\$pr_number/comments \\
+                        -d '${payload}' || true
+                    """
+                }
             }
         }
         success {
