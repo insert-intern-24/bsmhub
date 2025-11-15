@@ -13,7 +13,7 @@
   - 프로젝트 소유자 확인 시 `is_team` 플래그 조회
   - 팀 프로젝트인 경우 `team_member` 테이블에서 팀원 확인
   - 팀원이면 수정 권한 부여
-  - 기여자도 수정 권한 부여
+  - **기여자는 프로젝트 수정 불가** (본인의 기여 항목만 수정 가능)
 
 #### 2. Supabase RLS 정책
 - **파일**: `supabase/migrations/team_project_permissions.sql`
@@ -21,7 +21,6 @@
   - **헬퍼 함수**: `is_team_member()` 함수 생성 (성능 최적화)
   - **projects 테이블**: 
     - 팀원이 팀 프로젝트 수정 가능
-    - 기여자가 기여하는 프로젝트 수정 가능
   - **project_contributors 테이블**: 본인의 기여자 정보만 수정 가능
   - **project_html_description 테이블**: 팀원이 팀 프로젝트 설명 수정/추가/삭제 가능
   - **project_link 테이블**: 팀원이 팀 프로젝트 링크 수정/추가/삭제 가능

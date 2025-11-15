@@ -43,18 +43,6 @@ USING (
   )
 );
 
--- 기여자도 기여하는 프로젝트 수정 가능
-CREATE POLICY "Contributors can update projects they contribute to"
-ON projects FOR UPDATE
-USING (
-  EXISTS (
-    SELECT 1 FROM project_contributors pc
-    JOIN profile p ON p.profile_id = pc.profile_id
-    WHERE pc.project_id = projects.project_id
-    AND p.owner = auth.uid()
-  )
-);
-
 -- ============================================================================
 -- 2. project_contributors 테이블 RLS 정책
 -- ============================================================================
@@ -231,7 +219,6 @@ ON profile(is_team) WHERE is_team = true;
 -- 문제 발생 시 아래 명령어로 롤백 가능:
 --
 -- DROP POLICY IF EXISTS "Team members can update team projects" ON projects;
--- DROP POLICY IF EXISTS "Contributors can update projects they contribute to" ON projects;
 -- DROP POLICY IF EXISTS "Contributors can update own contribution" ON project_contributors;
 -- DROP POLICY IF EXISTS "Team members can update team project descriptions" ON project_html_description;
 -- DROP POLICY IF EXISTS "Team members can insert team project descriptions" ON project_html_description;
