@@ -26,18 +26,13 @@ interface ProjectSummarySectionProps {
 export const ProjectSummarySection = ({
   title,
   description,
-  hasEditPermission,
-  projectId,
-  onEdit,
-}: ProjectSummarySectionProps) => (
+}: {
+  title: string;
+  description: string;
+}) => (
   <section className="flex-col w-full gap-[0.375rem]">
     <TitleEN>{title}</TitleEN>
     <Body className="text-detail">{description}</Body>
-    <ProjectActions
-      hasEditPermission={hasEditPermission}
-      projectId={projectId}
-      onEdit={onEdit}
-    />
   </section>
 );
 
@@ -120,6 +115,23 @@ const AddToPlaylistButton = () => (
   <button className="flex h-10 w-10 items-center justify-center rounded-full bg-light-gray-input cursor-pointer">
     <IconPlaylistAdd size={(16 * 12) / 16} color="black" />
   </button>
+);
+
+export const ProjectEditButton = ({
+  hasEditPermission,
+  onEdit,
+}: {
+  hasEditPermission?: boolean;
+  onEdit?: () => void;
+}) => (
+  <div className="flex w-full gap-1">
+    <PlayButton
+      hasEditPermission={hasEditPermission}
+      projectId={undefined}
+      onEdit={onEdit}
+    />
+    <AddToPlaylistButton />
+  </div>
 );
 
 interface ProjectLinkSectionProps {
