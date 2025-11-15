@@ -76,6 +76,10 @@ const ProjectEditModal = ({
   const handleProjectDelete = (): void => {
     void (async () => {
       try {
+        if (!variables?.project_id) {
+          console.error('프로젝트 ID가 없습니다.');
+          return;
+        }
         await createDeleteHandler(
           config,
           { project_id: { eq: variables.project_id } },
