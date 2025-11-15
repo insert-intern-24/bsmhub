@@ -75,10 +75,10 @@ export default function AutoCarousel({ interval = 3000 }: AutoCarouselProps) {
       {images.length > 1 && (
         <button
           onClick={goToPrevious}
-          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 transition-all shadow-md hover:shadow-lg"
+          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-1 transition-all shadow-md hover:shadow-lg flex-center"
           aria-label="이전 슬라이드"
         >
-          <IconChevronLeft size={24} className="text-gray-800" />
+          <IconChevronLeft size={16} className="text-gray-800" />
         </button>
       )}
 
@@ -86,10 +86,10 @@ export default function AutoCarousel({ interval = 3000 }: AutoCarouselProps) {
       {images.length > 1 && (
         <button
           onClick={goToNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 transition-all shadow-md hover:shadow-lg"
+          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-1 transition-all shadow-md hover:shadow-lg flex-center"
           aria-label="다음 슬라이드"
         >
-          <IconChevronRight size={24} className="text-gray-800" />
+          <IconChevronRight size={16} className="text-gray-800" />
         </button>
       )}
 
