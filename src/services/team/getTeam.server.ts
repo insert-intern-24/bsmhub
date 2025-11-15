@@ -45,7 +45,7 @@ export const getTeamsByProfileName = async (profileName: string): Promise<TeamDa
     .select('profile_id')
     .eq('profile_name', profileName)
     .eq('is_team', false)
-    .maybeSingle();
+    .maybeSingle<{ profile_id: number }>();
 
   if (profileError) {
     console.error('사용자 프로필 조회 중 오류:', profileError);
@@ -72,7 +72,7 @@ export const getTeamsByProfileName = async (profileName: string): Promise<TeamDa
     return [];
   }
 
-  const teamIds = teamMemberships.map(tm => tm.profile_id);
+  const teamIds = (teamMemberships as { profile_id: number }[]).map(tm => tm.profile_id);
 
   // 해당 팀들의 정보를 조회합니다
   const { data, error } = await supabase

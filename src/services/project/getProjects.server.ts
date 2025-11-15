@@ -89,7 +89,7 @@ export const getProjectsByProfileName = async (profileName: string, limit?: numb
     .select('profile_id')
     .eq('profile_name', profileName)
     .eq('is_team', false)
-    .maybeSingle();
+    .maybeSingle<{ profile_id: number }>();
 
   if (profileError) {
     console.error('사용자 프로필 조회 중 오류:', profileError);
@@ -112,7 +112,7 @@ export const getProjectsByProfileName = async (profileName: string, limit?: numb
     return [];
   }
 
-  const contributedProjectIds = contributions?.map(c => c.project_id) || [];
+  const contributedProjectIds = (contributions as { project_id: number }[] | null)?.map(c => c.project_id) || [];
 
   // 사용자가 소유하거나 기여한 프로젝트들을 조회합니다
   let query = supabase.from('projects').select(PROJECT_SELECT_QUERY);
