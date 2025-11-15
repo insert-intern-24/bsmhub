@@ -16,8 +16,8 @@ export default async function Home() {
     <div className="flex-col gap-4 w-full">
       <OneTapComponent />
       <div className="flex-center">
-        <div className="h-[21rem] w-full justify-between flex items-end mobile:justify-center mobile:h-[14.75rem]">
-          <div className="h-full w-[53.5rem] mobile:hidden overflow-visible">
+        <div className="h-[19.6rem] w-full justify-between flex items-end mobile:justify-center mobile:h-[14.75rem]">
+          <div className="h-full w-[54rem] mobile:hidden">
             <AutoCarousel />
           </div>
           <div className="h-[14.75rem] mobile:w-full">

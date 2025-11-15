@@ -50,23 +50,25 @@ export default function AutoCarousel({ interval = 3000 }: AutoCarouselProps) {
   return (
     <div
       className="relative w-full h-full"
-      style={{ overflowX: 'hidden', overflowY: 'visible' }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       {/* 이미지 슬라이드 */}
       <div
-        className="flex transition-transform duration-500 ease-in-out absolute bottom-0 left-0 w-full"
+        className="flex transition-transform duration-500 ease-in-out absolute bottom-0 left-0 w-full h-full"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {images.map((src, index) => (
-          <div key={index} className="flex-shrink-0 w-full">
+          <div
+            key={index}
+            className="relative flex-shrink-0 w-full h-full rounded-[0.25rem]"
+          >
             <Image
               src={src}
               alt={`슬라이드 ${index + 1}`}
-              width={735}
-              height={304}
-              className="w-full h-auto rounded-[0.25rem]"
+              fill
+              className="object-cover object-bottom"
+              priority
             />
           </div>
         ))}
