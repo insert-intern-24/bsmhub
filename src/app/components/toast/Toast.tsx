@@ -109,6 +109,12 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
     window.addEventListener('mouseup', handleUp);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape' || e.key === 'Enter') {
+      handleClose();
+    }
+  };
+
   const isErrorWarning = toast.type === 'error' || toast.type === 'warning';
   const bgColor = isErrorWarning ? 'bg-[#ff6c36]' : 'bg-white';
   const titleColor = isErrorWarning ? 'text-white' : 'text-black';
@@ -121,6 +127,10 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
       } cursor-grab select-none`}
       style={{ transform: dragY > 0 ? `translateY(${dragY}px)` : undefined }}
       onMouseDown={handleMouseDown}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="alertdialog"
+      aria-label={toast.title || '알림'}
     >
       <Image 
         src="/card/ToastCard/bottom.svg" 
