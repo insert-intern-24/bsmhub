@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useState, ReactNode, useCallback, useRef } from 'react';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
@@ -34,9 +34,19 @@ interface ToastProviderProps {
 
 export const ToastProvider = ({ children }: ToastProviderProps) => {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const removeToast = useCallback((id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  }, []);
 
   const showToast = useCallback(
     (message: string, type: ToastType = 'info', duration: number = 3000, title?: string) => {
+      // 기존 타이머 정리
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+
       const id = `${Date.now()}-${Math.random()}`;
       const newToast: ToastItem = { id, message, type, duration, title };
 
@@ -47,10 +57,6 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
     },
     []
   );
-
-  const removeToast = useCallback((id: string) => {
-    setToasts((prev) => prev.filter((toast) => toast.id !== id));
-  }, []);
 
   return (
     <ToastContext.Provider value={{ toasts, showToast, removeToast }}>
