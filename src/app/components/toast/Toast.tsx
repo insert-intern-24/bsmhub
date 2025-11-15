@@ -175,7 +175,7 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
       />
 
       <div
-        className={`absolute left-0 rounded-[5px] flex-col gap-[3px] items-start justify-start p-4 overflow-hidden ${bgColor}`}
+        className={`absolute left-0 rounded-[5px] flex flex-col gap-[3px] items-start justify-start p-4 overflow-hidden ${bgColor}`}
         style={{
           bottom: TOAST_LAYOUT.CARD_BOTTOM_OFFSET,
           top: TOAST_LAYOUT.CARD_TOP_OFFSET,
@@ -184,10 +184,6 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
           minWidth: `${TOAST_LAYOUT.CARD_WIDTH}px`,
           transform: `rotate(${TOAST_LAYOUT.CARD_ROTATION}deg)`
         }}
-        className={`absolute bottom-[18%] left-0 top-[10%] w-[280px] h-[197px] min-w-[280px] 
-                   rotate-[359deg] rounded-[5px] 
-                   flex flex-col gap-[3px] items-start justify-start p-4 overflow-hidden
-                   ${bgColor}`}
       >
         {toast.title && <Title className={titleColor}>{toast.title}</Title>}
         <Label className={messageColor}>{toast.message}</Label>

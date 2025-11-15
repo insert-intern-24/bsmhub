@@ -35,7 +35,7 @@ const HeroCard = () => {
           포트폴리오 살펴보기
         </Link>
         <button
-          onClick={(e) => {
+          onClick={() => {
             void handleMakeProject();
           }}
           className="px-3 py-2 rounded-[0.25rem] border border-gray-300 text-label text-gray-800 bg-white"
