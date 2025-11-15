@@ -112,7 +112,7 @@ export const getProjectsByProfileName = async (profileName: string, limit?: numb
     return [];
   }
 
-  const contributedProjectIds = contributions?.map(c => c.project_id) || [];
+  const contributedProjectIds = (contributions as { project_id: number }[] | null)?.map(c => c.project_id) || [];
 
   // 사용자가 소유하거나 기여한 프로젝트들을 조회합니다
   let query = supabase.from('projects').select(PROJECT_SELECT_QUERY);
