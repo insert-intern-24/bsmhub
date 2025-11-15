@@ -104,6 +104,10 @@ pipeline {
                 script {
                     def prNumber = env.pr_number as Integer
                     def port = (4000 + (prNumber % 1000)).toString()
+                    echo "[DEBUG] GITHUB_APP_PSW: ${env.GITHUB_APP_PSW}"
+                    echo "[DEBUG] REPO_OWNER: ${env.REPO_OWNER}"
+                    echo "[DEBUG] REPO_NAME: ${env.REPO_NAME}"
+                    echo "[DEBUG] pr_number: ${env.pr_number}"
 
                     def cleanupMessage = env.pr_merged == 'true' ?
                         """🎉✨ **PR이 성공적으로 머지되었습니다!**
