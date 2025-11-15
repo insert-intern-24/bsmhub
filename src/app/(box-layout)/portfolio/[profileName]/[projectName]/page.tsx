@@ -10,10 +10,19 @@ interface PortfolioProjectPageProps {
 }
 
 const PortfolioProjectPage = async ({ params }: PortfolioProjectPageProps) => {
-  const { profileName } = await params;
+  const { profileName, projectName } = await params;
+  const decodedProfileName = decodeURIComponent(profileName);
+  const decodedProjectName = decodeURIComponent(projectName);
 
-  if (!(await checkProfileIsTeam(profileName)))
-    return <ProjectDetailPage params={params} />;
+  if (!(await checkProfileIsTeam(decodedProfileName)))
+    return (
+      <ProjectDetailPage
+        params={Promise.resolve({
+          profileName: decodedProfileName,
+          projectName: decodedProjectName,
+        })}
+      />
+    );
 
   notFound();
 };

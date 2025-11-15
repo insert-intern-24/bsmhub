@@ -54,6 +54,11 @@ const ProjectEditModal = ({
       );
 
       if (result.success) {
+        const successMessage =
+          mode === 'create'
+            ? '프로젝트가 성공적으로 생성되었습니다.'
+            : '프로젝트가 성공적으로 수정되었습니다.';
+        showToast(successMessage, 'success', 3000, '성공');
         onClose();
         router.refresh();
       } else {

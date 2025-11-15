@@ -59,6 +59,15 @@ const ProfileEditModal = ({
       );
 
       if (result.success) {
+        const successMessage =
+          mode === 'create'
+            ? isTeamValue
+              ? '팀 프로필이 성공적으로 생성되었습니다.'
+              : '프로필이 성공적으로 생성되었습니다.'
+            : isTeamValue
+              ? '팀 프로필이 성공적으로 수정되었습니다.'
+              : '프로필이 성공적으로 수정되었습니다.';
+        showToast(successMessage, 'success', 3000, '성공');
         onClose();
         router.refresh();
       } else {
