@@ -13,15 +13,18 @@
   - 프로젝트 소유자 확인 시 `is_team` 플래그 조회
   - 팀 프로젝트인 경우 `team_member` 테이블에서 팀원 확인
   - 팀원이면 수정 권한 부여
+  - **기여자는 프로젝트 수정 불가** (본인의 기여 항목만 수정 가능)
 
 #### 2. Supabase RLS 정책
 - **파일**: `supabase/migrations/team_project_permissions.sql`
 - **변경 내용**:
-  - `projects` 테이블: 팀원이 팀 프로젝트 수정 가능
-  - `project_contributors` 테이블: 본인의 기여자 정보만 수정 가능
-  - `project_html_description` 테이블: 팀원이 팀 프로젝트 설명 수정 가능
-  - `project_link` 테이블: 팀원이 팀 프로젝트 링크 수정 가능
-  - `project_skills` 테이블: 팀원이 팀 프로젝트 스킬 수정 가능
+  - **헬퍼 함수**: `is_team_member()` 함수 생성 (성능 최적화)
+  - **projects 테이블**: 
+    - 팀원이 팀 프로젝트 수정 가능
+  - **project_contributors 테이블**: 본인의 기여자 정보만 수정 가능
+  - **project_html_description 테이블**: 팀원이 팀 프로젝트 설명 수정/추가/삭제 가능
+  - **project_link 테이블**: 팀원이 팀 프로젝트 링크 수정/추가/삭제 가능
+  - **project_skills 테이블**: 팀원이 팀 프로젝트 스킬 수정/추가/삭제 가능
 
 ### RLS 정책 적용 방법
 
@@ -51,17 +54,19 @@ supabase db execute -f supabase/migrations/team_project_permissions.sql
 
 #### 1. 팀원 권한 테스트
 ```sql
+-- 주의: 아래 UUID는 예시입니다. 실제 테스트 시 실제 UUID로 교체하세요.
+
 -- 1. 팀 프로필 생성
 INSERT INTO profile (profile_id, profile_name, is_team, owner)
-VALUES ('team-uuid', 'Test Team', true, 'owner-user-uuid');
+VALUES ('550e8400-e29b-41d4-a716-446655440000', 'Test Team', true, '550e8400-e29b-41d4-a716-446655440001');
 
 -- 2. 팀원 추가
 INSERT INTO team_member (profile_id, participant_id)
-VALUES ('team-uuid', 'member-profile-uuid');
+VALUES ('550e8400-e29b-41d4-a716-446655440000', '550e8400-e29b-41d4-a716-446655440002');
 
 -- 3. 팀 프로젝트 생성
 INSERT INTO projects (owner, project_name, category_id, description, status)
-VALUES ('team-uuid', 'Test Project', 1, 'Test Description', 1);
+VALUES ('550e8400-e29b-41d4-a716-446655440000', 'Test Project', 1, 'Test Description', 1);
 
 -- 4. 팀원 계정으로 로그인하여 프로젝트 수정 시도
 -- 성공해야 함
@@ -69,9 +74,11 @@ VALUES ('team-uuid', 'Test Project', 1, 'Test Description', 1);
 
 #### 2. 기여자 본인 데이터만 수정 테스트
 ```sql
+-- 주의: 아래 UUID는 예시입니다. 실제 테스트 시 실제 UUID로 교체하세요.
+
 -- 1. 기여자 추가
 INSERT INTO project_contributors (project_id, profile_id, description)
-VALUES (1, 'contributor-profile-uuid', 'My contribution');
+VALUES (1, '550e8400-e29b-41d4-a716-446655440003', 'My contribution');
 
 -- 2. 기여자 계정으로 로그인하여 본인의 기여자 정보 수정 시도
 -- 성공해야 함
@@ -85,10 +92,18 @@ VALUES (1, 'contributor-profile-uuid', 'My contribution');
 
 ```sql
 DROP POLICY IF EXISTS "Team members can update team projects" ON projects;
+DROP POLICY IF EXISTS "Contributors can update projects they contribute to" ON projects;
 DROP POLICY IF EXISTS "Contributors can update own contribution" ON project_contributors;
 DROP POLICY IF EXISTS "Team members can update team project descriptions" ON project_html_description;
+DROP POLICY IF EXISTS "Team members can insert team project descriptions" ON project_html_description;
+DROP POLICY IF EXISTS "Team members can delete team project descriptions" ON project_html_description;
 DROP POLICY IF EXISTS "Team members can update team project links" ON project_link;
+DROP POLICY IF EXISTS "Team members can insert team project links" ON project_link;
+DROP POLICY IF EXISTS "Team members can delete team project links" ON project_link;
 DROP POLICY IF EXISTS "Team members can update team project skills" ON project_skills;
+DROP POLICY IF EXISTS "Team members can insert team project skills" ON project_skills;
+DROP POLICY IF EXISTS "Team members can delete team project skills" ON project_skills;
+DROP FUNCTION IF EXISTS is_team_member(uuid, uuid);
 ```
 
 ### 주의사항
