@@ -23,7 +23,7 @@ interface DropdownInputProps extends StandardInputProps {
   onOptionSelect?: () => void;
 }
 
-function DropdownInput({
+const DropdownInput = ({
   mode = 'write',
   type = 'text',
   placeholder,
@@ -38,7 +38,7 @@ function DropdownInput({
   onInputFocus,
   dropdownInputConfig,
   onOptionSelect,
-}: DropdownInputProps) {
+}: DropdownInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const isReadOnly = mode === 'read';
 
@@ -98,6 +98,6 @@ function DropdownInput({
       )}
     </div>
   );
-}
+};
 
 export default DropdownInput;

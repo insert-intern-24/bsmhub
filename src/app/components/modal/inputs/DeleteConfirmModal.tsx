@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Title, Body } from '@/app/components/system/text';
 import Checkbox from './Checkbox';
-import Buttons from './Button';
+import Button from './Button';
 
 interface DeleteConfirmModalProps {
   title?: string;
@@ -38,14 +38,14 @@ const DeleteConfirmModal = ({
 
       <div className="flex gap-3 w-full">
         <div className="flex-1">
-          <Buttons
+          <Button
             color="gray"
             text="취소"
             onClick={onCancel}
           />
         </div>
         <div className="flex-1">
-          <Buttons
+          <Button
             color="black"
             text="삭제"
             onClick={() => {

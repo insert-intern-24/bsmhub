@@ -6,11 +6,11 @@ interface ButtonProps {
   onClick?: () => void;
 }
 
-function Button({
+const Button = ({
   color = 'black',
   text = '추가하기',
   onClick,
-}: ButtonProps) {
+}: ButtonProps) => {
   const bgColorMap: Record<'black' | 'blue' | 'gray', string> = {
     black: 'bg-black',
     blue: 'bg-blue-primary',
@@ -27,6 +27,6 @@ function Button({
       {text}
     </button>
   );
-}
+};
 
 export default Button;

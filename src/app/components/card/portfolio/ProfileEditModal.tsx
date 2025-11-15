@@ -71,16 +71,17 @@ const ProfileEditModal = ({
   const handleProfileDelete = (): void => {
     void (async () => {
       try {
-        await createDeleteHandler(
+        const successMessage = await createDeleteHandler(
           config,
           { profile_id: { eq: variables.profile_id } },
           '프로필이 성공적으로 삭제되었습니다.'
         );
+        showToast(successMessage, 'success', 3000, '성공');
         onClose();
         router.refresh();
       } catch (err) {
-        // 에러는 이미 createDeleteHandler에서 처리됨
-        console.error('삭제 처리 중 오류:', err);
+        const errorMessage = err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.';
+        showToast(errorMessage, 'error', 3000, '오류');
       }
     })();
   };

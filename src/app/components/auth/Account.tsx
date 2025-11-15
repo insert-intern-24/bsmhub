@@ -18,7 +18,6 @@ import { IconUsersGroup, IconAssembly } from '@tabler/icons-react';
 const Account = () => {
   const supabase = createClient();
   const currentUser = useCurrentUser();
-  const [profileLink, setProfileLink] = useState<string | null>(null);
   const [profileName, setProfileName] = useState<string | null>(null);
   const { openModal, closeModal } = useModal();
 
@@ -39,10 +38,8 @@ const Account = () => {
 
       if (!mounted) return;
       if (profile) {
-        setProfileLink(`/portfolio/${profile.profile_name}`);
         setProfileName(profile.profile_name);
       } else {
-        setProfileLink(null);
         setProfileName(null);
       }
       if (!exists) handleMakeProfile();
@@ -67,26 +64,20 @@ const Account = () => {
       }
       align="right"
     >
-      {profileLink ? (
-        <Link href={profileLink}>
-          <DropdownItem>내 프로필</DropdownItem>
-        </Link>
-      ) : (
-        <DropdownItem onSelect={handleMakeProfile}>프로필 만들기</DropdownItem>
-      )}
-      {profileName && (
+      {profileName ? (
         <>
+          <Link href={`/portfolio/${profileName}`}>
+            <DropdownItem>내 프로필</DropdownItem>
+          </Link>
           <Link href={`/team?profileName=${profileName}`}>
-            <DropdownItem leadingIcon={<IconUsersGroup size={16} />}>
-              내 팀 보기
-            </DropdownItem>
+            <DropdownItem>내 동아리</DropdownItem>
           </Link>
           <Link href={`/project?profileName=${profileName}`}>
-            <DropdownItem leadingIcon={<IconAssembly size={16} />}>
-              내 프로젝트 보기
-            </DropdownItem>
+            <DropdownItem>내 프로젝트</DropdownItem>
           </Link>
         </>
+      ) : (
+        <DropdownItem onSelect={handleMakeProfile}>프로필 만들기</DropdownItem>
       )}
       <DropdownItem onSelect={() => supabase.auth.signOut()}>
         로그아웃
