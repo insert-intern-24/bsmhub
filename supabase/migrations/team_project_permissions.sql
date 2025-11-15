@@ -61,6 +61,45 @@ USING (
   )
 );
 
+-- 팀원도 팀 프로젝트의 기여자 추가(INSERT) 가능
+CREATE POLICY "Team members can insert team project contributors"
+ON project_contributors FOR INSERT
+WITH CHECK (
+  EXISTS (
+    SELECT 1 FROM projects p
+    JOIN profile team_profile ON team_profile.profile_id = p.owner
+    WHERE p.project_id = project_contributors.project_id
+    AND team_profile.is_team = true
+    AND is_team_member(team_profile.profile_id, auth.uid())
+  )
+);
+
+-- 팀원도 팀 프로젝트의 기여자 정보 수정 가능
+CREATE POLICY "Team members can update team project contributors"
+ON project_contributors FOR UPDATE
+USING (
+  EXISTS (
+    SELECT 1 FROM projects p
+    JOIN profile team_profile ON team_profile.profile_id = p.owner
+    WHERE p.project_id = project_contributors.project_id
+    AND team_profile.is_team = true
+    AND is_team_member(team_profile.profile_id, auth.uid())
+  )
+);
+
+-- 팀원도 팀 프로젝트의 기여자 삭제 가능
+CREATE POLICY "Team members can delete team project contributors"
+ON project_contributors FOR DELETE
+USING (
+  EXISTS (
+    SELECT 1 FROM projects p
+    JOIN profile team_profile ON team_profile.profile_id = p.owner
+    WHERE p.project_id = project_contributors.project_id
+    AND team_profile.is_team = true
+    AND is_team_member(team_profile.profile_id, auth.uid())
+  )
+);
+
 -- ============================================================================
 -- 3. project_html_description 테이블 RLS 정책
 -- ============================================================================
@@ -220,6 +259,9 @@ ON profile(is_team) WHERE is_team = true;
 --
 -- DROP POLICY IF EXISTS "Team members can update team projects" ON projects;
 -- DROP POLICY IF EXISTS "Contributors can update own contribution" ON project_contributors;
+-- DROP POLICY IF EXISTS "Team members can insert team project contributors" ON project_contributors;
+-- DROP POLICY IF EXISTS "Team members can update team project contributors" ON project_contributors;
+-- DROP POLICY IF EXISTS "Team members can delete team project contributors" ON project_contributors;
 -- DROP POLICY IF EXISTS "Team members can update team project descriptions" ON project_html_description;
 -- DROP POLICY IF EXISTS "Team members can insert team project descriptions" ON project_html_description;
 -- DROP POLICY IF EXISTS "Team members can delete team project descriptions" ON project_html_description;
