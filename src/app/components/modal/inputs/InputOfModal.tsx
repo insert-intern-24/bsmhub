@@ -79,11 +79,22 @@ const InputOfModal = ({
       <DeleteConfirmModal
         title="정말 삭제하시겠습니까?"
         message="이 작업은 되돌릴 수 없습니다. 삭제를 진행하려면 아래 체크박스를 선택해주세요."
-        onConfirm={() => {
+        onConfirm={async () => {
           closeModal();
           if (onDelete) {
-            setIsDeleting(true);
-            onDelete();
+            try {
+              setIsDeleting(true);
+              await Promise.resolve(onDelete());
+            } catch (error) {
+              // 삭제 실패 시 상태 복구
+              setIsDeleting(false);
+              showToast(
+                error instanceof Error ? error.message : '삭제 중 오류가 발생했습니다.',
+                'error',
+                3000,
+                '오류'
+              );
+            }
           }
         }}
         onCancel={closeModal}
