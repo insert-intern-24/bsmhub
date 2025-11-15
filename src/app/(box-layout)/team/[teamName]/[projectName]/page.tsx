@@ -10,10 +10,19 @@ interface TeamProjectPageProps {
 }
 
 const TeamProjectPage = async ({ params }: TeamProjectPageProps) => {
-  const { teamName } = await params;
+  const { teamName, projectName } = await params;
+  const decodedTeamName = decodeURIComponent(teamName);
+  const decodedProjectName = decodeURIComponent(projectName);
 
-  if (await checkProfileIsTeam(teamName))
-    return <ProjectDetailPage params={params} />;
+  if (await checkProfileIsTeam(decodedTeamName))
+    return (
+      <ProjectDetailPage
+        params={Promise.resolve({
+          teamName: decodedTeamName,
+          projectName: decodedProjectName,
+        })}
+      />
+    );
 
   notFound();
 };

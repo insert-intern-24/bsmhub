@@ -15,8 +15,12 @@ export interface ProjectDetailPageProps {
 const ProjectDetailPage = async ({ params }: ProjectDetailPageProps) => {
   const { profileName, teamName, projectName } = (await params) ?? notFound();
 
+  const decodedProjectName = decodeURIComponent(projectName);
+  const decodedProfileName = profileName ? decodeURIComponent(profileName) : undefined;
+  const decodedTeamName = teamName ? decodeURIComponent(teamName) : undefined;
+
   const viewModel =
-    (await getProjectDetailViewModel(projectName, profileName, teamName)) ??
+    (await getProjectDetailViewModel(decodedProjectName, decodedProfileName, decodedTeamName)) ??
     notFound();
 
   const hasPermission = await checkProjectEditPermission(viewModel.id);
