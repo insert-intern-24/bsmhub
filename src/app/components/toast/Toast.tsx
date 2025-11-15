@@ -132,7 +132,7 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
                    flex-col gap-[3px] items-start justify-start p-4 overflow-hidden
                    ${bgColor}`}
       >
-        <Title className={titleColor}>{toast.title || 'title'}</Title>
+        {toast.title && <Title className={titleColor}>{toast.title}</Title>}
         <Label className={messageColor}>{toast.message}</Label>
       </div>
 
