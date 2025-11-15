@@ -6,7 +6,7 @@ pipeline {
         SUPABASE_KEY = credentials('NEXT_PUBLIC_SUPABASE_ANON_KEY')
         GOOGLE_CLIENT = credentials('NEXT_PUBLIC_GOOGLE_CLIENT_ID')
         NEXT_PUBLIC_SUPABASE_URL = 'https://bsmhubsp.obtuse.kr'
-        DEPLOY_SERVER = '10.3.0.127'
+        DEPLOY_SERVER = '10.59.0.106'
         DEPLOY_CREDS = credentials('DEPLOY_SERVER_CREDS')
         REPO_OWNER = 'insert-intern-24'
         REPO_NAME = 'bsmhub'
@@ -20,7 +20,7 @@ pipeline {
                         // PR인 경우: PR-숫자 형식 사용
                         CONTAINER_NAME = "bsmhub-PR-${env.CHANGE_ID}"
                         IMAGE_TAG = "${env.REGISTRY}/${env.IMAGE_NAME}:PR-${env.CHANGE_ID}"
-                        
+
                         // PR 번호를 기반으로 포트 계산 (4000 + PR번호)
                         def prNumber = env.CHANGE_ID as Integer
                         PORT = (4000 + (prNumber % 1000)).toString()
@@ -28,13 +28,13 @@ pipeline {
                         echo "  Container: ${CONTAINER_NAME}"
                         echo "  Image: ${IMAGE_TAG}"
                         echo "  Port: ${PORT} (fixed)"
-                        
+
                         // 기존 컨테이너가 해당 포트를 사용 중인지 확인
                         def existingContainer = sh(script: "docker ps -q -f name=${CONTAINER_NAME}", returnStdout: true).trim()
                         if (existingContainer) {
-                            echo "✅ Found existing container - will be replaced"
+                            echo '✅ Found existing container - will be replaced'
                         } else {
-                            echo "ℹ️  No existing container found - will create new one"
+                            echo 'ℹ️  No existing container found - will create new one'
                         }
                     } else {
                         // 일반 브랜치인 경우: 브랜치명 정규화 후 사용
@@ -43,10 +43,10 @@ pipeline {
                             .replaceAll('[^a-zA-Z0-9._-]', '')
                             .toLowerCase()
                             .take(128)
-                        
+
                         CONTAINER_NAME = "bsmhub-${normalizedBranch}"
                         IMAGE_TAG = "${env.REGISTRY}/${env.IMAGE_NAME}:${normalizedBranch}"
-                        
+
                         // 사용 가능한 포트 찾기
                         PORT = sh(script: '''
                                 for port in $(seq 4000 4999); do
@@ -57,7 +57,7 @@ pipeline {
                                 done
                                 echo "4000"  # Fallback port if none found
                             ''', returnStdout: true).trim()
-                        
+
                         echo "Branch '${env.BRANCH_NAME}' deployment:"
                         echo "  Normalized: ${normalizedBranch}"
                         echo "  Container: ${CONTAINER_NAME}"
@@ -84,7 +84,9 @@ pipeline {
 
         stage('PR Preview Comment') {
             when {
-                expression { env.CHANGE_ID != null } // PR인 경우에만 실행
+                expression {
+                    env.CHANGE_ID != null
+                }
             }
             steps {
                 script {
@@ -109,17 +111,28 @@ pipeline {
                 script {
                     echo "Building Docker image: ${IMAGE_TAG}"
                     sh "DOCKER_BUILDKIT=1 docker build -t ${IMAGE_TAG} ."
-                    echo "✅ Docker image built successfully"
+                    echo '✅ Docker image built successfully'
+
+                    // PR이 아닌 경우 빌드 확인만 하고 종료
+                    if (env.CHANGE_ID == null) {
+                        echo 'ℹ️  Non-PR branch detected - skipping deployment'
+                        echo '✅ Build verification completed successfully'
+                    }
                 }
             }
         }
 
         stage('Stop and Remove Existing Container') {
+            when {
+                expression {
+                    env.CHANGE_ID != null
+                }
+            }
             steps {
                 script {
                     echo "Checking for existing container: ${CONTAINER_NAME}"
                     def existingContainer = sh(script: "docker ps -aq -f name=${CONTAINER_NAME}", returnStdout: true).trim()
-                    
+
                     if (existingContainer) {
                         echo "Found existing container: ${existingContainer}"
                         echo "Stopping and removing container: ${CONTAINER_NAME}"
@@ -127,7 +140,7 @@ pipeline {
                             docker stop ${CONTAINER_NAME} || true
                             docker rm ${CONTAINER_NAME} || true
                         """
-                        echo "Successfully removed existing container"
+                        echo 'Successfully removed existing container'
                     } else {
                         echo "No existing container found with name: ${CONTAINER_NAME}"
                     }
@@ -136,6 +149,11 @@ pipeline {
         }
 
         stage('Deploy New Container') {
+            when {
+                expression {
+                    env.CHANGE_ID != null
+                }
+            }
             steps {
                 script {
                     echo "Deploying new container: ${CONTAINER_NAME} on port ${PORT}"
@@ -148,7 +166,7 @@ pipeline {
                             --env-file .env.local \\
                             ${IMAGE_TAG}
                     """
-                    
+
                     // 컨테이너가 정상적으로 시작되었는지 확인
                     sh """
                         sleep 3
@@ -166,7 +184,9 @@ pipeline {
 
         stage('Update PR Comment') {
             when {
-                expression { env.CHANGE_ID != null } // PR인 경우에만 실행
+                expression {
+                    env.CHANGE_ID != null
+                }
             }
             steps {
                 script {

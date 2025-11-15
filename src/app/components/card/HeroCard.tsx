@@ -1,6 +1,23 @@
+'use client';
+
 import Link from "next/link";
+import { useCallback } from 'react';
+import { useModal } from '@/app/components/modal';
+import { useCurrentUser } from '@/utils/hook/useCurrentUser';
+import { openProjectModal } from '@/utils/modal/openProjectModal';
 
 const HeroCard = () => {
+  const currentUser = useCurrentUser();
+  const { openModal, closeModal } = useModal();
+
+  const handleMakeProject = useCallback(async () => {
+    if (!currentUser?.id) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+    await openProjectModal(currentUser.id, openModal, closeModal);
+  }, [currentUser?.id, openModal, closeModal]);
+
   return (
     <section className="h-full w-[26rem] mobile:w-full mobile:h-auto bg-white rounded-[0.25rem] border border-gray-200 p-5 flex flex-col justify-between">
       <header className="flex flex-col gap-1">
@@ -17,12 +34,14 @@ const HeroCard = () => {
         >
           포트폴리오 살펴보기
         </Link>
-        <Link
-          href="/project"
+        <button
+          onClick={() => {
+            void handleMakeProject();
+          }}
           className="px-3 py-2 rounded-[0.25rem] border border-gray-300 text-label text-gray-800 bg-white"
         >
           프로젝트 올리기
-        </Link>
+        </button>
       </div>
 
       <footer className="mt-3 flex items-center gap-2">

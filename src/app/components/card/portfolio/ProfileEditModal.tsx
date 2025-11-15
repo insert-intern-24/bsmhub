@@ -2,6 +2,9 @@
 
 import InputOfModal from '../../modal/inputs/InputOfModal';
 import { useFormConfigData } from '@/utils/hook/useFormConfigData';
+import { useErrorToast } from '@/utils/hook/useErrorToast';
+import { formatErrorMessage } from '@/utils/errorMessage';
+import { useToast } from '@/app/components/toast';
 import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
 import type { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
 import { useRouter } from 'next/navigation';
@@ -25,17 +28,19 @@ const ProfileEditModal = ({
   onClose,
 }: ProfileEditModalProps) => {
   const router = useRouter();
+  const { showToast } = useToast();
   const isTeamValue = isTeam ?? false;
-  
+
   // 모드 결정
   const finalMode = mode;
 
-  // useFormConfigData 훅을 사용하여 데이터 로딩 및 저장
   const { initialValues, isLoading, saveData, error, canSave } =
     useFormConfigData(config, variables, {
       autoLoad: true,
       mode: finalMode,
     });
+
+  useErrorToast(error);
 
   const handleProfileSubmit = (
     formData: Record<
@@ -55,28 +60,11 @@ const ProfileEditModal = ({
       );
 
       if (result.success) {
-        console.log('프로필이 성공적으로 저장되었습니다.');
-        console.log('Save result:', result);
         onClose();
         router.refresh();
       } else {
-        console.error('프로필 저장 실패:', result.message);
-
-        // 에러 메시지를 사용자 친화적으로 변환
-        let errorMessage = result.message || '알 수 없는 오류가 발생했습니다.';
-
-        if (
-          errorMessage.includes('duplicate key') ||
-          errorMessage.includes('profile_name_key')
-        ) {
-          errorMessage =
-            '이미 사용 중인 프로필 이름입니다. 다른 이름을 사용해주세요.';
-        } else if (errorMessage.includes('unique constraint')) {
-          errorMessage =
-            '중복된 데이터가 존재합니다. 입력 내용을 확인해주세요.';
-        }
-
-        alert(`저장 중 오류가 발생했습니다:\n${errorMessage}`);
+        const errorMessage = formatErrorMessage(result.message, 'profile');
+        showToast(errorMessage, 'error', 2000, '오류');
       }
     })();
   };
@@ -84,6 +72,10 @@ const ProfileEditModal = ({
   const handleProfileDelete = (): void => {
     void (async () => {
       try {
+        if (!variables?.profile_id) {
+          console.error('프로필 ID가 없습니다.');
+          return;
+        }
         await createDeleteHandler(
           config,
           { profile_id: { eq: variables.profile_id } },
@@ -106,10 +98,6 @@ const ProfileEditModal = ({
           : '프로필 정보를 불러오는 중...'}
       </div>
     );
-  }
-
-  if (error) {
-    return <div className="p-8 text-center text-red-500">오류: {error}</div>;
   }
 
   return (

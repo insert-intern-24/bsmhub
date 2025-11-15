@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     // GitHub webhook에서 PR이 닫히거나 머지될 때 트리거
     triggers {
         GenericTrigger(
@@ -17,22 +17,22 @@ pipeline {
             regexpFilterExpression: '^(closed)$'
         )
     }
-    
+
     environment {
         REGISTRY = '10.3.0.130:5000'
         IMAGE_NAME = 'bsmhub'
-        DEPLOY_SERVER = '10.3.0.127'
+        DEPLOY_SERVER = '10.59.0.106'
         REPO_OWNER = 'insert-intern-24'
         REPO_NAME = 'bsmhub'
         GITHUB_APP = credentials('GITHUB_APP_CREDENTIALS')
     }
-    
+
     stages {
         stage('Validate Webhook') {
             steps {
                 script {
                     if (!env.pr_number) {
-                        error("No PR number provided in webhook")
+                        error('No PR number provided in webhook')
                     }
                     echo "🔍 Processing cleanup for PR #${env.pr_number}"
                     echo "PR State: ${env.pr_state}"
@@ -41,19 +41,19 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Cleanup PR Resources') {
             steps {
                 script {
                     // PR-숫자 형식으로 컨테이너 이름 생성 (메인 파이프라인과 일치)
                     def containerName = "bsmhub-PR-${env.pr_number}"
                     def imageName = "${env.REGISTRY}/${env.IMAGE_NAME}:PR-${env.pr_number}"
-                    
+
                     echo "🧹 Starting cleanup for PR #${env.pr_number}"
                     echo "Branch: ${env.pr_head_ref}"
                     echo "Container: ${containerName}"
                     echo "Image: ${imageName}"
-                    
+
                     // 컨테이너 정지 및 삭제
                     def containerExists = sh(script: "docker ps -aq -f name=${containerName}", returnStdout: true).trim()
                     if (containerExists) {
@@ -62,8 +62,8 @@ pipeline {
                             docker stop ${containerName} || echo "Failed to stop container"
                             docker rm ${containerName} || echo "Failed to remove container"
                         """
-                        echo "✅ Container removed successfully"
-                        
+                        echo '✅ Container removed successfully'
+
                         // 컨테이너가 사용하던 포트 확인
                         def prNumber = env.pr_number as Integer
                         def port = (4000 + (prNumber % 1000)).toString()
@@ -71,41 +71,44 @@ pipeline {
                     } else {
                         echo "ℹ️  No container found with name: ${containerName}"
                     }
-                    
+
                     // 이미지 삭제
                     def imageExists = sh(script: "docker images -q ${imageName}", returnStdout: true).trim()
                     if (imageExists) {
                         echo "🗑️  Removing image: ${imageName}"
                         sh "docker rmi ${imageName} || echo 'Failed to remove image'"
-                        echo "✅ Image removed successfully"
+                        echo '✅ Image removed successfully'
                     } else {
                         echo "ℹ️  No image found: ${imageName}"
                     }
-                    
+
                     // 미사용 이미지 정리
-                    echo "🧽 Cleaning up unused images..."
-                    sh "docker image prune -f"
-                    
+                    echo '🧽 Cleaning up unused images...'
+                    sh 'docker image prune -f'
+
                     // 리소스 사용량 확인
-                    echo "📊 Current Docker resource usage:"
-                    sh """
+                    echo '📊 Current Docker resource usage:'
+                    sh '''
                         echo "=== Running Containers ==="
                         docker ps --format "table {{.Names}}\\t{{.Image}}\\t{{.Ports}}\\t{{.Status}}"
                         echo ""
                         echo "=== Docker Images ==="
                         docker images --format "table {{.Repository}}\\t{{.Tag}}\\t{{.Size}}"
-                    """
+                    '''
                 }
             }
         }
-        
+
         stage('Post Cleanup Comment') {
             steps {
                 script {
                     def prNumber = env.pr_number as Integer
                     def port = (4000 + (prNumber % 1000)).toString()
-                    
-                    def cleanupMessage = env.pr_merged == 'true' ? 
+                    echo '[DEBUG] REPO_OWNER: insert-intern-24'
+                    echo '[DEBUG] REPO_NAME: bsmhub'
+                    echo "[DEBUG] pr_number: ${env.pr_number}"
+
+                    def cleanupMessage = env.pr_merged == 'true' ?
                         """🎉✨ **PR이 성공적으로 머지되었습니다!**
                         |
                         |🧹 프리뷰 환경이 자동으로 정리되었습니다:
@@ -120,20 +123,20 @@ pipeline {
                         |• 컨테이너: `bsmhub-PR-${env.pr_number}` 제거됨
                         |• 포트: `${port}` 해제됨
                         |• 관련 Docker 이미지 정리 완료""".stripMargin()
-                    
+
                     def payload = groovy.json.JsonOutput.toJson([body: cleanupMessage])
-                    
+
                     def response = sh(script: """
                         curl -w "%{http_code}" -s -X POST \\
-                        -H "Authorization: Bearer ${GITHUB_APP_PSW}" \\
+                        -H "Authorization: Bearer $GITHUB_APP_PSW" \\
                         -H "Accept: application/vnd.github.v3+json" \\
-                        https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${env.pr_number}/comments \\
+                        https://api.github.com/repos/${env.REPO_OWNER}/${env.REPO_NAME}/issues/${env.pr_number}/comments \\
                         -d '${payload}'
                     """, returnStdout: true).trim()
-                    
+
                     def httpCode = response.substring(response.length() - 3)
-                    if (httpCode.startsWith("20")) {
-                        echo "✅ Cleanup comment posted successfully"
+                    if (httpCode.startsWith('20')) {
+                        echo '✅ Cleanup comment posted successfully'
                     } else {
                         echo "⚠️  Failed to post comment. HTTP Code: ${httpCode}"
                         echo "Response: ${response}"
@@ -142,11 +145,11 @@ pipeline {
             }
         }
     }
-    
+
     post {
         always {
             echo "🏁 PR #${env.pr_number} cleanup process completed"
-            echo "📝 Summary:"
+            echo '📝 Summary:'
             echo "   - Branch: ${env.pr_head_ref}"
             echo "   - Merged: ${env.pr_merged}"
             echo "   - Action: ${env.action}"
@@ -157,13 +160,15 @@ pipeline {
                 // 실패 시에도 간단한 알림
                 def failureMessage = "⚠️ PR #${env.pr_number} 정리 과정에서 오류가 발생했습니다. 수동 확인이 필요할 수 있습니다."
                 def payload = groovy.json.JsonOutput.toJson([body: failureMessage])
-                sh """
-                    curl -X POST \\
-                    -H "Authorization: Bearer ${GITHUB_APP_PSW}" \\
-                    -H "Accept: application/vnd.github.v3+json" \\
-                    https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${env.pr_number}/comments \\
-                    -d '${payload}' || true
-                """
+                node {
+                    sh """
+                        curl -X POST \\
+                        -H "Authorization: Bearer \$GITHUB_APP_PSW" \\
+                        -H "Accept: application/vnd.github.v3+json" \\
+                        https://api.github.com/repos/\$REPO_OWNER/\$REPO_NAME/issues/${env.pr_number}/comments \\
+                        -d '${payload}' || true
+                    """
+                }
             }
         }
         success {
