@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
-import { useToast } from './ToastContext';
+import { useToast, type ToastItem } from './ToastContext';
 import { Title, Label } from '../system/text';
 
 const TOAST_DURATION = 2000;
@@ -26,13 +26,7 @@ const Toast = () => {
 export default Toast;
 
 interface ToastItemProps {
-  toast: {
-    id: string;
-    title?: string;
-    message: string;
-    type?: 'success' | 'error' | 'info' | 'warning';
-    duration?: number;
-  };
+  toast: ToastItem;
   onClose: () => void;
 }
 
