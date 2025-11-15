@@ -125,7 +125,7 @@ pipeline {
                     
                     def response = sh(script: """
                         curl -w "%{http_code}" -s -X POST \\
-                        -H "Authorization: Bearer ${GITHUB_APP_PSW}" \\
+                        -H "Authorization: Bearer \$GITHUB_APP_PSW" \\
                         -H "Accept: application/vnd.github.v3+json" \\
                         https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${env.pr_number}/comments \\
                         -d '${payload}'
@@ -159,7 +159,7 @@ pipeline {
                 def payload = groovy.json.JsonOutput.toJson([body: failureMessage])
                 sh """
                     curl -X POST \\
-                    -H "Authorization: Bearer ${GITHUB_APP_PSW}" \\
+                    -H "Authorization: Bearer \$GITHUB_APP_PSW" \\
                     -H "Accept: application/vnd.github.v3+json" \\
                     https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${env.pr_number}/comments \\
                     -d '${payload}' || true
