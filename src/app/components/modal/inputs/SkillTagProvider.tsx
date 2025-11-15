@@ -6,6 +6,7 @@ import SkillTag from './SkillTag';
 import { createClient } from '@/services/supabase/client';
 import { Tables } from '@/services/supabase/database.types';
 import { getOrCreateSkillId } from '@/services/graphQL/relationTableHelper.graphql';
+import { useToast } from '@/app/components/toast';
 
 interface SkillTagProviderProps {
   initialTags?: number[];
@@ -33,6 +34,7 @@ const SkillTagProvider = ({
   const [editValue, setEditValue] = React.useState('');
 
   const supabase = createClient();
+  const { showToast } = useToast();
 
   React.useEffect(() => {
     supabase
@@ -40,12 +42,17 @@ const SkillTagProvider = ({
       .select('*')
       .then(({ data, error }) => {
         if (error) {
-          console.error('Error fetching skills:', error);
+          showToast(
+            '스킬 목록을 불러오는 중 오류가 발생했습니다.',
+            'error',
+            3000,
+            '오류'
+          );
         } else {
           setSkills(data as Tables<'skills'>[]);
         }
       });
-  }, [supabase]);
+  }, [supabase, showToast]);
 
   const skillMap = React.useMemo(() => {
     if (!skills) return new Map<number, string>();
@@ -112,7 +119,12 @@ const SkillTagProvider = ({
       dispatch({ type: 'SET_ACTIVE', index: null });
       if (callback) callback();
     } catch (error) {
-      console.error('Failed to commit skill change', error);
+      showToast(
+        error instanceof Error ? error.message : '스킬 변경 중 오류가 발생했습니다.',
+        'error',
+        3000,
+        '오류'
+      );
     }
   };
 
