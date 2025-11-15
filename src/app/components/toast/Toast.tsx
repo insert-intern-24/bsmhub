@@ -9,6 +9,25 @@ const TOAST_DURATION = 2000;
 const ANIMATION_DURATION = 500;
 const DRAG_THRESHOLD = 20;
 
+// Toast 레이아웃 상수 정의
+const TOAST_LAYOUT = {
+  CONTAINER_WIDTH: 299,
+  CONTAINER_HEIGHT: 282,
+  CARD_WIDTH: 280,
+  CARD_HEIGHT: 197,
+  CARD_ROTATION: 359, // 359도로 미세 회전하여 시각적 효과 제공
+  CARD_TOP_OFFSET: '10%',
+  CARD_BOTTOM_OFFSET: '18%',
+  IMAGE_BOTTOM_WIDTH: Math.round(139 * 1.3),
+  IMAGE_BOTTOM_HEIGHT: Math.round(200 * 1.3),
+  IMAGE_BOTTOM_LEFT: '44%',
+  IMAGE_BOTTOM_TOP: '3px',
+  IMAGE_TOP_WIDTH: 235,
+  IMAGE_TOP_HEIGHT: 119,
+  IMAGE_TOP_LEFT: '52%',
+  IMAGE_TOP_BOTTOM: '-2%',
+} as const;
+
 const Toast = () => {
   const { toasts, removeToast } = useToast();
 
@@ -127,10 +146,14 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
 
   return (
     <div
-      className={`relative h-[282px] w-[299px] ${
+      className={`relative cursor-grab select-none ${
         isClosing ? 'animate-slide-down' : 'animate-slide-up'
-      } cursor-grab select-none`}
-      style={{ transform: dragY > 0 ? `translateY(${dragY}px)` : undefined }}
+      }`}
+      style={{ 
+        height: `${TOAST_LAYOUT.CONTAINER_HEIGHT}px`,
+        width: `${TOAST_LAYOUT.CONTAINER_WIDTH}px`,
+        transform: dragY > 0 ? `translateY(${dragY}px)` : undefined 
+      }}
       onMouseDown={handleMouseDown}
       onKeyDown={handleKeyDown}
       tabIndex={0}
@@ -140,14 +163,27 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
       <Image 
         src="/card/ToastCard/bottom.svg" 
         alt="bottom" 
-        width={Math.round(139 * 1.3)}
-        height={Math.round(200 * 1.3)}
-        className="absolute left-[44%] top-[3px] -translate-x-1/2 z-0 !select-none pointer-events-none"
+        width={TOAST_LAYOUT.IMAGE_BOTTOM_WIDTH}
+        height={TOAST_LAYOUT.IMAGE_BOTTOM_HEIGHT}
+        className="absolute -translate-x-1/2 z-0 !select-none pointer-events-none"
+        style={{ 
+          left: TOAST_LAYOUT.IMAGE_BOTTOM_LEFT,
+          top: TOAST_LAYOUT.IMAGE_BOTTOM_TOP 
+        }}
         draggable={false}
         priority
       />
 
       <div
+        className={`absolute left-0 rounded-[5px] flex-col gap-[3px] items-start justify-start p-4 overflow-hidden ${bgColor}`}
+        style={{
+          bottom: TOAST_LAYOUT.CARD_BOTTOM_OFFSET,
+          top: TOAST_LAYOUT.CARD_TOP_OFFSET,
+          width: `${TOAST_LAYOUT.CARD_WIDTH}px`,
+          height: `${TOAST_LAYOUT.CARD_HEIGHT}px`,
+          minWidth: `${TOAST_LAYOUT.CARD_WIDTH}px`,
+          transform: `rotate(${TOAST_LAYOUT.CARD_ROTATION}deg)`
+        }}
         className={`absolute bottom-[18%] left-0 top-[10%] w-[280px] h-[197px] min-w-[280px] 
                    rotate-[359deg] rounded-[5px] 
                    flex flex-col gap-[3px] items-start justify-start p-4 overflow-hidden
@@ -160,9 +196,13 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
       <Image
         src="/card/ToastCard/top.svg"
         alt="top"
-        width={235}
-        height={119}
-        className="absolute left-[52%] bottom-[-2%] -translate-x-1/2 z-10 !select-none pointer-events-none"
+        width={TOAST_LAYOUT.IMAGE_TOP_WIDTH}
+        height={TOAST_LAYOUT.IMAGE_TOP_HEIGHT}
+        className="absolute -translate-x-1/2 z-10 !select-none pointer-events-none"
+        style={{ 
+          left: TOAST_LAYOUT.IMAGE_TOP_LEFT,
+          bottom: TOAST_LAYOUT.IMAGE_TOP_BOTTOM 
+        }}
         draggable={false}
         priority
       />
