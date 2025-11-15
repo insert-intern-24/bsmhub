@@ -66,7 +66,7 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
       if (animationTimerRef.current) clearTimeout(animationTimerRef.current);
     };
-  }, [toast.id, onClose]);
+  }, [toast.id, toast.duration, onClose]);
 
   const handleClose = () => {
     // 기존 타이머 정리
