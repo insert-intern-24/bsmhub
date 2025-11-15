@@ -93,8 +93,7 @@ export default async function checkProjectEditPermission(
       `
       profile_id,
       profile:profile_id (
-        owner,
-        is_team
+        owner
       )
     `,
     )
