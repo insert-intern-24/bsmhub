@@ -289,9 +289,7 @@ export function formDataToGraphQL(
               return obj;
             });
 
-          if (relationItems.length > 0) {
-            relationTableData.set(table, relationItems);
-          }
+          relationTableData.set(table, relationItems);
         } else {
           // 빈 배열일 때도 relationTableData에 빈 배열 설정 (삭제 처리용)
           relationTableData.set(table, []);

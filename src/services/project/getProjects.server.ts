@@ -80,14 +80,14 @@ export const getProjects = async (limit?: number): Promise<CardProps[]> => {
   return fetchProjects(limit);
 };
 
-export const getMyProjects = async (studentId: string, limit?: number): Promise<CardProps[]> => {
+export const getProjectsByProfileName = async (profileName: string, limit?: number): Promise<CardProps[]> => {
   const supabase = await createClient();
 
-  // 먼저 현재 사용자의 프로필 ID를 찾습니다
+  // 먼저 profileName으로 사용자의 프로필 ID를 찾습니다
   const { data: userProfile, error: profileError } = await supabase
     .from('profile')
     .select('profile_id')
-    .eq('owner', studentId)
+    .eq('profile_name', profileName)
     .eq('is_team', false)
     .maybeSingle();
 
@@ -130,7 +130,7 @@ export const getMyProjects = async (studentId: string, limit?: number): Promise<
   const { data, error } = await query;
 
   if (error) {
-    console.error('내 프로젝트 조회 중 오류:', error);
+    console.error('프로필별 프로젝트 조회 중 오류:', error);
     return [];
   }
 

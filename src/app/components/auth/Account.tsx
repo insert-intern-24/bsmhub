@@ -2,10 +2,9 @@
 
 import { createClient } from '@/services/supabase/client';
 import { useCallback, useEffect, useState } from 'react';
-import { Dropdown, DropdownItem } from '../dropdown/DropDown';
+import { Dropdown, DropdownItem } from '../dropdown/Dropdown';
 import { useModal } from '@/app/components/modal';
 import { useCurrentUser } from '@/utils/hook/useCurrentUser';
-import { openProjectModal } from '@/utils/modal/openProjectModal';
 import { openProfileModal } from '@/utils/modal/openProfileModal';
 import { openGoogleLogin } from '@/utils/auth/googleLogin';
 import {
@@ -20,17 +19,13 @@ const Account = () => {
   const supabase = createClient();
   const currentUser = useCurrentUser();
   const [profileLink, setProfileLink] = useState<string | null>(null);
+  const [profileName, setProfileName] = useState<string | null>(null);
   const { openModal, closeModal } = useModal();
 
   const handleMakeProfile = useCallback(() => {
     if (!currentUser?.id) return;
     void openProfileModal(currentUser.id, openModal, closeModal);
   }, [currentUser?.id, openModal, closeModal]);
-
-  const handleMakeProject = () => {
-    if (!currentUser?.id) return;
-    void openProjectModal(currentUser.id, openModal, closeModal);
-  };
 
   useEffect(() => {
     if (!currentUser?.id) return;
@@ -43,7 +38,13 @@ const Account = () => {
       ]);
 
       if (!mounted) return;
-      setProfileLink(profile ? `/portfolio/${profile.profile_name}` : null);
+      if (profile) {
+        setProfileLink(`/portfolio/${profile.profile_name}`);
+        setProfileName(profile.profile_name);
+      } else {
+        setProfileLink(null);
+        setProfileName(null);
+      }
       if (!exists) handleMakeProfile();
     };
     void init();
@@ -73,17 +74,20 @@ const Account = () => {
       ) : (
         <DropdownItem onSelect={handleMakeProfile}>프로필 만들기</DropdownItem>
       )}
-      <Link href="/team?mine=true">
-        <DropdownItem leadingIcon={<IconUsersGroup size={16} />}>
-          내 팀 보기
-        </DropdownItem>
-      </Link>
-      <Link href="/project?mine=true">
-        <DropdownItem leadingIcon={<IconAssembly size={16} />}>
-          내 프로젝트 보기
-        </DropdownItem>
-      </Link>
-      <DropdownItem onSelect={handleMakeProject}>프로젝트 만들기</DropdownItem>
+      {profileName && (
+        <>
+          <Link href={`/team?profileName=${profileName}`}>
+            <DropdownItem leadingIcon={<IconUsersGroup size={16} />}>
+              내 팀 보기
+            </DropdownItem>
+          </Link>
+          <Link href={`/project?profileName=${profileName}`}>
+            <DropdownItem leadingIcon={<IconAssembly size={16} />}>
+              내 프로젝트 보기
+            </DropdownItem>
+          </Link>
+        </>
+      )}
       <DropdownItem onSelect={() => supabase.auth.signOut()}>
         로그아웃
       </DropdownItem>
