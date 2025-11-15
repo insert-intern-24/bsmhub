@@ -139,10 +139,12 @@ export interface FormConfig {
     read: string; // 조회 쿼리
     insert: string; // 삽입 mutation
     update: string; // 업데이트 mutation
+    delete?: string; // 삭제 mutation (선택사항)
   };
   // 메인 테이블 정보 (선택사항, relation table 처리에 사용)
   mainTable?: string; // 메인 테이블 이름 (예: 'projects', 'profile')
   idField?: string; // 메인 테이블의 ID 필드명 (예: 'project_id', 'profile_id')
+  deleteable?: boolean; // 삭제 가능 여부 (기본값: false)
 
   /**
    * 관계 테이블 처리 콜백 (선택사항)
