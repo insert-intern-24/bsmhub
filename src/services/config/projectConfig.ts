@@ -355,10 +355,9 @@ export const projectConfig: FormConfig = {
           { profile_id: 'profile_id', description: 'description' },
           (item) => Boolean(item.profile_id),
         ),
-        deleteFilterGenerator: createDeleteFilterGenerator([
-          'profile_id',
-          'description',
-        ]),
+        // DELETE는 primary key(profile_id)만으로 충분
+        deleteFilterGenerator: createDeleteFilterGenerator(['profile_id']),
+        // changeCalculator는 description도 비교하여 변경 감지
         changeCalculator: createChangeCalculator(['profile_id', 'description']),
       },
     },
