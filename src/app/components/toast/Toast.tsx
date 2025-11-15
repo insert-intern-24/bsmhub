@@ -17,7 +17,12 @@ const Toast = () => {
   const toast = toasts[0];
 
   return (
-    <div className="fixed bottom-0 z-[10050] right-[max(calc((100vw-109rem)/2+33px),33px)] mobile:right-[11px]">
+    <div
+      className="fixed bottom-0 z-[10050] right-[max(calc((100vw-109rem)/2+33px),33px)] mobile:right-[11px]"
+      role="alert"
+      aria-live="polite"
+      aria-atomic="true"
+    >
       <ToastItem key={toast.id} toast={toast} onClose={() => removeToast(toast.id)} />
     </div>
   );
