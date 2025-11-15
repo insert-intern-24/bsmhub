@@ -12,14 +12,15 @@ interface TeamProjectPageProps {
 const TeamProjectPage = async ({ params }: TeamProjectPageProps) => {
   const { teamName, projectName } = await params;
   const decodedTeamName = decodeURIComponent(teamName);
-  const decodedProjectName = decodeURIComponent(projectName);
 
+  // checkProfileIsTeam은 디코딩된 값을 사용하지만,
+  // ProjectDetailPage에는 원본 인코딩된 값을 전달하여 이중 디코딩 방지
   if (await checkProfileIsTeam(decodedTeamName))
     return (
       <ProjectDetailPage
         params={Promise.resolve({
-          teamName: decodedTeamName,
-          projectName: decodedProjectName,
+          teamName,
+          projectName,
         })}
       />
     );
