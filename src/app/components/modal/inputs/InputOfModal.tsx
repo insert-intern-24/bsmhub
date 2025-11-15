@@ -1,18 +1,19 @@
-"use client"
+'use client';
 
-import React, { useEffect, useState } from 'react'
-import { useForm, Controller } from 'react-hook-form'
-import { Title } from '@/app/components/system/text'
-import LabelOfInputs from './LabelOfInputs'
-import InputListProvider from './InputListProvider'
-import SkillTagProvider from './SkillTagProvider'
-import Checkbox from './Checkbox'
-import Buttons from './Button'
-import PictureUpload from './PictureUpload'
-import DeleteConfirmModal from './DeleteConfirmModal'
-import { FormConfig } from './types/inputTypes'
-import { MultiInputItem } from '@/utils/hook/useInputList'
-import { useModal } from '@/app/components/modal'
+import React, { useEffect, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { Title } from '@/app/components/system/text';
+import LabelOfInputs from './LabelOfInputs';
+import InputListProvider from './InputListProvider';
+import SkillTagProvider from './SkillTagProvider';
+import Checkbox from './Checkbox';
+import Button from './Button';
+import PictureUpload from './PictureUpload';
+import DeleteConfirmModal from './DeleteConfirmModal';
+import { FormConfig } from './types/inputTypes';
+import { MultiInputItem } from '@/utils/hook/useInputList';
+import { useModal } from '@/app/components/modal';
+import { useToast } from '@/app/components/toast';
 
 interface InputOfModalProps {
   config: FormConfig;
@@ -50,6 +51,7 @@ const InputOfModal = ({
   });
 
   const { openModal, closeModal } = useModal();
+  const { showToast } = useToast();
   const [isDeleting, setIsDeleting] = useState(false);
 
   // initialValues가 변경될 때마다 폼을 리셋
@@ -60,8 +62,16 @@ const InputOfModal = ({
   }, [initialValues, reset]);
 
   const onFormSubmit = (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>) => {
-    console.log('인풋모달 제출값:', data);
-    onSubmit?.(data);
+    try {
+      onSubmit?.(data);
+    } catch (error) {
+      showToast(
+        error instanceof Error ? error.message : '제출 중 오류가 발생했습니다.',
+        'error',
+        3000,
+        '오류'
+      );
+    }
   };
 
   const handleDeleteClick = () => {
@@ -198,7 +208,7 @@ const InputOfModal = ({
       <div className="w-full mt-4 flex gap-3">
         {showDeleteButton && (
           <div className="flex-1">
-            <Buttons
+            <Button
               color="gray"
               text="삭제하기"
               onClick={handleDeleteClick}
@@ -206,7 +216,7 @@ const InputOfModal = ({
           </div>
         )}
         <div className={showDeleteButton ? 'flex-1' : 'w-full'}>
-          <Buttons
+          <Button
             color="black"
             text={submitButtonText}
             onClick={handleSubmit(onFormSubmit)}
@@ -214,7 +224,7 @@ const InputOfModal = ({
         </div>
       </div>
     </form>
-  )
-}
+  );
+};
 
-export default InputOfModal
+export default InputOfModal;
