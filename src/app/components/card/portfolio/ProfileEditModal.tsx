@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
 import InputOfModal from '../../modal/inputs/InputOfModal';
 import { useFormConfigData } from '@/utils/hook/useFormConfigData';
+import { useErrorToast } from '@/utils/hook/useErrorToast';
 import { formatErrorMessage } from '@/utils/errorMessage';
 import { useToast } from '@/app/components/toast';
 import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
@@ -35,11 +35,7 @@ const ProfileEditModal = ({
       mode: finalMode,
     });
 
-  useEffect(() => {
-    if (error) {
-      showToast(error, 'error', 2000, '오류');
-    }
-  }, [error, showToast]);
+  useErrorToast(error);
 
   const handleProfileSubmit = (
     formData: Record<

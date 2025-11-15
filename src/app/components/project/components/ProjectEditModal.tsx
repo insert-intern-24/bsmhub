@@ -1,8 +1,8 @@
 'use client';
 
 import InputOfModal from '@/app/components/modal/inputs/InputOfModal';
-import { useEffect } from 'react';
 import { useFormConfigData } from '@/utils/hook/useFormConfigData';
+import { useErrorToast } from '@/utils/hook/useErrorToast';
 import { formatErrorMessage } from '@/utils/errorMessage';
 import { useToast } from '@/app/components/toast';
 import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
@@ -32,11 +32,7 @@ const ProjectEditModal = ({
       mode: finalMode,
     });
 
-  useEffect(() => {
-    if (error) {
-      showToast(error, 'error', 2000, '오류');
-    }
-  }, [error, showToast]);
+  useErrorToast(error);
 
   const handleProjectSubmit = (
     formData: Record<
