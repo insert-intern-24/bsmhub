@@ -13,7 +13,6 @@ import {
 } from '@/services/profile/getProfileApi.client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { IconUsersGroup, IconAssembly } from '@tabler/icons-react';
 
 const Account = () => {
   const supabase = createClient();
