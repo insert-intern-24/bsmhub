@@ -1,6 +1,6 @@
 'use client';
 
-import Link from "next/link";
+import Link from 'next/link';
 import { useCallback } from 'react';
 import { useModal } from '@/app/components/modal';
 import { useCurrentUser } from '@/utils/hook/useCurrentUser';
@@ -21,9 +21,12 @@ const HeroCard = () => {
   return (
     <section className="h-full w-[26rem] mobile:w-full mobile:h-auto bg-white rounded-[0.25rem] border border-gray-200 p-5 flex flex-col justify-between">
       <header className="flex flex-col gap-1">
-        <h1 className="text-title-en tracking-[-0.02em]">Build your portfolio</h1>
+        <h1 className="text-title-en tracking-[-0.02em]">
+          Build your portfolio
+        </h1>
         <p className="text-body text-gray-600">
-          프로젝트, 경력, 기술을 한 곳에. 채용자에게 가장 먼저 보이는 프로필을 만드세요.
+          프로젝트, 경력, 기술을 한 곳에. 채용자에게 가장 먼저 보이는 프로필을
+          만드세요.
         </p>
       </header>
 
@@ -55,5 +58,3 @@ const HeroCard = () => {
 };
 
 export default HeroCard;
-
-

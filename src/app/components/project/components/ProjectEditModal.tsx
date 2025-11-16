@@ -28,7 +28,6 @@ const ProjectEditModal = ({
   const router = useRouter();
   const { showToast } = useToast();
 
-  // 모드 결정
   const finalMode = mode;
 
   const { initialValues, isLoading, saveData, error, canSave } =
@@ -55,6 +54,11 @@ const ProjectEditModal = ({
       );
 
       if (result.success) {
+        const successMessage =
+          mode === 'create'
+            ? '프로젝트가 성공적으로 생성되었습니다.'
+            : '프로젝트가 성공적으로 수정되었습니다.';
+        showToast(successMessage, 'success', 3000, '성공');
         onClose();
         router.refresh();
       } else {
@@ -68,19 +72,20 @@ const ProjectEditModal = ({
     void (async () => {
       try {
         if (!variables?.project_id) {
-          console.error('프로젝트 ID가 없습니다.');
+          showToast('프로젝트 ID가 없습니다.', 'error', 3000, '오류');
           return;
         }
-        await createDeleteHandler(
+        const successMessage = await createDeleteHandler(
           config,
           { project_id: { eq: variables.project_id } },
           '프로젝트가 성공적으로 삭제되었습니다.'
         );
+        showToast(successMessage, 'success', 3000, '성공');
         onClose();
         router.refresh();
       } catch (err) {
-        // 에러는 이미 createDeleteHandler에서 처리됨
-        console.error('삭제 처리 중 오류:', err);
+        const errorMessage = err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.';
+        showToast(errorMessage, 'error', 3000, '오류');
       }
     })();
   };

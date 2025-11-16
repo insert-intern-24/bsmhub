@@ -1,9 +1,22 @@
 import React from 'react';
 import CollectClient from '@/app/components/collect/CollectClient';
-import { getProjects } from '@/services/project/getProjects.server';
+import { getProjects, getProjectsByProfileName } from '@/services/project/getProjects.server';
 
-export default async function ProjectPage() {
-  const projects = await getProjects();
+interface ProjectPageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function ProjectPage({ searchParams }: ProjectPageProps) {
+  const params = await searchParams;
+  const profileName = params.profileName;
+
+  let projects = [];
+
+  if (profileName && typeof profileName === 'string') {
+    projects = await getProjectsByProfileName(profileName);
+  } else {
+    projects = await getProjects();
+  }
 
   return (
     <div className="container mx-auto pt-8">

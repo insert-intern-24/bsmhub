@@ -23,7 +23,7 @@ const ProjectDetailPage = async ({ params }: ProjectDetailPageProps) => {
 
   return (
     <section className="w-full">
-      <div className="flex mobile:flex-col mobile:gap-y-8">
+      <div className="flex mobile:flex-col mobile:gap-y-8 min-h-[calc(100vh-10rem)] mobile:min-h-0">
         <ProjectSidebar project={viewModel} hasEditPermission={hasPermission} />
         <ProjectMainContent
           project={viewModel}

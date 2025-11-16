@@ -7,7 +7,7 @@ interface PictureUploadProps {
   onFileChange?: (file: File | null) => void;
 }
 
-function PictureUpload({ aspectRatio = '1:1', onFileChange }: PictureUploadProps) {
+const PictureUpload = ({ aspectRatio = '1:1', onFileChange }: PictureUploadProps) => {
   const [preview, setPreview] = useState<string>();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -50,6 +50,6 @@ function PictureUpload({ aspectRatio = '1:1', onFileChange }: PictureUploadProps
       />
     </label>
   );
-}
+};
 
 export default PictureUpload;

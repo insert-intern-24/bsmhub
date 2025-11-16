@@ -18,39 +18,30 @@ import {
 interface ProjectSummarySectionProps {
   title: string;
   description: string;
-  projectId?: number;
-  hasEditPermission?: boolean;
-  onEdit?: () => void;
 }
 
 export const ProjectSummarySection = ({
   title,
   description,
-  hasEditPermission,
-  projectId,
-  onEdit,
 }: ProjectSummarySectionProps) => (
   <section className="flex-col w-full gap-[0.375rem]">
     <TitleEN>{title}</TitleEN>
     <Body className="text-detail">{description}</Body>
-    <ProjectActions
-      hasEditPermission={hasEditPermission}
-      projectId={projectId}
-      onEdit={onEdit}
-    />
   </section>
 );
 
-const ProjectActions = ({
-  hasEditPermission,
-  projectId,
-  onEdit,
-}: {
+interface ProjectActionsProps {
   hasEditPermission?: boolean;
   projectId?: number;
   onEdit?: () => void;
-}) => (
-  <div className="flex w-full gap-1 mt-3">
+}
+
+export const ProjectActions = ({
+  hasEditPermission,
+  projectId,
+  onEdit,
+}: ProjectActionsProps) => (
+  <div className="flex w-full gap-1">
     <PlayButton
       hasEditPermission={hasEditPermission}
       projectId={projectId}
@@ -139,9 +130,7 @@ export const ProjectLinkSection = ({ links }: ProjectLinkSectionProps) => (
             rel="noopener noreferrer"
             className="text-detail cursor-pointer hover:underline"
           >
-            <Label className="text-detail !block">
-              {link.title || link.url}
-            </Label>
+            <Label className="text-detail">{link.title || link.url}</Label>
           </a>
         ))}
       </div>
@@ -150,7 +139,6 @@ export const ProjectLinkSection = ({ links }: ProjectLinkSectionProps) => (
     )}
   </section>
 );
-
 
 export const ProjectTechnologiesSection = ({
   technologies,
