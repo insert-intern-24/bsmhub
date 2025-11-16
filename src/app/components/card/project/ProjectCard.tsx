@@ -10,6 +10,7 @@ export interface CardProps {
   description: string;
   projectImage: string;
   ownerName: string;
+  ownerProfileImage?: string;
   isTeam: boolean;
   category?: string;
   authors: {
@@ -23,6 +24,7 @@ const Card = ({
   description,
   projectImage,
   ownerName,
+  ownerProfileImage,
   isTeam,
   authors,
 }: CardProps) => {
@@ -41,7 +43,12 @@ const Card = ({
             className="object-cover"
           />
         </figure>
-        <MetaInfo description={description} authors={authors} />
+        <MetaInfo
+          title={title}
+          description={description}
+          ownerProfileImage={ownerProfileImage}
+          authors={authors}
+        />
       </div>
     </Link>
   );
