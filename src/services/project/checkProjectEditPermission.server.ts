@@ -1,6 +1,7 @@
 import { createClient } from '@/services/supabase/server';
 
 type ProfileWithOwner = {
+  owner: string;
   profile: { owner: string; is_team: boolean } | null;
 };
 
