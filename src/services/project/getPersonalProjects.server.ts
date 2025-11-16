@@ -1,9 +1,12 @@
 'use server';
-import { CardProps } from "@/app/components/card/project/ProjectCard";
-import { createClient } from "@/services/supabase/server";
-import { Tables } from "@/services/supabase/database.types";
-import { convertFromDatabaseImageURL } from "@/services/supabase/imageHostConverter";
-import type { ProjectContributor, ProjectOwnerProfile } from '@/services/project/types';
+import { CardProps } from '@/app/components/card/project/ProjectCard';
+import { createClient } from '@/services/supabase/server';
+import { Tables } from '@/services/supabase/database.types';
+import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
+import type {
+  ProjectContributor,
+  ProjectOwnerProfile,
+} from '@/services/project/types';
 import { createAuthorsFromProject } from '@/services/project/utils';
 
 export type PersonalProjectType = Pick<
@@ -14,14 +17,17 @@ export type PersonalProjectType = Pick<
 type PersonalProjectTypeWithProfile = PersonalProjectType & {
   profile: ProjectOwnerProfile;
   project_contributors: ProjectContributor[];
-}
+};
 
-export const getPersonalProjects = async (profile_id: string): Promise<CardProps[]> => {
+export const getPersonalProjects = async (
+  profile_id: string,
+): Promise<CardProps[]> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from('projects')
-    .select(`
+    .select(
+      `
       project_id,
       project_name,
       description,
@@ -39,22 +45,28 @@ export const getPersonalProjects = async (profile_id: string): Promise<CardProps
           profile_image
         )
       )
-    `)
-    .eq('owner', profile_id)
-    
+    `,
+    )
+    .eq('owner', profile_id);
+
   if (error) {
-    console.error('개인 프로젝트 조회 중 오류')
+    console.error('개인 프로젝트 조회 중 오류');
   }
 
-  const projects: CardProps[] = (data as PersonalProjectTypeWithProfile[]).map((project) => ({
-    id: project.project_id,
-    title: project.project_name,
-    description: project.description,
-    projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
-    ownerName: project.profile.profile_name,
-    isTeam: project.profile.is_team,
-    authors: createAuthorsFromProject(project),
-  }));
+  const projects: CardProps[] = (data as PersonalProjectTypeWithProfile[]).map(
+    (project) => ({
+      id: project.project_id,
+      title: project.project_name,
+      description: project.description,
+      projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
+      ownerName: project.profile.profile_name,
+      ownerProfileImage: project.profile.profile_image
+        ? convertFromDatabaseImageURL(project.profile.profile_image)
+        : undefined,
+      isTeam: project.profile.is_team,
+      authors: createAuthorsFromProject(project),
+    }),
+  );
 
   return projects || [];
-}
+};

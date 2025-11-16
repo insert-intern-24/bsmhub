@@ -1,19 +1,23 @@
 'use server';
-import { createClient } from "@/services/supabase/server";
-import type { TeamProjectType } from "@/app/(box-layout)/team/types";
+import { createClient } from '@/services/supabase/server';
+import type { TeamProjectType } from '@/app/(box-layout)/team/types';
 
-export const getTeamProjects = async (teamName: string): Promise<TeamProjectType[]> => {
+export const getTeamProjects = async (
+  teamName: string,
+): Promise<TeamProjectType[]> => {
   const supabase = await createClient();
 
-  const { data, error} = await supabase
+  const { data, error } = await supabase
     .from('projects')
-    .select(`
+    .select(
+      `
       project_id,
       project_name,
       project_thumbnail,
       description,
       profile!projects_owner_fkey!inner (
         profile_name,
+        profile_image,
         is_team
       ),
       project_contributors (
@@ -23,13 +27,14 @@ export const getTeamProjects = async (teamName: string): Promise<TeamProjectType
           profile_image
         )
       )
-    `)
+    `,
+    )
     .eq('profile.profile_name', teamName)
-    .eq('profile.is_team', true)
+    .eq('profile.is_team', true);
 
   if (error) {
-    console.error('팀 프로젝트 조회 중 오류', error)
+    console.error('팀 프로젝트 조회 중 오류', error);
   }
 
   return data || [];
-}
+};

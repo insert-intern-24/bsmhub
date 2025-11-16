@@ -4,7 +4,10 @@ import { createClient } from '@/services/supabase/server';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 import { Tables } from '@/services/supabase/database.types';
 import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
-import type { ProjectContributor, ProjectOwnerProfile } from '@/services/project/types';
+import type {
+  ProjectContributor,
+  ProjectOwnerProfile,
+} from '@/services/project/types';
 import { createAuthorsFromProject } from '@/services/project/utils';
 
 export type ProjectType = Pick<
@@ -48,7 +51,7 @@ const PROJECT_SELECT_QUERY = `
 async function fetchProjects(limit?: number): Promise<CardProps[]> {
   const supabase = await createClient();
   let query = supabase.from('projects').select(PROJECT_SELECT_QUERY);
-  
+
   if (limit) {
     query = query.limit(limit);
   }
@@ -61,16 +64,21 @@ async function fetchProjects(limit?: number): Promise<CardProps[]> {
   }
 
   const projects: CardProps[] = (data as ProjectWithProfileType[]).map(
-    (project) => ({
-      id: project.project_id,
-      title: project.project_name,
-      projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
-      category: project.project_category?.category_name,
-      description: project.description,
-      isTeam: project.profile.is_team,
-      ownerName: project.profile.profile_name,
-      authors: createAuthorsFromProject(project),
-    }),
+    (project) => {
+      return {
+        id: project.project_id,
+        title: project.project_name,
+        projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
+        category: project.project_category?.category_name,
+        description: project.description,
+        isTeam: project.profile.is_team,
+        ownerName: project.profile.profile_name,
+        ownerProfileImage: project.profile.profile_image
+          ? convertFromDatabaseImageURL(project.profile.profile_image)
+          : undefined,
+        authors: createAuthorsFromProject(project),
+      };
+    },
   );
 
   return projects || [];
@@ -80,7 +88,10 @@ export const getProjects = async (limit?: number): Promise<CardProps[]> => {
   return fetchProjects(limit);
 };
 
-export const getProjectsByProfileName = async (profileName: string, limit?: number): Promise<CardProps[]> => {
+export const getProjectsByProfileName = async (
+  profileName: string,
+  limit?: number,
+): Promise<CardProps[]> => {
   const supabase = await createClient();
 
   // 먼저 profileName으로 사용자의 프로필 ID를 찾습니다
@@ -112,13 +123,20 @@ export const getProjectsByProfileName = async (profileName: string, limit?: numb
     return [];
   }
 
-  const contributedProjectIds = (contributions as { project_id: number }[] | null)?.map(c => c.project_id) || [];
+  const contributedProjectIds =
+    (contributions as { project_id: number }[] | null)?.map(
+      (c) => c.project_id,
+    ) || [];
 
   // 사용자가 소유하거나 기여한 프로젝트들을 조회합니다
   let query = supabase.from('projects').select(PROJECT_SELECT_QUERY);
 
   if (contributedProjectIds.length > 0) {
-    query = query.or(`owner.eq.${userProfile.profile_id},project_id.in.(${contributedProjectIds.join(',')})`);
+    query = query.or(
+      `owner.eq.${
+        userProfile.profile_id
+      },project_id.in.(${contributedProjectIds.join(',')})`,
+    );
   } else {
     query = query.eq('owner', userProfile.profile_id);
   }
@@ -143,6 +161,9 @@ export const getProjectsByProfileName = async (profileName: string, limit?: numb
       description: project.description,
       isTeam: project.profile.is_team,
       ownerName: project.profile.profile_name,
+      ownerProfileImage: project.profile.profile_image
+        ? convertFromDatabaseImageURL(project.profile.profile_image)
+        : undefined,
       authors: createAuthorsFromProject(project),
     }),
   );
