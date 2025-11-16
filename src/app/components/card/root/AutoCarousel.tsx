@@ -6,23 +6,15 @@ import Image from 'next/image';
 
 interface AutoCarouselProps {
   interval?: number;
+  images: string[];
 }
 
 // 간단한 자동 슬라이드 캐러셀
 // - public/card/Carousel 내의 이미지를 서버 API로 가져와 표시
 // - 마우스 호버 시 일시정지, 좌우 버튼, 인디케이터 제공
-export default function AutoCarousel({ interval = 5000 }: AutoCarouselProps) {
-  const [images, setImages] = useState<string[]>([]);
+export default function AutoCarousel({ interval = 5000, images }: AutoCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-
-  // 서버에서 캐러셀 이미지 목록을 불러온다
-  useEffect(() => {
-    fetch('/api/carousel-images', { cache: 'no-store' })
-      .then((r) => (r.ok ? r.json() : { images: [] }))
-      .then((d: { images?: string[] }) => setImages(d.images ?? []))
-      .catch(() => {});
-  }, []);
 
   // 길이 의존 계산을 단일 값으로 저장해 의존성 간결화
   const len = images.length;
