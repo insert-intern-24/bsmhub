@@ -5,47 +5,43 @@ import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 
 interface AutoCarouselProps {
-  /** 자동 슬라이드 간격 (밀리초) */
   interval?: number;
 }
 
-/**
- * 자동 슬라이드 캐러셀 컴포넌트
- * - 자동으로 이미지가 전환됩니다
- * - 마우스 호버 시 일시정지됩니다
- * - 좌/우 화살표로 수동 제어 가능합니다
- * - 하단 인디케이터로 현재 위치를 표시합니다
- */
+// 간단한 자동 슬라이드 캐러셀
+// - public/card/Carousel 내의 이미지를 서버 API로 가져와 표시
+// - 마우스 호버 시 일시정지, 좌우 버튼, 인디케이터 제공
 export default function AutoCarousel({ interval = 5000 }: AutoCarouselProps) {
-  // 현재는 하나의 이미지만 사용하지만, 확장을 위해 배열로 관리
-  const images = ['/icon/carousel.svg', '/icon/carousel.svg'];
+  const [images, setImages] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
+  // 서버에서 캐러셀 이미지 목록을 불러온다
+  useEffect(() => {
+    fetch('/api/carousel-images', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : { images: [] }))
+      .then((d: { images?: string[] }) => setImages(d.images ?? []))
+      .catch(() => {});
+  }, []);
+
+  // 길이 의존 계산을 단일 값으로 저장해 의존성 간결화
+  const len = images.length;
   // 다음 슬라이드로 이동
   const goToNext = useCallback(() => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  }, [images.length]);
+    setCurrentIndex((i) => (i + 1) % len);
+  }, [len]);
 
   // 이전 슬라이드로 이동
   const goToPrevious = useCallback(() => {
-    setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + images.length) % images.length,
-    );
-  }, [images.length]);
+    setCurrentIndex((i) => (i - 1 + len) % len);
+  }, [len]);
 
-  // 특정 슬라이드로 이동
-  const goToSlide = useCallback((index: number) => {
-    setCurrentIndex(index);
-  }, []);
-
-  // 자동 슬라이드 효과
+  // 자동 슬라이드 타이머 (호버 시 일시정지)
   useEffect(() => {
-    if (isPaused || images.length <= 1) return;
-
+    if (isPaused || len <= 1) return;
     const timer = setInterval(goToNext, interval);
     return () => clearInterval(timer);
-  }, [isPaused, interval, goToNext, images.length]);
+  }, [isPaused, interval, goToNext, len]);
 
   return (
     <div
@@ -53,7 +49,6 @@ export default function AutoCarousel({ interval = 5000 }: AutoCarouselProps) {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* 이미지 슬라이드 */}
       <div
         className="flex transition-transform duration-500 ease-in-out absolute bottom-0 left-0 w-full h-full"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -65,14 +60,16 @@ export default function AutoCarousel({ interval = 5000 }: AutoCarouselProps) {
               alt={`슬라이드 ${index + 1}`}
               fill
               className="object-cover object-bottom"
+              // 충분한 해상도 선택을 위한 sizes와 품질 향상
+              sizes="100vw"
+              quality={90}
               priority
             />
           </div>
         ))}
       </div>
 
-      {/* 좌측 화살표 버튼 */}
-      {images.length > 1 && (
+      {len > 1 && (
         <button
           onClick={goToPrevious}
           className="absolute left-2 bottom-[6.8rem] bg-white/80 hover:bg-white rounded-full p-1 transition-all shadow-md hover:shadow-lg flex-center"
@@ -82,8 +79,7 @@ export default function AutoCarousel({ interval = 5000 }: AutoCarouselProps) {
         </button>
       )}
 
-      {/* 우측 화살표 버튼 */}
-      {images.length > 1 && (
+      {len > 1 && (
         <button
           onClick={goToNext}
           className="absolute right-2 bottom-[6.8rem] bg-white/80 hover:bg-white rounded-full p-1 transition-all shadow-md hover:shadow-lg flex-center"
@@ -93,13 +89,12 @@ export default function AutoCarousel({ interval = 5000 }: AutoCarouselProps) {
         </button>
       )}
 
-      {/* 하단 인디케이터 점 */}
-      {images.length > 1 && (
+      {len > 1 && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
           {images.map((_, index) => (
             <button
               key={index}
-              onClick={() => goToSlide(index)}
+              onClick={() => setCurrentIndex(index)}
               className={`w-2 h-2 rounded-full transition-all ${
                 index === currentIndex
                   ? 'bg-white w-6'
