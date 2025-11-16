@@ -58,6 +58,7 @@ export default function HomeProjectList({ projects }: HomeProjectListProps) {
             description={project.description}
             isTeam={project.isTeam}
             ownerName={project.ownerName}
+            ownerProfileImage={project.ownerProfileImage}
             projectImage={project.projectImage}
             authors={project.authors}
           />

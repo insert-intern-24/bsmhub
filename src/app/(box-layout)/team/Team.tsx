@@ -24,6 +24,11 @@ const Team = async ({ teamName }: { teamName: string }) => {
               title={project.project_name}
               description={project.description}
               ownerName={project.profile.profile_name}
+              ownerProfileImage={
+                project.profile.profile_image
+                  ? convertFromDatabaseImageURL(project.profile.profile_image)
+                  : undefined
+              }
               projectImage={convertFromDatabaseImageURL(
                 project.project_thumbnail,
               )}

@@ -16,6 +16,9 @@ export function transformTeamToCard(team: TeamData): CardProps {
       ? convertFromDatabaseImageURL(team.profile_image)
       : '',
     ownerName: team.profile_name,
+    ownerProfileImage: team.profile_image
+      ? convertFromDatabaseImageURL(team.profile_image)
+      : undefined,
     isTeam: true,
     category: 'Team',
     authors:

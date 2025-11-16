@@ -155,6 +155,7 @@ export default function CollectClient({
               description={project.description}
               projectImage={project.projectImage}
               ownerName={project.ownerName}
+              ownerProfileImage={project.ownerProfileImage}
               isTeam={project.isTeam}
               category={project.category}
               authors={project.authors}

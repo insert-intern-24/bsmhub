@@ -39,6 +39,7 @@ const PortfolioHome = ({
                 description={data.description}
                 projectImage={data.projectImage}
                 ownerName={data.ownerName}
+                ownerProfileImage={data.ownerProfileImage}
                 isTeam={data.isTeam}
                 authors={data.authors}
               />
