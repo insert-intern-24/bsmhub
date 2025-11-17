@@ -3,12 +3,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Body } from '@/app/components/system/text';
 import type { ProjectDetailViewModel } from '@/services/project/types';
-import {
-  ProjectLinkSection,
-  ProjectSummarySection,
-  ProjectTechnologiesSection,
-  ProjectActions,
-} from '@/app/components/project/sidebar/ProjectSummarySection';
+import { ProjectSummarySection } from '@/app/components/project/sidebar/ProjectSummarySection';
+import { ProjectActions } from '@/app/components/project/sidebar/ProjectActions';
+import { ProjectLinkSection } from '@/app/components/project/sidebar/ProjectLinkSection';
+import { ProjectTechnologiesSection } from '@/app/components/project/sidebar/ProjectTechnologiesSection';
 import { ProjectTeamSection } from '@/app/components/project/sidebar/ProjectTeamSection';
 import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
 import { useModal } from '@/app/components/modal';
@@ -86,8 +84,8 @@ const ProjectSidebar = ({
         <div className="flex-col w-full gap-[1.625rem]">
           <ProjectActions
             hasEditPermission={hasEditPermission}
-            projectId={project.id}
             onEdit={handleProjectEdit}
+            links={project.links}
           />
 
           {/* 링크, 기술스택, 기여자 컨테이너 */}
