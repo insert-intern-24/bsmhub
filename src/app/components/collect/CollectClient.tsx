@@ -4,7 +4,7 @@ import React, { useState, ChangeEvent, useMemo, useCallback } from 'react';
 import Inputs from '@/app/components/modal/inputs/SingleInput';
 import InfinitePagination from '@/app/project/[project_name]/components/pagination/Pagination';
 import Tabs, { TabMode } from '@/app/components/layout/Tabs';
-import Card, { CardProps } from '@/app/components/card/project/ProjectCard';
+import ProjectCard, { CardProps } from '@/app/components/card/project/ProjectCard';
 import PortfolioCard from '@/app/components/card/portfolio/PortfolioCard';
 import { PortfolioCardProps } from '@/app/components/card/portfolio/types';
 import { useSearchParams } from 'next/navigation';
@@ -148,7 +148,7 @@ export default function CollectClient({
           queryFn={fetchProjects}
           enabled={true}
           renderItem={(project) => (
-            <Card
+            <ProjectCard
               key={project.id}
               id={project.id}
               title={project.title}

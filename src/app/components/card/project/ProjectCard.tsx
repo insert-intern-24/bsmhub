@@ -1,11 +1,12 @@
 import React from 'react';
 import Image from 'next/image';
-import MetaInfo from './MetaInfo';
 import Link from 'next/link';
-import { converIsTeamToUrl } from '@/utils/convertIsTeamToUrl';
+
+import MetaInfo from './MetaInfo';
+import { convertIsTeamToUrl } from '@/utils/convertIsTeamToUrl';
 import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 
-export interface CardProps {
+export interface ProjectCardProps {
   id: number;
   title?: string;
   description: string;
@@ -20,7 +21,10 @@ export interface CardProps {
   }[];
 }
 
-const Card = ({
+// 하위 호환성을 위한 타입 별칭
+export type CardProps = ProjectCardProps;
+
+const ProjectCard = ({
   title,
   description,
   projectImage,
@@ -28,10 +32,10 @@ const Card = ({
   ownerProfileImage,
   isTeam,
   authors,
-}: CardProps) => {
+}: ProjectCardProps) => {
   const href = title
-    ? `/${converIsTeamToUrl(isTeam)}/${ownerName}/${title}`
-    : `/${converIsTeamToUrl(isTeam)}/${ownerName}`;
+    ? `/${convertIsTeamToUrl(isTeam)}/${ownerName}/${title}`
+    : `/${convertIsTeamToUrl(isTeam)}/${ownerName}`;
 
   return (
     <Link href={href} className="cursor-pointer">
@@ -56,4 +60,4 @@ const Card = ({
   );
 };
 
-export default Card;
+export default ProjectCard;

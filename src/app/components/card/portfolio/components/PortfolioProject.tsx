@@ -1,7 +1,11 @@
 'use server';
-import { Title } from '@/app/components/system/text';
-import Card, { CardProps } from '../../project/ProjectCard';
+
 import { Fragment } from 'react';
+
+import ProjectCard from '../../project/ProjectCard';
+import { Title } from '@/app/components/system/text';
+
+import type { CardProps } from '../../project/ProjectCard';
 
 export interface PortfolioProjectType {
   mode: 'personal' | 'cooperation';
@@ -39,7 +43,7 @@ const PortfolioProject = ({
         <Fragment key={mode}>
           <Title className="col-span-full mt-8">{mapProjectMode[mode]}</Title>
           {datas.map((data) => (
-            <Card
+            <ProjectCard
               key={data.id}
               id={data.id}
               title={data.title}

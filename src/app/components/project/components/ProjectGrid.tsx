@@ -1,9 +1,10 @@
 'use client';
 
-import { CardProps } from '@/app/components/card/project/ProjectCard';
-import Card from '@/app/components/card/project/ProjectCard';
+import ProjectCard from '@/app/components/card/project/ProjectCard';
 import type { TeamProjectType } from '@/app/(box-layout)/team/types';
 import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
+
+import type { CardProps } from '@/app/components/card/project/ProjectCard';
 
 interface ProjectGridProps {
   projects: CardProps[] | TeamProjectType[];
@@ -52,14 +53,16 @@ const ProjectGrid = ({
   return (
     <div className={`grid gap-6 grid-cols-auto-fit-card ${className}`}>
       {transformedProjects.map((data) => (
-        <Card
+        <ProjectCard
           key={data.id}
           id={data.id}
           title={data.title}
           description={data.description}
           projectImage={data.projectImage}
           ownerName={data.ownerName}
+          ownerProfileImage={data.ownerProfileImage}
           isTeam={data.isTeam}
+          category={data.category}
           authors={data.authors}
         />
       ))}
