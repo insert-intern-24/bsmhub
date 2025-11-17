@@ -69,7 +69,10 @@ async function fetchProjects(limit?: number): Promise<CardProps[]> {
       description: project.description,
       isTeam: project.profile.is_team,
       ownerName: project.profile.profile_name,
-      authors: createAuthorsFromProject(project),
+      authors: createAuthorsFromProject(project, {
+        profile_name: project.profile.profile_name,
+        profile_image: project.profile.profile_image,
+      }),
     }),
   );
 
@@ -143,7 +146,10 @@ export const getProjectsByProfileName = async (profileName: string, limit?: numb
       description: project.description,
       isTeam: project.profile.is_team,
       ownerName: project.profile.profile_name,
-      authors: createAuthorsFromProject(project),
+      authors: createAuthorsFromProject(project, {
+        profile_name: project.profile.profile_name,
+        profile_image: project.profile.profile_image,
+      }),
     }),
   );
 

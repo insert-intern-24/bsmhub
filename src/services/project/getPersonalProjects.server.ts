@@ -53,7 +53,10 @@ export const getPersonalProjects = async (profile_id: string): Promise<CardProps
     projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
     ownerName: project.profile.profile_name,
     isTeam: project.profile.is_team,
-    authors: createAuthorsFromProject(project),
+    authors: createAuthorsFromProject(project, {
+      profile_name: project.profile.profile_name,
+      profile_image: project.profile.profile_image,
+    }),
   }));
 
   return projects || [];
