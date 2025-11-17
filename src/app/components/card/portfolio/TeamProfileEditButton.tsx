@@ -14,7 +14,6 @@ const TeamProfileEditButton = ({ profileId }: TeamProfileEditButtonProps) => {
       variables={{ profile_id: profileId }}
       mode="update"
       isTeam={true}
-      gap={4}
     />
   );
 };
