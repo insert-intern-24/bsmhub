@@ -94,7 +94,6 @@ export const getProjectsByProfileName = async (
 ): Promise<CardProps[]> => {
   const supabase = await createClient();
 
-  // 먼저 profileName으로 사용자의 프로필 ID를 찾습니다
   const { data: userProfile, error: profileError } = await supabase
     .from('profile')
     .select('profile_id')
@@ -112,7 +111,6 @@ export const getProjectsByProfileName = async (
     return [];
   }
 
-  // 사용자가 소유하거나 기여한 프로젝트 ID들을 조회합니다
   const { data: contributions, error: contributionError } = await supabase
     .from('project_contributors')
     .select('project_id')
@@ -128,7 +126,6 @@ export const getProjectsByProfileName = async (
       (c) => c.project_id,
     ) || [];
 
-  // 사용자가 소유하거나 기여한 프로젝트들을 조회합니다
   let query = supabase.from('projects').select(PROJECT_SELECT_QUERY);
 
   if (contributedProjectIds.length > 0) {
@@ -156,7 +153,7 @@ export const getProjectsByProfileName = async (
     (project) => ({
       id: project.project_id,
       title: project.project_name,
-      projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
+      projectImage: project.project_thumbnail,
       category: project.project_category?.category_name,
       description: project.description,
       isTeam: project.profile.is_team,

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useInfinitePortfolio } from '@/utils/hook/useInfinitePortfolio';
 import { PortfolioData } from '@/app/(box-layout)/portfolio/types';
 import BusinessCard, { BusinessCardData } from './BusinessCard';
+import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 
 const SLIDE_INTERVAL = 1500;
 const DEFAULT_AVATAR = '/default-avatar.svg';
@@ -35,16 +36,19 @@ const DEFAULT_CARDS: BusinessCardData[] = [
   },
 ];
 
-const convertPortfolioToBusinessCard = (portfolio: PortfolioData): BusinessCardData => ({
+const convertPortfolioToBusinessCard = (
+  portfolio: PortfolioData,
+): BusinessCardData => ({
   id: portfolio.profile.name,
   name: portfolio.student?.name || portfolio.profile.name,
-  department: portfolio.student?.department?.department_name || '학과 정보 없음',
-  profileImage: portfolio.profile.profile_image,
+  department:
+    portfolio.student?.department?.department_name || '학과 정보 없음',
+  profileImage: convertFromDatabaseImageURL(portfolio.profile.profile_image),
   profileName: portfolio.profile.name,
   projects: portfolio.projects.slice(0, 3).map((project, i) => ({
     id: `${portfolio.profile.name}-${i}`,
     title: project.title,
-    image: project.projectImage || DEFAULT_AVATAR,
+    image: convertFromDatabaseImageURL(project.projectImage) || DEFAULT_AVATAR,
   })),
 });
 
@@ -52,16 +56,16 @@ const AutoSlidingBusinessCard = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const { data, isLoading, error, loadMore } = useInfinitePortfolio();
-  
-  const displayCards = data.length > 0 
-    ? data.map(convertPortfolioToBusinessCard)
-    : DEFAULT_CARDS;
+
+  const displayCards =
+    data.length > 0 ? data.map(convertPortfolioToBusinessCard) : DEFAULT_CARDS;
 
   useEffect(() => {
     if (displayCards.length === 0) return;
 
     const interval = setInterval(() => {
-      if (!isHovered) { // 호버 중이 아닐 때만 슬라이딩
+      if (!isHovered) {
+        // 호버 중이 아닐 때만 슬라이딩
         setCurrentIndex((prev) => {
           const nextIndex = (prev + 1) % displayCards.length;
           if (nextIndex === 0 && !isLoading) loadMore();
@@ -90,15 +94,15 @@ const AutoSlidingBusinessCard = () => {
   }
 
   return (
-    <article 
+    <article
       className="relative flex items-center justify-center h-full w-[26rem] mobile:w-full mobile:h-[15rem] bg-[#D7EFFF] rounded-[0.25rem] overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Image 
-        src="/card/AutoSlidingBusinessCard/bottom.svg" 
-        alt="bottom" 
-        width={139} 
+      <Image
+        src="/card/AutoSlidingBusinessCard/bottom.svg"
+        alt="bottom"
+        width={139}
         height={200}
         className="absolute left-[calc(7.5/17*100%)] top-[5px] -translate-x-1/2 z-0"
         priority
@@ -133,6 +137,5 @@ const AutoSlidingBusinessCard = () => {
     </article>
   );
 };
-
 
 export default AutoSlidingBusinessCard;
