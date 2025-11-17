@@ -5,6 +5,7 @@ import ProfileImage from '../portfolio/components/ProfileImage';
 interface MetaInfoProps {
   title?: string;
   description: string;
+  ownerName: string;
   ownerProfileImage?: string;
   authors: {
     name?: string;
@@ -15,6 +16,7 @@ interface MetaInfoProps {
 const MetaInfo = ({
   title,
   description,
+  ownerName,
   ownerProfileImage,
   authors,
 }: MetaInfoProps) => {
@@ -23,44 +25,46 @@ const MetaInfo = ({
     ? `${title} - ${description}`
     : description;
 
-  // 기여자가 없을 경우 프로젝트 오너의 프로필 이미지를 기본으로 사용
-  const displayAuthors =
-    authors.length > 0
-      ? authors
-      : ownerProfileImage
-        ? [{ name: undefined, profileImage: ownerProfileImage }]
-        : [];
-
   return (
     <figcaption className="flex-x-center gap-4">
       <Label className="text-gray-base truncate">{fullDescription}</Label>
       <div className="flex-y-center gap-1 shrink-0">
-        {displayAuthors.length === 1 ? (
-          // 작성자가 1명인 경우: 프로필 사진 + 이름 (이름이 있을 때만)
+        {authors.length === 0 ? (
+          // 기여자가 없을 때: 오너 프로필 이미지 + 이름
+          <>
+            {ownerProfileImage && (
+              <ProfileImage
+                src={ownerProfileImage}
+                name={ownerName}
+                size="tiny"
+              />
+            )}
+            <Caption className="font-black">{ownerName}</Caption>
+          </>
+        ) : authors.length === 1 ? (
+          // 기여자가 1명일 때: 프로필 사진 + 이름
           <>
             <ProfileImage
-              src={displayAuthors[0].profileImage}
-              name={displayAuthors[0].name ?? ''}
+              src={authors[0].profileImage}
+              name={authors[0].name ?? ''}
               size="tiny"
             />
-            {displayAuthors[0].name && (
-              <Caption className="font-black">{displayAuthors[0].name}</Caption>
-            )}
+            <Caption className="font-black">{authors[0].name}</Caption>
           </>
-        ) : displayAuthors.length > 1 ? (
-          // 작성자가 여러명인 경우: 프로필 사진만 나열
+        ) : (
+          // 기여자가 여러명일 때: 프로필 사진만 나열
           <div className="flex-y-center -space-x-1">
-            {displayAuthors.map((author, index) => (
+            {authors.map((author, index) => (
               <ProfileImage
                 key={index}
                 src={author.profileImage}
                 name={author.name}
                 size="tiny"
-                className={`z-[${displayAuthors.length - index}]`}
+                className={`z-[${authors.length - index}]`}
               />
             ))}
           </div>
-        ) : null}
+        )}
       </div>
     </figcaption>
   );

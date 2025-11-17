@@ -46,6 +46,7 @@ const Card = ({
         <MetaInfo
           title={title}
           description={description}
+          ownerName={ownerName}
           ownerProfileImage={ownerProfileImage}
           authors={authors}
         />
