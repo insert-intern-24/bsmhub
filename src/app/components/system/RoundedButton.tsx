@@ -6,29 +6,21 @@ interface RoundedButtonProps {
   children: ReactNode;
   onClick?: () => void;
   className?: string;
-  gap?: number;
-  fullWidth?: boolean;
 }
 
 const RoundedButton = ({
   children,
   onClick,
-  className,
-  gap = 3,
-  fullWidth = true,
+  className = '',
 }: RoundedButtonProps) => {
-  // 기본 스타일
-  const baseClassName = 'rounded-3xl h-10 flex justify-center items-center !bg-black text-white cursor-pointer';
-  
-  // gap 클래스 처리 (Tailwind가 인식할 수 있도록 명시적으로)
-  const gapClass = gap === 1 ? 'gap-1' : gap === 4 ? 'gap-4' : 'gap-3';
-  
-  // width 클래스 처리
-  const widthClass = fullWidth ? 'w-full' : '';
-  
-  // className은 기본 스타일과 병합되며, 기본 스타일이 뒤에 위치하므로 일부 Tailwind 클래스는 기본 스타일에 의해 오버라이드될 수 있습니다.
-  const finalClassName = className + ' ' + baseClassName + ' ' + gapClass + ' ' + widthClass;
-  return <button className={finalClassName} onClick={onClick}>{children}</button>;
+  const baseClassName = 'rounded-3xl h-10 flex justify-center items-center gap-3 bg-black text-white w-full cursor-pointer';
+  const finalClassName = `${baseClassName} ${className}`.trim();
+
+  return (
+    <button className={finalClassName} onClick={onClick}>
+      {children}
+    </button>
+  );
 };
 
 export default RoundedButton;

@@ -18,7 +18,6 @@ interface EditButtonProps {
   checkExistence?: boolean;
   requireOwner?: boolean;
   className?: string;
-  gap?: number;
 }
 
 const EditButton = ({
@@ -30,7 +29,6 @@ const EditButton = ({
   checkExistence = false,
   requireOwner = false,
   className,
-  gap = 3,
 }: EditButtonProps) => {
   const currentUser = useCurrentUser();
   const { openModal, closeModal } = useModal();
@@ -68,7 +66,6 @@ const EditButton = ({
     <RoundedButton
       onClick={handleEdit}
       className={className}
-      gap={gap}
     >
       <IconPencil size={12} />
       Edit

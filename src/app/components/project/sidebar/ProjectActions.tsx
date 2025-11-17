@@ -36,9 +36,7 @@ const ProjectActionButton = ({
   return (
     <RoundedButton
       onClick={handleClick}
-      className="flex-1"
-      gap={1}
-      fullWidth={false}
+      className="flex-1 gap-1 w-auto"
     >
       {hasEditPermission ? (
         <>
