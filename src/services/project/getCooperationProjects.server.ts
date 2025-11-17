@@ -1,23 +1,18 @@
 'use server';
 import { createClient } from '@/services/supabase/server';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
-import type { ProjectBase } from '@/services/project/utils';
-import { mapProjectToCardProps } from '@/services/project/utils';
+import { mapProjectToCardProps, type ProjectBase } from '@/services/project/utils';
 import { PROJECT_SELECT_QUERY } from './constants';
 
-const PROJECT_SELECT_QUERY_WITH_INNER = PROJECT_SELECT_QUERY.replace(
+const QUERY_WITH_INNER = PROJECT_SELECT_QUERY.replace(
   'profile!projects_owner_fkey (',
   'profile!projects_owner_fkey!inner (',
 );
 
-export const getCooperationProjects = async (
-  profile_id: string,
-): Promise<CardProps[]> => {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
+export const getCooperationProjects = async (profile_id: string): Promise<CardProps[]> => {
+  const { data, error } = await (await createClient())
     .from('project_contributors')
-    .select(`projects!inner(${PROJECT_SELECT_QUERY_WITH_INNER})`)
+    .select(`projects!inner(${QUERY_WITH_INNER})`)
     .eq('profile_id', profile_id)
     .eq('projects.profile.is_team', true);
 
@@ -26,9 +21,5 @@ export const getCooperationProjects = async (
     return [];
   }
 
-  return (
-    (data as { projects: ProjectBase }[]).map((item) =>
-      mapProjectToCardProps(item.projects),
-    ) || []
-  );
+  return (data as { projects: ProjectBase }[]).map(({ projects }) => mapProjectToCardProps(projects));
 };

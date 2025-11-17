@@ -1,5 +1,4 @@
 import React from 'react';
-
 import ProfileImage from '../portfolio/components/ProfileImage';
 import { Caption, Label } from '../../system/text';
 
@@ -8,55 +7,36 @@ interface MetaInfoProps {
   description: string;
   ownerName: string;
   ownerProfileImage?: string;
-  authors: {
-    name?: string;
-    profileImage: string;
-  }[];
+  authors: { name?: string; profileImage: string }[];
 }
 
-const MetaInfo = ({
-  title,
-  description,
-  ownerName,
-  ownerProfileImage,
-  authors,
-}: MetaInfoProps) => {
-  const fullDescription = title ? `${title} - ${description}` : description;
-
-  const renderAuthorSection = () => {
+const MetaInfo = ({ title, description, ownerName, ownerProfileImage, authors }: MetaInfoProps) => {
+  const renderAuthor = () => {
     if (authors.length === 0) {
       return (
         <>
-          {ownerProfileImage && (
-            <ProfileImage src={ownerProfileImage} name={ownerName} size="tiny" />
-          )}
+          {ownerProfileImage && <ProfileImage src={ownerProfileImage} name={ownerName} size="tiny" />}
           <Caption className="font-black">{ownerName}</Caption>
         </>
       );
     }
-
     if (authors.length === 1) {
       return (
         <>
-          <ProfileImage
-            src={authors[0].profileImage}
-            name={authors[0].name ?? ''}
-            size="tiny"
-          />
+          <ProfileImage src={authors[0].profileImage} name={authors[0].name ?? ''} size="tiny" />
           <Caption className="font-black">{authors[0].name}</Caption>
         </>
       );
     }
-
     return (
       <div className="flex-y-center -space-x-1">
-        {authors.map((author, index) => (
+        {authors.map((author, i) => (
           <ProfileImage
-            key={index}
+            key={i}
             src={author.profileImage}
             name={author.name}
             size="tiny"
-            className={`z-[${authors.length - index}]`}
+            className={`z-[${authors.length - i}]`}
           />
         ))}
       </div>
@@ -65,8 +45,8 @@ const MetaInfo = ({
 
   return (
     <figcaption className="flex-x-center gap-4">
-      <Label className="text-gray-base truncate">{fullDescription}</Label>
-      <div className="flex-y-center gap-1 shrink-0">{renderAuthorSection()}</div>
+      <Label className="text-gray-base truncate">{title ? `${title} - ${description}` : description}</Label>
+      <div className="flex-y-center gap-1 shrink-0">{renderAuthor()}</div>
     </figcaption>
   );
 };
