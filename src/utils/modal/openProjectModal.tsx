@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { getProfileByStudentId } from '@/services/profile/getProfileApi.client';
+import { getSelectableProfilesByStudentId } from '@/services/profile/getProfileApi.client';
 import { projectConfig } from '@/services/config/projectConfig';
 import ProjectEditModal from '@/app/components/project/components/ProjectEditModal';
 
@@ -16,9 +16,9 @@ export async function openProjectModal(
   openModal: (content: React.ReactNode) => void,
   closeModal: () => void,
 ): Promise<void> {
-  // 프로필 가져오기 (owner로 사용하기 위해)
-  const profile = await getProfileByStudentId(currentUserId);
-  if (!profile) {
+  // 사용자가 선택 가능한 프로필 목록 가져오기 (개인 + 속한 팀)
+  const selectableProfiles = await getSelectableProfilesByStudentId(currentUserId);
+  if (!selectableProfiles || selectableProfiles.length === 0) {
     alert('프로필을 먼저 생성해주세요.');
     return;
   }
@@ -27,7 +27,7 @@ export async function openProjectModal(
     <ProjectEditModal
       config={projectConfig}
       mode="create"
-      owner={profile.profile_id}
+      selectableProfiles={selectableProfiles}
       onClose={closeModal}
     />,
   );
