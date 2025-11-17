@@ -26,7 +26,10 @@ const ProjectActionButton = ({
     }
     const playLink = links?.find((link) => link.title === '/play');
     if (playLink) {
-      window.open(playLink.url, '_blank');
+      const newWindow = window.open(playLink.url, '_blank');
+      if (!newWindow) {
+        alert('팝업이 차단되었습니다. 사이트의 팝업 차단을 해제해주세요.');
+      }
     }
   };
 
