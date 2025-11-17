@@ -26,7 +26,7 @@ const RoundedButton = ({
   // width 클래스 처리
   const widthClass = fullWidth ? 'w-full' : '';
   
-  // className이 제공되면 완전히 오버라이드, 아니면 기본 스타일 사용
+  // className은 기본 스타일과 병합되며, 기본 스타일이 뒤에 위치하므로 일부 Tailwind 클래스는 기본 스타일에 의해 오버라이드될 수 있습니다.
   const finalClassName = className + ' ' + baseClassName + ' ' + gapClass + ' ' + widthClass;
   return <button className={finalClassName} onClick={onClick}>{children}</button>;
 };
