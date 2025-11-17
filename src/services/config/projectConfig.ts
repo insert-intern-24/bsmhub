@@ -6,6 +6,7 @@ import {
   createChangeCalculator,
   processGraphQLRelationTables,
 } from '@/services/graphQL/relationTableHelper.graphql';
+import { getSelectableProfilesByStudentId } from '@/services/profile/getProfileApi.client';
 
 export const projectConfig: FormConfig = {
   deleteable: true,
@@ -121,6 +122,42 @@ export const projectConfig: FormConfig = {
     `,
   },
   fields: [
+    {
+      fieldName: 'project_owner',
+      label: '소유자 프로필',
+      type: 'dropdownInputList',
+      required: true,
+      columnInfo: { table: 'projects', column: 'owner' },
+      inputConfig: {
+        onlyOne: true,
+        inputs: [
+          {
+            name: 'owner',
+            placeholder: '소유자 프로필을 선택하세요',
+            required: true,
+          },
+        ],
+      },
+      dropdownInputConfig: {
+        nameColumnName: 'display_name',
+        valueColumnName: 'profile_id',
+        query: async () => {
+          const supabase = createClient();
+          const { data: { user } } = await supabase.auth.getUser();
+
+          if (!user) {
+            return [];
+          }
+
+          const profiles = await getSelectableProfilesByStudentId(user.id);
+          // display_name 필드 추가 (팀: 또는 개인: 접두사)
+          return profiles.map((profile) => ({
+            ...profile,
+            display_name: `${profile.is_team ? '팀: ' : '개인: '}${profile.profile_name}`,
+          }));
+        },
+      },
+    },
     {
       fieldName: 'project_name',
       label: '프로젝트 이름',
