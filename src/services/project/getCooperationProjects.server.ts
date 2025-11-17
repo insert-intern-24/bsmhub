@@ -100,7 +100,7 @@ export const getCooperationProjects = async (
       id: projects.project_id,
       title: projects.project_name,
       description: projects.description,
-      projectImage: convertFromDatabaseImageURL(projects.project_thumbnail),
+      projectImage: projects.project_thumbnail,
       ownerName: projects.profile.profile_name,
       ownerProfileImage: projects.profile.profile_image
         ? convertFromDatabaseImageURL(projects.profile.profile_image)

@@ -156,7 +156,7 @@ export const getProjectsByProfileName = async (
     (project) => ({
       id: project.project_id,
       title: project.project_name,
-      projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
+      projectImage: project.project_thumbnail,
       category: project.project_category?.category_name,
       description: project.description,
       isTeam: project.profile.is_team,
