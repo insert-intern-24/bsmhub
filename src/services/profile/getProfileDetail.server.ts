@@ -46,7 +46,7 @@ export const getProfileDetail = async (profileName: string): Promise<PortfolioDe
     {
       mode: 'link',
       datas: (data?.profile_link ?? []).map((item) => ({
-        value: item?.alt,
+        value: item?.alt ?? null,
         url: item.link
       }))
     },

@@ -5,7 +5,7 @@ import { MergeDeep } from "type-fest";
 export type TeamData = MergeDeep<
   Omit<Tables<'profile'>, 'email' | 'is_team' | 'link'>,
   {
-    profile_link: Pick<Tables<'profile_link'>, 'link' | 'alt'>[];
+    profile_link: Array<{ link: string; title: string | null }>;
     team_member: {
       profile: Pick<Tables<'profile'>, 'profile_id' | 'profile_image'>;
     }[];

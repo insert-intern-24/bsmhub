@@ -33,5 +33,16 @@ export const getTeamData = async (teamName: string): Promise<TeamData | null> =>
     console.error('팀 데이터 조회 중 오류');
   }
 
-  return data || null;
+  if (!data) {
+    return null;
+  }
+
+  // alt를 title로 매핑
+  return {
+    ...data,
+    profile_link: (data.profile_link || []).map((link: { link: string; alt: string | null }) => ({
+      link: link.link,
+      title: link.alt,
+    })),
+  } as TeamData;
 }
