@@ -80,6 +80,10 @@ const ProfileEditModal = ({
   const handleProfileDelete = (): void => {
     void (async () => {
       try {
+        if (!variables?.profile_id) {
+          showToast('프로필 ID가 없습니다.', 'error', 3000, '오류');
+          return;
+        }
         const successMessage = await createDeleteHandler(
           config,
           { profile_id: { eq: variables.profile_id } },
