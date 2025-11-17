@@ -1,18 +1,14 @@
 import type { ProjectContributor } from '@/services/project/types';
 import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
+import type { Tables } from '@/services/supabase/database.types';
 
 export type ProjectWithContributors = {
   project_contributors: ProjectContributor[];
 };
 
-type OwnerInfo = {
-  profile_name: string;
-  profile_image: string | null;
-};
-
 export function createAuthorsFromProject(
   project: ProjectWithContributors,
-  owner?: OwnerInfo,
+  owner?: Pick<Tables<'profile'>, 'profile_name' | 'profile_image'>,
 ): Array<{ name?: string; profileImage: string }> {
   const contributors = project.project_contributors
     ?.filter((contributor) => contributor.profile !== null)
