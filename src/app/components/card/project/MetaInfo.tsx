@@ -21,9 +21,7 @@ const MetaInfo = ({
   authors,
 }: MetaInfoProps) => {
   // 프로젝트명 - 설명 형식으로 조합
-  const fullDescription = title
-    ? `${title} - ${description}`
-    : description;
+  const fullDescription = title ? `${title} - ${description}` : description;
 
   return (
     <figcaption className="flex-x-center gap-4">
@@ -32,13 +30,11 @@ const MetaInfo = ({
         {authors.length === 0 ? (
           // 기여자가 없을 때: 오너 프로필 이미지 + 이름
           <>
-            {ownerProfileImage && (
-              <ProfileImage
-                src={ownerProfileImage}
-                name={ownerName}
-                size="tiny"
-              />
-            )}
+            <ProfileImage
+              src={ownerProfileImage || ''}
+              name={ownerName}
+              size="tiny"
+            />
             <Caption className="font-black">{ownerName}</Caption>
           </>
         ) : authors.length === 1 ? (

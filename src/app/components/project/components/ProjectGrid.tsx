@@ -40,8 +40,12 @@ const ProjectGrid = ({
         })),
       };
     } else {
-      // CardProps 형식 그대로 사용
-      return project as CardProps;
+      // CardProps 형식 그대로 사용하되, authors가 없으면 빈 배열로 초기화
+      const cardProject = project as CardProps;
+      return {
+        ...cardProject,
+        authors: cardProject.authors || [],
+      };
     }
   });
 
