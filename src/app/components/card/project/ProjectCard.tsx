@@ -3,6 +3,7 @@ import Image from 'next/image';
 import MetaInfo from './MetaInfo';
 import Link from 'next/link';
 import { converIsTeamToUrl } from '@/utils/convertIsTeamToUrl';
+import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 
 export interface CardProps {
   id: number;
@@ -35,7 +36,7 @@ const Card = ({
       <div className="w-full mobile:max-w-full mobile:min-w-[26rem] max-w-[26rem] flex-col gap-[0.375rem]">
         <figure className="relative h-60 mobile:h-80 aspect-video rounded-[0.25rem] overflow-hidden">
           <Image
-            src={projectImage}
+            src={convertFromDatabaseImageURL(projectImage)}
             alt={`${title || ownerName} 프로젝트 이미지`}
             fill
             className="object-cover"

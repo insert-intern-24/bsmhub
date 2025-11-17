@@ -2,7 +2,6 @@
 
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 import Card from '@/app/components/card/project/ProjectCard';
-import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 import type { TeamProjectType } from '@/app/(box-layout)/team/types';
 
 interface ProjectGridProps {
@@ -24,16 +23,12 @@ const ProjectGrid = ({
         id: teamProject.project_id,
         title: teamProject.project_name,
         description: teamProject.description,
-        projectImage: convertFromDatabaseImageURL(
-          teamProject.project_thumbnail,
-        ),
+        projectImage: teamProject.project_thumbnail,
         ownerName: teamProject.profile.profile_name,
         isTeam: teamProject.profile.is_team,
         authors: teamProject.project_contributors.map((contributor) => ({
           name: contributor.profile.profile_name,
-          profileImage: convertFromDatabaseImageURL(
-            contributor.profile.profile_image,
-          ),
+          profileImage: contributor.profile.profile_image,
         })),
       };
     } else {

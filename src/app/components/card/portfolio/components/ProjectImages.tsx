@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Project } from '../types';
+import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 
 interface ProjectImagesProps {
   projects: Project[];
@@ -24,7 +25,7 @@ const ProjectImages = ({ projects, variant }: ProjectImagesProps) => {
         (project, index) => (
           <div className={imageClass} key={index}>
             <Image
-              src={project.projectImage}
+              src={convertFromDatabaseImageURL(project.projectImage)}
               alt={project.title}
               fill
               className="object-cover rounded"

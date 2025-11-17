@@ -1,5 +1,4 @@
 import { createClient } from '@/services/supabase/client';
-import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 import {
   PortfolioData,
   ProfileWithProjects,
@@ -105,23 +104,21 @@ export async function getPaginatedPortfolioData(
         role: data.student?.student_jobs?.map(({ job }) => job.job_name) || [],
         bio: data.description!,
         status: '구직 중',
-        profile_image: convertFromDatabaseImageURL(data.profile_image),
+        profile_image: data.profile_image,
       },
       student: data.student,
       projects: [
         ...(data.project_contributors?.map((contribution) => ({
           title: contribution.project.project_name,
-          logo: convertFromDatabaseImageURL(contribution.project.project_logo),
+          logo: contribution.project.project_logo,
           description: contribution.project.description,
-          projectImage: convertFromDatabaseImageURL(
-            contribution.project.project_thumbnail,
-          ),
+          projectImage: contribution.project.project_thumbnail,
         })) || []),
         ...data.projects?.map((project) => ({
           title: project.project_name,
-          logo: convertFromDatabaseImageURL(project.project_logo),
+          logo: project.project_logo,
           description: project.description,
-          projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
+          projectImage: project.project_thumbnail,
         })),
       ],
     };
