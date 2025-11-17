@@ -30,7 +30,7 @@ const config: Config = {
     },
     extend: {
       gridTemplateColumns: {
-        'auto-fit-card': 'repeat(auto-fit, minmax(24rem, 1fr))',
+        'auto-fit-card': 'repeat(auto-fill, minmax(24rem, 1fr))',
       },
       lineClamp: {
         7: '7',
