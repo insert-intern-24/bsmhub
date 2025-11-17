@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import ProjectCard from '@/app/components/card/project/ProjectCard';
 import CategoryTag from '@/app/components/contents/CategoryTag';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
+import ProjectGrid from './project/components/ProjectGrid';
 
 interface HomeProjectListProps {
   projects: CardProps[];
@@ -49,20 +49,7 @@ export default function HomeProjectList({ projects }: HomeProjectListProps) {
       </div>
 
       {/* 프로젝트 그리드 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        {filteredProjects.map((project) => (
-          <ProjectCard
-            key={project.id}
-            id={project.id}
-            title={project.title}
-            description={project.description}
-            isTeam={project.isTeam}
-            ownerName={project.ownerName}
-            projectImage={project.projectImage}
-            authors={project.authors}
-          />
-        ))}
-      </div>
+      <ProjectGrid projects={filteredProjects} />
     </div>
   );
 }

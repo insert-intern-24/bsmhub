@@ -3,7 +3,6 @@
 import { createClient } from '@/services/supabase/server';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 import { Tables } from '@/services/supabase/database.types';
-import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 import type { ProjectContributor, ProjectOwnerProfile } from '@/services/project/types';
 import { createAuthorsFromProject } from '@/services/project/utils';
 
@@ -64,7 +63,7 @@ async function fetchProjects(limit?: number): Promise<CardProps[]> {
     (project) => ({
       id: project.project_id,
       title: project.project_name,
-      projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
+      projectImage: project.project_thumbnail,
       category: project.project_category?.category_name,
       description: project.description,
       isTeam: project.profile.is_team,
@@ -138,7 +137,7 @@ export const getProjectsByProfileName = async (profileName: string, limit?: numb
     (project) => ({
       id: project.project_id,
       title: project.project_name,
-      projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
+      projectImage: project.project_thumbnail,
       category: project.project_category?.category_name,
       description: project.description,
       isTeam: project.profile.is_team,
