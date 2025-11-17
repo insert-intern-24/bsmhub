@@ -1,13 +1,13 @@
 import { Label } from '@/app/components/system/text';
 
 interface ProjectLinkSectionProps {
-  links: Array<{ url: string; title: string | null }>;
+  links: Array<{ url: string; title: string | null; alt?: string }>;
 }
 
 export const ProjectLinkSection = ({
   links,
 }: ProjectLinkSectionProps) => {
-  const filteredLinks = links.filter((link) => link.title !== '/play');
+  const filteredLinks = links.filter((link) => link.alt !== '/play');
 
   return (
     <section className="flex-col gap-[0.375rem]">
