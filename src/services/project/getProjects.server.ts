@@ -3,9 +3,8 @@
 import { createClient } from '@/services/supabase/server';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 import { Tables } from '@/services/supabase/database.types';
-import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 import type { ProjectContributor, ProjectOwnerProfile } from '@/services/project/types';
-import { createAuthorsFromProject } from '@/services/project/utils';
+import { mapProjectToCardProps } from '@/services/project/utils';
 
 export type ProjectType = Pick<
   Tables<'projects'>,
@@ -60,21 +59,7 @@ async function fetchProjects(limit?: number): Promise<CardProps[]> {
     return [];
   }
 
-  const projects: CardProps[] = (data as ProjectWithProfileType[]).map(
-    (project) => ({
-      id: project.project_id,
-      title: project.project_name,
-      projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
-      category: project.project_category?.category_name,
-      description: project.description,
-      isTeam: project.profile.is_team,
-      ownerName: project.profile.profile_name,
-      authors: createAuthorsFromProject(project, {
-        profile_name: project.profile.profile_name,
-        profile_image: project.profile.profile_image,
-      }),
-    }),
-  );
+  const projects: CardProps[] = (data as ProjectWithProfileType[]).map(mapProjectToCardProps);
 
   return projects || [];
 }
@@ -137,21 +122,7 @@ export const getProjectsByProfileName = async (profileName: string, limit?: numb
     return [];
   }
 
-  const projects: CardProps[] = (data as ProjectWithProfileType[]).map(
-    (project) => ({
-      id: project.project_id,
-      title: project.project_name,
-      projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
-      category: project.project_category?.category_name,
-      description: project.description,
-      isTeam: project.profile.is_team,
-      ownerName: project.profile.profile_name,
-      authors: createAuthorsFromProject(project, {
-        profile_name: project.profile.profile_name,
-        profile_image: project.profile.profile_image,
-      }),
-    }),
-  );
+  const projects: CardProps[] = (data as ProjectWithProfileType[]).map(mapProjectToCardProps);
 
   return projects || [];
 };
