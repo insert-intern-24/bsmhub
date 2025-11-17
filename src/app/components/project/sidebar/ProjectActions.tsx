@@ -19,12 +19,19 @@ const ProjectActionButton = ({
   onEdit,
   links,
 }: ProjectActionsProps) => {
+  const playLink = links?.find((link) => link.title === '/play');
+  const hasPlayLink = !!playLink;
+
+  // Edit 권한이 없고 /play 링크도 없으면 버튼을 표시하지 않음
+  if (!hasEditPermission && !hasPlayLink) {
+    return null;
+  }
+
   const handleClick = () => {
     if (hasEditPermission && onEdit) {
       onEdit();
       return;
     }
-    const playLink = links?.find((link) => link.title === '/play');
     if (playLink) {
       const newWindow = window.open(playLink.url, '_blank');
       if (!newWindow) {
@@ -56,9 +63,11 @@ const ProjectActionButton = ({
 export const ProjectActions = (props: ProjectActionsProps) => (
   <div className="flex w-full gap-1">
     <ProjectActionButton {...props} />
-    <button className="flex h-10 w-10 items-center justify-center rounded-full bg-light-gray-input cursor-pointer">
-      <IconPlaylistAdd size={12} color="black" />
-    </button>
+    {props.hasEditPermission && (
+      <button className="flex h-10 w-10 items-center justify-center rounded-full bg-light-gray-input cursor-pointer">
+        <IconPlaylistAdd size={12} color="black" />
+      </button>
+    )}
   </div>
 );
 
