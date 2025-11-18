@@ -36,19 +36,13 @@ export const getPersonalProjects = async (
         profile_id,
         profile_name,
         profile_image,
-        is_team,
-        student!profile_owner_fkey1 (
-          name
-        )
+        is_team
       ),
       project_contributors (
         profile (
           profile_id,
           profile_name,
-          profile_image,
-          student!profile_owner_fkey1 (
-            name
-          )
+          profile_image
         )
       )
     `,
@@ -68,8 +62,8 @@ export const getPersonalProjects = async (
       ownerName: project.profile.profile_name,
       isTeam: project.profile.is_team,
       authors: createAuthorsFromProject(project, {
+        profile_name: project.profile.profile_name,
         profile_image: project.profile.profile_image,
-        student: project.profile.student,
       }),
     }),
   );
