@@ -34,7 +34,10 @@ const PROJECT_SELECT_QUERY = `
     profile_name,
     profile_image,
     is_team,
-    is_official
+    is_official,
+    student!profile_owner_fkey1 (
+      name
+    )
   ),
   project_category!projects_category_id_fkey (
     category_name
@@ -43,7 +46,11 @@ const PROJECT_SELECT_QUERY = `
     profile (
       profile_id,
       profile_name,
-      profile_image
+      profile_image,
+      is_team,
+      student!profile_owner_fkey1 (
+        name
+      )
     )
   )
 `;
@@ -76,6 +83,8 @@ async function fetchProjects(limit?: number): Promise<CardProps[]> {
       authors: createAuthorsFromProject(project, {
         profile_name: project.profile.profile_name,
         profile_image: project.profile.profile_image,
+        is_team: project.profile.is_team,
+        student: project.profile.student,
       }),
     }),
   );
@@ -164,6 +173,8 @@ export const getProjectsByProfileName = async (
       authors: createAuthorsFromProject(project, {
         profile_name: project.profile.profile_name,
         profile_image: project.profile.profile_image,
+        is_team: project.profile.is_team,
+        student: project.profile.student,
       }),
     }),
   );
