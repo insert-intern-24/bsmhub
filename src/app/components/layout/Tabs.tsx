@@ -2,7 +2,15 @@
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
-export type TabMode = 'home' | 'project' | 'all' | 'official' | 'general';
+export type TabMode =
+  | 'home'
+  | 'project'
+  | 'all'
+  | 'official'
+  | 'general'
+  | 'web'
+  | 'desktop'
+  | 'mobile';
 
 const mapTabValue: Record<TabMode, string> = {
   home: '홈',
@@ -10,6 +18,9 @@ const mapTabValue: Record<TabMode, string> = {
   all: '전체',
   official: '전공 동아리',
   general: '일반 동아리',
+  web: '웹',
+  desktop: '데스크톱',
+  mobile: '모바일',
 };
 
 interface TabsProps {
