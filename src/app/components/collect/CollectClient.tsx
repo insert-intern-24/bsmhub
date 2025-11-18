@@ -33,6 +33,13 @@ export default function CollectClient({
 
     let filtered = initialPortfolios;
 
+    // 탭에 따른 필터링 (전공동아리/일반동아리)
+    if (currentTab === 'official') {
+      filtered = filtered.filter((portfolio) => portfolio.isOfficial === true);
+    } else if (currentTab === 'general') {
+      filtered = filtered.filter((portfolio) => portfolio.isOfficial !== true);
+    }
+
     // 검색어 필터링
     if (searchTerm) {
       filtered = filtered.filter(
@@ -47,19 +54,29 @@ export default function CollectClient({
     }
 
     return filtered;
-  }, [initialPortfolios, searchTerm, type]);
+  }, [initialPortfolios, searchTerm, type, currentTab]);
 
   const filteredProjects = useMemo(() => {
     if (type === 'team') return [];
 
-    // 프로젝트 타입인 경우 전공 동아리/일반 동아리 필터링
+    // 프로젝트 타입인 경우 카테고리별 필터링
     let filtered = initialProjects;
 
-    // 탭에 따른 필터링
-    if (currentTab === 'official') {
-      filtered = filtered.filter((project) => project.isOfficial === true);
-    } else if (currentTab === 'general') {
-      filtered = filtered.filter((project) => project.isOfficial !== true);
+    // 탭에 따른 필터링 (웹, 데스크톱, 모바일)
+    if (currentTab !== 'all') {
+      // currentTab이 'web', 'desktop', 'mobile' 중 하나일 때 필터링
+      const categoryMap: Record<string, string> = {
+        web: '웹',
+        desktop: '데스크톱',
+        mobile: '모바일',
+      };
+
+      const targetCategory = categoryMap[currentTab];
+      if (targetCategory) {
+        filtered = filtered.filter(
+          (project) => project.category === targetCategory,
+        );
+      }
     }
 
     // 검색어 필터링
@@ -114,24 +131,45 @@ export default function CollectClient({
         />
       </div>
 
-      {/* 프로젝트 타입일 때만 탭 표시 */}
-      {type === 'project' && <Tabs tabs={['all', 'official', 'general']} />}
+      {/* 프로젝트 및 팀 타입별로 다른 탭 표시 */}
+      <Tabs
+        tabs={
+          type === 'project'
+            ? ['all', 'web', 'desktop', 'mobile']
+            : ['all', 'official', 'general']
+        }
+      />
 
       {/* 팀 타입일 때는 포트폴리오 카드로 렌더링 */}
       {type === 'team' ? (
-        <InfinitePagination<PortfolioCardProps>
-          queryKey={['portfolios', searchTerm, type]}
-          queryFn={fetchPortfolios}
-          enabled={true}
-          renderItem={(portfolio, index) => (
-            <PortfolioCard
-              key={index}
-              profile={portfolio.profile}
-              projects={portfolio.projects}
-              src={`/team/${encodeURIComponent(portfolio.profile.name)}`}
-            />
-          )}
-        />
+        currentTab === 'official' ? (
+          // 전공 동아리는 페이지네이션 없이 모두 표시
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+            {filteredPortfolios.map((portfolio, index) => (
+              <PortfolioCard
+                key={index}
+                profile={portfolio.profile}
+                projects={portfolio.projects}
+                src={`/team/${encodeURIComponent(portfolio.profile.name)}`}
+              />
+            ))}
+          </div>
+        ) : (
+          // 전체 및 일반 동아리는 페이지네이션 사용
+          <InfinitePagination<PortfolioCardProps>
+            queryKey={['portfolios', searchTerm, currentTab, type]}
+            queryFn={fetchPortfolios}
+            enabled={true}
+            renderItem={(portfolio, index) => (
+              <PortfolioCard
+                key={index}
+                profile={portfolio.profile}
+                projects={portfolio.projects}
+                src={`/team/${encodeURIComponent(portfolio.profile.name)}`}
+              />
+            )}
+          />
+        )
       ) : currentTab === 'official' ? (
         // 전공 동아리는 페이지네이션 없이 모두 표시
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
