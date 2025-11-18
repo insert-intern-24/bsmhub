@@ -42,6 +42,7 @@ export const getTeamData = async (
       team_member!team_member_profile_id_fkey (
         profile!team_member_participant_id_fkey (
           profile_id,
+          profile_name,
           profile_image
         )
       )
