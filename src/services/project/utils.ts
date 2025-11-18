@@ -8,6 +8,8 @@ export type ProjectWithContributors = {
 type OwnerInfo = {
   profile_name: string;
   profile_image: string | null;
+  is_team: boolean;
+  student?: { name: string } | null;
 };
 
 export function createAuthorsFromProject(
@@ -18,7 +20,9 @@ export function createAuthorsFromProject(
     project.project_contributors
       ?.filter((contributor) => contributor.profile !== null)
       .map((contributor) => ({
-        name: contributor.profile!.profile_name,
+        name: contributor.profile!.is_team
+          ? contributor.profile!.profile_name
+          : contributor.profile!.student?.name,
         profileImage: convertFromDatabaseImageURL(
           contributor.profile!.profile_image,
         ),
@@ -28,7 +32,7 @@ export function createAuthorsFromProject(
   if (contributors.length === 0 && owner) {
     return [
       {
-        name: owner.profile_name,
+        name: owner.is_team ? owner.profile_name : owner.student?.name,
         profileImage: owner.profile_image
           ? convertFromDatabaseImageURL(owner.profile_image)
           : '',
