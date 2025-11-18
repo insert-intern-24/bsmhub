@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 
 type PresetSize = 'tiny' | 'small' | 'medium' | 'large';
@@ -25,6 +26,8 @@ interface ProfileImageProps {
   size: Size;
   shape?: Shape;
   className?: string;
+  /** true일 경우 name을 통해 Link 생성 */
+  url?: boolean;
 }
 
 const getShapeClassName = (shape: Shape): string => {
@@ -46,21 +49,21 @@ function ProfileImage({
   size,
   shape = 'circle',
   className,
+  url,
 }: ProfileImageProps) {
   const { width, height } = typeof size === 'string' ? sizeMap[size] : size;
-  
+
   const resolvedSrc = src?.trim() || DEFAULT_FALLBACK_PROFILE;
 
   const imageSrc = resolvedSrc.includes('{{supabaseHost}}')
     ? convertFromDatabaseImageURL(resolvedSrc)
     : resolvedSrc;
-  
-  const imageAlt = name ? `${name} 프로필` : '프로필 사진';
 
+  const imageAlt = name ? `${name} 프로필` : '프로필 사진';
   const shapeClassName = getShapeClassName(shape);
 
-  return (
-    <div 
+  const image = (
+    <div
       className={`shrink-0 ${className ?? ''}`}
       style={{ width: `${width}px`, height: `${height}px` }}
     >
@@ -73,6 +76,12 @@ function ProfileImage({
       />
     </div>
   );
+
+  if (url && name) {
+    return <Link href={`/portfolio/${name}`}>{image}</Link>;
+  }
+
+  return image;
 }
 
 export default ProfileImage;

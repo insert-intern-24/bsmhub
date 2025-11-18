@@ -7,7 +7,7 @@ export type TeamData = MergeDeep<
   {
     profile_link: Pick<Tables<'profile_link'>, 'link' | 'alt'>[];
     team_member: {
-      profile: Pick<Tables<'profile'>, 'profile_id' | 'profile_image'>;
+      profile: Pick<Tables<'profile'>, 'profile_id' | 'profile_name' | 'profile_image'>;
     }[];
   }
 >;
