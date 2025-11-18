@@ -1,6 +1,6 @@
 'use server';
-import { TeamData } from "@/app/(box-layout)/team/types";
-import { createClient } from "@/services/supabase/server";
+import { TeamData } from '@/app/(box-layout)/team/types';
+import { createClient } from '@/services/supabase/server';
 
 type SupabaseTeamData = {
   profile_id: string;
@@ -9,6 +9,7 @@ type SupabaseTeamData = {
   description: string | null;
   created_at: string;
   owner: string;
+  is_official?: boolean | null;
   profile_link: Array<{ link: string; alt: string | null }> | null;
   team_member: Array<{
     profile: {
@@ -18,18 +19,22 @@ type SupabaseTeamData = {
   }> | null;
 };
 
-export const getTeamData = async (teamName: string): Promise<TeamData | null> => {
+export const getTeamData = async (
+  teamName: string,
+): Promise<TeamData | null> => {
   const supabase = await createClient();
 
-  const { data, error} = await supabase
+  const { data, error } = await supabase
     .from('profile')
-    .select(`
+    .select(
+      `
       profile_id,
       profile_name,
       profile_image,
       description,
       created_at,
       owner,
+      is_official,
       profile_link (
         link,
         alt
@@ -40,7 +45,8 @@ export const getTeamData = async (teamName: string): Promise<TeamData | null> =>
           profile_image
         )
       )
-    `)
+    `,
+    )
     .eq('profile_name', teamName)
     .eq('is_team', true)
     .maybeSingle<SupabaseTeamData>();
@@ -61,10 +67,12 @@ export const getTeamData = async (teamName: string): Promise<TeamData | null> =>
     description: data.description,
     created_at: data.created_at,
     owner: data.owner,
-    profile_link: (data.profile_link || []).map((link: { link: string; alt: string | null }) => ({
-      link: link.link,
-      title: link.alt,
-    })),
+    profile_link: (data.profile_link || []).map(
+      (link: { link: string; alt: string | null }) => ({
+        link: link.link,
+        title: link.alt,
+      }),
+    ),
     team_member: data.team_member || [],
   } as TeamData;
-}
+};
