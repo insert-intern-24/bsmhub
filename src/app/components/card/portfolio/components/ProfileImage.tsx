@@ -27,7 +27,7 @@ interface ProfileImageProps {
   shape?: Shape;
   className?: string;
   /** true일 경우 name을 통해 Link 생성 */
-  url?: boolean;
+  canRedirect?: boolean;
 }
 
 const getShapeClassName = (shape: Shape): string => {
@@ -49,7 +49,7 @@ function ProfileImage({
   size,
   shape = 'circle',
   className,
-  url,
+  canRedirect,
 }: ProfileImageProps) {
   const { width, height } = typeof size === 'string' ? sizeMap[size] : size;
 
@@ -77,8 +77,16 @@ function ProfileImage({
     </div>
   );
 
-  if (url && name) {
-    return <Link href={`/portfolio/${name}`}>{image}</Link>;
+  if (canRedirect && name) {
+    return (
+      <Link
+        href={`/portfolio/${name}`}
+        aria-label={`${name} 프로필로 이동`}
+        title={`${name} 프로필로 이동`}
+      >
+        {image}
+      </Link>
+    );
   }
 
   return image;
