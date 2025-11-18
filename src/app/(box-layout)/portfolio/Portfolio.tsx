@@ -65,7 +65,7 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
         {convertStudentNumber(studentInfo.student_number)} {studentInfo.name}
       </TitleEN>
       <div className={`${containerCss} responsive-portfolioHome`}>
-        <Body className="text-gray-base flex-col justify-end gap-4]">
+        <Body className="text-gray-base flex-col justify-end gap-4">
           {studentInfo.departments.department_name} | {desiredJobText}
         </Body>
 
