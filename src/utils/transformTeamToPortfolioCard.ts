@@ -13,9 +13,12 @@ import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConver
 export function transformTeamToPortfolioCard(
   team: TeamData,
 ): PortfolioCardProps {
+  // is_official 값에 따라 role 결정
+  const teamType = team.is_official ? '전공동아리' : '일반동아리';
+
   const profile: Profile = {
     name: team.profile_name || '',
-    role: ['Team'], // 팀은 role을 'Team'으로 표시
+    role: [teamType],
     bio: team.description || '',
     status: 'active', // 팀은 기본적으로 active 상태
     profile_image: team.profile_image
@@ -37,5 +40,6 @@ export function transformTeamToPortfolioCard(
   return {
     profile,
     projects,
+    isOfficial: team.is_official ?? false,
   };
 }
