@@ -14,6 +14,7 @@ export const getAllTeams = async (): Promise<TeamData[] | null> => {
       profile_image,
       description,
       created_at,
+      is_official,
       profile_link (
         link,
         alt
@@ -36,7 +37,9 @@ export const getAllTeams = async (): Promise<TeamData[] | null> => {
   return data || null;
 };
 
-export const getTeamsByProfileName = async (profileName: string): Promise<TeamData[] | null> => {
+export const getTeamsByProfileName = async (
+  profileName: string,
+): Promise<TeamData[] | null> => {
   const supabase = await createClient();
 
   // 먼저 profileName으로 사용자의 프로필 ID를 찾습니다
@@ -72,7 +75,9 @@ export const getTeamsByProfileName = async (profileName: string): Promise<TeamDa
     return [];
   }
 
-  const teamIds = (teamMemberships as { profile_id: number }[]).map(tm => tm.profile_id);
+  const teamIds = (teamMemberships as { profile_id: number }[]).map(
+    (tm) => tm.profile_id,
+  );
 
   // 해당 팀들의 정보를 조회합니다
   const { data, error } = await supabase
@@ -84,6 +89,7 @@ export const getTeamsByProfileName = async (profileName: string): Promise<TeamDa
       profile_image,
       description,
       created_at,
+      is_official,
       profile_link (
         link,
         alt
