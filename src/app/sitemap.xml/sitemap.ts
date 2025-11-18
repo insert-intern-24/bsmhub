@@ -3,8 +3,42 @@ import path from 'path';
 
 import type { MetadataRoute } from 'next';
 
+// Get site URL from environment variables with fallback chain
+function getSiteUrl(): string {
+  const siteUrl =
+    process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || '';
+
+  // Validate site URL
+  if (!siteUrl) {
+    console.warn(
+      '[Sitemap] Warning: SITE_URL or NEXT_PUBLIC_SITE_URL environment variable is not set. Using fallback "https://example.com"',
+    );
+    return 'https://example.com';
+  }
+
+  // Check if protocol is missing and add https://
+  if (!siteUrl.startsWith('http://') && !siteUrl.startsWith('https://')) {
+    console.warn(
+      `[Sitemap] Warning: SITE_URL "${siteUrl}" is missing protocol. Adding "https://"`,
+    );
+    return `https://${siteUrl}`;
+  }
+
+  // Warn if using example.com or localhost in production
+  if (
+    (siteUrl.includes('example.com') || siteUrl.includes('localhost')) &&
+    process.env.NODE_ENV === 'production'
+  ) {
+    console.error(
+      `[Sitemap] Error: Invalid SITE_URL "${siteUrl}" detected in production environment. Please set SITE_URL to the correct production domain.`,
+    );
+  }
+
+  return siteUrl;
+}
+
 const siteConfig = {
-  url: process.env.SITE_URL || 'https://example.com',
+  url: getSiteUrl(),
 };
 
 const exclusiveRoutes = ['/auth*'];
