@@ -52,25 +52,17 @@ export default function CollectClient({
   const filteredProjects = useMemo(() => {
     if (type === 'team') return [];
 
-    // 프로젝트 타입인 경우 기존 로직 유지
-    const categoryMap: Record<TabMode, string | null> = {
-      home: null,
-      project: null,
-      all: null,
-      web: 'Web',
-      desktop: 'Desktop Utility',
-      mobile: 'Mobile',
-    };
-
-    const selectedCategory = categoryMap[currentTab];
+    // 프로젝트 타입인 경우 전공 동아리/일반 동아리 필터링
     let filtered = initialProjects;
 
-    if (selectedCategory) {
-      filtered = filtered.filter(
-        (project) => project.category === selectedCategory,
-      );
+    // 탭에 따른 필터링
+    if (currentTab === 'official') {
+      filtered = filtered.filter((project) => project.isOfficial === true);
+    } else if (currentTab === 'general') {
+      filtered = filtered.filter((project) => project.isOfficial !== true);
     }
 
+    // 검색어 필터링
     if (searchTerm) {
       filtered = filtered.filter(
         (project) =>
@@ -123,9 +115,7 @@ export default function CollectClient({
       </div>
 
       {/* 프로젝트 타입일 때만 탭 표시 */}
-      {type === 'project' && (
-        <Tabs tabs={['all', 'web', 'desktop', 'mobile']} />
-      )}
+      {type === 'project' && <Tabs tabs={['all', 'official', 'general']} />}
 
       {/* 팀 타입일 때는 포트폴리오 카드로 렌더링 */}
       {type === 'team' ? (
@@ -142,7 +132,25 @@ export default function CollectClient({
             />
           )}
         />
+      ) : currentTab === 'official' ? (
+        // 전공 동아리는 페이지네이션 없이 모두 표시
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          {filteredProjects.map((project) => (
+            <Card
+              key={project.id}
+              id={project.id}
+              title={project.title}
+              description={project.description}
+              projectImage={project.projectImage}
+              ownerName={project.ownerName}
+              isTeam={project.isTeam}
+              category={project.category}
+              authors={project.authors}
+            />
+          ))}
+        </div>
       ) : (
+        // 전체 및 일반 동아리는 페이지네이션 사용
         <InfinitePagination<CardProps>
           queryKey={['projects', searchTerm, currentTab, type]}
           queryFn={fetchProjects}

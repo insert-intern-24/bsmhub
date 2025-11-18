@@ -12,6 +12,7 @@ export interface CardProps {
   projectImage: string;
   ownerName: string;
   isTeam: boolean;
+  isOfficial?: boolean;
   category?: string;
   authors: {
     name?: string;
