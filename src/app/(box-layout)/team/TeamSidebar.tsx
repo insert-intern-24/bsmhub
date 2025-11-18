@@ -68,6 +68,8 @@ const TeamSidebar = async ({ teamDetail, projectCount }: TeamSidebarProps) => {
                   src={member.profile.profile_image}
                   size={{ width: 32, height: 32 }}
                   shape="circle"
+                  name={member.profile.profile_name}
+                  canRedirect
                 />
               ))}
             </div>
