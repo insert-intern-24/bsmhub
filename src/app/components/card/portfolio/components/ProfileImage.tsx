@@ -78,15 +78,7 @@ function ProfileImage({
   );
 
   if (canRedirect && name) {
-    return (
-      <Link
-        href={`/portfolio/${encodeURIComponent(name)}`}
-        aria-label={`${name} 프로필로 이동`}
-        title={`${name} 프로필로 이동`}
-      >
-        {image}
-      </Link>
-    );
+    return <Link href={`/portfolio/${encodeURIComponent(name)}`}>{image}</Link>;
   }
 
   return image;
