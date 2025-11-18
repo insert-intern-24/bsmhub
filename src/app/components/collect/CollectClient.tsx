@@ -64,19 +64,11 @@ export default function CollectClient({
 
     // 탭에 따른 필터링 (웹, 데스크톱, 모바일)
     if (currentTab !== 'all') {
-      // currentTab이 'web', 'desktop', 'mobile' 중 하나일 때 필터링
-      const categoryMap: Record<string, string> = {
-        web: '웹',
-        desktop: '데스크톱',
-        mobile: '모바일',
-      };
-
-      const targetCategory = categoryMap[currentTab];
-      if (targetCategory) {
-        filtered = filtered.filter(
-          (project) => project.category === targetCategory,
-        );
-      }
+      // currentTab이 'Web', 'Desktop Utility', 'Mobile' 중 하나일 때 필터링
+      // project_category 테이블의 category_name과 정확히 매칭
+      filtered = filtered.filter(
+        (project) => project.category === currentTab,
+      );
     }
 
     // 검색어 필터링
@@ -135,7 +127,7 @@ export default function CollectClient({
       <Tabs
         tabs={
           type === 'project'
-            ? ['all', 'web', 'desktop', 'mobile']
+            ? ['all', 'Web', 'Desktop Utility', 'Mobile']
             : ['all', 'official', 'general']
         }
       />

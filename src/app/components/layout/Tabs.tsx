@@ -8,9 +8,9 @@ export type TabMode =
   | 'all'
   | 'official'
   | 'general'
-  | 'web'
-  | 'desktop'
-  | 'mobile';
+  | 'Web'
+  | 'Desktop Utility'
+  | 'Mobile';
 
 const mapTabValue: Record<TabMode, string> = {
   home: '홈',
@@ -18,9 +18,9 @@ const mapTabValue: Record<TabMode, string> = {
   all: '전체',
   official: '전공 동아리',
   general: '일반 동아리',
-  web: '웹',
-  desktop: '데스크톱',
-  mobile: '모바일',
+  Web: '웹',
+  'Desktop Utility': '데스크톱',
+  Mobile: '모바일',
 };
 
 interface TabsProps {
