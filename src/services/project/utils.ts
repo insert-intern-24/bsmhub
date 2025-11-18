@@ -6,28 +6,29 @@ export type ProjectWithContributors = {
 };
 
 type OwnerInfo = {
-  profile_name: string;
   profile_image: string | null;
+  student?: { name: string } | null;
 };
 
 export function createAuthorsFromProject(
   project: ProjectWithContributors,
   owner?: OwnerInfo,
 ): Array<{ name?: string; profileImage: string }> {
-  const contributors = project.project_contributors
-    ?.filter((contributor) => contributor.profile !== null)
-    .map((contributor) => ({
-      name: contributor.profile!.profile_name,
-      profileImage: convertFromDatabaseImageURL(
-        contributor.profile!.profile_image,
-      ),
-    })) || [];
+  const contributors =
+    project.project_contributors
+      ?.filter((contributor) => contributor.profile !== null)
+      .map((contributor) => ({
+        name: contributor.profile!.student?.name,
+        profileImage: convertFromDatabaseImageURL(
+          contributor.profile!.profile_image,
+        ),
+      })) || [];
 
   // 기여자가 없고 owner 정보가 있으면 owner를 반환
   if (contributors.length === 0 && owner) {
     return [
       {
-        name: owner.profile_name,
+        name: owner.student?.name,
         profileImage: owner.profile_image
           ? convertFromDatabaseImageURL(owner.profile_image)
           : '',
@@ -37,4 +38,3 @@ export function createAuthorsFromProject(
 
   return contributors;
 }
-
