@@ -35,4 +35,4 @@ export type ProjectContributor = Tables<'project_contributors'> & {
   profile: Pick<Tables<'profile'>, 'profile_id' | 'profile_image' | 'profile_name'> | null;
 };
 
-export type ProjectOwnerProfile = Pick<Tables<'profile'>, 'profile_id' | 'profile_name' | 'is_team'>;
+export type ProjectOwnerProfile = Pick<Tables<'profile'>, 'profile_id' | 'profile_name' | 'profile_image' | 'is_team'>;

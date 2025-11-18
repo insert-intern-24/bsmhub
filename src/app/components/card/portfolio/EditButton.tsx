@@ -4,6 +4,7 @@ import { IconPencil } from '@tabler/icons-react';
 import { useCallback } from 'react';
 import { useModal } from '@/app/components/modal';
 import { useCurrentUser } from '@/utils/hook/useCurrentUser';
+import RoundedButton from '@/app/components/system/RoundedButton';
 import ProfileEditModal from './ProfileEditModal';
 import type { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
 import { checkProfileExistence } from '@/services/profile/getProfileApi.client';
@@ -17,7 +18,6 @@ interface EditButtonProps {
   checkExistence?: boolean;
   requireOwner?: boolean;
   className?: string;
-  gap?: number;
 }
 
 const EditButton = ({
@@ -28,8 +28,7 @@ const EditButton = ({
   isTeam = false,
   checkExistence = false,
   requireOwner = false,
-  className = 'rounded-3xl h-10 flex justify-center items-center gap-3 bg-black text-white w-full',
-  gap = 3,
+  className,
 }: EditButtonProps) => {
   const currentUser = useCurrentUser();
   const { openModal, closeModal } = useModal();
@@ -63,18 +62,14 @@ const EditButton = ({
     return null;
   }
 
-  const buttonClassName = gap === 4 
-    ? className.replace('gap-3', 'gap-4')
-    : className;
-
   return (
-    <button
-      className={buttonClassName}
+    <RoundedButton
       onClick={handleEdit}
+      className={className}
     >
       <IconPencil size={12} />
       Edit
-    </button>
+    </RoundedButton>
   );
 };
 

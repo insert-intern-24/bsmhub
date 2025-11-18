@@ -14,7 +14,6 @@ interface ProjectEditModalProps {
   config: FormConfig;
   variables?: Record<string, unknown>;
   mode: 'create' | 'update';
-  owner?: string; // create 모드일 때 사용
   onClose: () => void;
 }
 
@@ -22,7 +21,6 @@ const ProjectEditModal = ({
   config,
   variables,
   mode,
-  owner,
   onClose,
 }: ProjectEditModalProps) => {
   const router = useRouter();
@@ -50,7 +48,6 @@ const ProjectEditModal = ({
           string,
           MultiInputItem[][] | string[] | boolean | File | null | string
         >,
-        mode === 'create' && owner ? { owner } : undefined,
       );
 
       if (result.success) {
