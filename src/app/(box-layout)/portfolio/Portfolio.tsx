@@ -27,6 +27,12 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
 
   const isHome = path === 'home';
 
+  // 희망 직무 추출
+  const desiredJobs =
+    studentInfo.student_jobs?.map(({ job }) => job.job_name) || [];
+  const desiredJobText =
+    desiredJobs.length > 0 ? `${desiredJobs.join(', ')} 희망` : '희망직무 없음';
+
   let Content, containerCss;
 
   // param이 home이라면 home에 대한 컴포넌트와 css를 반환
@@ -55,14 +61,15 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
   return (
     <div className="pt-[4.5rem] w-full relative">
       <ProfileIcon image={profile.profile_image} />
-      <TitleEN className="mobile:mb-2">{profile.profile_name}</TitleEN>
+      <TitleEN className="mobile:mb-2">
+        {convertStudentNumber(studentInfo.student_number)} {studentInfo.name}
+      </TitleEN>
       <div className={`${containerCss} responsive-portfolioHome`}>
         <Body className="text-gray-base flex-col justify-end gap-4]">
-          {convertStudentNumber(studentInfo.student_number)} {studentInfo.name}{' '}
-          | {studentInfo.departments.department_name}
+          {studentInfo.departments.department_name} | {desiredJobText}
         </Body>
 
-        <div className={`${isHome ? 'max-w-[46rem]' : ''} mobile:hidden`}>
+        <div className="mobile:hidden">
           <Tabs tabs={['home', 'project']} />
         </div>
 
