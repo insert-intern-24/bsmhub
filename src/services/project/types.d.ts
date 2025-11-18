@@ -32,7 +32,19 @@ export type ProjectDetailViewModel = {
 };
 
 export type ProjectContributor = Tables<'project_contributors'> & {
-  profile: Pick<Tables<'profile'>, 'profile_id' | 'profile_image' | 'profile_name'> | null;
+  profile:
+    | (Pick<
+        Tables<'profile'>,
+        'profile_id' | 'profile_image' | 'profile_name'
+      > & {
+        student?: Pick<Tables<'student'>, 'name'> | null;
+      })
+    | null;
 };
 
-export type ProjectOwnerProfile = Pick<Tables<'profile'>, 'profile_id' | 'profile_name' | 'profile_image' | 'is_team' | 'is_official'>;
+export type ProjectOwnerProfile = Pick<
+  Tables<'profile'>,
+  'profile_id' | 'profile_name' | 'profile_image' | 'is_team' | 'is_official'
+> & {
+  student?: Pick<Tables<'student'>, 'name'> | null;
+};
