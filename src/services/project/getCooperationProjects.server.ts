@@ -14,8 +14,10 @@ type ProfileImageType = {
   project_id: number;
   profile: Pick<
     Tables<'profile'>,
-    'profile_id' | 'profile_name' | 'profile_image'
-  >;
+    'profile_id' | 'profile_name' | 'profile_image' | 'is_team'
+  > & {
+    student?: Pick<Tables<'student'>, 'name'> | null;
+  };
 };
 
 export const getCooperationProjects = async (
@@ -65,7 +67,11 @@ export const getCooperationProjects = async (
         profile!inner (
           profile_id,
           profile_name,
-          profile_image
+          profile_image,
+          is_team,
+          student!profile_owner_fkey1 (
+            name
+          )
         )
       `,
       )
@@ -88,7 +94,9 @@ export const getCooperationProjects = async (
     const authors = profileImages
       ?.filter((img) => img.project_id === projects.project_id)
       .map((img) => ({
-        name: img.profile.profile_name,
+        name: img.profile.is_team
+          ? img.profile.profile_name
+          : img.profile.student?.name,
         profileImage: img.profile.profile_image,
       }));
 
