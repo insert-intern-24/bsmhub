@@ -62,7 +62,7 @@ export type ProfileWithProjects = MergeDeep<
 >;
 
 export type PortfolioDetailType = {
-  profile_link: Pick<Tables<'profile_link'>, 'link' | 'alt'>[];
+  profile_link: Array<{ link: string; alt: string | null }>;
   student: {
     student_certificates: {
       certificates: Pick<

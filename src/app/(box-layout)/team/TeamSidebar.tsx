@@ -54,7 +54,7 @@ const TeamSidebar = async ({ teamDetail, projectCount }: TeamSidebarProps) => {
                 key={link.link}
                 mode="link"
                 url={link.link}
-                value={link.alt}
+                value={link.title}
               />
             ))}
           </div>
