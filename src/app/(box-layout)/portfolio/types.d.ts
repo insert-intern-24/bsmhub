@@ -9,7 +9,9 @@ export interface ItemProps {
 
 export interface PortfolioDetailProps {
   mode: ItemProps['mode'] | 'skill';
-  datas: Array<Omit<ItemProps, 'mode'> | (Omit<TagProps, 'mode'> & { skillId?: number })>;
+  datas: Array<
+    Omit<ItemProps, 'mode'> | (Omit<TagProps, 'mode'> & { skillId?: number })
+  >;
 }
 
 import { Tables } from '@/services/supabase/database.types';
@@ -89,5 +91,8 @@ export type ProfileType = Pick<
 > & {
   student: Pick<Tables<'student'>, 'name' | 'student_number'> & {
     departments: Pick<Tables<'departments'>, 'department_name'>;
+    student_jobs?: {
+      job: Pick<Tables<'jobs'>, 'job_name'>;
+    }[];
   };
 };

@@ -19,6 +19,11 @@ export const getProfile = async (profile_name: string): Promise<ProfileType> => 
         student_number,
         departments (
           department_name
+        ),
+        student_jobs (
+          job:jobs (
+            job_name
+          )
         )
       )
     `)
