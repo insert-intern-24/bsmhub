@@ -14,12 +14,7 @@ export default function HomeProjectList({ projects }: HomeProjectListProps) {
   const [selectedCategory, setSelectedCategory] = useState<'All' | string>(
     'All',
   );
-  const [shuffledProjects, setShuffledProjects] = useState<CardProps[]>([]);
-
-  // 컴포넌트 마운트 시 프로젝트를 셔플
-  useEffect(() => {
-    setShuffledProjects(shuffleArray(projects));
-  }, [projects]);
+  const shuffledProjects = useMemo(() => shuffleArray(projects), [projects]);
 
   const categories = useMemo(() => {
     const uniqueCategories = new Set<string>();
