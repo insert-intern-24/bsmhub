@@ -4,7 +4,7 @@ import {
   getTeamsByProfileName,
 } from '@/services/team/getTeam.server';
 import { transformTeamToPortfolioCard } from '@/utils/transformTeamToPortfolioCard';
-import CollectClient from '@/app/components/collect/CollectClient';
+import CollectClient from '@/app/components/feature/collect/CollectClient';
 
 interface TeamPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

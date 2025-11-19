@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import ProjectMainContent from '@/app/components/project/components/ProjectMainContent';
+import ProjectMainContent from '@/app/components/feature/project/components/ProjectMainContent';
 import ProjectSidebar from '@/app/components/sidebar/ProjectSidebar';
 import { getProjectDetailViewModel } from '@/services/project/getProjectDetail.server';
 import checkProjectEditPermission from '@/services/project/checkProjectEditPermission.server';

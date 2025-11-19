@@ -1,4 +1,4 @@
-import ProjectDetailPage from '@/app/components/project/ProjectPage';
+import ProjectDetailPage from '@/app/components/feature/project/ProjectPage';
 import { checkProfileIsTeam } from '@/services/profile/checkProfileIsTeam.server';
 import { notFound } from 'next/navigation';
 

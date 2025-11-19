@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { projectConfig } from '@/services/config/projectConfig';
-import ProjectEditModal from '@/app/components/project/components/ProjectEditModal';
+import ProjectEditModal from '@/app/components/feature/project/components/ProjectEditModal';
 
 /**
  * 프로젝트 생성 모달을 여는 유틸리티 함수

@@ -1,4 +1,4 @@
-import ProfileItem from '@/app/components/contents/ProfileItem';
+import ProfileItem from '@/app/components/feature/portfolio/ProfileItem';
 import TeamLabel from '@/app/components/ui/label/TeamLabel';
 import { Body, Label, TitleEN } from '@/app/components/ui/text/text';
 import { TeamData } from '@/app/(box-layout)/team/types';

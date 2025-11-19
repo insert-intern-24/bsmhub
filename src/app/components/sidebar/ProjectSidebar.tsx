@@ -9,7 +9,7 @@ import { ProjectLinkSection } from '@/app/components/section/project/ProjectLink
 import { ProjectTechnologiesSection } from '@/app/components/section/project/ProjectTechnologiesSection';
 import { ProjectTeamSection } from '@/app/components/section/project/ProjectTeamSection';
 import { useModal } from '@/app/components/modal';
-import ProjectEditModal from '@/app/components/project/components/ProjectEditModal';
+import ProjectEditModal from '@/app/components/feature/project/components/ProjectEditModal';
 import { projectConfig } from '@/services/config/projectConfig';
 import SidebarLayout from '@/app/components/layout/sidebar/SidebarLayout';
 

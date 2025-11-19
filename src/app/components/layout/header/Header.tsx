@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Label } from '@/app/components/ui/text/text';
-import Account from '@/app/components/auth/Account';
+import Account from '@/app/components/feature/auth/Account';
 import HeaderDropdown from './HeaderDropdown';
 import {
   IconUsersGroup,

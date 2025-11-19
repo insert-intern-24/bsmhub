@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import CategoryTag from '@/app/components/ui/tag/CategoryTag';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
-import ProjectGrid from '@/app/components/project/components/ProjectGrid';
+import ProjectGrid from '@/app/components/feature/project/components/ProjectGrid';
 import { shuffleArray } from '@/utils/shuffle';
 
 interface HomeProjectListProps {

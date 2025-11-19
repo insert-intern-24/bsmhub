@@ -1,7 +1,7 @@
-import ProjectList from '@/app/components/HomeProjectList';
+import ProjectList from '@/app/components/feature/home/HomeProjectList';
 import { getProjects } from '@/services/project/getProjects.server';
-import OneTapComponent from '@/app/components/auth/GoogleOneTab';
-import LoginBox from '@/app/components/auth/LoginBox';
+import OneTapComponent from '@/app/components/feature/auth/GoogleOneTab';
+import LoginBox from '@/app/components/feature/auth/LoginBox';
 import AutoSlidingBusinessCard from '../components/card/home/AutoSlidingBusinessCard';
 import HeroCard from '../components/card/HeroCard';
 import getAccount from '@/services/auth/getAccount.server';

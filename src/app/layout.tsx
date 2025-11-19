@@ -11,8 +11,8 @@ import ErrorHandler from './providers/ErrorHandler';
 import Navigator from '@/app/components/layout/header/Navigator';
 // import Providers from './providers';
 import type { Metadata } from 'next';
-import GoogleOneTab from '@/app/components/auth/GoogleOneTab';
-import SupabaseSessionSync from './components/auth/SupabaseSessionSync';
+import GoogleOneTab from '@/app/components/feature/auth/GoogleOneTab';
+import SupabaseSessionSync from './components/feature/auth/SupabaseSessionSync';
 
 export const metadata: Metadata = {
   title: 'BSMHub',
