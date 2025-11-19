@@ -58,7 +58,8 @@ export const getPersonalProjects = async (
     .eq('owner', profile_id);
 
   if (error) {
-    console.error('개인 프로젝트 조회 중 오류');
+    console.error('개인 프로젝트 조회 중 오류:', error);
+    return [];
   }
 
   const projects: CardProps[] = (data as PersonalProjectTypeWithProfile[]).map(
@@ -79,5 +80,5 @@ export const getPersonalProjects = async (
     }),
   );
 
-  return projects || [];
+  return projects;
 };

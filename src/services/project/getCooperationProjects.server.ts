@@ -6,7 +6,12 @@ import { Tables } from '@/services/supabase/database.types';
 
 type TeamProjectType = {
   projects: PersonalProjectType & {
-    profile: Pick<Tables<'profile'>, 'profile_id' | 'is_team' | 'profile_name'>;
+    profile: Pick<
+      Tables<'profile'>,
+      'profile_id' | 'is_team' | 'profile_name' | 'is_official' | 'profile_image'
+    > & {
+      student?: Pick<Tables<'student'>, 'name'> | null;
+    };
   };
 };
 
@@ -40,7 +45,12 @@ export const getCooperationProjects = async (
           profile!projects_owner_fkey!inner (
             profile_id,
             profile_name,
-            is_team
+            profile_image,
+            is_team,
+            is_official,
+            student!profile_owner_fkey1 (
+              name
+            )
           )
         )
       `,
@@ -49,7 +59,7 @@ export const getCooperationProjects = async (
       .eq('projects.profile.is_team', true);
 
     if (error) {
-      console.error('팀 프로젝트 조회 중 오류');
+      console.error('팀 프로젝트 조회 중 오류:', error);
       return [];
     }
 
@@ -91,14 +101,36 @@ export const getCooperationProjects = async (
   const profileImages = await getProfileImages(projectIds);
 
   const projects: CardProps[] = teamProjects.map(({ projects }) => {
-    const authors = profileImages
+    const authors: Array<{ name?: string; profileImage: string }> = [];
+
+    // Owner를 먼저 추가
+    authors.push({
+      name: projects.profile.is_team
+        ? projects.profile.profile_name
+        : projects.profile.student?.name,
+      profileImage: projects.profile.profile_image,
+    });
+
+    // Contributors 추가 (owner와 중복되지 않도록)
+    const contributors = profileImages
       ?.filter((img) => img.project_id === projects.project_id)
       .map((img) => ({
         name: img.profile.is_team
           ? img.profile.profile_name
           : img.profile.student?.name,
         profileImage: img.profile.profile_image,
-      }));
+      })) || [];
+
+    contributors.forEach((contributor) => {
+      const isDuplicate = authors.some(
+        (author) =>
+          author.name === contributor.name &&
+          author.profileImage === contributor.profileImage,
+      );
+      if (!isDuplicate) {
+        authors.push(contributor);
+      }
+    });
 
     return {
       id: projects.project_id,
@@ -107,9 +139,10 @@ export const getCooperationProjects = async (
       projectImage: projects.project_thumbnail,
       ownerName: projects.profile.profile_name,
       isTeam: projects.profile.is_team,
+      isOfficial: Boolean(projects.profile.is_official),
       authors: authors,
     };
   });
 
-  return projects || [];
+  return projects;
 };
