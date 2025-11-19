@@ -61,6 +61,7 @@ const MultiInput = ({
           aspectRatio,
           mode,
           icon,
+          textarea,
           ...inputProps
         } = input;
         const widthStyle = width ? { width: `${width}%` } : { flex: 1 };
@@ -121,7 +122,7 @@ const MultiInput = ({
             {componentType === 'picture' ? (
               <PictureUpload aspectRatio={aspectRatio} />
             ) : (
-              <Inputs type={type} mode={mode} icon={icon} {...inputProps} />
+              <Inputs type={type} mode={mode} icon={icon} textarea={textarea} {...inputProps} />
             )}
           </div>
         );

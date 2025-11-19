@@ -137,6 +137,7 @@ export const profileConfig: FormConfig = {
             type: 'text',
             placeholder: '자기소개를 입력하세요',
             required: false,
+            textarea: true,
           },
         ],
       },
