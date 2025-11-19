@@ -11,37 +11,77 @@ const Inputs = ({
   name,
   required = false,
   id = '',
+  textarea = false,
 }: StandardInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const isReadOnly = mode === 'read';
+  const stringValue = typeof value === 'string' ? value : value?.toString() || '';
 
-  useEffect(() => {
-    if (inputRef.current && mode === 'write') {
-      inputRef.current.focus();
+  // textarea 높이 자동 조정 함수
+  const adjustHeight = () => {
+    if (textarea && textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
-  }, [mode]);
+  };
+
+  // value 변경 시 높이 조정
+  useEffect(() => {
+    adjustHeight();
+  }, [textarea, stringValue]);
+
+  // 포커스 처리
+  useEffect(() => {
+    if (mode === 'write') {
+      (textarea ? textareaRef.current : inputRef.current)?.focus();
+    }
+  }, [mode, textarea]);
+
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onChange?.(e);
+    requestAnimationFrame(adjustHeight);
+  };
+
+  const commonClassName = `w-full py-1 text-gray-base text-body outline-none transition-colors 
+    ${type === 'date' ? 'date-input' : ''}
+    ${isReadOnly ? 'bg-white cursor-default' : 'bg-light-gray-outline'}
+  `;
 
   return (
     <div
-      className={`flex-row input-common px-2.5 ${
-        isReadOnly ? '!bg-white' : ''
-      } transition-colors`}
+      className={`flex-row input-common p-2.5 ${isReadOnly ? '!bg-white' : ''} transition-colors ${
+        textarea ? '!h-auto' : ''
+      }`}
     >
-      <input
-        ref={inputRef}
-        id={id}
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        name={name}
-        required={required}
-        readOnly={isReadOnly}
-        className={`w-full py-1 text-gray-base text-body outline-none transition-colors
-        ${type === 'date' ? 'date-input' : ''}
-        ${isReadOnly ? 'bg-white cursor-default' : 'bg-light-gray-outline'}
-      `}
-      />
+      {textarea ? (
+        <textarea
+          ref={textareaRef}
+          id={id}
+          placeholder={placeholder}
+          value={stringValue}
+          onChange={handleTextareaChange}
+          name={name}
+          required={required}
+          readOnly={isReadOnly}
+          className={commonClassName}
+          rows={4}
+          style={{ resize: 'none', overflow: 'hidden' }}
+        />
+      ) : (
+        <input
+          ref={inputRef}
+          id={id}
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          name={name}
+          required={required}
+          readOnly={isReadOnly}
+          className={commonClassName}
+        />
+      )}
     </div>
   );
 };
