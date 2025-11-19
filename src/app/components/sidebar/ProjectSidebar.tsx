@@ -11,7 +11,7 @@ import { ProjectTeamSection } from '@/app/components/section/ProjectTeamSection'
 import { useModal } from '@/app/components/modal';
 import ProjectEditModal from '@/app/components/project/components/ProjectEditModal';
 import { projectConfig } from '@/services/config/projectConfig';
-import SidebarLayout from '@/app/components/layout/SidebarLayout';
+import SidebarLayout from '@/app/components/layout/sidebar/SidebarLayout';
 
 interface ProjectSidebarProps {
   project: ProjectDetailViewModel;

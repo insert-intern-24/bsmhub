@@ -3,7 +3,7 @@
 import React, { useState, ChangeEvent, useMemo, useCallback } from 'react';
 import Inputs from '@/app/components/ui/input/SingleInput';
 import InfinitePagination from '@/shared/ui/InfinitePagination';
-import Tabs, { TabMode } from '@/app/components/layout/Tabs';
+import Tabs, { TabMode } from '@/app/components/layout/tabs/Tabs';
 import Card, { CardProps } from '@/app/components/card/project/ProjectCard';
 import PortfolioCard from '@/app/components/card/portfolio/PortfolioCard';
 import { PortfolioCardProps } from '@/app/components/card/portfolio/types';

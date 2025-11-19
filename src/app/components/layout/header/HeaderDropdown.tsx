@@ -1,8 +1,8 @@
 'use client';
 
 import { useCallback } from 'react';
-import Dropdown, { DropdownItem } from '../ui/dropdown/Dropdown';
-import { Label } from '../ui/text/text';
+import Dropdown, { DropdownItem } from '@/app/components/ui/dropdown/Dropdown';
+import { Label } from '@/app/components/ui/text/text';
 import { useModal } from '@/app/components/modal';
 import { useCurrentUser } from '@/utils/hook/useCurrentUser';
 import { openProjectModal } from '@/utils/modal/openProjectModal';

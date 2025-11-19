@@ -1,14 +1,14 @@
-import Footer from './components/layout/Footer';
+import Footer from './components/layout/footer/Footer';
 import './globals.css';
 import './responsive.css';
 import '@/app/components/modal/inputs/common/common.css';
 import '@/app/components/modal/modal.css';
-import Header from '@/app/components/layout/Header';
+import Header from '@/app/components/layout/header/Header';
 import { ModalProvider, Modal } from '@/app/components/modal';
 import { ToastProvider, Toast } from '@/app/components/toast';
 import QueryProvider from './providers/QueryProvider';
 import ErrorHandler from './providers/ErrorHandler';
-import Navigator from '@/app/components/layout/Navigator';
+import Navigator from '@/app/components/layout/header/Navigator';
 // import Providers from './providers';
 import type { Metadata } from 'next';
 import GoogleOneTab from '@/app/components/auth/GoogleOneTab';

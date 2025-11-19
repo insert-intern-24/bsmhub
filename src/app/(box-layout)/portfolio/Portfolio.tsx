@@ -1,5 +1,5 @@
 import { Body, TitleEN } from '@/app/components/ui/text/text';
-import Tabs from '@/app/components/layout/Tabs';
+import Tabs from '@/app/components/layout/tabs/Tabs';
 
 import PortfolioHome from '@/app/components/card/portfolio/PortfolioHome';
 import PortfolioProject from '@/app/components/card/portfolio/components/PortfolioProject';

@@ -6,7 +6,7 @@ import { getFoundedYear } from '@/utils/date';
 import getAccount from '@/services/auth/getAccount.server';
 import TeamProfileEditButton from '@/app/components/card/portfolio/TeamProfileEditButton';
 import ProfileImage from '@/app/components/card/portfolio/components/ProfileImage';
-import SidebarLayout from '@/app/components/layout/SidebarLayout';
+import SidebarLayout from '@/app/components/layout/sidebar/SidebarLayout';
 
 interface TeamSidebarProps {
   teamDetail: TeamData;

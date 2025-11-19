@@ -1,4 +1,4 @@
-import { TabMode } from '@/app/components/layout/Tabs';
+import { TabMode } from '@/app/components/layout/tabs/Tabs';
 
 /**
  * 프로젝트 카테고리 탭 목록
