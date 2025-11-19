@@ -6,7 +6,10 @@ import { Tables } from '@/services/supabase/database.types';
 
 type TeamProjectType = {
   projects: PersonalProjectType & {
-    profile: Pick<Tables<'profile'>, 'profile_id' | 'is_team' | 'profile_name'>;
+    profile: Pick<
+      Tables<'profile'>,
+      'profile_id' | 'is_team' | 'profile_name' | 'is_official'
+    >;
   };
 };
 
@@ -40,7 +43,8 @@ export const getCooperationProjects = async (
           profile!projects_owner_fkey!inner (
             profile_id,
             profile_name,
-            is_team
+            is_team,
+            is_official
           )
         )
       `,
@@ -49,7 +53,7 @@ export const getCooperationProjects = async (
       .eq('projects.profile.is_team', true);
 
     if (error) {
-      console.error('팀 프로젝트 조회 중 오류');
+      console.error('팀 프로젝트 조회 중 오류:', error);
       return [];
     }
 
@@ -107,9 +111,10 @@ export const getCooperationProjects = async (
       projectImage: projects.project_thumbnail,
       ownerName: projects.profile.profile_name,
       isTeam: projects.profile.is_team,
+      isOfficial: Boolean(projects.profile.is_official),
       authors: authors,
     };
   });
 
-  return projects || [];
+  return projects;
 };

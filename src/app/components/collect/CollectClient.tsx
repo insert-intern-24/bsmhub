@@ -8,12 +8,50 @@ import Card, { CardProps } from '@/app/components/card/project/ProjectCard';
 import PortfolioCard from '@/app/components/card/portfolio/PortfolioCard';
 import { PortfolioCardProps } from '@/app/components/card/portfolio/types';
 import { useSearchParams } from 'next/navigation';
+import {
+  PROJECT_TABS,
+  TEAM_TABS,
+  OFFICIAL_TAB,
+  ALL_TAB,
+} from './constants';
 
 interface CollectClientProps {
   initialProjects?: CardProps[];
   initialPortfolios?: PortfolioCardProps[];
   type?: 'project' | 'team';
 }
+
+/**
+ * 포트폴리오 카드를 렌더링하는 helper 함수
+ */
+const renderPortfolioCard = (
+  portfolio: PortfolioCardProps,
+  index: number,
+) => (
+  <PortfolioCard
+    key={index}
+    profile={portfolio.profile}
+    projects={portfolio.projects}
+    src={`/team/${encodeURIComponent(portfolio.profile.name)}`}
+  />
+);
+
+/**
+ * 프로젝트 카드를 렌더링하는 helper 함수
+ */
+const renderProjectCard = (project: CardProps) => (
+  <Card
+    key={project.id}
+    id={project.id}
+    title={project.title}
+    description={project.description}
+    projectImage={project.projectImage}
+    ownerName={project.ownerName}
+    isTeam={project.isTeam}
+    category={project.category}
+    authors={project.authors}
+  />
+);
 
 export default function CollectClient({
   initialProjects = [],
@@ -34,9 +72,10 @@ export default function CollectClient({
     let filtered = initialPortfolios;
 
     // 탭에 따른 필터링 (전공동아리/일반동아리)
-    if (currentTab === 'official') {
+    if (currentTab === OFFICIAL_TAB) {
       filtered = filtered.filter((portfolio) => portfolio.isOfficial === true);
-    } else if (currentTab === 'general') {
+    } else if (currentTab !== ALL_TAB) {
+      // 'general' 탭일 때
       filtered = filtered.filter((portfolio) => portfolio.isOfficial !== true);
     }
 
@@ -59,13 +98,10 @@ export default function CollectClient({
   const filteredProjects = useMemo(() => {
     if (type === 'team') return [];
 
-    // 프로젝트 타입인 경우 카테고리별 필터링
     let filtered = initialProjects;
 
-    // 탭에 따른 필터링 (웹, 데스크톱, 모바일)
-    if (currentTab !== 'all') {
-      // currentTab이 'Web', 'Desktop Utility', 'Mobile' 중 하나일 때 필터링
-      // project_category 테이블의 category_name과 정확히 매칭
+    // 탭에 따른 카테고리 필터링
+    if (currentTab !== ALL_TAB) {
       filtered = filtered.filter(
         (project) => project.category === currentTab,
       );
@@ -124,27 +160,14 @@ export default function CollectClient({
       </div>
 
       {/* 프로젝트 및 팀 타입별로 다른 탭 표시 */}
-      <Tabs
-        tabs={
-          type === 'project'
-            ? ['all', 'Web', 'Desktop Utility', 'Mobile']
-            : ['all', 'official', 'general']
-        }
-      />
+      <Tabs tabs={type === 'project' ? PROJECT_TABS : TEAM_TABS} />
 
       {/* 팀 타입일 때는 포트폴리오 카드로 렌더링 */}
       {type === 'team' ? (
-        currentTab === 'official' ? (
+        currentTab === OFFICIAL_TAB ? (
           // 전공 동아리는 페이지네이션 없이 모두 표시
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-            {filteredPortfolios.map((portfolio, index) => (
-              <PortfolioCard
-                key={index}
-                profile={portfolio.profile}
-                projects={portfolio.projects}
-                src={`/team/${encodeURIComponent(portfolio.profile.name)}`}
-              />
-            ))}
+            {filteredPortfolios.map(renderPortfolioCard)}
           </div>
         ) : (
           // 전체 및 일반 동아리는 페이지네이션 사용
@@ -152,32 +175,13 @@ export default function CollectClient({
             queryKey={['portfolios', searchTerm, currentTab, type]}
             queryFn={fetchPortfolios}
             enabled={true}
-            renderItem={(portfolio, index) => (
-              <PortfolioCard
-                key={index}
-                profile={portfolio.profile}
-                projects={portfolio.projects}
-                src={`/team/${encodeURIComponent(portfolio.profile.name)}`}
-              />
-            )}
+            renderItem={renderPortfolioCard}
           />
         )
-      ) : currentTab === 'official' ? (
+      ) : currentTab === OFFICIAL_TAB ? (
         // 전공 동아리는 페이지네이션 없이 모두 표시
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-          {filteredProjects.map((project) => (
-            <Card
-              key={project.id}
-              id={project.id}
-              title={project.title}
-              description={project.description}
-              projectImage={project.projectImage}
-              ownerName={project.ownerName}
-              isTeam={project.isTeam}
-              category={project.category}
-              authors={project.authors}
-            />
-          ))}
+          {filteredProjects.map(renderProjectCard)}
         </div>
       ) : (
         // 전체 및 일반 동아리는 페이지네이션 사용
@@ -185,19 +189,7 @@ export default function CollectClient({
           queryKey={['projects', searchTerm, currentTab, type]}
           queryFn={fetchProjects}
           enabled={true}
-          renderItem={(project) => (
-            <Card
-              key={project.id}
-              id={project.id}
-              title={project.title}
-              description={project.description}
-              projectImage={project.projectImage}
-              ownerName={project.ownerName}
-              isTeam={project.isTeam}
-              category={project.category}
-              authors={project.authors}
-            />
-          )}
+          renderItem={renderProjectCard}
         />
       )}
     </div>

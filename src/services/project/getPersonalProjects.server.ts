@@ -37,6 +37,7 @@ export const getPersonalProjects = async (
         profile_name,
         profile_image,
         is_team,
+        is_official,
         student!profile_owner_fkey1 (
           name
         )
@@ -57,7 +58,8 @@ export const getPersonalProjects = async (
     .eq('owner', profile_id);
 
   if (error) {
-    console.error('개인 프로젝트 조회 중 오류');
+    console.error('개인 프로젝트 조회 중 오류:', error);
+    return [];
   }
 
   const projects: CardProps[] = (data as PersonalProjectTypeWithProfile[]).map(
@@ -68,6 +70,7 @@ export const getPersonalProjects = async (
       projectImage: convertFromDatabaseImageURL(project.project_thumbnail),
       ownerName: project.profile.profile_name,
       isTeam: project.profile.is_team,
+      isOfficial: Boolean(project.profile.is_official),
       authors: createAuthorsFromProject(project, {
         profile_name: project.profile.profile_name,
         profile_image: project.profile.profile_image,
@@ -77,5 +80,5 @@ export const getPersonalProjects = async (
     }),
   );
 
-  return projects || [];
+  return projects;
 };
