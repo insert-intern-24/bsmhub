@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import MetaInfo from './MetaInfo';
+import ProjectCardMetadata from './ProjectCardMetadata';
 import Link from 'next/link';
 import { converIsTeamToUrl } from '@/utils/convertIsTeamToUrl';
 import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
@@ -43,7 +43,7 @@ const Card = ({
             className="object-cover"
           />
         </figure>
-        <MetaInfo description={description} authors={authors} />
+        <ProjectCardMetadata description={description} authors={authors} />
       </div>
     </Link>
   );
