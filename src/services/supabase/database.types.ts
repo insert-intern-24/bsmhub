@@ -865,6 +865,7 @@ export type Database = {
           created_at: string
           description: string | null
           email: string | null
+          is_official: boolean | null
           is_team: boolean
           link: string[] | null
           owner: string | null
@@ -876,6 +877,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           email?: string | null
+          is_official?: boolean | null
           is_team: boolean
           link?: string[] | null
           owner?: string | null
@@ -887,6 +889,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           email?: string | null
+          is_official?: boolean | null
           is_team?: boolean
           link?: string[] | null
           owner?: string | null

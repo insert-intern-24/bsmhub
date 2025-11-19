@@ -3,14 +3,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Body } from '@/app/components/system/text';
 import type { ProjectDetailViewModel } from '@/services/project/types';
-import { ProjectSummarySection } from '@/app/components/project/sidebar/ProjectSummarySection';
-import { ProjectActions } from '@/app/components/project/sidebar/ProjectActions';
-import { ProjectLinkSection } from '@/app/components/project/sidebar/ProjectLinkSection';
-import { ProjectTechnologiesSection } from '@/app/components/project/sidebar/ProjectTechnologiesSection';
-import { ProjectTeamSection } from '@/app/components/project/sidebar/ProjectTeamSection';
+import { ProjectSummarySection } from '@/app/components/section/ProjectSummarySection';
+import { ProjectActionsSection } from '@/app/components/section/ProjectActionsSection';
+import { ProjectLinkSection } from '@/app/components/section/ProjectLinkSection';
+import { ProjectTechnologiesSection } from '@/app/components/section/ProjectTechnologiesSection';
+import { ProjectTeamSection } from '@/app/components/section/ProjectTeamSection';
 import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
 import { useModal } from '@/app/components/modal';
-import ProjectEditModal from './ProjectEditModal';
+import ProjectEditModal from '@/app/components/project/components/ProjectEditModal';
 import { projectConfig } from '@/services/config/projectConfig';
 
 interface ProjectSidebarProps {
@@ -82,7 +82,7 @@ const ProjectSidebar = ({
 
       <aside className="sticky top-24 self-start mobile:static mt-[1.625rem]">
         <div className="flex-col w-full gap-[1.625rem]">
-          <ProjectActions
+          <ProjectActionsSection
             hasEditPermission={hasEditPermission}
             onEdit={handleProjectEdit}
             links={project.links}

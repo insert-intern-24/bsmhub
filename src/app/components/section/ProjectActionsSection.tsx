@@ -8,7 +8,7 @@ import {
   IconPlaylistAdd,
 } from '@tabler/icons-react';
 
-interface ProjectActionsProps {
+interface ProjectActionsSectionProps {
   hasEditPermission?: boolean;
   onEdit?: () => void;
   links?: Array<{ url: string; title: string | null }>;
@@ -18,7 +18,7 @@ const ProjectActionButton = ({
   hasEditPermission,
   onEdit,
   links,
-}: ProjectActionsProps) => {
+}: ProjectActionsSectionProps) => {
   const playLink = links?.find((link) => link.title === '/play');
   const hasPlayLink = !!playLink;
 
@@ -60,7 +60,7 @@ const ProjectActionButton = ({
   );
 };
 
-export const ProjectActions = (props: ProjectActionsProps) => (
+export const ProjectActionsSection = (props: ProjectActionsSectionProps) => (
   <div className="flex w-full gap-1">
     <ProjectActionButton {...props} />
     {props.hasEditPermission && (
@@ -70,4 +70,3 @@ export const ProjectActions = (props: ProjectActionsProps) => (
     )}
   </div>
 );
-

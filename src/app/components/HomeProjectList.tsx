@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import CategoryTag from '@/app/components/contents/CategoryTag';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
-import ProjectGrid from './project/components/ProjectGrid';
+import ProjectGrid from '@/shared/project/ProjectGrid';
 
 interface HomeProjectListProps {
   projects: CardProps[];

@@ -1,7 +1,7 @@
 import ProfileItem from '@/app/components/contents/ProfileItem';
 import TeamLabel from '@/app/components/contents/TeamLabel';
 import { Body, Label, TitleEN } from '@/app/components/system/text';
-import { TeamData } from './types';
+import { TeamData } from '@/app/(box-layout)/team/types';
 import { getFoundedYear } from '@/utils/date';
 import getAccount from '@/services/auth/getAccount.server';
 import TeamProfileEditButton from '@/app/components/card/portfolio/TeamProfileEditButton';
