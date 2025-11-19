@@ -31,6 +31,13 @@ const Tabs = ({ tabs }: TabsProps) => {
   const searchParams = useSearchParams();
   const currentPath = (searchParams.get('path') ?? tabs[0]) as TabMode;
 
+  // 기존 쿼리 파라미터를 유지하면서 path만 변경하는 함수
+  const createTabHref = (mode: TabMode) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('path', mode);
+    return `?${params.toString()}`;
+  };
+
   return (
     <div className="flex border-b-[1px] border-[#F1F1F1] w-full">
       {tabs.map((mode) => {
@@ -42,7 +49,7 @@ const Tabs = ({ tabs }: TabsProps) => {
             className={`px-5 pb-2 border-b-2 ${
               isActive ? 'border-black' : 'border-transparent text-gray-base'
             }`}
-            href={`?path=${mode}`}
+            href={createTabHref(mode)}
           >
             {mapTabValue[mode]}
           </Link>
