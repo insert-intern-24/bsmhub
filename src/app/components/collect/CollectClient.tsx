@@ -2,7 +2,7 @@
 
 import React, { useState, ChangeEvent, useMemo, useCallback } from 'react';
 import Inputs from '@/app/components/modal/inputs/SingleInput';
-import InfinitePagination from '@/app/project/[project_name]/components/pagination/Pagination';
+import InfinitePagination from '@/shared/ui/InfinitePagination';
 import Tabs, { TabMode } from '@/app/components/layout/Tabs';
 import Card, { CardProps } from '@/app/components/card/project/ProjectCard';
 import PortfolioCard from '@/app/components/card/portfolio/PortfolioCard';
