@@ -4,7 +4,7 @@ import ProjectSidebar from '@/app/components/sidebar/ProjectSidebar';
 import { getProjectDetailViewModel } from '@/services/project/getProjectDetail.server';
 import checkProjectEditPermission from '@/services/project/checkProjectEditPermission.server';
 import SidebarContentLayout from '@/app/components/layout/SidebarContentLayout';
-import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
+import ProfileIcon from '@/app/components/card/portfolio/components/ProfileIcon';
 
 export interface ProjectDetailPageProps {
   params: Promise<{

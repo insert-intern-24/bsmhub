@@ -3,7 +3,7 @@ import { getTeamData } from '@/services/team/getTeamData.server';
 import { getTeamProjects } from '@/services/team/getTeamProjects.server';
 import { notFound } from 'next/navigation';
 import TeamSidebar from '@/app/components/sidebar/TeamSidebar';
-import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
+import ProfileIcon from '@/app/components/card/portfolio/components/ProfileIcon';
 import ProjectGrid from '@/app/components/project/components/ProjectGrid';
 import SidebarContentLayout from '@/app/components/layout/SidebarContentLayout';
 
