@@ -4,7 +4,7 @@ import { Title } from '../../system/text';
 import { PortfolioDetailProps } from '@/app/(box-layout)/portfolio/types';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 import ProfileEditButton from './ProfileEditButton';
-import ProjectGrid from '@/shared/project/ProjectGrid';
+import ProjectGrid from '@/app/components/project/components/ProjectGrid';
 
 interface PortfolioHomeProps {
   content: string;

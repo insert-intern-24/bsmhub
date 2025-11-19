@@ -4,7 +4,7 @@ import { getTeamProjects } from '@/services/team/getTeamProjects.server';
 import { notFound } from 'next/navigation';
 import TeamSidebar from '@/app/components/sidebar/TeamSidebar';
 import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
-import ProjectGrid from '@/shared/project/ProjectGrid';
+import ProjectGrid from '@/app/components/project/components/ProjectGrid';
 
 const Team = async ({ teamName }: { teamName: string }) => {
   const teamDetail = (await getTeamData(teamName)) ?? notFound();
