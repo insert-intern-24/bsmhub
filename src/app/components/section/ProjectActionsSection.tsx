@@ -1,7 +1,7 @@
 'use client';
 
-import { Body2 } from '@/app/components/system/text';
-import RoundedButton from '@/app/components/system/RoundedButton';
+import { Body2 } from '@/app/components/ui/text/text';
+import RoundedButton from '@/app/components/ui/button/RoundedButton';
 import {
   IconPencil,
   IconPlayerPlayFilled,

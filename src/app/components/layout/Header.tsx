@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Label } from '@/app/components/system/text';
+import { Label } from '@/app/components/ui/text/text';
 import Account from '../auth/Account';
 import HeaderDropdown from './HeaderDropdown';
 import {

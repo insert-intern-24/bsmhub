@@ -1,6 +1,6 @@
 import ProfileItem from '@/app/components/contents/ProfileItem';
-import TeamLabel from '@/app/components/contents/TeamLabel';
-import { Body, Label, TitleEN } from '@/app/components/system/text';
+import TeamLabel from '@/app/components/ui/label/TeamLabel';
+import { Body, Label, TitleEN } from '@/app/components/ui/text/text';
 import { TeamData } from '@/app/(box-layout)/team/types';
 import { getFoundedYear } from '@/utils/date';
 import getAccount from '@/services/auth/getAccount.server';

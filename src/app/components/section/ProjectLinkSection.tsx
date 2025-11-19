@@ -1,4 +1,4 @@
-import { Label } from '@/app/components/system/text';
+import { Label } from '@/app/components/ui/text/text';
 
 interface ProjectLinkSectionProps {
   links: Array<{ url: string; title: string | null }>;

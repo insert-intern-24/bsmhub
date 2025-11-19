@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { PortfolioCardProps } from './types';
 import ProfileInfo from './components/ProfileInfo';
-import StatusBadge from './components/StatusBadge';
+import StatusBadge from '@/app/components/ui/badge/StatusBadge';
 import ProjectImages from './components/ProjectImages';
 import ProfileImage from './components/ProfileImage';
 

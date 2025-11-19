@@ -1,4 +1,4 @@
-import { Body, TitleEN } from '@/app/components/system/text';
+import { Body, TitleEN } from '@/app/components/ui/text/text';
 
 interface ProjectSummarySectionProps {
   title: string;

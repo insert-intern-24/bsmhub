@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, ChangeEvent, useMemo, useCallback } from 'react';
-import Inputs from '@/app/components/modal/inputs/SingleInput';
+import Inputs from '@/app/components/ui/input/SingleInput';
 import InfinitePagination from '@/shared/ui/InfinitePagination';
 import Tabs, { TabMode } from '@/app/components/layout/Tabs';
 import Card, { CardProps } from '@/app/components/card/project/ProjectCard';

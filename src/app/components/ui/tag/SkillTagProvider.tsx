@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useInputList } from '@/utils/hook/useInputList';
-import SkillTag from './SkillTag';
+import SkillTag from './ModalSkillTag';
 import { createClient } from '@/services/supabase/client';
 import { Tables } from '@/services/supabase/database.types';
 import { getOrCreateSkillId } from '@/services/graphQL/relationTableHelper.graphql';

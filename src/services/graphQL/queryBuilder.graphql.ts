@@ -1,4 +1,4 @@
-import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
+import { FormConfig } from '@/app/components/ui/input/types/inputTypes';
 
 /**
  * FormConfig의 사용자 정의 GraphQL Read Query 반환

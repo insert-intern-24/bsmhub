@@ -2,8 +2,8 @@
 
 import { IconX } from "@tabler/icons-react";
 import { useRef, useEffect } from "react";
-import AutosizeInput from './AutosizeInput';
-import './common/common.css';
+import AutosizeInput from '@/app/components/ui/input/AutosizeInput';
+import '@/app/components/modal/inputs/common/common.css';
 
 type WriteProps = {
   mode: 'write';

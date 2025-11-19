@@ -1,4 +1,4 @@
-import { Label, Label2 } from '@/app/components/system/text';
+import { Label, Label2 } from '@/app/components/ui/text/text';
 import type { ProjectDetailViewModel } from '@/services/project/types';
 import Link from 'next/link';
 import ProfileImage from '@/app/components/card/portfolio/components/ProfileImage';

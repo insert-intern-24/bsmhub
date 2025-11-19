@@ -1,4 +1,4 @@
-import { TagProps } from '@/app/components/contents/SkillTag';
+import { TagProps } from '@/app/components/ui/tag/SkillTag';
 import { Project, Profile } from '@/app/components/card/portfolio/types';
 export interface ItemProps {
   mode: 'competition' | 'certificate' | 'link';

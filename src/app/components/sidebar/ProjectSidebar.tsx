@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Body } from '@/app/components/system/text';
+import { Body } from '@/app/components/ui/text/text';
 import type { ProjectDetailViewModel } from '@/services/project/types';
 import { ProjectSummarySection } from '@/app/components/section/ProjectSummarySection';
 import { ProjectActionsSection } from '@/app/components/section/ProjectActionsSection';

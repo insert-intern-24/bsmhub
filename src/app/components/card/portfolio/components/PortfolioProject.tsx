@@ -1,5 +1,5 @@
 'use server';
-import { Title } from '@/app/components/system/text';
+import { Title } from '@/app/components/ui/text/text';
 import Card, { CardProps } from '../../project/ProjectCard';
 import { Fragment } from 'react';
 

@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Title, Body } from '@/app/components/system/text';
-import Checkbox from './Checkbox';
-import Button from './Button';
+import { Title, Body } from '@/app/components/ui/text/text';
+import Checkbox from '@/app/components/ui/input/Checkbox';
+import Button from '@/app/components/ui/button/Button';
 
 interface DeleteConfirmModalProps {
   title?: string;

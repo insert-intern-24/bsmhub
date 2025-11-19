@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import CategoryTag from '@/app/components/contents/CategoryTag';
+import CategoryTag from '@/app/components/ui/tag/CategoryTag';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 import ProjectGrid from '@/app/components/project/components/ProjectGrid';
 import { shuffleArray } from '@/utils/shuffle';

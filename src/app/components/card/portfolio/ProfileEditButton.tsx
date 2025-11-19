@@ -1,6 +1,6 @@
 'use client';
 
-import EditButton from './EditButton';
+import EditButton from '@/app/components/ui/button/EditButton';
 import { profileConfig } from '@/services/config/profileConfig';
 
 interface ProfileEditButtonProps {

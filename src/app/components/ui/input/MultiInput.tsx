@@ -10,7 +10,7 @@ import type {
   InputHTMLType,
   InputMode,
 } from './types/inputTypes';
-import { DropdownInputConfig } from './InputListProvider';
+import { DropdownInputConfig } from '@/app/components/modal/inputs/InputListProvider';
 
 export interface MultiInputItem
   extends Omit<BaseInputPropsCommon, 'type' | 'mode'> {

@@ -1,12 +1,12 @@
 'use client';
 
-import InputOfModal from '../../modal/inputs/InputOfModal';
+import InputOfModal from '../../ui/input/InputOfModal';
 import { useFormConfigData } from '@/utils/hook/useFormConfigData';
 import { useErrorToast } from '@/utils/hook/useErrorToast';
 import { formatErrorMessage } from '@/utils/errorMessage';
 import { useToast } from '@/app/components/toast';
-import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
-import type { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
+import type { MultiInputItem } from '@/app/components/ui/input/MultiInput';
+import type { FormConfig } from '@/app/components/ui/input/types/inputTypes';
 import { useRouter } from 'next/navigation';
 import { createDeleteHandler } from '@/services/graphQL/deleteHelper.graphql';
 

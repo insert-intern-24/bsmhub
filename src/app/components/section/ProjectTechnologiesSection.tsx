@@ -1,5 +1,5 @@
-import { Label } from '@/app/components/system/text';
-import SkillTagProvider from '@/app/components/modal/inputs/SkillTagProvider';
+import { Label } from '@/app/components/ui/text/text';
+import SkillTagProvider from '@/app/components/ui/tag/SkillTagProvider';
 
 interface ProjectTechnologiesSectionProps {
   technologies: number[];

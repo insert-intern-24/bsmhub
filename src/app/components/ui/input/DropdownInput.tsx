@@ -7,7 +7,7 @@ import {
   IconCalendarWeekFilled,
 } from '@tabler/icons-react';
 import { StandardInputProps } from './types/inputTypes';
-import { DropdownInputConfig } from './InputListProvider';
+import { DropdownInputConfig } from '@/app/components/modal/inputs/InputListProvider';
 
 const iconMap: Record<string, React.ReactNode> = {
   check: <IconCheck size={20} className="text-gray-base" />,

@@ -4,9 +4,9 @@ import { IconPencil } from '@tabler/icons-react';
 import { useCallback } from 'react';
 import { useModal } from '@/app/components/modal';
 import { useCurrentUser } from '@/utils/hook/useCurrentUser';
-import RoundedButton from '@/app/components/system/RoundedButton';
-import ProfileEditModal from './ProfileEditModal';
-import type { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
+import RoundedButton from '@/app/components/ui/button/RoundedButton';
+import ProfileEditModal from '@/app/components/card/portfolio/ProfileEditModal';
+import type { FormConfig } from '@/app/components/ui/input/types/inputTypes';
 import { checkProfileExistence } from '@/services/profile/getProfileApi.client';
 
 interface EditButtonProps {

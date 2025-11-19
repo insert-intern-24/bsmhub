@@ -2,14 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { Title } from '@/app/components/system/text';
+import { Title } from '@/app/components/ui/text/text';
 import LabelOfInputs from './LabelOfInputs';
-import InputListProvider from './InputListProvider';
-import SkillTagProvider from './SkillTagProvider';
+import InputListProvider from '@/app/components/modal/inputs/InputListProvider';
+import SkillTagProvider from '@/app/components/ui/tag/SkillTagProvider';
 import Checkbox from './Checkbox';
-import Button from './Button';
+import Button from '@/app/components/ui/button/Button';
 import PictureUpload from './PictureUpload';
-import DeleteConfirmModal from './DeleteConfirmModal';
+import DeleteConfirmModal from '@/app/components/modal/DeleteConfirmModal';
 import { FormConfig } from './types/inputTypes';
 import { MultiInputItem } from '@/utils/hook/useInputList';
 import { useModal } from '@/app/components/modal';

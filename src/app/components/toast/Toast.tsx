@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { useToast, type ToastItem } from './ToastContext';
-import { Title, Label } from '../system/text';
+import { Title, Label } from '../ui/text/text';
 
 const TOAST_DURATION = 2000;
 const ANIMATION_DURATION = 500;

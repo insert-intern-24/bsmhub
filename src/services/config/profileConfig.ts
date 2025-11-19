@@ -1,4 +1,4 @@
-import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
+import { FormConfig } from '@/app/components/ui/input/types/inputTypes';
 import {
   updateProfileSkills,
   updateStudentCertificates,

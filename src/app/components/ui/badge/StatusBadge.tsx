@@ -1,5 +1,5 @@
 import React from 'react';
-import { Caption } from '../../../system/text';
+import { Caption } from '../text/text';
 
 interface StatusBadgeProps {
   status: string;

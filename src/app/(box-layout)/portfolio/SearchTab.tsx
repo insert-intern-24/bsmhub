@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import PortfolioCard from '@/app/components/card/portfolio/PortfolioCard';
 import { PortfolioData } from './types';
-import Inputs from '@/app/components/modal/inputs/SingleInput';
-import Checkbox from '@/app/components/modal/inputs/Checkbox';
-import { Body } from '@/app/components/system/text';
+import Inputs from '@/app/components/ui/input/SingleInput';
+import Checkbox from '@/app/components/ui/input/Checkbox';
+import { Body } from '@/app/components/ui/text/text';
 import { Tables } from '@/services/supabase/database.types';
 
 const JOB_SEEKING_STATUS = ['구직 중', 'jobseeking'];

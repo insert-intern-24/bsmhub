@@ -1,5 +1,5 @@
 import React from 'react';
-import { Label } from '../system/text';
+import { Label } from '../text/text';
 
 interface CategoryTagProps {
   category: string;

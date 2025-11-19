@@ -2,7 +2,7 @@ import {
   FormConfig,
   ColumnInfo,
   FormFieldConfig,
-} from '@/app/components/modal/inputs/types/inputTypes';
+} from '@/app/components/ui/input/types/inputTypes';
 import { MultiInputItem } from '@/utils/hook/useInputList';
 
 // 타입 정의

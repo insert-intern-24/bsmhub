@@ -1,5 +1,5 @@
 import React from 'react';
-import { Caption, Label } from '../../system/text';
+import { Caption, Label } from '../../ui/text/text';
 import ProfileImage from '../portfolio/components/ProfileImage';
 
 interface ProjectCardMetadataProps {

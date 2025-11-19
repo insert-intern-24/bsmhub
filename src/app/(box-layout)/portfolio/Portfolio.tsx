@@ -1,4 +1,4 @@
-import { Body, TitleEN } from '@/app/components/system/text';
+import { Body, TitleEN } from '@/app/components/ui/text/text';
 import Tabs from '@/app/components/layout/Tabs';
 
 import PortfolioHome from '@/app/components/card/portfolio/PortfolioHome';

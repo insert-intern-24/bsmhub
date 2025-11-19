@@ -1,5 +1,5 @@
 import PortfolioItems from './components/PortfolioDetail';
-import { Title } from '../../system/text';
+import { Title } from '../../ui/text/text';
 
 import { PortfolioDetailProps } from '@/app/(box-layout)/portfolio/types';
 import { CardProps } from '@/app/components/card/project/ProjectCard';

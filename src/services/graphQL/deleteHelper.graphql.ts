@@ -1,5 +1,5 @@
 import { executeMutation } from './client.graphql.client';
-import type { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
+import type { FormConfig } from '@/app/components/ui/input/types/inputTypes';
 
 /**
  * 공통 삭제 핸들러 함수
