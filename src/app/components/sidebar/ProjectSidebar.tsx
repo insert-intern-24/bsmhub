@@ -12,6 +12,7 @@ import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
 import { useModal } from '@/app/components/modal';
 import ProjectEditModal from '@/app/components/project/components/ProjectEditModal';
 import { projectConfig } from '@/services/config/projectConfig';
+import SidebarLayout from '@/app/components/layout/SidebarLayout';
 
 interface ProjectSidebarProps {
   project: ProjectDetailViewModel;
@@ -65,40 +66,38 @@ const ProjectSidebar = ({
   }, [project]);
 
   return (
-    <div
-      ref={sidebarRef}
-      className="flex-shrink-0 w-[21.75rem] min-w-[21.75rem] mobile:w-full mobile:min-w-0 mobile:border-0 mobile:px-0 mobile:pb-8"
-    >
-      <div className="relative">
-        <ProfileIcon image={project.iconImage} />
+    <div ref={sidebarRef}>
+      <SidebarLayout
+        className="mobile:border-0 mobile:px-0 mobile:pb-8"
+        header={
+          <div className="relative">
+            <ProfileIcon image={project.iconImage} />
+            <div className="flex-col w-full gap-[1.625rem]">
+              <ProjectSummarySection
+                title={project.title}
+                description={project.introduction}
+              />
+            </div>
+          </div>
+        }
+      >
+        <ProjectActionsSection
+          hasEditPermission={hasEditPermission}
+          onEdit={handleProjectEdit}
+          links={project.links}
+        />
 
-        <div className="flex-col w-full gap-[1.625rem] pt-[4.5rem]">
-          <ProjectSummarySection
-            title={project.title}
-            description={project.introduction}
-          />
-        </div>
-      </div>
-
-      <aside className="sticky top-24 self-start mobile:static mt-[1.625rem]">
-        <div className="flex-col w-full gap-[1.625rem]">
-          <ProjectActionsSection
-            hasEditPermission={hasEditPermission}
-            onEdit={handleProjectEdit}
-            links={project.links}
-          />
-
-          {/* 링크, 기술스택, 기여자 컨테이너 */}
-          <div
-            className={`foldable-container relative flex-col w-full gap-[1.625rem] ${
-              shouldFoldSidebar && !isSidebarExpanded
-                ? 'mobile:max-h-[30vh] mobile:overflow-hidden'
-                : ''
-            }`}
-          >
-            <ProjectLinkSection links={project.links} />
-            <ProjectTechnologiesSection technologies={project.technologies} />
-            <ProjectTeamSection members={project.team} />
+        {/* 링크, 기술스택, 기여자 컨테이너 */}
+        <div
+          className={`foldable-container relative flex-col w-full gap-[1.625rem] ${
+            shouldFoldSidebar && !isSidebarExpanded
+              ? 'mobile:max-h-[30vh] mobile:overflow-hidden'
+              : ''
+          }`}
+        >
+          <ProjectLinkSection links={project.links} />
+          <ProjectTechnologiesSection technologies={project.technologies} />
+          <ProjectTeamSection members={project.team} />
 
           {/* 그라데이션 오버레이와 더보기 버튼 */}
           {shouldFoldSidebar && !isSidebarExpanded && (
@@ -116,8 +115,7 @@ const ProjectSidebar = ({
             </>
           )}
         </div>
-      </div>
-    </aside>
+      </SidebarLayout>
     </div>
   );
 };

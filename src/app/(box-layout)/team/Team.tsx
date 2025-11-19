@@ -5,22 +5,24 @@ import { notFound } from 'next/navigation';
 import TeamSidebar from '@/app/components/sidebar/TeamSidebar';
 import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
 import ProjectGrid from '@/app/components/project/components/ProjectGrid';
+import SidebarContentLayout from '@/app/components/layout/SidebarContentLayout';
 
 const Team = async ({ teamName }: { teamName: string }) => {
   const teamDetail = (await getTeamData(teamName)) ?? notFound();
   const teamProjects = await getTeamProjects(teamName);
 
   return (
-    <div className="w-full flex-row relative responsive-team">
+    <div className="w-full relative responsive-team">
       <ProfileIcon image={teamDetail.profile_image} />
-      <TeamSidebar teamDetail={teamDetail} projectCount={teamProjects.length} />
-      <section className="w-full">
-        <ProjectGrid
-          projects={teamProjects}
-          className="pl-[3rem] pt-[4.5rem] responsive-teamProjects"
-          isTeamProject={true}
-        />
-      </section>
+      <SidebarContentLayout sidebar={<TeamSidebar teamDetail={teamDetail} projectCount={teamProjects.length} />}>
+        <section className="w-full">
+          <ProjectGrid
+            projects={teamProjects}
+            className="pl-[3rem] pt-[4.5rem] responsive-teamProjects"
+            isTeamProject={true}
+          />
+        </section>
+      </SidebarContentLayout>
     </div>
   );
 };
