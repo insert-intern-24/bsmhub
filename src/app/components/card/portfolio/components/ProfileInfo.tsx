@@ -1,5 +1,5 @@
 import React from 'react';
-import { Body2, Caption, Label } from '@/app/components/system/text';
+import { Body2, Caption, Label } from '@/app/components/shared/system/text';
 import { Profile } from '@/app/components/card/portfolio/types';
 
 interface ProfileInfoProps {

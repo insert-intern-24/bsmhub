@@ -2,7 +2,7 @@
 
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 import Card from '@/app/components/card/project/ProjectCard';
-import type { TeamProjectType } from '@/app/(box-layout)/team/types';
+import type { TeamProjectType } from '@/app/components/team/types';
 
 interface ProjectGridProps {
   projects: CardProps[] | TeamProjectType[];

@@ -2,7 +2,7 @@ import {
   Profile,
   PortfolioCardProps,
 } from '@/app/components/card/portfolio/types';
-import { TeamData } from '@/app/(box-layout)/team/types';
+import { TeamData } from '@/app/components/team/types';
 import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 
 /**

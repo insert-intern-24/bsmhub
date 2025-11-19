@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import './components/system/text.css';
+@import './components/shared/system/text.css';
 
 :root {
   --background: #f5f5f7;

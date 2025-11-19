@@ -1,7 +1,7 @@
 import React from 'react';
 import { getAllTeams, getTeamsByProfileName } from '@/services/team/getTeam.server';
 import { transformTeamToPortfolioCard } from '@/utils/transformTeamToPortfolioCard';
-import CollectClient from '@/app/components/collect/CollectClient';
+import CollectionClient from '@/app/components/shared/CollectionClient';
 
 interface TeamPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -23,7 +23,7 @@ export default async function TeamPage({ searchParams }: TeamPageProps) {
 
   return (
     <div className="container mx-auto pt-8">
-      <CollectClient initialPortfolios={transformedTeams} type="team" />
+      <CollectionClient initialPortfolios={transformedTeams} type="team" />
     </div>
   );
 }

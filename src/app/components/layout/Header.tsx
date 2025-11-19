@@ -1,21 +1,19 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Label } from '@/app/components/system/text';
+import { Label } from '@/app/components/shared/system/text';
 import Account from '../auth/Account';
 import HeaderDropdown from './HeaderDropdown';
 import {
   IconUsersGroup,
   IconAssembly,
   IconId,
-  IconAward,
 } from '@tabler/icons-react';
 
 export const navigation = [
   { label: '프로젝트', href: '/project', icon: IconAssembly },
   { label: '동아리', href: '/team', icon: IconUsersGroup },
   { label: '포트폴리오', href: '/portfolio', icon: IconId },
-  { label: '대회', href: '/major', icon: IconAward },
 ];
 
 const Header = () => {

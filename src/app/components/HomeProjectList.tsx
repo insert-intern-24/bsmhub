@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import CategoryTag from '@/app/components/contents/CategoryTag';
+import CategoryTag from '@/app/components/shared/contents/CategoryTag';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 import ProjectGrid from './project/components/ProjectGrid';
 
@@ -9,7 +9,7 @@ interface HomeProjectListProps {
   projects: CardProps[];
 }
 
-export default function HomeProjectList({ projects }: HomeProjectListProps) {
+export default function HomeProjectList({ projects = [] }: HomeProjectListProps) {
   const [selectedCategory, setSelectedCategory] = useState<'All' | string>(
     'All',
   );
@@ -18,7 +18,7 @@ export default function HomeProjectList({ projects }: HomeProjectListProps) {
     const uniqueCategories = new Set<string>();
 
     projects.forEach((project) => {
-      if (project.category) {
+      if (project?.category) {
         uniqueCategories.add(project.category);
       }
     });
@@ -27,9 +27,10 @@ export default function HomeProjectList({ projects }: HomeProjectListProps) {
   }, [projects]);
 
   const filteredProjects = useMemo(() => {
+    if (!projects || projects.length === 0) return [];
     return selectedCategory === 'All'
       ? projects
-      : projects.filter((project) => project.category === selectedCategory);
+      : projects.filter((project) => project?.category === selectedCategory);
   }, [projects, selectedCategory]);
 
   return (

@@ -2,7 +2,7 @@
 
 import { createClient } from '@/services/supabase/client';
 import { useCallback, useEffect, useState } from 'react';
-import { Dropdown, DropdownItem } from '../dropdown/Dropdown';
+import { Dropdown, DropdownItem } from '@/app/components/shared/dropdown/Dropdown';
 import { useModal } from '@/app/components/modal';
 import { useCurrentUser } from '@/utils/hook/useCurrentUser';
 import { openProfileModal } from '@/utils/modal/openProfileModal';

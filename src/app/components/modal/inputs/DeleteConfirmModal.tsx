@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Title, Body } from '@/app/components/system/text';
+import { Title, Body } from '@/app/components/shared/system/text';
 import Checkbox from './Checkbox';
 import Button from './Button';
 

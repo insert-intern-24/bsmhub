@@ -1,4 +1,4 @@
-import Team from '../Team';
+import Team from '@/app/components/team/Team';
 
 interface TeamProps {
   params: Promise<{ teamName: string }>;

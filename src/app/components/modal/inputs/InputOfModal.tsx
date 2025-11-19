@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { Title } from '@/app/components/system/text';
+import { Title } from '@/app/components/shared/system/text';
 import LabelOfInputs from './LabelOfInputs';
 import InputListProvider from './InputListProvider';
 import SkillTagProvider from './SkillTagProvider';

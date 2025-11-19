@@ -4,7 +4,7 @@ import { PortfolioCardProps } from './types';
 import ProfileInfo from './components/ProfileInfo';
 import StatusBadge from './components/StatusBadge';
 import ProjectImages from './components/ProjectImages';
-import ProfileImage from './components/ProfileImage';
+import AvatarImage from '@/app/components/shared/AvatarImage';
 
 const PortfolioCard = ({ profile, projects, src }: PortfolioCardProps) => {
   const content = (
@@ -23,7 +23,7 @@ const PortfolioCard = ({ profile, projects, src }: PortfolioCardProps) => {
 
         {/* Profile Section */}
         <div className="relative pl-2 -top-7 w-full">
-          <ProfileImage
+          <AvatarImage
             src={profile.profile_image}
             name={profile.name}
             size="small"
@@ -39,7 +39,7 @@ const PortfolioCard = ({ profile, projects, src }: PortfolioCardProps) => {
       {/* 컨테이너가 450px 이상일 때: 가로 레이아웃 (기존 LongPortfolioCard) */}
       <div className="hidden @[450px]:flex w-full h-fit gap-2.5">
         {/* Profile Image */}
-        <ProfileImage
+        <AvatarImage
           src={profile.profile_image}
           name={profile.name}
           size="small"

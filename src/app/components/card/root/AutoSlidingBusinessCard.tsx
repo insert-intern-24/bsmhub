@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useInfinitePortfolio } from '@/utils/hook/useInfinitePortfolio';
-import { PortfolioData } from '@/app/(box-layout)/portfolio/types';
+import { PortfolioData } from '@/app/components/portfolio/types';
 import BusinessCard, { BusinessCardData } from './BusinessCard';
 import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 

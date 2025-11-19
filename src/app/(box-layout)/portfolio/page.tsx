@@ -1,4 +1,4 @@
-import SearchTab from './SearchTab';
+import PortfolioSearchTab from '@/app/components/portfolio/PortfolioSearchTab';
 import { getPersonalPortfolioData } from '@/services/portfolio/getPersonalPortfolioData.server';
 import getJobs from '@/services/portfolio/getJobs.server';
 
@@ -7,7 +7,7 @@ export default async function Portfolio() {
   const jobs = await getJobs();
   return (
     <div className="bg-white">
-      <SearchTab portfolioData={portfolioData} jobs={jobs} />
+      <PortfolioSearchTab portfolioData={portfolioData} jobs={jobs} />
     </div>
   );
 }

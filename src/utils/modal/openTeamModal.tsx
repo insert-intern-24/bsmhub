@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { teamProfileConfig } from '@/services/config/teamProfileConfig';
-import ProfileEditModal from '@/app/components/card/portfolio/ProfileEditModal';
+import ProfileEditModal from '@/app/components/shared/ProfileEditModal';
 
 /**
  * 팀 프로필 생성 모달을 여는 유틸리티 함수
