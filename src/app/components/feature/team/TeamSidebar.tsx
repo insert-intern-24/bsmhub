@@ -5,7 +5,7 @@ import { TeamData } from '@/app/(box-layout)/team/types';
 import { getFoundedYear } from '@/utils/date';
 import getAccount from '@/services/auth/getAccount.server';
 import TeamProfileEditButton from '@/app/components/card/portfolio/TeamProfileEditButton';
-import ProfileImage from '@/app/components/card/portfolio/components/ProfileImage';
+import ProfileImage from '@/app/components/ui/profile/ProfileImage';
 import SidebarLayout from '@/app/components/layout/sidebar/SidebarLayout';
 
 interface TeamSidebarProps {

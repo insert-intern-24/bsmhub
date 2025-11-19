@@ -9,7 +9,7 @@ import { notFound } from 'next/navigation';
 import { getCooperationProjects } from '@/services/project/getCooperationProjects.server';
 import { convertStudentNumber } from '@/utils/convertStudentNumber';
 import { getProfile } from '@/services/profile/getProfile.server';
-import ProfileIcon from '@/app/components/card/portfolio/components/ProfileIcon';
+import ProfileIcon from '@/app/components/ui/profile/ProfileIcon';
 
 interface PortfolioProps {
   profileName: string;

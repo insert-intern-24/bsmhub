@@ -1,6 +1,6 @@
 import React from 'react';
 import { Caption, Label } from '../../ui/text/text';
-import ProfileImage from '../portfolio/components/ProfileImage';
+import ProfileImage from '@/app/components/ui/profile/ProfileImage';
 
 interface ProjectCardMetadataProps {
   description: string;

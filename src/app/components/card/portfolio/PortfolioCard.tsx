@@ -4,7 +4,7 @@ import { PortfolioCardProps } from './types';
 import ProfileInfo from './components/ProfileInfo';
 import StatusBadge from '@/app/components/ui/badge/StatusBadge';
 import ProjectImages from './components/ProjectImages';
-import ProfileImage from './components/ProfileImage';
+import ProfileImage from '@/app/components/ui/profile/ProfileImage';
 
 const PortfolioCard = ({ profile, projects, src }: PortfolioCardProps) => {
   const content = (
