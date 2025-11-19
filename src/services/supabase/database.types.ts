@@ -865,7 +865,7 @@ export type Database = {
           created_at: string
           description: string | null
           email: string | null
-          is_official: boolean | null
+          is_official: boolean
           is_team: boolean
           link: string[] | null
           owner: string | null
@@ -877,7 +877,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           email?: string | null
-          is_official?: boolean | null
+          is_official?: boolean
           is_team: boolean
           link?: string[] | null
           owner?: string | null
@@ -889,7 +889,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           email?: string | null
-          is_official?: boolean | null
+          is_official?: boolean
           is_team?: boolean
           link?: string[] | null
           owner?: string | null
@@ -1544,29 +1544,17 @@ export type Database = {
         Row: {
           auth_id: string
           created_at: string
+          role: Database["public"]["Enums"]["web_admin_permission_enum"] | null
         }
         Insert: {
           auth_id: string
           created_at?: string
+          role?: Database["public"]["Enums"]["web_admin_permission_enum"] | null
         }
         Update: {
           auth_id?: string
           created_at?: string
-        }
-        Relationships: []
-      }
-      web_admin_readonly: {
-        Row: {
-          auth_id: string
-          created_at: string
-        }
-        Insert: {
-          auth_id: string
-          created_at?: string
-        }
-        Update: {
-          auth_id?: string
-          created_at?: string
+          role?: Database["public"]["Enums"]["web_admin_permission_enum"] | null
         }
         Relationships: []
       }
@@ -1660,6 +1648,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      is_team_member: {
+        Args: { team_profile_id: string; user_id: string }
+        Returns: boolean
+      }
       set_claim: {
         Args: { uid: string; claim: string; value: Json }
         Returns: string
@@ -1672,6 +1664,7 @@ export type Database = {
     Enums: {
       collection_item_type: "collection" | "project"
       visibility: "public" | "partially_public" | "private"
+      web_admin_permission_enum: "admin" | "view_all" | "dashboard_only"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2273,6 +2266,7 @@ export const Constants = {
     Enums: {
       collection_item_type: ["collection", "project"],
       visibility: ["public", "partially_public", "private"],
+      web_admin_permission_enum: ["admin", "view_all", "dashboard_only"],
     },
   },
   storage: {
