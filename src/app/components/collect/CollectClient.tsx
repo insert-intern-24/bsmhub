@@ -13,12 +13,14 @@ interface CollectClientProps {
   initialProjects?: CardProps[];
   initialPortfolios?: PortfolioCardProps[];
   type?: 'project' | 'team';
+  profileName?: string;
 }
 
 export default function CollectClient({
   initialProjects = [],
   initialPortfolios = [],
   type = 'project',
+  profileName,
 }: CollectClientProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const searchParams = useSearchParams();
@@ -32,6 +34,13 @@ export default function CollectClient({
     if (type !== 'team') return [];
 
     let filtered = initialPortfolios;
+
+    // 탭에 따른 필터링 (전공동아리/일반동아리)
+    if (currentTab === 'official') {
+      filtered = filtered.filter((portfolio) => portfolio.isOfficial === true);
+    } else if (currentTab === 'general') {
+      filtered = filtered.filter((portfolio) => portfolio.isOfficial !== true);
+    }
 
     // 검색어 필터링
     if (searchTerm) {
@@ -47,30 +56,22 @@ export default function CollectClient({
     }
 
     return filtered;
-  }, [initialPortfolios, searchTerm, type]);
+  }, [initialPortfolios, searchTerm, type, currentTab]);
 
   const filteredProjects = useMemo(() => {
     if (type === 'team') return [];
 
-    // 프로젝트 타입인 경우 기존 로직 유지
-    const categoryMap: Record<TabMode, string | null> = {
-      home: null,
-      project: null,
-      all: null,
-      web: 'Web',
-      desktop: 'Desktop Utility',
-      mobile: 'Mobile',
-    };
-
-    const selectedCategory = categoryMap[currentTab];
+    // 프로젝트 타입인 경우 카테고리별 필터링
     let filtered = initialProjects;
 
-    if (selectedCategory) {
-      filtered = filtered.filter(
-        (project) => project.category === selectedCategory,
-      );
+    // 탭에 따른 필터링 (웹, 데스크톱, 모바일)
+    if (currentTab !== 'all') {
+      // currentTab이 'Web', 'Desktop Utility', 'Mobile' 중 하나일 때 필터링
+      // project_category 테이블의 category_name과 정확히 매칭
+      filtered = filtered.filter((project) => project.category === currentTab);
     }
 
+    // 검색어 필터링
     if (searchTerm) {
       filtered = filtered.filter(
         (project) =>
@@ -111,26 +112,48 @@ export default function CollectClient({
     [filteredPortfolios],
   );
 
-  return (
-    <div className="flex flex-col items-start gap-6 flex-1 shrink-0">
-      <div className="w-full max-w-[25rem] mobile:max-w-full">
-        <Inputs
-          type="text"
-          icon="search"
-          placeholder="Search"
-          onChange={handleSearchChange}
-        />
+  // 페이지네이션 없이 그리드로 렌더링하는 공통 컴포넌트
+  const renderStaticGrid = useCallback(() => {
+    if (type === 'team') {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          {filteredPortfolios.map((portfolio, index) => (
+            <PortfolioCard
+              key={index}
+              profile={portfolio.profile}
+              projects={portfolio.projects}
+              src={`/team/${encodeURIComponent(portfolio.profile.name)}`}
+            />
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        {filteredProjects.map((project) => (
+          <Card
+            key={project.id}
+            id={project.id}
+            title={project.title}
+            description={project.description}
+            projectImage={project.projectImage}
+            ownerName={project.ownerName}
+            isTeam={project.isTeam}
+            category={project.category}
+            authors={project.authors}
+          />
+        ))}
       </div>
+    );
+  }, [type, filteredPortfolios, filteredProjects]);
 
-      {/* 프로젝트 타입일 때만 탭 표시 */}
-      {type === 'project' && (
-        <Tabs tabs={['all', 'web', 'desktop', 'mobile']} />
-      )}
-
-      {/* 팀 타입일 때는 포트폴리오 카드로 렌더링 */}
-      {type === 'team' ? (
+  // 페이지네이션을 사용하여 렌더링하는 공통 컴포넌트
+  const renderPaginatedList = useCallback(() => {
+    if (type === 'team') {
+      return (
         <InfinitePagination<PortfolioCardProps>
-          queryKey={['portfolios', searchTerm, type]}
+          queryKey={['portfolios', searchTerm, currentTab, type, profileName]}
           queryFn={fetchPortfolios}
           enabled={true}
           renderItem={(portfolio, index) => (
@@ -142,26 +165,60 @@ export default function CollectClient({
             />
           )}
         />
-      ) : (
-        <InfinitePagination<CardProps>
-          queryKey={['projects', searchTerm, currentTab, type]}
-          queryFn={fetchProjects}
-          enabled={true}
-          renderItem={(project) => (
-            <Card
-              key={project.id}
-              id={project.id}
-              title={project.title}
-              description={project.description}
-              projectImage={project.projectImage}
-              ownerName={project.ownerName}
-              isTeam={project.isTeam}
-              category={project.category}
-              authors={project.authors}
-            />
-          )}
+      );
+    }
+
+    return (
+      <InfinitePagination<CardProps>
+        queryKey={['projects', searchTerm, currentTab, type, profileName]}
+        queryFn={fetchProjects}
+        enabled={true}
+        renderItem={(project) => (
+          <Card
+            key={project.id}
+            id={project.id}
+            title={project.title}
+            description={project.description}
+            projectImage={project.projectImage}
+            ownerName={project.ownerName}
+            isTeam={project.isTeam}
+            category={project.category}
+            authors={project.authors}
+          />
+        )}
+      />
+    );
+  }, [
+    type,
+    searchTerm,
+    currentTab,
+    fetchPortfolios,
+    fetchProjects,
+    profileName,
+  ]);
+
+  return (
+    <div className="flex flex-col items-start gap-6 flex-1 shrink-0">
+      <div className="w-full max-w-[25rem] mobile:max-w-full">
+        <Inputs
+          type="text"
+          icon="search"
+          placeholder="Search"
+          onChange={handleSearchChange}
         />
-      )}
+      </div>
+
+      {/* 프로젝트 및 팀 타입별로 다른 탭 표시 */}
+      <Tabs
+        tabs={
+          type === 'project'
+            ? ['all', 'Web', 'Desktop Utility', 'Mobile']
+            : ['all', 'official', 'general']
+        }
+      />
+
+      {/* 전공 동아리(official)는 페이지네이션 없이 모두 표시, 나머지는 페이지네이션 사용 */}
+      {currentTab === 'official' ? renderStaticGrid() : renderPaginatedList()}
     </div>
   );
 }

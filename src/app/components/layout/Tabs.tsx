@@ -2,15 +2,25 @@
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
-export type TabMode = 'home' | 'project' | 'all' | 'web' | 'desktop' | 'mobile';
+export type TabMode =
+  | 'home'
+  | 'project'
+  | 'all'
+  | 'official'
+  | 'general'
+  | 'Web'
+  | 'Desktop Utility'
+  | 'Mobile';
 
 const mapTabValue: Record<TabMode, string> = {
   home: '홈',
   project: '프로젝트',
   all: '전체',
-  web: '웹',
-  desktop: '데스크톱앱',
-  mobile: '모바일앱',
+  official: '전공 동아리',
+  general: '일반 동아리',
+  Web: '웹',
+  'Desktop Utility': '데스크톱',
+  Mobile: '모바일',
 };
 
 interface TabsProps {
@@ -20,6 +30,13 @@ interface TabsProps {
 const Tabs = ({ tabs }: TabsProps) => {
   const searchParams = useSearchParams();
   const currentPath = (searchParams.get('path') ?? tabs[0]) as TabMode;
+
+  // 기존 쿼리 파라미터를 유지하면서 path만 변경하는 함수
+  const createTabHref = (mode: TabMode) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('path', mode);
+    return `?${params.toString()}`;
+  };
 
   return (
     <div className="flex border-b-[1px] border-[#F1F1F1] w-full">
@@ -32,7 +49,7 @@ const Tabs = ({ tabs }: TabsProps) => {
             className={`px-5 pb-2 border-b-2 ${
               isActive ? 'border-black' : 'border-transparent text-gray-base'
             }`}
-            href={`?path=${mode}`}
+            href={createTabHref(mode)}
           >
             {mapTabValue[mode]}
           </Link>

@@ -3,7 +3,10 @@
 import { createClient } from '@/services/supabase/server';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 import { Tables } from '@/services/supabase/database.types';
-import type { ProjectContributor, ProjectOwnerProfile } from '@/services/project/types';
+import type {
+  ProjectContributor,
+  ProjectOwnerProfile,
+} from '@/services/project/types';
 import { createAuthorsFromProject } from '@/services/project/utils';
 
 export type ProjectType = Pick<
@@ -30,7 +33,11 @@ const PROJECT_SELECT_QUERY = `
     profile_id,
     profile_name,
     profile_image,
-    is_team
+    is_team,
+    is_official,
+    student!profile_owner_fkey1 (
+      name
+    )
   ),
   project_category!projects_category_id_fkey (
     category_name
@@ -39,7 +46,11 @@ const PROJECT_SELECT_QUERY = `
     profile (
       profile_id,
       profile_name,
-      profile_image
+      profile_image,
+      is_team,
+      student!profile_owner_fkey1 (
+        name
+      )
     )
   )
 `;
@@ -47,7 +58,7 @@ const PROJECT_SELECT_QUERY = `
 async function fetchProjects(limit?: number): Promise<CardProps[]> {
   const supabase = await createClient();
   let query = supabase.from('projects').select(PROJECT_SELECT_QUERY);
-  
+
   if (limit) {
     query = query.limit(limit);
   }
@@ -67,10 +78,13 @@ async function fetchProjects(limit?: number): Promise<CardProps[]> {
       category: project.project_category?.category_name,
       description: project.description,
       isTeam: project.profile.is_team,
+      isOfficial: Boolean(project.profile.is_official),
       ownerName: project.profile.profile_name,
       authors: createAuthorsFromProject(project, {
         profile_name: project.profile.profile_name,
         profile_image: project.profile.profile_image,
+        is_team: project.profile.is_team,
+        student: project.profile.student,
       }),
     }),
   );
@@ -82,7 +96,10 @@ export const getProjects = async (limit?: number): Promise<CardProps[]> => {
   return fetchProjects(limit);
 };
 
-export const getProjectsByProfileName = async (profileName: string, limit?: number): Promise<CardProps[]> => {
+export const getProjectsByProfileName = async (
+  profileName: string,
+  limit?: number,
+): Promise<CardProps[]> => {
   const supabase = await createClient();
 
   // 먼저 profileName으로 사용자의 프로필 ID를 찾습니다
@@ -91,7 +108,7 @@ export const getProjectsByProfileName = async (profileName: string, limit?: numb
     .select('profile_id')
     .eq('profile_name', profileName)
     .eq('is_team', false)
-    .maybeSingle<{ profile_id: number }>();
+    .maybeSingle<{ profile_id: string }>();
 
   if (profileError) {
     console.error('사용자 프로필 조회 중 오류:', profileError);
@@ -103,7 +120,7 @@ export const getProjectsByProfileName = async (profileName: string, limit?: numb
     return [];
   }
 
-  // 사용자가 소유하거나 기여한 프로젝트 ID들을 조회합니다
+  // 사용자가 기여한 프로젝트 ID들을 조회합니다
   const { data: contributions, error: contributionError } = await supabase
     .from('project_contributors')
     .select('project_id')
@@ -114,14 +131,23 @@ export const getProjectsByProfileName = async (profileName: string, limit?: numb
     return [];
   }
 
-  const contributedProjectIds = (contributions as { project_id: number }[] | null)?.map(c => c.project_id) || [];
+  const contributedProjectIds =
+    (contributions as { project_id: number }[] | null)?.map(
+      (c) => c.project_id,
+    ) || [];
 
   // 사용자가 소유하거나 기여한 프로젝트들을 조회합니다
   let query = supabase.from('projects').select(PROJECT_SELECT_QUERY);
 
   if (contributedProjectIds.length > 0) {
-    query = query.or(`owner.eq.${userProfile.profile_id},project_id.in.(${contributedProjectIds.join(',')})`);
+    // owner이거나 기여자인 프로젝트를 모두 조회
+    query = query.or(
+      `owner.eq.${
+        userProfile.profile_id
+      },project_id.in.(${contributedProjectIds.join(',')})`,
+    );
   } else {
+    // 기여한 프로젝트가 없으면 owner인 프로젝트만 조회
     query = query.eq('owner', userProfile.profile_id);
   }
 
@@ -144,10 +170,13 @@ export const getProjectsByProfileName = async (profileName: string, limit?: numb
       category: project.project_category?.category_name,
       description: project.description,
       isTeam: project.profile.is_team,
+      isOfficial: Boolean(project.profile.is_official),
       ownerName: project.profile.profile_name,
       authors: createAuthorsFromProject(project, {
         profile_name: project.profile.profile_name,
         profile_image: project.profile.profile_image,
+        is_team: project.profile.is_team,
+        student: project.profile.student,
       }),
     }),
   );
