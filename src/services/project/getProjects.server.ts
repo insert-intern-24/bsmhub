@@ -70,11 +70,6 @@ async function fetchProjects(limit?: number): Promise<CardProps[]> {
     return [];
   }
 
-  // 데이터 디버깅
-  if (data && data.length > 0) {
-    console.log('프로젝트 데이터 샘플:', JSON.stringify(data[0], null, 2));
-  }
-
   const projects: CardProps[] = (data as ProjectWithProfileType[]).map(
     (project) => ({
       id: project.project_id,
