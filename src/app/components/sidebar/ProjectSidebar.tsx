@@ -3,11 +3,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Body } from '@/app/components/ui/text/text';
 import type { ProjectDetailViewModel } from '@/services/project/types';
-import { ProjectSummarySection } from '@/app/components/section/ProjectSummarySection';
-import { ProjectActionsSection } from '@/app/components/section/ProjectActionsSection';
-import { ProjectLinkSection } from '@/app/components/section/ProjectLinkSection';
-import { ProjectTechnologiesSection } from '@/app/components/section/ProjectTechnologiesSection';
-import { ProjectTeamSection } from '@/app/components/section/ProjectTeamSection';
+import { ProjectSummarySection } from '@/app/components/section/project/ProjectSummarySection';
+import { ProjectActionsSection } from '@/app/components/section/project/ProjectActionsSection';
+import { ProjectLinkSection } from '@/app/components/section/project/ProjectLinkSection';
+import { ProjectTechnologiesSection } from '@/app/components/section/project/ProjectTechnologiesSection';
+import { ProjectTeamSection } from '@/app/components/section/project/ProjectTeamSection';
 import { useModal } from '@/app/components/modal';
 import ProjectEditModal from '@/app/components/project/components/ProjectEditModal';
 import { projectConfig } from '@/services/config/projectConfig';
