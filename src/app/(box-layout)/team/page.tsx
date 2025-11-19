@@ -1,5 +1,8 @@
 import React from 'react';
-import { getAllTeams, getTeamsByProfileName } from '@/services/team/getTeam.server';
+import {
+  getAllTeams,
+  getTeamsByProfileName,
+} from '@/services/team/getTeam.server';
 import { transformTeamToPortfolioCard } from '@/utils/transformTeamToPortfolioCard';
 import CollectClient from '@/app/components/collect/CollectClient';
 
@@ -23,7 +26,12 @@ export default async function TeamPage({ searchParams }: TeamPageProps) {
 
   return (
     <div className="container mx-auto pt-8">
-      <CollectClient initialPortfolios={transformedTeams} type="team" />
+      <CollectClient
+        key={typeof profileName === 'string' ? profileName : 'all'}
+        initialPortfolios={transformedTeams}
+        type="team"
+        profileName={typeof profileName === 'string' ? profileName : undefined}
+      />
     </div>
   );
 }

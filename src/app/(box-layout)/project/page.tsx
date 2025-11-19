@@ -1,29 +1,31 @@
 import React from 'react';
 import CollectClient from '@/app/components/collect/CollectClient';
-import { getProjects, getProjectsByProfileName } from '@/services/project/getProjects.server';
+import {
+  getProjects,
+  getProjectsByProfileName,
+} from '@/services/project/getProjects.server';
 
-interface ProjectPageProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}
+type ProjectPageProps = {
+  searchParams: Promise<{ profileName?: string }>;
+};
 
 export default async function ProjectPage({ searchParams }: ProjectPageProps) {
   const params = await searchParams;
   const profileName = params.profileName;
 
-  let projects = [];
-
-  if (profileName && typeof profileName === 'string') {
-    projects = await getProjectsByProfileName(profileName);
-  } else {
-    projects = await getProjects();
-  }
-
-  // profileName이 있을 때와 없을 때를 구분하여 key를 설정
-  const key = profileName && typeof profileName === 'string' ? `profile-${profileName}` : 'all-projects';
+  // profileName이 있으면 해당 사용자의 프로젝트만, 없으면 전체 프로젝트 조회
+  const projects = profileName
+    ? await getProjectsByProfileName(profileName)
+    : await getProjects();
 
   return (
     <div className="container mx-auto pt-8">
-      <CollectClient key={key} initialProjects={projects} type="project" />
+      <CollectClient
+        key={profileName ?? 'all'}
+        initialProjects={projects}
+        type="project"
+        profileName={profileName}
+      />
     </div>
   );
 }
