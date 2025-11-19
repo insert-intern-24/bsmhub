@@ -8,7 +8,6 @@ import { ProjectActionsSection } from '@/app/components/section/ProjectActionsSe
 import { ProjectLinkSection } from '@/app/components/section/ProjectLinkSection';
 import { ProjectTechnologiesSection } from '@/app/components/section/ProjectTechnologiesSection';
 import { ProjectTeamSection } from '@/app/components/section/ProjectTeamSection';
-import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
 import { useModal } from '@/app/components/modal';
 import ProjectEditModal from '@/app/components/project/components/ProjectEditModal';
 import { projectConfig } from '@/services/config/projectConfig';
@@ -70,15 +69,10 @@ const ProjectSidebar = ({
       <SidebarLayout
         className="mobile:border-0 mobile:px-0 mobile:pb-8"
         header={
-          <div className="relative">
-            <ProfileIcon image={project.iconImage} />
-            <div className="flex-col w-full gap-[1.625rem]">
-              <ProjectSummarySection
-                title={project.title}
-                description={project.introduction}
-              />
-            </div>
-          </div>
+          <ProjectSummarySection
+            title={project.title}
+            description={project.introduction}
+          />
         }
       >
         <ProjectActionsSection
