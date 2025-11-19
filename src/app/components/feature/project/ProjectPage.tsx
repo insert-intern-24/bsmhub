@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import ProjectMainContent from '@/app/components/feature/project/components/ProjectMainContent';
-import ProjectSidebar from '@/app/components/sidebar/ProjectSidebar';
+import ProjectSidebar from '@/app/components/feature/project/ProjectSidebar';
 import { getProjectDetailViewModel } from '@/services/project/getProjectDetail.server';
 import checkProjectEditPermission from '@/services/project/checkProjectEditPermission.server';
 import SidebarContentLayout from '@/app/components/layout/sidebar/SidebarContentLayout';
