@@ -3,7 +3,7 @@
 import React from 'react';
 import { checkProfileExistence } from '@/services/profile/getProfileApi.client';
 import { profileConfig } from '@/services/config/profileConfig';
-import ProfileEditModal from '@/app/components/shared/ProfileEditModal';
+import ProfileEditModal from '@/app/components/card/portfolio/ProfileEditModal';
 
 /**
  * 프로필 생성/수정 모달을 여는 유틸리티 함수

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import AvatarImage from '@/app/components/shared/AvatarImage';
+import ProfileImage from '@/app/components/card/portfolio/components/ProfileImage';
 
 interface ProjectItem {
   id: string;
@@ -54,7 +54,7 @@ const ProfileHeader = ({ card }: { card: BusinessCardData }) => {
   return (
     <div className="flex items-center justify-between w-full cursor-pointer" onClick={handleClick}>
       <div className="flex gap-[7px] grow items-center">
-        <AvatarImage
+        <ProfileImage
           src={card.profileImage}
           name={card.name}
           size={{ width: 27, height: 27 }}

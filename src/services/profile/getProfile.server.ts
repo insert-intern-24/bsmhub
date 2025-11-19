@@ -1,9 +1,9 @@
 'use server';
-import { ProfileType } from "@/app/components/portfolio/types";
+import { ProfileType } from "@/app/(box-layout)/portfolio/types";
 import { createClient } from "@/services/supabase/server"
 
 
-export const getProfile = async (profile_name: string): Promise<ProfileType | null> => {
+export const getProfile = async (profile_name: string): Promise<ProfileType> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -31,13 +31,8 @@ export const getProfile = async (profile_name: string): Promise<ProfileType | nu
     .eq('is_team', false)
     .maybeSingle<ProfileType>()
 
-  if (error) {
-    console.error('학생 프로필 조회 중 오류:', error);
-    return null;
-  }
-
-  if (!data) {
-    return null;
+  if (!data || error) {
+    throw new Error('학생 프로필 조회 중 오류');
   }
 
   return data;

@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Body } from '@/app/components/shared/system/text';
+import { Body } from '@/app/components/system/text';
 import type { ProjectDetailViewModel } from '@/services/project/types';
-import { ProjectSummarySection } from '@/app/components/project/section/ProjectSummarySection';
-import { ProjectActions } from '@/app/components/project/section/ProjectActions';
-import { ProjectLinkDetailSection } from '@/app/components/project/section/ProjectLinkDetailSection';
-import { ProjectTechnologiesDetailSection } from '@/app/components/project/section/ProjectTechnologiesDetailSection';
-import { ProjectTeamDetailSection } from '@/app/components/project/section/ProjectTeamDetailSection';
-import AvatarIcon from '@/app/components/shared/AvatarIcon';
+import { ProjectSummarySection } from '@/app/components/project/sidebar/ProjectSummarySection';
+import { ProjectActions } from '@/app/components/project/sidebar/ProjectActions';
+import { ProjectLinkSection } from '@/app/components/project/sidebar/ProjectLinkSection';
+import { ProjectTechnologiesSection } from '@/app/components/project/sidebar/ProjectTechnologiesSection';
+import { ProjectTeamSection } from '@/app/components/project/sidebar/ProjectTeamSection';
+import ProfileIcon from '@/app/components/card/portfolio/ProfileIcon';
 import { useModal } from '@/app/components/modal';
 import ProjectEditModal from './ProjectEditModal';
 import { projectConfig } from '@/services/config/projectConfig';
@@ -70,7 +70,7 @@ const ProjectSidebar = ({
       className="flex-shrink-0 w-[21.75rem] min-w-[21.75rem] mobile:w-full mobile:min-w-0 mobile:border-0 mobile:px-0 mobile:pb-8"
     >
       <div className="relative">
-        <AvatarIcon image={project.iconImage} />
+        <ProfileIcon image={project.iconImage} />
 
         <div className="flex-col w-full gap-[1.625rem] pt-[4.5rem]">
           <ProjectSummarySection
@@ -96,9 +96,9 @@ const ProjectSidebar = ({
                 : ''
             }`}
           >
-            <ProjectLinkDetailSection links={project.links} />
-            <ProjectTechnologiesDetailSection technologies={project.technologies} />
-            <ProjectTeamDetailSection members={project.team} />
+            <ProjectLinkSection links={project.links} />
+            <ProjectTechnologiesSection technologies={project.technologies} />
+            <ProjectTeamSection members={project.team} />
 
           {/* 그라데이션 오버레이와 더보기 버튼 */}
           {shouldFoldSidebar && !isSidebarExpanded && (

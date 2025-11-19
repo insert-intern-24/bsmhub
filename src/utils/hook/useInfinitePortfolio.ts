@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { PortfolioData } from '@/app/components/portfolio/types';
+import { PortfolioData } from '@/app/(box-layout)/portfolio/types';
 
 export function useInfinitePortfolio() {
   const [data, setData] = useState<PortfolioData[]>([]);

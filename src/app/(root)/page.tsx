@@ -6,20 +6,13 @@ import AutoSlidingBusinessCard from '../components/card/root/AutoSlidingBusiness
 import HeroCard from '../components/card/HeroCard';
 import getAccount from '@/services/auth/getAccount.server';
 import AutoCarousel from '../components/card/root/AutoCarousel';
-import { CardProps } from '@/app/components/card/project/ProjectCard';
 import fs from 'node:fs';
 import path from 'node:path';
 
 const ALLOWED_EXTENSIONS = new Set(['.png']);
 
 export default async function Home() {
-  let projects: CardProps[] = [];
-  try {
-    projects = await getProjects();
-  } catch (error) {
-    console.error('프로젝트 로드 실패:', error);
-    // 에러 발생 시 빈 배열 사용
-  }
+  const projects = await getProjects();
 
   const user = await getAccount();
 

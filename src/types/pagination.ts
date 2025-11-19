@@ -1,4 +1,4 @@
-import { PortfolioData } from '@/app/components/portfolio/types';
+import { PortfolioData } from '@/app/(box-layout)/portfolio/types';
 
 export interface PaginatedResponse<T> {
   data: T[];

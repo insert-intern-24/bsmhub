@@ -13,19 +13,14 @@ components/
 │   ├── portfolio/     # 포트폴리오 카드
 │   ├── project/       # 프로젝트 카드
 │   └── root/          # 루트 카드
+├── collect/           # 수집 관련 컴포넌트
+├── contents/          # 콘텐츠 컴포넌트
+├── dropdown/          # 드롭다운 컴포넌트
 ├── layout/            # 레이아웃 컴포넌트
 ├── modal/             # 모달 컴포넌트
 │   └── inputs/        # 입력 컴포넌트
-├── portfolio/         # 포트폴리오 관련 컴포넌트
-│   └── section/       # 포트폴리오 섹션 컴포넌트
 ├── project/           # 프로젝트 관련 컴포넌트
-│   ├── components/    # 프로젝트 컴포넌트
-│   └── section/       # 프로젝트 섹션 컴포넌트
-├── shared/            # 공통 컴포넌트
-│   ├── contents/      # 콘텐츠 컴포넌트 (CategoryTag, DepartmentTag, ProfileItem, SkillTag, TeamLabel 등)
-│   ├── dropdown/      # 드롭다운 컴포넌트
-│   └── system/        # 시스템 컴포넌트 (text, RoundedButton 등)
-├── team/              # 팀 관련 컴포넌트
+├── system/            # 시스템 컴포넌트
 └── ...
 ```
 
@@ -344,56 +339,28 @@ export default ProfileInfo;
 
 ## 재사용 가능한 컴포넌트
 
-### 1. 공통 컴포넌트 위치
-
-도메인과 무관한 공통 컴포넌트는 `shared/` 폴더에 배치합니다.
-
-```
-shared/
-├── AvatarIcon.tsx          # 프로필 아이콘 (기존 ProfileIcon)
-├── AvatarImage.tsx         # 프로필 이미지 (기존 ProfileImage)
-├── FormEditButton.tsx      # 폼 편집 버튼 (기존 EditButton)
-├── ProfileEditButton.tsx   # 프로필 편집 버튼
-├── TeamProfileEditButton.tsx # 팀 프로필 편집 버튼
-├── ProfileEditModal.tsx    # 프로필 편집 모달
-├── CollectionClient.tsx    # 컬렉션 클라이언트 (기존 CollectClient)
-├── contents/               # 콘텐츠 컴포넌트
-│   ├── CategoryTag.tsx
-│   ├── DepartmentTag.tsx
-│   ├── InputLabel.tsx
-│   ├── ProfileItem.tsx
-│   ├── SkillTag.tsx
-│   └── TeamLabel.tsx
-├── dropdown/               # 드롭다운 컴포넌트
-│   └── Dropdown.tsx
-└── system/                 # 시스템 컴포넌트
-    ├── RoundedButton.tsx
-    ├── text.tsx
-    └── text.css
-```
-
-### 2. 공통 컴포넌트 추출
+### 1. 공통 컴포넌트 추출
 
 중복되는 로직이나 UI는 공통 컴포넌트로 추출합니다.
 
-예시: `ProfileEditButton`과 `TeamProfileEditButton` → `FormEditButton`으로 통합
+예시: `ProfileEditButton`과 `TeamProfileEditButton` → `EditButton`으로 통합
 
 ```typescript
-// ✅ 공통 컴포넌트 (shared/FormEditButton.tsx)
-interface FormEditButtonProps {
+// ✅ 공통 컴포넌트
+interface EditButtonProps {
   config: FormConfig;
   variables: Record<string, unknown>;
   // ... 공통 props
 }
 
-const FormEditButton = ({ ... }: FormEditButtonProps) => {
+const EditButton = ({ ... }: EditButtonProps) => {
   ...
 };
 
-// ✅ 특화된 래퍼 컴포넌트 (shared/ProfileEditButton.tsx)
+// ✅ 특화된 래퍼 컴포넌트
 const ProfileEditButton = ({ ownerId }: ProfileEditButtonProps) => {
   return (
-    <FormEditButton
+    <EditButton
       config={profileConfig}
       variables={{ owner: ownerId }}
       ...
@@ -401,26 +368,6 @@ const ProfileEditButton = ({ ownerId }: ProfileEditButtonProps) => {
   );
 };
 ```
-
-### 3. Section 컴포넌트
-
-특정 영역을 나타내는 컴포넌트는 각 도메인 폴더의 `section/` 하위에 배치합니다.
-
-```
-project/
-└── section/
-    ├── ProjectSummarySection.tsx
-    ├── ProjectLinkSection.tsx
-    ├── ProjectTechnologiesSection.tsx
-    ├── ProjectTeamSection.tsx
-    └── ProjectActions.tsx
-
-portfolio/
-└── section/
-    └── PortfolioDetailSection.tsx
-```
-
-Section 컴포넌트는 `{Domain}Section` 또는 `{Domain}{Feature}Section` 형식으로 명명합니다.
 
 ## 타입 정의
 
@@ -471,22 +418,9 @@ export interface PortfolioCardProps {
 4. **Export 방식**: 단일 컴포넌트는 `export default`를 사용합니다.
 5. **파일명과 컴포넌트명 일치**: 파일명과 컴포넌트명은 동일해야 합니다.
 
-## 컴포넌트 이름 변경 규칙
-
-### 명확성 개선을 위한 이름 변경
-
-일부 컴포넌트는 사용 범위를 더 명확하게 하기 위해 이름이 변경되었습니다:
-
-- `ProfileIcon` → `AvatarIcon`: 프로젝트에서도 사용되므로 더 범용적인 이름으로 변경
-- `ProfileImage` → `AvatarImage`: 프로젝트에서도 사용되므로 더 범용적인 이름으로 변경
-- `EditButton` → `FormEditButton`: 폼 편집 버튼임을 명확히 표현
-- `SearchTab` → `PortfolioSearchTab`: 포트폴리오 전용 검색 탭임을 명확히 표현
-- `CollectClient` → `CollectionClient`: 컬렉션 클라이언트임을 명확히 표현
-
 ## 예외 사항
 
-- 시스템 컴포넌트(`shared/system/`)는 여러 컴포넌트를 named export로 내보낼 수 있습니다.
+- 시스템 컴포넌트(`system/`)는 여러 컴포넌트를 named export로 내보낼 수 있습니다.
 - 공유 타입이 많은 경우 별도 `types.ts` 파일 사용을 권장합니다.
 - 매우 작은 유틸리티 컴포넌트는 파일명을 소문자로 시작할 수 있습니다 (예: `text.tsx`).
-- Section 컴포넌트는 각 도메인 폴더의 `section/` 하위에 배치합니다.
 

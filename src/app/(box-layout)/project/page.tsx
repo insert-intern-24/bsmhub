@@ -1,5 +1,5 @@
 import React from 'react';
-import CollectionClient from '@/app/components/shared/CollectionClient';
+import CollectClient from '@/app/components/collect/CollectClient';
 import { getProjects, getProjectsByProfileName } from '@/services/project/getProjects.server';
 
 interface ProjectPageProps {
@@ -20,7 +20,7 @@ export default async function ProjectPage({ searchParams }: ProjectPageProps) {
 
   return (
     <div className="container mx-auto pt-8">
-      <CollectionClient initialProjects={projects} type="project" />
+      <CollectClient initialProjects={projects} type="project" />
     </div>
   );
 }

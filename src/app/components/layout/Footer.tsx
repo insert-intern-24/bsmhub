@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Body, Heading } from '@/app/components/shared/system/text';
+import { Body, Heading } from '../system/text';
 
 const Footer = () => {
   return (
