@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation';
 import ProjectMainContent from '@/app/components/project/components/ProjectMainContent';
-import ProjectSidebar from '@/app/components/project/components/ProjectSidebar';
+import ProjectSidebar from '@/app/components/sidebar/ProjectSidebar';
 import { getProjectDetailViewModel } from '@/services/project/getProjectDetail.server';
 import checkProjectEditPermission from '@/services/project/checkProjectEditPermission.server';
+import SidebarContentLayout from '@/app/components/layout/SidebarContentLayout';
 
 export interface ProjectDetailPageProps {
   params: Promise<{
@@ -23,13 +24,15 @@ const ProjectDetailPage = async ({ params }: ProjectDetailPageProps) => {
 
   return (
     <section className="w-full">
-      <div className="flex mobile:flex-col mobile:gap-y-8 min-h-[calc(100vh-10rem)] mobile:min-h-0">
-        <ProjectSidebar project={viewModel} hasEditPermission={hasPermission} />
+      <SidebarContentLayout
+        className="min-h-[calc(100vh-10rem)] mobile:min-h-0 mobile:gap-y-8"
+        sidebar={<ProjectSidebar project={viewModel} hasEditPermission={hasPermission} />}
+      >
         <ProjectMainContent
           project={viewModel}
           hasEditPermission={hasPermission}
         />
-      </div>
+      </SidebarContentLayout>
     </section>
   );
 };

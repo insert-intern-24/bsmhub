@@ -35,7 +35,7 @@ interface ProjectTeamSectionProps {
   members: ProjectDetailViewModel['team'];
 }
 
-export const ProjectTeamSection = ({ 
+export const ProjectTeamSection = ({
   members
 }: ProjectTeamSectionProps) => {
   return (

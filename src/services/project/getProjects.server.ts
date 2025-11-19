@@ -55,6 +55,28 @@ const PROJECT_SELECT_QUERY = `
   )
 `;
 
+/**
+ * 프로젝트 데이터를 CardProps로 변환하는 helper 함수
+ */
+function mapProjectToCardProps(project: ProjectWithProfileType): CardProps {
+  return {
+    id: project.project_id,
+    title: project.project_name,
+    projectImage: project.project_thumbnail,
+    category: project.project_category?.category_name,
+    description: project.description,
+    isTeam: project.profile.is_team,
+    isOfficial: Boolean(project.profile.is_official),
+    ownerName: project.profile.profile_name,
+    authors: createAuthorsFromProject(project, {
+      profile_name: project.profile.profile_name,
+      profile_image: project.profile.profile_image,
+      is_team: project.profile.is_team,
+      student: project.profile.student,
+    }),
+  };
+}
+
 async function fetchProjects(limit?: number): Promise<CardProps[]> {
   const supabase = await createClient();
   let query = supabase.from('projects').select(PROJECT_SELECT_QUERY);
@@ -70,26 +92,7 @@ async function fetchProjects(limit?: number): Promise<CardProps[]> {
     return [];
   }
 
-  const projects: CardProps[] = (data as ProjectWithProfileType[]).map(
-    (project) => ({
-      id: project.project_id,
-      title: project.project_name,
-      projectImage: project.project_thumbnail,
-      category: project.project_category?.category_name,
-      description: project.description,
-      isTeam: project.profile.is_team,
-      isOfficial: Boolean(project.profile.is_official),
-      ownerName: project.profile.profile_name,
-      authors: createAuthorsFromProject(project, {
-        profile_name: project.profile.profile_name,
-        profile_image: project.profile.profile_image,
-        is_team: project.profile.is_team,
-        student: project.profile.student,
-      }),
-    }),
-  );
-
-  return projects || [];
+  return (data as ProjectWithProfileType[]).map(mapProjectToCardProps);
 }
 
 export const getProjects = async (limit?: number): Promise<CardProps[]> => {
@@ -162,24 +165,5 @@ export const getProjectsByProfileName = async (
     return [];
   }
 
-  const projects: CardProps[] = (data as ProjectWithProfileType[]).map(
-    (project) => ({
-      id: project.project_id,
-      title: project.project_name,
-      projectImage: project.project_thumbnail,
-      category: project.project_category?.category_name,
-      description: project.description,
-      isTeam: project.profile.is_team,
-      isOfficial: Boolean(project.profile.is_official),
-      ownerName: project.profile.profile_name,
-      authors: createAuthorsFromProject(project, {
-        profile_name: project.profile.profile_name,
-        profile_image: project.profile.profile_image,
-        is_team: project.profile.is_team,
-        student: project.profile.student,
-      }),
-    }),
-  );
-
-  return projects || [];
+  return (data as ProjectWithProfileType[]).map(mapProjectToCardProps);
 };

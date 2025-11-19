@@ -2,7 +2,7 @@ import React from 'react';
 import { Caption, Label } from '../../system/text';
 import ProfileImage from '../portfolio/components/ProfileImage';
 
-interface MetaInfoProps {
+interface ProjectCardMetadataProps {
   description: string;
   authors: {
     name?: string;
@@ -10,7 +10,7 @@ interface MetaInfoProps {
   }[];
 }
 
-const MetaInfo = ({ description, authors }: MetaInfoProps) => {
+const ProjectCardMetadata = ({ description, authors }: ProjectCardMetadataProps) => {
   return (
     <figcaption className="flex-x-center gap-4">
       <Label className="text-gray-base truncate">{description}</Label>
@@ -44,4 +44,4 @@ const MetaInfo = ({ description, authors }: MetaInfoProps) => {
   );
 };
 
-export default MetaInfo;
+export default ProjectCardMetadata;

@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import CategoryTag from '@/app/components/contents/CategoryTag';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
-import ProjectGrid from './project/components/ProjectGrid';
+import ProjectGrid from '@/app/components/project/components/ProjectGrid';
 import { shuffleArray } from '@/utils/shuffle';
 
 interface HomeProjectListProps {

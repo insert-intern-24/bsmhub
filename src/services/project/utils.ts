@@ -16,6 +16,19 @@ export function createAuthorsFromProject(
   project: ProjectWithContributors,
   owner?: OwnerInfo,
 ): Array<{ name?: string; profileImage: string }> {
+  const authors: Array<{ name?: string; profileImage: string }> = [];
+
+  // Owner를 먼저 추가
+  if (owner) {
+    authors.push({
+      name: owner.is_team ? owner.profile_name : owner.student?.name,
+      profileImage: owner.profile_image
+        ? convertFromDatabaseImageURL(owner.profile_image)
+        : '',
+    });
+  }
+
+  // Contributors 추가 (owner와 중복되지 않도록)
   const contributors =
     project.project_contributors
       ?.filter((contributor) => contributor.profile !== null)
@@ -28,17 +41,17 @@ export function createAuthorsFromProject(
         ),
       })) || [];
 
-  // 기여자가 없고 owner 정보가 있으면 owner를 반환
-  if (contributors.length === 0 && owner) {
-    return [
-      {
-        name: owner.is_team ? owner.profile_name : owner.student?.name,
-        profileImage: owner.profile_image
-          ? convertFromDatabaseImageURL(owner.profile_image)
-          : '',
-      },
-    ];
-  }
+  // Owner와 중복되지 않는 contributors만 추가
+  contributors.forEach((contributor) => {
+    const isDuplicate = authors.some(
+      (author) =>
+        author.name === contributor.name &&
+        author.profileImage === contributor.profileImage,
+    );
+    if (!isDuplicate) {
+      authors.push(contributor);
+    }
+  });
 
-  return contributors;
+  return authors;
 }
