@@ -19,4 +19,5 @@ export interface PortfolioCardProps {
   projects: Project[];
   src?: string;
   isOfficial?: boolean;
+  studentName?: string;
 }

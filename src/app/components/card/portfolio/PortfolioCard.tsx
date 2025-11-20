@@ -6,7 +6,9 @@ import StatusBadge from '@/app/components/ui/badge/StatusBadge';
 import ProjectImages from '@/app/components/ui/profile/portfolio/ProjectImages';
 import ProfileImage from '@/app/components/ui/profile/ProfileImage';
 
-const PortfolioCard = ({ profile, projects, src }: PortfolioCardProps) => {
+const PortfolioCard = ({ profile, projects, src, studentName }: PortfolioCardProps) => {
+  // 팀이 아닌 경우 studentName을 사용, 없으면 profile.name 사용
+  const displayName = studentName || profile.name;
   const content = (
     <div className="@container w-full h-fit rounded border border-light-gray-outline bg-white p-4"
        style={{
@@ -25,10 +27,10 @@ const PortfolioCard = ({ profile, projects, src }: PortfolioCardProps) => {
         <div className="relative pl-2 -top-7 w-full">
           <ProfileImage
             src={profile.profile_image}
-            name={profile.name}
+            name={displayName}
             size="small"
           />
-          <ProfileInfo profile={profile} layout="horizontal" />
+          <ProfileInfo profile={{ ...profile, name: displayName }} layout="horizontal" />
           <StatusBadge
             status={profile.status}
             className="absolute top-12 right-0"
@@ -41,14 +43,14 @@ const PortfolioCard = ({ profile, projects, src }: PortfolioCardProps) => {
         {/* Profile Image */}
         <ProfileImage
           src={profile.profile_image}
-          name={profile.name}
+          name={displayName}
           size="small"
         />
 
         <div className="flex-col gap-2 flex-1 w-[calc(100%-0.625rem-45px)]">
           {/* Profile Info */}
           <div className="flex-1 relative">
-            <ProfileInfo profile={profile} layout="horizontal" />
+            <ProfileInfo profile={{ ...profile, name: displayName }} layout="horizontal" />
             <StatusBadge
               status={profile.status}
               className="absolute top-0 right-0"

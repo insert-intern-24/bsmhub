@@ -17,6 +17,7 @@ interface BusinessCardData {
   profileImage: string;
   profileName: string;
   projects: ProjectItem[];
+  studentName?: string;
 }
 
 interface BusinessCardProps {
@@ -46,6 +47,8 @@ const ArrowIcon = () => (
 
 const ProfileHeader = ({ card }: { card: BusinessCardData }) => {
   const router = useRouter();
+  // 팀이 아닌 경우 studentName을 사용, 없으면 name 사용
+  const displayName = card.studentName || card.name;
 
   const handleClick = () => {
     router.push(`/portfolio/${card.profileName}`);
@@ -56,12 +59,12 @@ const ProfileHeader = ({ card }: { card: BusinessCardData }) => {
       <div className="flex gap-[7px] grow items-center">
         <ProfileImage
           src={card.profileImage}
-          name={card.name}
+          name={displayName}
           size={{ width: 27, height: 27 }}
         />
         <div className="flex flex-col grow items-start leading-[1.25] text-[#24292f]">
           <p className="font-bold text-[12px] tracking-[-0.8px] w-full">
-            {card.name}
+            {displayName}
           </p>
           <p className="font-normal text-[7px] tracking-[-0.5px] w-full">
             {card.department}
