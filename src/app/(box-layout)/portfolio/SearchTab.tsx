@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import PortfolioCard from '@/app/components/card/portfolio/PortfolioCard';
 import { PortfolioData } from './types';
-import Inputs from '@/app/components/modal/inputs/SingleInput';
-import Checkbox from '@/app/components/modal/inputs/Checkbox';
-import { Body } from '@/app/components/system/text';
+import Inputs from '@/app/components/ui/input/SingleInput';
+import Checkbox from '@/app/components/ui/input/Checkbox';
+import { Body } from '@/app/components/ui/text/text';
 import { Tables } from '@/services/supabase/database.types';
 
 const JOB_SEEKING_STATUS = ['구직 중', 'jobseeking'];
@@ -137,7 +137,7 @@ export default function SearchTab({
       </aside>
 
       {/* 포트폴리오 목록 */}
-      <section className="flex-col gap-3 p-4 flex-1 bg-[#FAFAFA] rounded-lg">
+      <section className="flex-col gap-3 p-4 w-full bg-[#FAFAFA] rounded-lg">
         {filteredData.length > 0 ? (
           filteredData.map((data, index) => (
             <PortfolioCard
@@ -145,6 +145,7 @@ export default function SearchTab({
               profile={data.profile}
               projects={data.projects}
               src={`/portfolio/${encodeURIComponent(data.profile.name)}`}
+              studentName={data.student?.name}
             />
           ))
         ) : (

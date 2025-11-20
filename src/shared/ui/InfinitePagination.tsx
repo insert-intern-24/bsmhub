@@ -29,7 +29,7 @@ const PageButton = ({
     onClick={onClick}
     className={`w-10 h-10 rounded-md transition-colors text-[17px] ${
       active
-        ? 'bg-[#171719] text-white font-bold'
+        ? 'bg-[#171717] text-white font-bold'
         : 'text-[#464c53] hover:bg-gray-100'
     }`}
   >
@@ -184,7 +184,7 @@ export default function InfinitePagination<T>({
 
   return (
     <div className="flex flex-col items-start gap-6 w-full">
-      <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="w-full grid grid-cols-auto-fit-card gap-6">
         {currentPageData.length > 0
           ? currentPageData.map((item, index) => (
               <div key={index} className="w-full">

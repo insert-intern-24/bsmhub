@@ -1,11 +1,11 @@
-import ProjectList from '@/app/components/HomeProjectList';
+import ProjectList from '@/app/components/feature/home/HomeProjectList';
 import { getProjects } from '@/services/project/getProjects.server';
-import OneTapComponent from '@/app/components/auth/GoogleOneTab';
-import LoginBox from '@/app/components/auth/LoginBox';
-import AutoSlidingBusinessCard from '../components/card/root/AutoSlidingBusinessCard';
+import OneTapComponent from '@/app/components/feature/auth/GoogleOneTab';
+import LoginBox from '@/app/components/feature/auth/LoginBox';
+import AutoSlidingBusinessCard from '../components/card/home/AutoSlidingBusinessCard';
 import HeroCard from '../components/card/HeroCard';
 import getAccount from '@/services/auth/getAccount.server';
-import AutoCarousel from '../components/card/root/AutoCarousel';
+import AutoCarousel from '../components/card/home/AutoCarousel';
 import fs from 'node:fs';
 import path from 'node:path';
 

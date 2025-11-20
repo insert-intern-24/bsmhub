@@ -1,4 +1,4 @@
-import { TagProps } from '@/app/components/contents/SkillTag';
+import { TagProps } from '@/app/components/ui/tag/SkillTag';
 import { Project, Profile } from '@/app/components/card/portfolio/types';
 export interface ItemProps {
   mode: 'competition' | 'certificate' | 'link';
@@ -96,3 +96,10 @@ export type ProfileType = Pick<
     }[];
   };
 };
+
+// PortfolioVisitTracker용 전용 타입
+export interface PortfolioVisitTrackerData {
+  profile: Profile;
+  projects: Project[];
+  student: ProfileType['student'] | null;
+}

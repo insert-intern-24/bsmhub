@@ -2,7 +2,7 @@
 
 import { createClient } from '@/services/supabase/client';
 import { Tables } from '@/services/supabase/database.types';
-import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
+import { FormConfig } from '@/app/components/ui/input/types/inputTypes';
 import { extractColumnInfoFromFormConfig } from '@/services/graphQL/form-config-utils.graphql';
 
 interface ProfileLinkData {

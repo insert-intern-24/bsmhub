@@ -1,6 +1,6 @@
 import React from 'react';
-import { Caption, Label } from '../../system/text';
-import ProfileImage from '../portfolio/components/ProfileImage';
+import { Caption, Label } from '../../ui/text/text';
+import ProfileImage from '@/app/components/ui/profile/ProfileImage';
 
 interface ProjectCardMetadataProps {
   description: string;
@@ -10,7 +10,10 @@ interface ProjectCardMetadataProps {
   }[];
 }
 
-const ProjectCardMetadata = ({ description, authors }: ProjectCardMetadataProps) => {
+const ProjectCardMetadata = ({
+  description,
+  authors,
+}: ProjectCardMetadataProps) => {
   return (
     <figcaption className="flex-x-center gap-4">
       <Label className="text-gray-base truncate">{description}</Label>
@@ -23,7 +26,7 @@ const ProjectCardMetadata = ({ description, authors }: ProjectCardMetadataProps)
               name={authors[0].name ?? ''}
               size="tiny"
             />
-            <Caption className="font-black">{authors[0].name}</Caption>
+            <Caption>{authors[0].name}</Caption>
           </>
         ) : (
           // 작성자가 여러명인 경우: 프로필 사진만 나열

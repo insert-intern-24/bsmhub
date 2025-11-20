@@ -1,10 +1,10 @@
-import PortfolioItems from './components/PortfolioDetail';
-import { Title } from '../../system/text';
+import PortfolioItems from '@/app/components/ui/profile/portfolio/PortfolioDetail';
+import { Title } from '../../ui/text/text';
 
 import { PortfolioDetailProps } from '@/app/(box-layout)/portfolio/types';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
-import ProfileEditButton from './ProfileEditButton';
-import ProjectGrid from '@/app/components/project/components/ProjectGrid';
+import ProfileEditButton from '@/app/components/ui/profile/portfolio/ProfileEditButton';
+import ProjectGrid from '@/app/components/feature/project/components/ProjectGrid';
 
 interface PortfolioHomeProps {
   content: string;

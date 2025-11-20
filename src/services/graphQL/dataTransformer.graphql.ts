@@ -1,4 +1,4 @@
-import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
+import { FormConfig } from '@/app/components/ui/input/types/inputTypes';
 import { MultiInputItem } from '@/utils/hook/useInputList';
 import { isRelationshipTable } from '@/services/graphQL/metadataExtractor.graphql';
 
