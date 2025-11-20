@@ -75,6 +75,7 @@ const BusinessCardHolder = () => {
                       src={`/portfolio/${encodeURIComponent(
                         portfolio.profile.name,
                       )}`}
+                      studentName={portfolio.student?.name}
                     />
                   </div>
                 </div>

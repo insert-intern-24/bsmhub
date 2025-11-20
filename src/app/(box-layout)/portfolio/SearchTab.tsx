@@ -145,6 +145,7 @@ export default function SearchTab({
               profile={data.profile}
               projects={data.projects}
               src={`/portfolio/${encodeURIComponent(data.profile.name)}`}
+              studentName={data.student?.name}
             />
           ))
         ) : (
