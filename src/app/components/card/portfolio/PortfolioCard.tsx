@@ -32,7 +32,7 @@ const PortfolioCard = ({
         />
 
         {/* Profile Section */}
-        <div className="relative pl-2 -top-7 w-full">
+        <div className="relative pl-2 -top-7 w-full flex-col gap-2">
           <ProfileImage
             src={profile.profile_image}
             name={displayName}

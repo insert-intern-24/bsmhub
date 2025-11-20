@@ -27,7 +27,7 @@ const ProfileInfo = ({
         <Body2>{profile.name}</Body2>
         <StatusBadge status={profile.status} />
       </div>
-      <RoleComponent className="text-gray-base">
+      <RoleComponent className="text-gray-base -mt-1">
         {profile.role.length > 0
           ? `${profile.role.join(', ')} 희망`
           : '희망 분야 없음'}
