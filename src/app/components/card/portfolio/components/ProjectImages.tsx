@@ -16,7 +16,7 @@ const ProjectImages = ({ projects, variant }: ProjectImagesProps) => {
 
   const imageClass =
     variant === 'default'
-      ? 'relative min-w-0 flex-1 h-[5.75rem]'
+      ? 'relative flex-1 h-[5.75rem]'
       : 'relative w-[9.375rem] h-[5.75rem] flex-shrink-0';
 
   return (
