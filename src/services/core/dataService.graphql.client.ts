@@ -10,6 +10,7 @@ import {
   graphqlToFormData,
   formDataToGraphQL,
 } from '@/services/graphQL/dataTransformer.graphql';
+import { getMainTable } from '@/services/graphQL/metadataExtractor.graphql';
 
 /**
  * 작업 결과 타입
@@ -235,15 +236,23 @@ export class GraphQLDataService {
           console.warn('No fields to update - skipping main table update');
         }
 
-        // 🔥 핵심 수정: profile_id로 필터링 (owner 대신)
-        // profile_id가 있으면 사용하고, 없으면 owner 사용
-        const filterField = this.currentProfileId
+        // 🔥 핵심 수정: 테이블별 적절한 filter 필드 선택
+        // 프로젝트 테이블인 경우 profile_id 사용하지 않음
+        const mainTable = getMainTable(formConfig);
+        const isProjectsTable = mainTable === 'projects';
+
+        const filterField = isProjectsTable && variables?.project_id
+          ? 'project_id'
+          : !isProjectsTable && this.currentProfileId
           ? 'profile_id'
           : variables?.project_id
           ? 'project_id'
           : 'owner';
         const filterValue =
-          this.currentProfileId || variables?.project_id || variables?.owner;
+          (isProjectsTable && variables?.project_id) ||
+          (!isProjectsTable && this.currentProfileId) ||
+          variables?.project_id ||
+          variables?.owner;
 
         console.log(`Using filter: ${filterField} = ${filterValue}`);
 
