@@ -406,23 +406,35 @@ export async function saveProfileData(
 
         if (existingRecord) {
           // 기존 레코드가 있으면 job_id만 업데이트
-          await supabase
+          const { error: updateError } = await supabase
             .from('student_jobs')
             .update({ job_id: jobId } as never)
             .eq('student_id', userId);
+          if (updateError) {
+            console.error('Failed to update student_jobs:', updateError);
+            throw updateError;
+          }
         } else {
           // 기존 레코드가 없으면 insert
-          await supabase
+          const { error: insertError } = await supabase
             .from('student_jobs')
             .insert({ student_id: userId, job_id: jobId } as never);
+          if (insertError) {
+            console.error('Failed to insert into student_jobs:', insertError);
+            throw insertError;
+          }
         }
       }
     } else {
       // job_id가 없으면 기존 레코드 삭제
-      await supabase
+      const { error: deleteError } = await supabase
         .from('student_jobs')
         .delete()
         .eq('student_id', userId);
+      if (deleteError) {
+        console.error('Failed to delete from student_jobs:', deleteError);
+        throw deleteError;
+      }
     }
 
     return { success: true };
