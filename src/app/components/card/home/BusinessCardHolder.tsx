@@ -87,7 +87,7 @@ const BusinessCardHolder = () => {
           )}
         </div>
         {/* Title을 top.png 중간에 배치 */}
-        <div className="absolute inset-x-0 bottom-[30px] z-[15] flex justify-center items-center">
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-[30px] z-[15] w-full text-center">
           <Title
             className={
               `!text-white ${isHovered ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`
