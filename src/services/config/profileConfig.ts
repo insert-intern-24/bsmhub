@@ -3,12 +3,14 @@ import {
   updateProfileSkills,
   updateStudentCertificates,
   updateProfileCompetitions,
+  updateStudentJobs,
   createDataTransformer,
   createDeleteFilterGenerator,
   createChangeCalculator,
   processRestRelationTables,
   processGraphQLRelationTables,
 } from '@/services/graphQL/relationTableHelper.graphql';
+import { getJobs } from '@/services/portfolio/getJobs.client';
 
 export const profileConfig: FormConfig = {
   graphql: {
@@ -64,6 +66,16 @@ export const profileConfig: FormConfig = {
                   }
                 }
               }
+              student_jobsCollection {
+                edges {
+                  node {
+                    job_id
+                    job:jobs {
+                      job_name
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -112,6 +124,36 @@ export const profileConfig: FormConfig = {
             required: true,
           },
         ],
+      },
+    },
+    {
+      fieldName: 'student_jobs',
+      label: '희망직무',
+      type: 'dropdownInputList',
+      required: false,
+      columnInfo: { table: 'student_jobs', column: '*' },
+      relationHandler: {
+        type: 'rest',
+        handler: updateStudentJobs,
+        identifierIsStudnetId: true,
+      },
+      inputConfig: {
+        onlyOne: true,
+        inputs: [
+          {
+            name: 'job_id',
+            type: 'text',
+            placeholder: '희망직무를 선택하세요',
+            required: false,
+          },
+        ],
+      },
+      dropdownInputConfig: {
+        nameColumnName: 'job_name',
+        valueColumnName: 'job_id',
+        query: async () => {
+          return await getJobs();
+        },
       },
     },
     {

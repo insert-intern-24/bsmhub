@@ -306,6 +306,40 @@ export async function updateProfileCompetitions(
   }
 }
 
+/**
+ * student_jobs 테이블 업데이트 (단일 선택 - 전체 교체 방식)
+ * @param studentId - 학생 ID
+ * @param jobIds - 새로운 직무 ID 배열 (단일 선택이므로 최대 1개)
+ * @param existingJobs - 기존 직무 데이터 배열 (캐시된 데이터, job_id 포함)
+ */
+export async function updateStudentJobs(
+  studentId: string,
+  jobIds: number[],
+  existingJobs: Array<{ job_id: number }> = [],
+): Promise<void> {
+  const supabase = createClient();
+
+  // 단일 선택이므로 배열이어도 첫 번째 항목만 사용
+  const newJobId = jobIds.length > 0 ? jobIds[0] : null;
+  const existingJobId = existingJobs.length > 0 ? existingJobs[0].job_id : null;
+
+  // 기존 항목 모두 삭제
+  if (existingJobId !== null) {
+    await supabase
+      .from('student_jobs')
+      .delete()
+      .eq('student_id', studentId)
+      .eq('job_id', existingJobId);
+  }
+
+  // 새 항목 추가
+  if (newJobId !== null && newJobId !== existingJobId) {
+    await supabase
+      .from('student_jobs')
+      .insert({ student_id: studentId, job_id: newJobId } as never);
+  }
+}
+
 // GraphQL relation handler 헬퍼 함수들
 
 /**
@@ -451,6 +485,12 @@ export async function processRestRelationTables(
         case 'profile_competitions':
           processedData = (relationData as Array<{ prize: string }>)
             .map((item) => item.prize)
+            .filter(Boolean);
+          break;
+        case 'student_jobs':
+          // 단일 선택이므로 job_id 배열 추출
+          processedData = (relationData as Array<{ job_id: number }>)
+            .map((item) => item.job_id)
             .filter(Boolean);
           break;
         default:
