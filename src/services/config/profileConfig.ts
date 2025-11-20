@@ -135,7 +135,7 @@ export const profileConfig: FormConfig = {
       relationHandler: {
         type: 'rest',
         handler: updateStudentJobs,
-        identifierIsStudnetId: true,
+        identifierIsStudentId: true,
       },
       inputConfig: {
         onlyOne: true,
@@ -192,7 +192,7 @@ export const profileConfig: FormConfig = {
       columnInfo: { table: 'profile_link', column: '*' },
       relationHandler: {
         type: 'graphql',
-        identifierIsStudnetId: false,
+        identifierIsStudentId: false,
         dataTransformer: createDataTransformer(
           { link: 'link', alt: 'alt' },
           (item) => Boolean(item.link),
@@ -227,7 +227,7 @@ export const profileConfig: FormConfig = {
       relationHandler: {
         type: 'rest',
         handler: updateStudentCertificates,
-        identifierIsStudnetId: true,
+        identifierIsStudentId: true,
       },
       inputConfig: {
         onlyOne: false,
@@ -250,7 +250,7 @@ export const profileConfig: FormConfig = {
       relationHandler: {
         type: 'rest',
         handler: updateProfileCompetitions,
-        identifierIsStudnetId: false,
+        identifierIsStudentId: false,
       },
       inputConfig: {
         onlyOne: false,
@@ -273,7 +273,7 @@ export const profileConfig: FormConfig = {
       relationHandler: {
         type: 'rest',
         handler: updateProfileSkills,
-        identifierIsStudnetId: false,
+        identifierIsStudentId: false,
       },
       valuePath: 'skill_id',
       white: false,
@@ -337,7 +337,7 @@ export const profileConfig: FormConfig = {
             relationData,
             handler: fieldConfig.relationHandler.handler,
             identifierIsStudentId:
-              fieldConfig.relationHandler.identifierIsStudnetId,
+              fieldConfig.relationHandler.identifierIsStudentId,
             dataTransformer: fieldConfig.relationHandler.dataTransformer,
           });
         } else {
