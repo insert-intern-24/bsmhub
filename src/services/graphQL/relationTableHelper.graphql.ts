@@ -338,7 +338,7 @@ export async function updateStudentJobs(
         .update({ job_id: newJobId } as never)
         .eq('student_id', studentId);
       if (updateError) {
-        console.error('Failed to update student jobs:', updateError);
+        console.error('Failed to update student_jobs:', updateError);
         throw updateError;
       }
     } else {
@@ -347,7 +347,7 @@ export async function updateStudentJobs(
         .from('student_jobs')
         .insert({ student_id: studentId, job_id: newJobId } as never);
       if (insertError) {
-        console.error('Failed to insert student job:', insertError);
+        console.error('Failed to insert into student_jobs:', insertError);
         throw insertError;
       }
     }
@@ -358,7 +358,7 @@ export async function updateStudentJobs(
       .delete()
       .eq('student_id', studentId);
     if (deleteError) {
-      console.error('Failed to delete student job:', deleteError);
+      console.error('Failed to delete from student_jobs:', deleteError);
       throw deleteError;
     }
   }

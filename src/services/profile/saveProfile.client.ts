@@ -4,6 +4,7 @@ import { createClient } from '@/services/supabase/client';
 import { Tables } from '@/services/supabase/database.types';
 import { FormConfig } from '@/app/components/ui/input/types/inputTypes';
 import { extractColumnInfoFromFormConfig } from '@/services/graphQL/form-config-utils.graphql';
+import { updateStudentJobs } from '@/services/graphQL/relationTableHelper.graphql';
 
 interface ProfileLinkData {
   link: string;
@@ -394,48 +395,8 @@ export async function saveProfileData(
     }
 
     // 희망직무 처리 (단일 선택이므로 job_id가 하나만 있을 수 있음)
-    if (saveData.studentJobs.length > 0) {
-      const jobId = saveData.studentJobs[0];
-      if (jobId) {
-        // upsert 방식: 기존 레코드가 있으면 job_id 업데이트, 없으면 insert
-        const { data: existingRecord } = await supabase
-          .from('student_jobs')
-          .select('job_id')
-          .eq('student_id', userId)
-          .maybeSingle();
-
-        if (existingRecord) {
-          // 기존 레코드가 있으면 job_id만 업데이트
-          const { error: updateError } = await supabase
-            .from('student_jobs')
-            .update({ job_id: jobId } as never)
-            .eq('student_id', userId);
-          if (updateError) {
-            console.error('Failed to update student_jobs:', updateError);
-            throw updateError;
-          }
-        } else {
-          // 기존 레코드가 없으면 insert
-          const { error: insertError } = await supabase
-            .from('student_jobs')
-            .insert({ student_id: userId, job_id: jobId } as never);
-          if (insertError) {
-            console.error('Failed to insert into student_jobs:', insertError);
-            throw insertError;
-          }
-        }
-      }
-    } else {
-      // job_id가 없으면 기존 레코드 삭제
-      const { error: deleteError } = await supabase
-        .from('student_jobs')
-        .delete()
-        .eq('student_id', userId);
-      if (deleteError) {
-        console.error('Failed to delete from student_jobs:', deleteError);
-        throw deleteError;
-      }
-    }
+    // updateStudentJobs 함수를 재사용하여 upsert 로직 중복 제거
+    await updateStudentJobs(userId, saveData.studentJobs, []);
 
     return { success: true };
   } catch (error) {
