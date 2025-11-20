@@ -21,6 +21,11 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
   const uuid = profile.profile_id;
   const studentInfo = profile.student;
 
+  // studentInfo가 없으면 notFound
+  if (!studentInfo) {
+    notFound();
+  }
+
   const profileDetail = await getProfileDetail(profileName);
   const cooperationProjects = await getCooperationProjects(uuid);
   const personalProjects = await getPersonalProjects(uuid);
@@ -66,7 +71,7 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
       </TitleEN>
       <div className={`${containerCss} responsive-portfolioHome`}>
         <Body className="text-gray-base flex-col justify-end gap-4">
-          {studentInfo.departments.department_name} | {desiredJobText}
+          {studentInfo.departments?.department_name || '학과 정보 없음'} | {desiredJobText}
         </Body>
 
         <div className="mobile:hidden">

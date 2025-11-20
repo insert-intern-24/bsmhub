@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { StandardInputProps } from './types/inputTypes';
 
 const Inputs = ({
@@ -19,17 +19,17 @@ const Inputs = ({
   const stringValue = typeof value === 'string' ? value : value?.toString() || '';
 
   // textarea 높이 자동 조정 함수
-  const adjustHeight = () => {
+  const adjustHeight = useCallback(() => {
     if (textarea && textareaRef.current) {
       textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
-  };
+  }, [textarea]);
 
   // value 변경 시 높이 조정
   useEffect(() => {
     adjustHeight();
-  }, [textarea, stringValue]);
+  }, [textarea, stringValue, adjustHeight]);
 
   // 포커스 처리
   useEffect(() => {
