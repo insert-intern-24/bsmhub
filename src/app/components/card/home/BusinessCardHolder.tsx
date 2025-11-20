@@ -9,7 +9,9 @@ import { RecentPortfolioItem } from '@/utils/localStorage/recentPortfolios';
 
 const BusinessCardHolder = () => {
   const [isHovered, setIsHovered] = useState(false);
-  const [recentPortfolios, setRecentPortfolios] = useState<RecentPortfolioItem[]>([]);
+  const [recentPortfolios, setRecentPortfolios] = useState<
+    RecentPortfolioItem[]
+  >([]);
 
   useEffect(() => {
     const loadRecentPortfolios = () => {
@@ -30,14 +32,13 @@ const BusinessCardHolder = () => {
     <div
       className="fixed left-0 lg:left-2 bottom-2 z-50 flex mobile:hidden items-center flex-col gap-2 transition-transform duration-300 ease-out pointer-events-auto"
       style={{
-        transform: isHovered ? 'translateX(0)' : 'translateX(calc(-100% + 20px))',
+        transform: isHovered
+          ? 'translateX(0)'
+          : 'translateX(calc(-100% + 20px))',
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Title className={isHovered ? 'opacity-100' : 'opacity-0 transition-opacity duration-300'}>
-        최근 본 포트폴리오 목록
-      </Title>
       <div className="relative w-[193px] h-[150px]">
         <Image
           src="/card/BusinessCardHolder/bottom.png"
@@ -52,8 +53,10 @@ const BusinessCardHolder = () => {
           {recentPortfolios.length > 0 ? (
             recentPortfolios.map((portfolio, index) => {
               const zIndex = recentPortfolios.length - index;
-              const translateY = isHovered ? index * -180 - 50 : index * -100 - 50;
-              
+              const translateY = isHovered
+                ? index * -180 - 50
+                : index * -10 - 50;
+
               return (
                 <div
                   key={`${portfolio.profile.name}-${index}`}
@@ -65,11 +68,13 @@ const BusinessCardHolder = () => {
                     maxWidth: '170px',
                   }}
                 >
-                  <div className="overflow-hidden rounded">
+                  <div className="overflow-hidden rounded h-[280px]">
                     <PortfolioCard
                       profile={portfolio.profile}
                       projects={portfolio.projects}
-                      src={`/portfolio/${encodeURIComponent(portfolio.profile.name)}`}
+                      src={`/portfolio/${encodeURIComponent(
+                        portfolio.profile.name,
+                      )}`}
                     />
                   </div>
                 </div>
@@ -80,6 +85,16 @@ const BusinessCardHolder = () => {
               최근 본 포트폴리오가 없습니다
             </div>
           )}
+        </div>
+        {/* Title을 top.png 중간에 배치 */}
+        <div className="absolute inset-x-0 bottom-[30px] z-[15] flex justify-center items-center">
+          <Title
+            className={
+              `!text-white ${isHovered ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`
+            }
+          >
+            최근 본 포트폴리오 목록
+          </Title>
         </div>
         <Image
           src="/card/BusinessCardHolder/top.png"
