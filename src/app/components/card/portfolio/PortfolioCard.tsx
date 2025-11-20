@@ -6,7 +6,7 @@ import StatusBadge from '@/app/components/ui/badge/StatusBadge';
 import ProjectImages from '@/app/components/ui/profile/portfolio/ProjectImages';
 import ProfileImage from '@/app/components/ui/profile/ProfileImage';
 
-const PortfolioCard = ({ profile, projects, src, studentName }: PortfolioCardProps) => {
+const PortfolioCard = ({ profile, projects, src, studentName, maxProjects }: PortfolioCardProps) => {
   // 팀이 아닌 경우 studentName을 사용, 없으면 profile.name 사용
   const displayName = studentName || profile.name;
   const content = (
@@ -20,8 +20,8 @@ const PortfolioCard = ({ profile, projects, src, studentName }: PortfolioCardPro
         className="@[450px]:hidden w-full h-fit flex-col flex-center"
 
       >
-        {/* Project Images Header */}
-        <ProjectImages projects={projects} variant="default" />
+        {/* Project Images Header - 모바일은 최대 3개 */}
+        <ProjectImages projects={projects} variant="default" maxProjects={maxProjects ?? 3} />
 
         {/* Profile Section */}
         <div className="relative pl-2 -top-7 w-full">
@@ -57,9 +57,9 @@ const PortfolioCard = ({ profile, projects, src, studentName }: PortfolioCardPro
             />
           </div>
 
-          {/* Project Images */}
+          {/* Project Images - 데스크톱은 무제한 */}
           {projects.length ? (
-            <ProjectImages projects={projects} variant="long" />
+            <ProjectImages projects={projects} variant="long" maxProjects={maxProjects} />
           ) : null}
         </div>
       </div>

@@ -20,4 +20,5 @@ export interface PortfolioCardProps {
   src?: string;
   isOfficial?: boolean;
   studentName?: string;
+  maxProjects?: number;
 }

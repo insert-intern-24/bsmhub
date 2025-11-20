@@ -6,9 +6,10 @@ import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConver
 interface ProjectImagesProps {
   projects: Project[];
   variant: 'default' | 'long';
+  maxProjects?: number;
 }
 
-const ProjectImages = ({ projects, variant }: ProjectImagesProps) => {
+const ProjectImages = ({ projects, variant, maxProjects }: ProjectImagesProps) => {
   const containerClass =
     variant === 'default'
       ? 'h-[5.75rem] flex gap-1 w-full overflow-hidden'
@@ -19,9 +20,14 @@ const ProjectImages = ({ projects, variant }: ProjectImagesProps) => {
       ? 'relative flex-1 h-[5.75rem]'
       : 'relative w-[9.375rem] h-[5.75rem] flex-shrink-0';
 
+  // maxProjects가 undefined면 무제한, number면 해당 개수만큼 제한
+  const displayProjects = maxProjects !== undefined 
+    ? projects.slice(0, maxProjects)
+    : projects;
+
   return (
     <div className={containerClass}>
-      {(variant === 'default' ? projects.slice(0, 3) : projects).map(
+      {displayProjects.map(
         (project, index) => (
           <div className={imageClass} key={index}>
             <Image

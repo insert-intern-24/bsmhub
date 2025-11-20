@@ -76,6 +76,7 @@ const BusinessCardHolder = () => {
                         portfolio.profile.name,
                       )}`}
                       studentName={portfolio.student?.name}
+                      maxProjects={1}
                     />
                   </div>
                 </div>

@@ -1,5 +1,6 @@
 import {
   Profile,
+  Project,
   PortfolioCardProps,
 } from '@/app/components/card/portfolio/types';
 import { TeamData } from '@/app/(box-layout)/team/types';
@@ -26,14 +27,14 @@ export function transformTeamToPortfolioCard(
       : '',
   };
 
-  // 팀원들을 프로젝트 형태로 변환 (팀원 프로필 이미지를 표시하기 위해)
-  const projects =
-    team.team_member?.map((member, index) => ({
-      title: `Member ${index + 1}`,
-      description: '',
+  // 팀의 모든 프로젝트를 전달 (개수 제한은 PortfolioCard에서 처리)
+  const projects: Project[] =
+    team.projects?.map((project) => ({
+      title: project.project_name,
+      description: project.description || '',
       logo: '',
-      projectImage: member.profile.profile_image
-        ? convertFromDatabaseImageURL(member.profile.profile_image)
+      projectImage: project.project_thumbnail
+        ? convertFromDatabaseImageURL(project.project_thumbnail)
         : '',
     })) ?? [];
 
