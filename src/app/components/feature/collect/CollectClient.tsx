@@ -8,12 +8,7 @@ import Card, { CardProps } from '@/app/components/card/project/ProjectCard';
 import PortfolioCard from '@/app/components/card/portfolio/PortfolioCard';
 import { PortfolioCardProps } from '@/app/components/card/portfolio/types';
 import { useSearchParams } from 'next/navigation';
-import {
-  PROJECT_TABS,
-  TEAM_TABS,
-  OFFICIAL_TAB,
-  ALL_TAB,
-} from './constants';
+import { PROJECT_TABS, TEAM_TABS, OFFICIAL_TAB, ALL_TAB } from './constants';
 
 interface CollectClientProps {
   initialProjects?: CardProps[];
@@ -25,10 +20,7 @@ interface CollectClientProps {
 /**
  * 포트폴리오 카드를 렌더링하는 helper 함수
  */
-const renderPortfolioCard = (
-  portfolio: PortfolioCardProps,
-  index: number,
-) => (
+const renderPortfolioCard = (portfolio: PortfolioCardProps, index: number) => (
   <PortfolioCard
     key={index}
     profile={portfolio.profile}
@@ -64,7 +56,9 @@ export default function CollectClient({
   const searchParams = useSearchParams();
   const currentTab = (searchParams.get('path') ?? 'all') as TabMode;
 
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
+  const handleSearchChange = (
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     setSearchTerm(e.target.value);
   };
 
@@ -155,7 +149,7 @@ export default function CollectClient({
   const renderStaticGrid = useCallback(() => {
     if (type === 'team') {
       return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        <div className="grid grid-cols-auto-fit-card gap-6 w-full">
           {filteredPortfolios.map((portfolio, index) => (
             <PortfolioCard
               key={index}
@@ -169,7 +163,7 @@ export default function CollectClient({
     }
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+      <div className="grid grid-cols-auto-fit-card gap-6 w-full">
         {filteredProjects.map((project) => (
           <Card
             key={project.id}
