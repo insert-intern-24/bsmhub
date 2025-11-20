@@ -8,7 +8,7 @@ import { ModalProvider, Modal } from '@/app/components/modal';
 import { ToastProvider, Toast } from '@/app/components/toast';
 import QueryProvider from './providers/QueryProvider';
 import ErrorHandler from './providers/ErrorHandler';
-import Navigator from '@/app/components/layout/Navigator';
+import Navigator from '@/app/components/layout/header/Navigator';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import type { Metadata } from 'next';
 import GoogleOneTab from '@/app/components/feature/auth/GoogleOneTab';
