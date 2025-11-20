@@ -11,12 +11,12 @@ interface ProjectImagesProps {
 const ProjectImages = ({ projects, variant }: ProjectImagesProps) => {
   const containerClass =
     variant === 'default'
-      ? 'h-[5.75rem] flex gap-1 w-full'
+      ? 'h-[5.75rem] flex gap-1 w-full overflow-hidden'
       : 'h-[5.75rem] flex gap-1 overflow-x-scroll';
 
   const imageClass =
     variant === 'default'
-      ? 'relative min-w-[6.625rem] w-full h-[5.75rem]'
+      ? 'relative flex-1 h-[5.75rem]'
       : 'relative w-[9.375rem] h-[5.75rem] flex-shrink-0';
 
   return (
