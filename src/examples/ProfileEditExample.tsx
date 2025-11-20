@@ -3,8 +3,8 @@
 import React from 'react';
 import { profileConfig } from '@/services/config/profileConfig';
 import { useFormConfigData } from '@/utils/hook/useFormConfigData';
-import InputOfModal from '@/app/components/modal/inputs/InputOfModal';
-import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput';
+import InputOfModal from '@/app/components/ui/input/InputOfModal';
+import type { MultiInputItem } from '@/app/components/ui/input/MultiInput';
 
 /**
  * 프로필 편집 모달 사용 예시

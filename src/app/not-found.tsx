@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Title, Body } from '@/app/components/system/text';
+import { Title, Body } from '@/app/components/ui/text/text';
 
 export default function NotFound() {
   return (

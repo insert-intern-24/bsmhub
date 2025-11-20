@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useInputList } from '@/utils/hook/useInputList';
-import MultiInput, { type MultiInputItem } from './MultiInput';
-import { InputType, InputHTMLType, InputMode } from './types/inputTypes';
+import MultiInput, { type MultiInputItem } from '@/app/components/ui/input/MultiInput';
+import { InputType, InputHTMLType, InputMode } from '@/app/components/ui/input/types/inputTypes';
 import { useToast } from '@/app/components/toast';
 
 // Input 설정 타입 - inputs 배열로 통일

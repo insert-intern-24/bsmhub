@@ -1,4 +1,4 @@
-import { FormConfig } from '@/app/components/modal/inputs/types/inputTypes';
+import { FormConfig } from '@/app/components/ui/input/types/inputTypes';
 import { MultiInputItem } from '@/utils/hook/useInputList';
 import { executeQuery, executeMutation } from '@/services/graphQL/client.graphql.client';
 import {

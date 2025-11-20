@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { Body2, Caption } from '../../system/text';
+import { Body2, Caption } from '../../ui/text/text';
 import { formatPeriod } from '@/utils/date';
 
 interface ContestCardProps {

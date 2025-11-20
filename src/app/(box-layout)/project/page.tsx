@@ -1,5 +1,5 @@
 import React from 'react';
-import CollectClient from '@/app/components/collect/CollectClient';
+import CollectClient from '@/app/components/feature/collect/CollectClient';
 import {
   getProjects,
   getProjectsByProfileName,

@@ -24,6 +24,12 @@ export const getAllTeams = async (): Promise<TeamData[] | null> => {
           profile_id,
           profile_image
         )
+      ),
+      projects!projects_owner_fkey (
+        project_id,
+        project_name,
+        project_thumbnail,
+        description
       )
     `,
     )
@@ -99,6 +105,12 @@ export const getTeamsByProfileName = async (
           profile_id,
           profile_image
         )
+      ),
+      projects!projects_owner_fkey (
+        project_id,
+        project_name,
+        project_thumbnail,
+        description
       )
     `,
     )

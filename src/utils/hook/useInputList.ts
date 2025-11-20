@@ -1,6 +1,6 @@
  import { useReducer } from 'react'
 import { produce } from 'immer'
-import type { MultiInputItem } from '@/app/components/modal/inputs/MultiInput'
+import type { MultiInputItem } from '@/app/components/ui/input/MultiInput'
 
 // MultiInputItem은 MultiInput.tsx에서 import하여 재export
 export type { MultiInputItem }

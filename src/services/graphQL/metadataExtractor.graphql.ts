@@ -1,4 +1,4 @@
-import { FormConfig, ColumnInfo } from '@/app/components/modal/inputs/types/inputTypes';
+import { FormConfig, ColumnInfo } from '@/app/components/ui/input/types/inputTypes';
  
 
 /**
