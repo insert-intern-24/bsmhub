@@ -1,9 +1,13 @@
-import { PortfolioData } from '@/app/(box-layout)/portfolio/types';
+import { PortfolioData, PortfolioVisitTrackerData } from '@/app/(box-layout)/portfolio/types';
 
 const STORAGE_KEY = 'recentPortfolios';
 const MAX_ITEMS = 4;
 
 export interface RecentPortfolioItem extends PortfolioData {
+  viewedAt: number; // timestamp
+}
+
+export interface RecentPortfolioTrackerItem extends PortfolioVisitTrackerData {
   viewedAt: number; // timestamp
 }
 
@@ -79,7 +83,9 @@ export function getRecentPortfolios(): RecentPortfolioItem[] {
  * 포트폴리오를 최근 본 목록에 추가합니다.
  * Queue 방식으로 관리: 중복 제거 후 앞에 추가, 크기 초과 시 뒤에서 제거
  */
-export function addRecentPortfolio(portfolioData: PortfolioData): void {
+export function addRecentPortfolio(portfolioData: PortfolioData): void;
+export function addRecentPortfolio(portfolioData: PortfolioVisitTrackerData): void;
+export function addRecentPortfolio(portfolioData: PortfolioData | PortfolioVisitTrackerData): void {
   if (typeof window === 'undefined') {
     return;
   }
@@ -91,7 +97,7 @@ export function addRecentPortfolio(portfolioData: PortfolioData): void {
     const newItem: RecentPortfolioItem = {
       ...portfolioData,
       viewedAt: Date.now(),
-    };
+    } as RecentPortfolioItem;
 
     queue.enqueue(newItem);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(queue.toArray()));

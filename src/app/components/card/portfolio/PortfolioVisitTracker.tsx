@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { addRecentPortfolio } from '@/utils/localStorage/recentPortfolios';
-import { PortfolioData } from '@/app/(box-layout)/portfolio/types';
+import { PortfolioVisitTrackerData } from '@/app/(box-layout)/portfolio/types';
 import { ProfileType } from '@/app/(box-layout)/portfolio/types';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
@@ -22,8 +22,8 @@ const PortfolioVisitTracker = ({
   cooperationProjects,
 }: PortfolioVisitTrackerProps) => {
   useEffect(() => {
-    // PortfolioData 형식으로 변환
-    const portfolioData: PortfolioData = {
+    // PortfolioVisitTrackerData 형식으로 변환
+    const portfolioData: PortfolioVisitTrackerData = {
       profile: {
         name: profile.profile_name,
         role:
@@ -35,13 +35,13 @@ const PortfolioVisitTracker = ({
       student: profile.student || null,
       projects: [
         ...personalProjects.map((project) => ({
-          title: project.title,
+          title: project.title || 'Untitled',
           description: project.description || '',
           logo: '', // CardProps에는 logo가 없으므로 빈 문자열
           projectImage: project.projectImage || '',
         })),
         ...cooperationProjects.map((project) => ({
-          title: project.title,
+          title: project.title || 'Untitled',
           description: project.description || '',
           logo: '',
           projectImage: project.projectImage || '',

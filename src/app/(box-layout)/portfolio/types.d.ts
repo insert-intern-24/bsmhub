@@ -96,3 +96,10 @@ export type ProfileType = Pick<
     }[];
   };
 };
+
+// PortfolioVisitTracker용 전용 타입
+export interface PortfolioVisitTrackerData {
+  profile: Profile;
+  projects: Project[];
+  student: ProfileType['student'] | null;
+}
