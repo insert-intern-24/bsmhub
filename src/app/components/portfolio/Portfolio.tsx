@@ -1,15 +1,15 @@
-import { Body, TitleEN } from '../system/text';
-import Tabs from '@/app/components/layout/Tabs';
+import { Body, TitleEN } from '../ui/text/text';
+import Tabs from '@/app/components/layout/tabs/Tabs';
 
 import PortfolioHome from '../card/portfolio/PortfolioHome';
-import PortfolioProject from '../card/portfolio/components/PortfolioProject';
+import PortfolioProject from '@/app/components/ui/profile/portfolio/PortfolioProject';
 import { getProfileDetail } from '@/services/profile/getProfileDetail.server';
 import { getPersonalProjects } from '@/services/project/getPersonalProjects.server';
 import { notFound } from 'next/navigation';
 import { getCooperationProjects } from '@/services/project/getCooperationProjects.server';
 import { convertStudentNumber } from '@/utils/convertStudentNumber';
 import { getProfile } from '@/services/profile/getProfile.server';
-import ProfileIcon from '../card/portfolio/ProfileIcon';
+import ProfileIcon from '@/app/components/ui/profile/ProfileIcon';
 
 interface PortfolioProps {
   profileName: string;
