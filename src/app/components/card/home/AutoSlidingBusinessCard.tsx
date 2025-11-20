@@ -40,11 +40,12 @@ const convertPortfolioToBusinessCard = (
   portfolio: PortfolioData,
 ): BusinessCardData => ({
   id: portfolio.profile.name,
-  name: portfolio.student?.name || portfolio.profile.name,
+  name: portfolio.profile.name,
   department:
     portfolio.student?.department?.department_name || '학과 정보 없음',
   profileImage: convertFromDatabaseImageURL(portfolio.profile.profile_image),
   profileName: portfolio.profile.name,
+  studentName: portfolio.student?.name,
   projects: portfolio.projects.slice(0, 3).map((project, i) => ({
     id: `${portfolio.profile.name}-${i}`,
     title: project.title,

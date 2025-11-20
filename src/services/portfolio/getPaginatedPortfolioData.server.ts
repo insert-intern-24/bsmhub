@@ -54,7 +54,7 @@ export async function getPaginatedPortfolioData(
           status
         )
       ),
-      profile_owner_fkey1(
+      student!profile_owner_fkey1(
         name,
         join_at,
         graduate_at,
