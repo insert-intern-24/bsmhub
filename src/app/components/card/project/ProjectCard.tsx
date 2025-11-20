@@ -34,7 +34,7 @@ const Card = ({
 
   return (
     <Link href={href} className="cursor-pointer">
-      <div className="flex flex-col gap-[0.375rem]">
+      <div className="w-full mobile:max-w-full mobile:min-w-[26rem] max-w-[26rem] flex-col gap-[0.375rem]">
         <figure className="relative h-60 mobile:h-80 aspect-video rounded-[0.25rem] overflow-hidden">
           <Image
             src={convertFromDatabaseImageURL(projectImage)}
