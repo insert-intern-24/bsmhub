@@ -137,7 +137,7 @@ export default function SearchTab({
       </aside>
 
       {/* 포트폴리오 목록 */}
-      <section className="flex-col gap-3 p-4 flex-1 bg-[#FAFAFA] rounded-lg">
+      <section className="flex-col gap-3 p-4 w-full bg-[#FAFAFA] rounded-lg">
         {filteredData.length > 0 ? (
           filteredData.map((data, index) => (
             <PortfolioCard
