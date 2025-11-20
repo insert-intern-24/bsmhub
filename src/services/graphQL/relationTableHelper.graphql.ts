@@ -333,22 +333,34 @@ export async function updateStudentJobs(
 
     if (existingRecord) {
       // 기존 레코드가 있으면 job_id만 업데이트
-      await supabase
+      const { error: updateError } = await supabase
         .from('student_jobs')
         .update({ job_id: newJobId } as never)
         .eq('student_id', studentId);
+      if (updateError) {
+        console.error('Failed to update student jobs:', updateError);
+        throw updateError;
+      }
     } else {
       // 기존 레코드가 없으면 insert
-      await supabase
+      const { error: insertError } = await supabase
         .from('student_jobs')
         .insert({ student_id: studentId, job_id: newJobId } as never);
+      if (insertError) {
+        console.error('Failed to insert student job:', insertError);
+        throw insertError;
+      }
     }
   } else {
     // job_id가 null이면 기존 레코드 삭제
-    await supabase
+    const { error: deleteError } = await supabase
       .from('student_jobs')
       .delete()
       .eq('student_id', studentId);
+    if (deleteError) {
+      console.error('Failed to delete student job:', deleteError);
+      throw deleteError;
+    }
   }
 }
 
