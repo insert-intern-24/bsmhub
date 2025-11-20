@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import { useModal } from '@/app/components/modal';
 import { useCurrentUser } from '@/utils/hook/useCurrentUser';
 import RoundedButton from '@/app/components/ui/button/RoundedButton';
-import ProfileEditModal from '@/app/components/card/portfolio/ProfileEditModal';
+import ProfileEditModal from '@/app/components/ui/profile/portfolio/ProfileEditModal';
 import type { FormConfig } from '@/app/components/ui/input/types/inputTypes';
 import { checkProfileExistence } from '@/services/profile/getProfileApi.client';
 

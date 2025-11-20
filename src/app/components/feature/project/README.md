@@ -5,16 +5,15 @@
 ## Components
 
 ### 페이지 컴포넌트
+
 - **ProjectPage.tsx** - 프로젝트 상세 페이지 메인 컴포넌트
 - **ProjectSidebar.tsx** - 프로젝트 상세 페이지 사이드바
 
 ### 서브 컴포넌트 (components/)
+
 - **ProjectEditModal.tsx** - 프로젝트 수정 모달
 - **ProjectGrid.tsx** - 프로젝트 카드 그리드 레이아웃
 - **ProjectMainContent.tsx** - 프로젝트 상세 페이지 메인 콘텐츠
-
-### 유틸리티
-- **staticParamsGenerator.ts** - Next.js static params 생성 함수
 
 ## 사용 위치
 

@@ -36,11 +36,12 @@ export interface BaseInputPropsCommon {
   type?: InputHTMLType;
   placeholder?: string;
   value?: string | number;
-  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   name?: string;
   required?: boolean;
   id?: string;
   icon?: 'check' | 'search' | 'calendar';
+  textarea?: boolean; // textarea로 렌더링할지 여부
 }
 
 // picture 타입일 때

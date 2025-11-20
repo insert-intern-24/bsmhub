@@ -1,6 +1,6 @@
 'use server';
 import { Title } from '@/app/components/ui/text/text';
-import Card, { CardProps } from '../../project/ProjectCard';
+import Card, { CardProps } from '@/app/components/card/project/ProjectCard';
 import { Fragment } from 'react';
 
 export interface PortfolioProjectType {

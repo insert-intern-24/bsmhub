@@ -18,6 +18,7 @@ export type InputConfig = {
     required?: boolean;
     aspectRatio?: string;
     icon?: 'check' | 'search' | 'calendar';
+    textarea?: boolean; // textarea로 렌더링할지 여부
   }>;
   onlyOne?: boolean;
   white?: boolean; // SkillTag용
@@ -62,13 +63,21 @@ const InputListProvider = ({
     required: input.required,
     aspectRatio: input.aspectRatio,
     icon: input.icon,
+    textarea: input.textarea,
     value: '',
   })) as MultiInputItem[];
 
   // onlyOne이 false이고 initialValue가 없거나 빈 배열이면, 최소 하나의 빈 그룹 생성
+  // initialValue가 있을 때도 config의 설정(textarea 등)을 병합
   const defaultInitialValue = 
     initialValue && initialValue.length > 0
-      ? initialValue
+      ? initialValue.map((group) =>
+          group.map((item, subIndex) => ({
+            ...item,
+            // config의 설정을 병합하여 textarea prop 보장
+            textarea: config.inputs[subIndex]?.textarea ?? item.textarea,
+          }))
+        )
       : onlyOne
         ? initialConfig
         : [initialConfig];
@@ -249,8 +258,10 @@ const InputListProvider = ({
             <MultiInput
               config={input.map((item: MultiInputItem, subIndex: number) => ({
                 ...item,
+                // config의 설정을 병합하여 textarea prop 보장
+                textarea: config.inputs[subIndex]?.textarea ?? item.textarea,
                 mode: isReadOnly ? 'read' : item.mode || 'write',
-                onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
                   dispatch({
                     type: 'UPDATE_VALUE',
                     index,

@@ -1,9 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { PortfolioCardProps } from './types';
-import ProfileInfo from './components/ProfileInfo';
+import ProfileInfo from '@/app/components/ui/profile/portfolio/ProfileInfo';
 import StatusBadge from '@/app/components/ui/badge/StatusBadge';
-import ProjectImages from './components/ProjectImages';
+import ProjectImages from '@/app/components/ui/profile/portfolio/ProjectImages';
 import ProfileImage from '@/app/components/ui/profile/ProfileImage';
 
 const PortfolioCard = ({ profile, projects, src }: PortfolioCardProps) => {

@@ -2,7 +2,7 @@ import { Body, TitleEN } from '@/app/components/ui/text/text';
 import Tabs from '@/app/components/layout/tabs/Tabs';
 
 import PortfolioHome from '@/app/components/card/portfolio/PortfolioHome';
-import PortfolioProject from '@/app/components/card/portfolio/components/PortfolioProject';
+import PortfolioProject from '@/app/components/ui/profile/portfolio/PortfolioProject';
 import { getProfileDetail } from '@/services/profile/getProfileDetail.server';
 import { getPersonalProjects } from '@/services/project/getPersonalProjects.server';
 import { notFound } from 'next/navigation';
@@ -21,6 +21,11 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
   const profile = (await getProfile(profileName)) ?? notFound();
   const uuid = profile.profile_id;
   const studentInfo = profile.student;
+
+  // studentInfo가 없으면 notFound
+  if (!studentInfo) {
+    notFound();
+  }
 
   const profileDetail = await getProfileDetail(profileName);
   const cooperationProjects = await getCooperationProjects(uuid);
@@ -72,7 +77,7 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
       </TitleEN>
       <div className={`${containerCss} responsive-portfolioHome`}>
         <Body className="text-gray-base flex-col justify-end gap-4">
-          {studentInfo.departments.department_name} | {desiredJobText}
+          {studentInfo.departments?.department_name || '학과 정보 없음'} | {desiredJobText}
         </Body>
 
         <div className="mobile:hidden">

@@ -1,4 +1,4 @@
-import ProfileItem from '@/app/components/feature/portfolio/ProfileItem';
+import ProfileItem from '@/app/components/ui/profile/ProfileItem';
 import { Label } from '@/app/components/ui/text/text';
 import SkillTagProvider from '@/app/components/ui/tag/SkillTagProvider';
 
