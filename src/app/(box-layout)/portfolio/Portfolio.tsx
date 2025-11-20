@@ -10,6 +10,7 @@ import { getCooperationProjects } from '@/services/project/getCooperationProject
 import { convertStudentNumber } from '@/utils/convertStudentNumber';
 import { getProfile } from '@/services/profile/getProfile.server';
 import ProfileIcon from '@/app/components/ui/profile/ProfileIcon';
+import PortfolioVisitTracker from '@/app/components/card/portfolio/PortfolioVisitTracker';
 
 interface PortfolioProps {
   profileName: string;
@@ -60,6 +61,11 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
 
   return (
     <div className="pt-[4.5rem] w-full relative">
+      <PortfolioVisitTracker
+        profile={profile}
+        personalProjects={personalProjects}
+        cooperationProjects={cooperationProjects}
+      />
       <ProfileIcon image={profile.profile_image} />
       <TitleEN className="mobile:mb-2">
         {convertStudentNumber(studentInfo.student_number)} {studentInfo.name}

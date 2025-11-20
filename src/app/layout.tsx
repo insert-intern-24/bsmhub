@@ -13,6 +13,7 @@ import Navigator from '@/app/components/layout/header/Navigator';
 import type { Metadata } from 'next';
 import GoogleOneTab from '@/app/components/feature/auth/GoogleOneTab';
 import SupabaseSessionSync from './components/feature/auth/SupabaseSessionSync';
+import BusinessCardHolder from './components/card/home/BusinessCardHolder';
 
 export const metadata: Metadata = {
   title: 'BSMHub',
@@ -48,6 +49,7 @@ export default function RootLayout({
                 {children}
                 <Navigator />
                 <Footer />
+                <BusinessCardHolder />
                 <Modal />
                 <Toast />
               </ErrorHandler>
