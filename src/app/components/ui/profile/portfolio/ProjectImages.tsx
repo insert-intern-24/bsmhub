@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { Project } from '../types';
+import { Project } from '@/app/components/card/portfolio/types';
 import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 
 interface ProjectImagesProps {

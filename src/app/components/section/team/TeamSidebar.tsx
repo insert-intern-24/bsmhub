@@ -1,10 +1,10 @@
-import ProfileItem from '@/app/components/feature/portfolio/ProfileItem';
+import ProfileItem from '@/app/components/ui/profile/ProfileItem';
 import TeamLabel from '@/app/components/ui/label/TeamLabel';
 import { Body, Label, TitleEN } from '@/app/components/ui/text/text';
 import { TeamData } from '@/app/(box-layout)/team/types';
 import { getFoundedYear } from '@/utils/date';
 import getAccount from '@/services/auth/getAccount.server';
-import TeamProfileEditButton from '@/app/components/card/portfolio/TeamProfileEditButton';
+import TeamProfileEditButton from '@/app/components/ui/profile/team/TeamProfileEditButton';
 import ProfileImage from '@/app/components/ui/profile/ProfileImage';
 import SidebarLayout from '@/app/components/layout/sidebar/SidebarLayout';
 

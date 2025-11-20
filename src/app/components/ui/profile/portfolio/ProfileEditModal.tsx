@@ -1,6 +1,6 @@
 'use client';
 
-import InputOfModal from '../../ui/input/InputOfModal';
+import InputOfModal from '@/app/components/ui/input/InputOfModal';
 import { useFormConfigData } from '@/utils/hook/useFormConfigData';
 import { useErrorToast } from '@/utils/hook/useErrorToast';
 import { formatErrorMessage } from '@/utils/errorMessage';

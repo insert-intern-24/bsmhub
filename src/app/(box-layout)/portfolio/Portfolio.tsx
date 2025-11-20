@@ -2,7 +2,7 @@ import { Body, TitleEN } from '@/app/components/ui/text/text';
 import Tabs from '@/app/components/layout/tabs/Tabs';
 
 import PortfolioHome from '@/app/components/card/portfolio/PortfolioHome';
-import PortfolioProject from '@/app/components/card/portfolio/components/PortfolioProject';
+import PortfolioProject from '@/app/components/ui/profile/portfolio/PortfolioProject';
 import { getProfileDetail } from '@/services/profile/getProfileDetail.server';
 import { getPersonalProjects } from '@/services/project/getPersonalProjects.server';
 import { notFound } from 'next/navigation';
