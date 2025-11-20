@@ -57,7 +57,7 @@ export default function CollectClient({
   const currentTab = (searchParams.get('path') ?? 'all') as TabMode;
 
   const handleSearchChange = (
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setSearchTerm(e.target.value);
   };

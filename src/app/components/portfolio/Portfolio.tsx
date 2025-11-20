@@ -1,15 +1,15 @@
-import { Body, TitleEN } from '@/app/components/shared/system/text';
+import { Body, TitleEN } from '../system/text';
 import Tabs from '@/app/components/layout/Tabs';
 
-import PortfolioHome from './PortfolioHome';
-import PortfolioProject from './PortfolioProject';
+import PortfolioHome from '../card/portfolio/PortfolioHome';
+import PortfolioProject from '../card/portfolio/components/PortfolioProject';
 import { getProfileDetail } from '@/services/profile/getProfileDetail.server';
 import { getPersonalProjects } from '@/services/project/getPersonalProjects.server';
 import { notFound } from 'next/navigation';
 import { getCooperationProjects } from '@/services/project/getCooperationProjects.server';
 import { convertStudentNumber } from '@/utils/convertStudentNumber';
 import { getProfile } from '@/services/profile/getProfile.server';
-import AvatarIcon from '@/app/components/shared/AvatarIcon';
+import ProfileIcon from '../card/portfolio/ProfileIcon';
 
 interface PortfolioProps {
   profileName: string;
@@ -71,7 +71,8 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
       </TitleEN>
       <div className={`${containerCss} responsive-portfolioHome`}>
         <Body className="text-gray-base flex-col justify-end gap-4">
-          {studentInfo.departments?.department_name || '학과 정보 없음'} | {desiredJobText}
+          {studentInfo.departments?.department_name || '학과 정보 없음'} |{' '}
+          {desiredJobText}
         </Body>
 
         <div className="mobile:hidden">
@@ -85,4 +86,3 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
 };
 
 export default Portfolio;
-
