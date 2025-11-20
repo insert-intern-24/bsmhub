@@ -166,6 +166,7 @@ export interface ProfileSaveData {
   profileSkills: string[];
   studentCertificates: string[];
   profileCompetitions: string[];
+  studentJobs: number[];
 }
 
 export function transformFormDataToSaveFormat(
@@ -180,6 +181,7 @@ export function transformFormDataToSaveFormat(
     profileSkills: [],
     studentCertificates: [],
     profileCompetitions: [],
+    studentJobs: [],
   };
 
   const columnInfoMap = extractColumnInfoFromFormConfig(formConfig);
@@ -252,6 +254,18 @@ export function transformFormDataToSaveFormat(
               return String(compItem[0]?.value || '');
             })
             .filter((comp) => comp.trim() !== '');
+        }
+      }
+      if (fieldName === 'student_jobs') {
+        // 단일 선택이므로 첫 번째 항목의 첫 번째 input의 value가 job_id
+        if (Array.isArray(value) && value.length > 0) {
+          const firstItem = value[0] as Array<{ value: string | number }>;
+          if (firstItem && firstItem.length > 0 && firstItem[0]?.value) {
+            const jobId = Number(firstItem[0].value);
+            if (!isNaN(jobId)) {
+              result.studentJobs = [jobId];
+            }
+          }
         }
       }
     }
@@ -377,6 +391,38 @@ export async function saveProfileData(
           .from('profile_competitions')
           .upsert(competitionPayloads as never);
       }
+    }
+
+    // 희망직무 처리 (단일 선택이므로 job_id가 하나만 있을 수 있음)
+    if (saveData.studentJobs.length > 0) {
+      const jobId = saveData.studentJobs[0];
+      if (jobId) {
+        // upsert 방식: 기존 레코드가 있으면 job_id 업데이트, 없으면 insert
+        const { data: existingRecord } = await supabase
+          .from('student_jobs')
+          .select('job_id')
+          .eq('student_id', userId)
+          .maybeSingle();
+
+        if (existingRecord) {
+          // 기존 레코드가 있으면 job_id만 업데이트
+          await supabase
+            .from('student_jobs')
+            .update({ job_id: jobId } as never)
+            .eq('student_id', userId);
+        } else {
+          // 기존 레코드가 없으면 insert
+          await supabase
+            .from('student_jobs')
+            .insert({ student_id: userId, job_id: jobId } as never);
+        }
+      }
+    } else {
+      // job_id가 없으면 기존 레코드 삭제
+      await supabase
+        .from('student_jobs')
+        .delete()
+        .eq('student_id', userId);
     }
 
     return { success: true };

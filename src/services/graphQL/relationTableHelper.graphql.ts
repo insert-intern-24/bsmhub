@@ -321,22 +321,34 @@ export async function updateStudentJobs(
 
   // 단일 선택이므로 배열이어도 첫 번째 항목만 사용
   const newJobId = jobIds.length > 0 ? jobIds[0] : null;
-  const existingJobId = existingJobs.length > 0 ? existingJobs[0].job_id : null;
 
-  // 기존 항목 모두 삭제
-  if (existingJobId !== null) {
+  if (newJobId !== null) {
+    // upsert 방식: 기존 레코드가 있으면 job_id 업데이트, 없으면 insert
+    // student_id를 기준으로 기존 레코드 확인 후 upsert
+    const { data: existingRecord } = await supabase
+      .from('student_jobs')
+      .select('job_id')
+      .eq('student_id', studentId)
+      .maybeSingle();
+
+    if (existingRecord) {
+      // 기존 레코드가 있으면 job_id만 업데이트
+      await supabase
+        .from('student_jobs')
+        .update({ job_id: newJobId } as never)
+        .eq('student_id', studentId);
+    } else {
+      // 기존 레코드가 없으면 insert
+      await supabase
+        .from('student_jobs')
+        .insert({ student_id: studentId, job_id: newJobId } as never);
+    }
+  } else {
+    // job_id가 null이면 기존 레코드 삭제
     await supabase
       .from('student_jobs')
       .delete()
-      .eq('student_id', studentId)
-      .eq('job_id', existingJobId);
-  }
-
-  // 새 항목 추가
-  if (newJobId !== null && newJobId !== existingJobId) {
-    await supabase
-      .from('student_jobs')
-      .insert({ student_id: studentId, job_id: newJobId } as never);
+      .eq('student_id', studentId);
   }
 }
 
