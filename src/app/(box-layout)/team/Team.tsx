@@ -31,7 +31,12 @@ const Team = async ({
 
   const sortedYears = Object.keys(projectsByYear)
     .map(Number)
-    .sort((a, b) => b - a);
+    .sort((a, b) => {
+      // "날짜 미상" (-1)은 항상 마지막에 표시
+      if (a === -1) return 1;
+      if (b === -1) return -1;
+      return b - a; // 최신 년도부터 내림차순
+    });
 
   return (
     <div className="w-full relative responsive-team">
