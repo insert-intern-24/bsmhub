@@ -6,21 +6,61 @@ import TeamSidebar from '@/app/components/section/team/TeamSidebar';
 import ProfileIcon from '@/app/components/ui/profile/ProfileIcon';
 import ProjectGrid from '@/app/components/feature/project/components/ProjectGrid';
 import SidebarContentLayout from '@/app/components/layout/sidebar/SidebarContentLayout';
+import Tabs from '@/app/components/layout/tabs/Tabs';
+import { Title } from '@/app/components/ui/text/text';
+import { getFoundedYear } from '@/utils/date';
 
-const Team = async ({ teamName }: { teamName: string }) => {
+const Team = async ({
+  teamName,
+  path = 'home',
+}: {
+  teamName: string;
+  path?: 'home' | 'project';
+}) => {
   const teamDetail = (await getTeamData(teamName)) ?? notFound();
   const teamProjects = await getTeamProjects(teamName);
+
+  const projectsByYear = teamProjects.reduce(
+    (acc, project) => {
+      const year = project.created_at ? getFoundedYear(project.created_at) : 0;
+      (acc[year] ??= []).push(project);
+      return acc;
+    },
+    {} as Record<number, typeof teamProjects>,
+  );
+
+  const sortedYears = Object.keys(projectsByYear)
+    .map(Number)
+    .sort((a, b) => b - a);
 
   return (
     <div className="w-full relative responsive-team">
       <ProfileIcon image={teamDetail.profile_image} />
-      <SidebarContentLayout sidebar={<TeamSidebar teamDetail={teamDetail} projectCount={teamProjects.length} />}>
-        <section className="w-full">
-          <ProjectGrid
-            projects={teamProjects}
-            className="pl-[3rem] pt-[4.5rem] responsive-teamProjects"
-            isTeamProject={true}
-          />
+      <SidebarContentLayout
+        sidebar={
+          <TeamSidebar teamDetail={teamDetail} projectCount={teamProjects.length} />
+        }
+      >
+        <section className="w-full pl-[3rem] pt-[4.5rem] responsive-teamProjects">
+          <div className="mobile:hidden mb-6">
+            <Tabs tabs={['home', 'project']} />
+          </div>
+          {path === 'home' ? (
+            <ProjectGrid projects={teamProjects} className="" isTeamProject={true} />
+          ) : (
+            <div className="w-full flex flex-col gap-8">
+              {sortedYears.map((year) => (
+                <div key={year} className="w-full flex flex-col gap-4">
+                  <Title>{year}년</Title>
+                  <ProjectGrid
+                    projects={projectsByYear[year]}
+                    className=""
+                    isTeamProject={true}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </section>
       </SidebarContentLayout>
     </div>

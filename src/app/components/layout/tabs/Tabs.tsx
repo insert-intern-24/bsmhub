@@ -14,7 +14,7 @@ export type TabMode =
 
 const mapTabValue: Record<TabMode, string> = {
   home: '홈',
-  project: '프로젝트',
+  project: '역대 프로젝트',
   all: '전체',
   official: '전공 동아리',
   general: '일반 동아리',
