@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import CategoryTag from '@/app/components/ui/tag/CategoryTag';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 import ProjectGrid from '@/app/components/feature/project/components/ProjectGrid';
@@ -14,7 +14,12 @@ export default function HomeProjectList({ projects }: HomeProjectListProps) {
   const [selectedCategory, setSelectedCategory] = useState<'All' | string>(
     'All',
   );
-  const shuffledProjects = useMemo(() => shuffleArray(projects), [projects]);
+  const [shuffledProjects, setShuffledProjects] = useState<CardProps[]>(projects);
+
+  // Only shuffle on the client side after hydration to prevent hydration mismatch
+  useEffect(() => {
+    setShuffledProjects(shuffleArray(projects));
+  }, [projects]);
 
   const categories = useMemo(() => {
     const uniqueCategories = new Set<string>();

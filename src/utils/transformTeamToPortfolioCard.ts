@@ -42,5 +42,6 @@ export function transformTeamToPortfolioCard(
     profile,
     projects,
     isOfficial: team.is_official ?? false,
+    createdAt: team.created_at,
   };
 }

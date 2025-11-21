@@ -43,7 +43,6 @@ const DropdownInput = ({
   onInputFocus,
   dropdownInputConfig,
   onOptionSelect,
-  onlyOne = false,
   onDelete,
 }: DropdownInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);

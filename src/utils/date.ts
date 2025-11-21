@@ -32,9 +32,17 @@ export const formatEndDate = (data: string | null): string => {
   return data ? ` ~ ${data}` : '';
 };
 
-// datetime을 넣었을 때 창립년도를 반환하는 함수
+/**
+ * datetime을 넣었을 때 창립년도를 반환하는 함수
+ * @param dateString - 날짜 문자열 (Date 생성자가 파싱 가능한 형식) 또는 null
+ * @returns 유효한 날짜의 경우 연도(number), null이거나 유효하지 않은 날짜인 경우 -1
+ */
 export const getFoundedYear = (dateString: string | null): number => {
-  if (!dateString) return 0;
+  if (!dateString) return -1;
 
-  return new Date(dateString).getFullYear();
+  const date = new Date(dateString);
+  // 유효하지 않은 날짜인 경우 -1 반환
+  if (isNaN(date.getTime())) return -1;
+
+  return date.getFullYear();
 }

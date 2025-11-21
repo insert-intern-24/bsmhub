@@ -21,19 +21,35 @@ const ProfileInfo = ({
 
   const RoleComponent = useLabel ? Label : Caption;
 
+  const isTeamRole = profile.role.some(
+    (role) => role === '전공동아리' || role === '일반동아리',
+  );
+  const roleText =
+    profile.role.length > 0
+      ? isTeamRole
+        ? profile.role.join(', ')
+        : `${profile.role.join(', ')} 희망`
+      : '희망 분야 없음';
+
+  // active 상태이고 팀 역할이면 StatusBadge에 role 표시
+  const statusBadgeText =
+    isTeamRole && profile.role.length > 0
+      ? profile.role[0]
+      : profile.status;
+
   return (
     <div className={containerClass}>
       <div className="flex-center">
         <Body2>{profile.name}</Body2>
-        <StatusBadge status={profile.status} />
+        <StatusBadge status={statusBadgeText} />
       </div>
-      <RoleComponent className="text-gray-base -mt-1">
-        {profile.role.length > 0
-          ? `${profile.role.join(', ')} 희망`
-          : '희망 분야 없음'}
-      </RoleComponent>
+      {!isTeamRole && (
+        <RoleComponent className="text-gray-base -mt-1">{roleText}</RoleComponent>
+      )}
       {showBio && (
-        <Caption className="text-gray-base truncate">{profile.bio}</Caption>
+        <Caption className="text-gray-base break-words line-clamp-2 h-full">
+          {profile.bio}
+        </Caption>
       )}
     </div>
   );
