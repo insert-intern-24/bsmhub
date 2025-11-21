@@ -21,4 +21,5 @@ export interface PortfolioCardProps {
   isOfficial?: boolean;
   studentName?: string;
   maxProjects?: number;
+  createdAt?: string;
 }
