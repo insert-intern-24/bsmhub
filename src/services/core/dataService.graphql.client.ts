@@ -243,8 +243,7 @@ export class GraphQLDataService {
 
         // 🔥 핵심 수정: 테이블별 적절한 filter 필드 선택
         // 프로젝트 테이블인 경우 profile_id 사용하지 않음
-        const mainTable = getMainTable(formConfig);
-        const isProjectsTable = mainTable === 'projects';
+        // mainTable은 위에서 이미 선언됨
 
         const filterField = isProjectsTable && variables?.project_id
           ? 'project_id'
