@@ -94,6 +94,7 @@ const InputListProvider = ({
     Record<string, unknown>[]
   >([]);
   const [showSuggestions, setShowSuggestions] = React.useState(false);
+  const [focusedInputIndex, setFocusedInputIndex] = React.useState<number | null>(null);
   // const [loading, setLoading] = React.useState(false)
   // const [error, setError] = React.useState<string | null>(null)
 
@@ -120,8 +121,9 @@ const InputListProvider = ({
   }, [dropdownInputConfig, showToast]);
 
   // input 클릭/포커스 시 드롭다운 표시
-  const handleInputFocus = () => {
+  const handleInputFocus = (index: number) => {
     if (dropdownInputConfig && tableData.length > 0) {
+      setFocusedInputIndex(index);
       if (onlyOne) {
         // 단일 선택 드롭다운에서는 모든 옵션을 표시 (선택된 값 포함)
         setSuggestions(tableData);
@@ -172,6 +174,7 @@ const InputListProvider = ({
   const handleOptionSelect = () => {
     setShowSuggestions(false);
     setSuggestions([]);
+    setFocusedInputIndex(null);
   };
 
   // inputs가 변경될 때마다 콜백 호출
@@ -179,6 +182,25 @@ const InputListProvider = ({
     onInputsChange?.(inputs);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputs]);
+
+  // 외부 클릭 시 드롭다운 닫기
+  React.useEffect(() => {
+    const handleClickOutside = () => {
+      if (showSuggestions) {
+        setShowSuggestions(false);
+        setSuggestions([]);
+        setFocusedInputIndex(null);
+      }
+    };
+
+    if (showSuggestions) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showSuggestions]);
 
   const handleAddInput = () => {
     // maxInputs 체크
@@ -225,9 +247,9 @@ const InputListProvider = ({
           });
         });
         // 삭제 후 드롭다운 열기
-        if (dropdownInputConfig && handleInputFocus) {
+        if (dropdownInputConfig) {
           setTimeout(() => {
-            handleInputFocus();
+            handleInputFocus(index);
           }, 0);
         }
       }
@@ -290,9 +312,9 @@ const InputListProvider = ({
                 },
               }))}
               dropdownInputConfig={dropdownInputConfig}
-              suggestions={showSuggestions ? suggestions : []}
+              suggestions={showSuggestions && focusedInputIndex === index ? suggestions : []}
               onInputChange={handleInputChange}
-              onInputFocus={handleInputFocus}
+              onInputFocus={() => handleInputFocus(index)}
               tableData={tableData}
               onDelete={handleDeleteInput}
               groupIndex={index}

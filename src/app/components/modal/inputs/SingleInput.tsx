@@ -29,7 +29,7 @@ const Inputs = ({
   // value 변경 시 높이 조정
   useEffect(() => {
     adjustHeight();
-  }, [textarea, stringValue]);
+  }, [textarea, stringValue, adjustHeight]);
 
   // 포커스 처리
   useEffect(() => {
