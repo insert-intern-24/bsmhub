@@ -125,7 +125,7 @@ export default function CollectClient({
     return { withTitle, withoutTitle, generationTitle };
   }, [filteredPortfolios]);
 
-  const createFetchFn = (data: any[]) => async ({ pageParam }: { pageParam: number }) => ({
+  const createFetchFn = <T,>(data: T[]) => async ({ pageParam }: { pageParam: number }) => ({
     data,
     totalPages: 1,
     currentPage: pageParam,
