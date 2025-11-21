@@ -7,7 +7,9 @@ export default async function updateProjectContent(
   const supabase = createClient();
   const { error } = await supabase
     .from('project_html_description')
-    .upsert({ html_content: content, project_id } as never);
+    .upsert({ html_content: content, project_id } as never, {
+      onConflict: 'project_id',
+    });
   if (error) {
     return { success: false, error };
   }
