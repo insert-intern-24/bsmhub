@@ -217,8 +217,10 @@ export class GraphQLDataService {
 
         // 업데이트 시 변경하면 안 되는 필드 제거
         // profile의 owner(auth.uid)는 변경 불가하지만, project의 owner(profile_id)는 변경 가능
-        // project_id가 있으면 project 업데이트이므로 owner 유지
-        if (!variables?.project_id) {
+        // mainTable이 'projects'이고 project_id가 있으면 owner 유지, 아니면 제거
+        const mainTable = getMainTable(formConfig);
+        const isProjectsTable = mainTable === 'projects';
+        if (!(isProjectsTable && variables?.project_id)) {
           delete updateSet.owner; // profile 업데이트인 경우에만 owner 제거
         }
         delete updateSet.is_team;
