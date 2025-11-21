@@ -22,7 +22,7 @@ const Team = async ({
 
   const projectsByYear = teamProjects.reduce(
     (acc, project) => {
-      const year = project.created_at ? getFoundedYear(project.created_at) : -1;
+      const year = getFoundedYear(project.created_at);
       (acc[year] ??= []).push(project);
       return acc;
     },

@@ -36,5 +36,9 @@ export const formatEndDate = (data: string | null): string => {
 export const getFoundedYear = (dateString: string | null): number => {
   if (!dateString) return -1;
 
-  return new Date(dateString).getFullYear();
+  const date = new Date(dateString);
+  // 유효하지 않은 날짜인 경우 -1 반환
+  if (isNaN(date.getTime())) return -1;
+
+  return date.getFullYear();
 }
