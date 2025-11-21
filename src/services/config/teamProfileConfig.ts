@@ -131,7 +131,7 @@ export const teamProfileConfig: FormConfig = {
       columnInfo: { table: 'profile_link', column: '*' },
       relationHandler: {
         type: 'graphql',
-        identifierIsStudnetId: false,
+        identifierIsStudentId: false,
         dataTransformer: createDataTransformer(
           { link: 'link', alt: 'alt' },
           (item) => Boolean(item.link),
@@ -190,7 +190,7 @@ export const teamProfileConfig: FormConfig = {
       columnInfo: { table: 'team_member', column: '*' },
       relationHandler: {
         type: 'graphql',
-        identifierIsStudnetId: false,
+        identifierIsStudentId: false,
         dataTransformer: createDataTransformer({
           participant_id: 'participant_id',
         }),
@@ -207,7 +207,7 @@ export const teamProfileConfig: FormConfig = {
     //   relationHandler: {
     //     type: 'rest',
     //     handler: updateProfileCompetitions,
-    //     identifierIsStudnetId: false,
+    //     identifierIsStudentId: false,
     //   },
     //   inputConfig: {
     //     onlyOne: false,
@@ -230,7 +230,7 @@ export const teamProfileConfig: FormConfig = {
     //   relationHandler: {
     //     type: 'rest',
     //     handler: updateProfileSkills,
-    //     identifierIsStudnetId: false,
+    //     identifierIsStudentId: false,
     //   },
     //   valuePath: 'skill_id',
     //   white: false,

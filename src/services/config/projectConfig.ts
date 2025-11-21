@@ -220,7 +220,7 @@ export const projectConfig: FormConfig = {
       columnInfo: { table: 'project_link', column: '*' },
       relationHandler: {
         type: 'graphql',
-        identifierIsStudnetId: false,
+        identifierIsStudentId: false,
         dataTransformer: createDataTransformer(
           { link: 'link', alt: 'alt' },
           (item) => Boolean(item.link),
@@ -316,7 +316,7 @@ export const projectConfig: FormConfig = {
       columnInfo: { table: 'project_skills', column: '*' },
       relationHandler: {
         type: 'graphql',
-        identifierIsStudnetId: false,
+        identifierIsStudentId: false,
         dataTransformer: (data: unknown[]) => {
           // skill_id를 숫자로 유지하는 커스텀 transformer
           return (data as Array<{ skill_id: number }>)
@@ -339,7 +339,7 @@ export const projectConfig: FormConfig = {
     //   columnInfo: { table: 'project_html_description', column: '*' },
     //   relationHandler: {
     //     type: 'graphql',
-    //     identifierIsStudnetId: false,
+    //     identifierIsStudentId: false,
     //     dataTransformer: createDataTransformer(
     //       { html_content: 'html_content' },
     //       (item) => Boolean(item.html_content),
@@ -399,7 +399,7 @@ export const projectConfig: FormConfig = {
       },
       relationHandler: {
         type: 'graphql',
-        identifierIsStudnetId: false,
+        identifierIsStudentId: false,
         dataTransformer: createDataTransformer(
           { profile_id: 'profile_id', description: 'description' },
           (item) => Boolean(item.profile_id),

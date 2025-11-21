@@ -74,7 +74,7 @@ interface BaseFieldConfig {
     type: 'rest' | 'graphql';
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     handler?: (...args: any[]) => any; // 핸들러 함수 자체
-    identifierIsStudnetId?: boolean; // ID 조회/생성이 필요한지 여부
+    identifierIsStudentId?: boolean; // ID 조회/생성이 필요한지 여부
     dataTransformer?: (data: unknown[]) => unknown[]; // 데이터 변환 함수
     deleteFilterGenerator?: (
       item: Record<string, unknown>,
