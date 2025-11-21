@@ -22,7 +22,7 @@ const Team = async ({
 
   const projectsByYear = teamProjects.reduce(
     (acc, project) => {
-      const year = project.created_at ? getFoundedYear(project.created_at) : 0;
+      const year = project.created_at ? getFoundedYear(project.created_at) : -1;
       (acc[year] ??= []).push(project);
       return acc;
     },
@@ -51,7 +51,7 @@ const Team = async ({
             <div className="w-full flex flex-col gap-8">
               {sortedYears.map((year) => (
                 <div key={year} className="w-full flex flex-col gap-4">
-                  <Title>{year}년</Title>
+                  <Title>{year === -1 ? '날짜 미상' : `${year}년`}</Title>
                   <ProjectGrid
                     projects={projectsByYear[year]}
                     isTeamProject={true}
