@@ -69,7 +69,41 @@ const ProfileEditModal = ({
               : '프로필이 성공적으로 수정되었습니다.';
         showToast(successMessage, 'success', 3000, '성공');
         onClose();
-        router.refresh();
+
+        // GraphQL 응답에서 프로필 정보 추출
+        const responseData = result.data as Record<string, unknown> | undefined;
+        let profileName: string | null = null;
+        let isTeam = isTeamValue;
+
+        if (responseData) {
+          // Update 응답: updateprofileCollection.records[0]
+          const updateCollection = responseData.updateprofileCollection as
+            | { records?: Array<{ profile_name?: string; is_team?: boolean }> }
+            | undefined;
+
+          // Insert 응답: insertIntoprofileCollection.records[0]
+          const insertCollection = responseData.insertIntoprofileCollection as
+            | { records?: Array<{ profile_name?: string; is_team?: boolean }> }
+            | undefined;
+
+          const record = updateCollection?.records?.[0] || insertCollection?.records?.[0];
+
+          if (record) {
+            profileName = record.profile_name || null;
+            if (record.is_team !== undefined) {
+              isTeam = record.is_team;
+            }
+          }
+        }
+
+        // 프로필 이름이 있으면 해당 페이지로 리다이렉트, 없으면 refresh
+        if (profileName) {
+          const basePath = isTeam ? '/team' : '/portfolio';
+          const encodedProfileName = encodeURIComponent(profileName);
+          router.push(`${basePath}/${encodedProfileName}`);
+        } else {
+          router.refresh();
+        }
       } else {
         const errorMessage = formatErrorMessage(result.message, 'profile');
         showToast(errorMessage, 'error', 2000, '오류');
@@ -91,7 +125,10 @@ const ProfileEditModal = ({
         );
         showToast(successMessage, 'success', 3000, '성공');
         onClose();
-        router.refresh();
+
+        // 프로필 삭제 후 목록 페이지로 리다이렉트
+        const basePath = isTeamValue ? '/team' : '/portfolio';
+        router.push(basePath);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.';
         showToast(errorMessage, 'error', 3000, '오류');

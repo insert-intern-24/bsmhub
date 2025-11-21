@@ -161,3 +161,27 @@ export const getSelectableProfilesByStudentId = async (
     return [];
   }
 };
+
+// profile_id로 프로필 정보 조회 함수
+export const getProfileById = async (
+  profileId: string,
+): Promise<{ profile_name: string; is_team: boolean } | null> => {
+  const supabase = createClient();
+  try {
+    const { data, error } = await supabase
+      .from('profile')
+      .select('profile_name, is_team')
+      .eq('profile_id', profileId)
+      .maybeSingle<{ profile_name: string; is_team: boolean }>();
+
+    if (error) {
+      console.error('Error fetching profile by ID:', error);
+      return null;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Unexpected error in getProfileById:', error);
+    return null;
+  }
+};

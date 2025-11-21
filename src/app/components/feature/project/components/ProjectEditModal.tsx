@@ -9,6 +9,7 @@ import type { MultiInputItem } from '@/app/components/ui/input/MultiInput';
 import type { FormConfig } from '@/app/components/ui/input/types/inputTypes';
 import { useRouter } from 'next/navigation';
 import { createDeleteHandler } from '@/services/graphQL/deleteHelper.graphql';
+import { getProfileById } from '@/services/profile/getProfileApi.client';
 
 interface ProjectEditModalProps {
   config: FormConfig;
@@ -57,7 +58,50 @@ const ProjectEditModal = ({
             : '프로젝트가 성공적으로 수정되었습니다.';
         showToast(successMessage, 'success', 3000, '성공');
         onClose();
-        router.refresh();
+
+        // GraphQL 응답에서 프로젝트 정보 추출
+        const responseData = result.data as Record<string, unknown> | undefined;
+        let projectName: string | null = null;
+        let ownerId: string | null = null;
+
+        if (responseData) {
+          // Update 응답: updateprojectsCollection.records[0]
+          const updateCollection = responseData.updateprojectsCollection as
+            | { records?: Array<{ project_name?: string; owner?: string }> }
+            | undefined;
+
+          // Insert 응답: insertIntoprojectsCollection.records[0]
+          const insertCollection = responseData.insertIntoprojectsCollection as
+            | { records?: Array<{ project_name?: string; owner?: string }> }
+            | undefined;
+
+          const record = updateCollection?.records?.[0] || insertCollection?.records?.[0];
+
+          if (record) {
+            projectName = record.project_name || null;
+            ownerId = record.owner || null;
+          }
+        }
+
+        // 프로젝트 이름과 owner가 있으면 프로필 정보 조회 후 리다이렉트
+        if (projectName && ownerId) {
+          try {
+            const profileInfo = await getProfileById(ownerId);
+            if (profileInfo) {
+              const basePath = profileInfo.is_team ? '/team' : '/portfolio';
+              const encodedProfileName = encodeURIComponent(profileInfo.profile_name);
+              const encodedProjectName = encodeURIComponent(projectName);
+              router.push(`${basePath}/${encodedProfileName}/${encodedProjectName}`);
+            } else {
+              router.refresh();
+            }
+          } catch (error) {
+            console.error('Failed to fetch profile info:', error);
+            router.refresh();
+          }
+        } else {
+          router.refresh();
+        }
       } else {
         const errorMessage = formatErrorMessage(result.message, 'project');
         showToast(errorMessage, 'error', 2000, '오류');
@@ -79,7 +123,20 @@ const ProjectEditModal = ({
         );
         showToast(successMessage, 'success', 3000, '성공');
         onClose();
-        router.refresh();
+
+        // 프로젝트 삭제 후 해당 프로필 페이지로 리다이렉트
+        // URL 형식: /portfolio/[profileName]/[projectName] 또는 /team/[teamName]/[projectName]
+        const pathname = window.location.pathname;
+        const pathParts = pathname.split('/').filter(Boolean);
+
+        // pathParts: ['portfolio' | 'team', profileName, projectName]
+        if (pathParts.length >= 2) {
+          const basePath = pathParts[0]; // 'portfolio' 또는 'team'
+          const profileName = pathParts[1];
+          router.push(`/${basePath}/${profileName}`);
+        } else {
+          router.push('/project');
+        }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.';
         showToast(errorMessage, 'error', 3000, '오류');
