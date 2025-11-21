@@ -34,7 +34,7 @@ export const formatEndDate = (data: string | null): string => {
 
 /**
  * datetime을 넣었을 때 창립년도를 반환하는 함수
- * @param dateString - ISO 8601 형식의 날짜 문자열 또는 null
+ * @param dateString - 날짜 문자열 (Date 생성자가 파싱 가능한 형식) 또는 null
  * @returns 유효한 날짜의 경우 연도(number), null이거나 유효하지 않은 날짜인 경우 -1
  */
 export const getFoundedYear = (dateString: string | null): number => {
