@@ -33,7 +33,7 @@ const ProfileInfo = ({
 
   // active 상태이고 팀 역할이면 StatusBadge에 role 표시
   const statusBadgeText =
-    profile.status === 'active' && isTeamRole && profile.role.length > 0
+    isTeamRole && profile.role.length > 0
       ? profile.role[0]
       : profile.status;
 
