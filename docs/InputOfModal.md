@@ -401,7 +401,7 @@ const { control, handleSubmit, formState: { errors } } = useForm({
   <Title>{title}</Title>
   
   {/* 각 필드 */}
-  <div className="w-full flex flex-col gap-2">
+  <div className="w-full flex flex-col gap-4">
     <LabelOfInputs label="..." required={...} />
     <InputListProvider ... />
     {errors && <span className="text-red-500 text-sm">...</span>}
