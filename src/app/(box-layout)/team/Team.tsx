@@ -10,6 +10,9 @@ import Tabs from '@/app/components/layout/tabs/Tabs';
 import { Title } from '@/app/components/ui/text/text';
 import { getFoundedYear } from '@/utils/date';
 
+// 날짜 정보가 없는 프로젝트를 나타내는 상수
+const UNKNOWN_DATE_YEAR = -1;
+
 const Team = async ({
   teamName,
   path = 'home',
@@ -22,7 +25,7 @@ const Team = async ({
 
   const projectsByYear = teamProjects.reduce(
     (acc, project) => {
-      const year = project.created_at ? getFoundedYear(project.created_at) : 0;
+      const year = getFoundedYear(project.created_at);
       (acc[year] ??= []).push(project);
       return acc;
     },
@@ -31,7 +34,12 @@ const Team = async ({
 
   const sortedYears = Object.keys(projectsByYear)
     .map(Number)
-    .sort((a, b) => b - a);
+    .sort((a, b) => {
+      // "날짜 미상"은 항상 마지막에 표시
+      if (a === UNKNOWN_DATE_YEAR) return 1;
+      if (b === UNKNOWN_DATE_YEAR) return -1;
+      return b - a; // 최신 년도부터 내림차순
+    });
 
   return (
     <div className="w-full relative responsive-team">
@@ -51,7 +59,7 @@ const Team = async ({
             <div className="w-full flex flex-col gap-8">
               {sortedYears.map((year) => (
                 <div key={year} className="w-full flex flex-col gap-4">
-                  <Title>{year}년</Title>
+                  <Title>{year === UNKNOWN_DATE_YEAR ? '날짜 미상' : `${year}년`}</Title>
                   <ProjectGrid
                     projects={projectsByYear[year]}
                     isTeamProject={true}
