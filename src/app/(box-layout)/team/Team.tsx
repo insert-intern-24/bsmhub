@@ -42,7 +42,7 @@ const Team = async ({
         }
       >
         <section className="w-full pl-[3rem] pt-[4.5rem] responsive-teamProjects">
-          <div className="mobile:hidden mb-6">
+          <div className="mb-6">
             <Tabs tabs={['home', 'project']} />
           </div>
           {path === 'home' ? (
