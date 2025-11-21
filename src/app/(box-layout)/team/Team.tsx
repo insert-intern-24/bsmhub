@@ -54,7 +54,6 @@ const Team = async ({
                   <Title>{year}년</Title>
                   <ProjectGrid
                     projects={projectsByYear[year]}
-                    className=""
                     isTeamProject={true}
                   />
                 </div>
