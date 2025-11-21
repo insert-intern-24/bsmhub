@@ -31,34 +31,34 @@ const PortfolioDetail = ({ details }: PortfolioDetailProps) => {
             : [];
 
         return (
-        <div key={mode}>
-          <Label>{modeTextMap[mode]}</Label>
-          {mode === 'skill' ? (
+          <div key={mode}>
+            <Label>{modeTextMap[mode]}</Label>
+            {mode === 'skill' ? (
               skillIds.length > 0 ? (
-            <SkillTagProvider
-              readOnly
-              white
-                  initialTags={skillIds}
-            />
-          ) : (
-                <Label className="text-detail !block">등록된 정보가 없습니다.</Label>
+                <SkillTagProvider readOnly white initialTags={skillIds} />
+              ) : (
+                <Label className="text-detail !block">
+                  등록된 정보가 없습니다.
+                </Label>
               )
             ) : hasData ? (
-            <div className="flex-col">
-              {datas.map((data, index) => (
-                <ProfileItem
-                  key={index}
-                  mode={mode}
-                  value={data.value ?? null}
-                  url={'url' in data ? data.url : undefined}
-                  prize={'prize' in data ? data.prize : undefined}
-                />
-              ))}
-            </div>
+              <div className="flex-col">
+                {datas.map((data, index) => (
+                  <ProfileItem
+                    key={index}
+                    mode={mode}
+                    value={data.value ?? null}
+                    url={'url' in data ? data.url : undefined}
+                    prize={'prize' in data ? data.prize : undefined}
+                  />
+                ))}
+              </div>
             ) : (
-              <Label className="text-detail !block">등록된 정보가 없습니다.</Label>
-          )}
-        </div>
+              <Label className="text-detail !block">
+                등록된 정보가 없습니다.
+              </Label>
+            )}
+          </div>
         );
       })}
     </div>

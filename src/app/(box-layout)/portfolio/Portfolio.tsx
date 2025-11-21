@@ -11,6 +11,8 @@ import { convertStudentNumber } from '@/utils/convertStudentNumber';
 import { getProfile } from '@/services/profile/getProfile.server';
 import ProfileIcon from '@/app/components/ui/profile/ProfileIcon';
 import PortfolioVisitTracker from '@/app/components/card/portfolio/PortfolioVisitTracker';
+import ProfileEditButton from '@/app/components/ui/profile/portfolio/ProfileEditButton';
+import PortfolioItems from '@/app/components/ui/profile/portfolio/PortfolioDetail';
 
 interface PortfolioProps {
   profileName: string;
@@ -39,31 +41,6 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
   const desiredJobText =
     desiredJobs.length > 0 ? `${desiredJobs.join(', ')} 희망` : '희망직무 없음';
 
-  let Content, containerCss;
-
-  // param이 home이라면 home에 대한 컴포넌트와 css를 반환
-  if (isHome) {
-    Content = (
-      <PortfolioHome
-        content={profile.description ?? ''}
-        details={profileDetail}
-        projects={personalProjects}
-        ownerId={profile.owner ?? ''}
-        profile_name={profile.profile_name}
-      />
-    );
-    containerCss =
-      'grid grid-cols-[22rem_1fr] grid-rows-[auto_auto] gap-x-8 gap-y-4 -mt-[0.375rem]';
-  } else {
-    Content = (
-      <PortfolioProject
-        personalProjects={personalProjects}
-        cooperationProjects={cooperationProjects}
-      />
-    );
-    containerCss = 'flex-col gap-6 mt-[0.375rem]';
-  }
-
   return (
     <div className="pt-[4.5rem] w-full relative">
       <PortfolioVisitTracker
@@ -75,16 +52,35 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
       <TitleEN className="mobile:mb-2">
         {convertStudentNumber(studentInfo.student_number)} {studentInfo.name}
       </TitleEN>
-      <div className={`${containerCss} responsive-portfolioHome`}>
+      <div
+        className={`grid grid-cols-[22rem_1fr] grid-rows-[auto_auto] gap-x-8 gap-y-4 -mt-[0.375rem] responsive-portfolioHome`}
+      >
         <Body className="text-gray-base flex-col justify-end gap-4">
-          {studentInfo.departments?.department_name || '학과 정보 없음'} | {desiredJobText}
+          {studentInfo.departments?.department_name || '학과 정보 없음'} |{' '}
+          {desiredJobText}
         </Body>
 
         <div className="mobile:hidden">
           <Tabs tabs={['home', 'project']} />
         </div>
 
-        {Content}
+        <aside className="flex-col gap-6 sticky top-24 self-start w-[21.75rem] mobile:static mobile:w-full">
+          <ProfileEditButton ownerId={profile.owner ?? ''} />
+          <PortfolioItems details={profileDetail} />
+        </aside>
+
+        {isHome ? (
+          <PortfolioHome
+            content={profile.description ?? ''}
+            projects={personalProjects}
+            profile_name={profile.profile_name}
+          />
+        ) : (
+          <PortfolioProject
+            personalProjects={personalProjects}
+            cooperationProjects={cooperationProjects}
+          />
+        )}
       </div>
     </div>
   );
