@@ -111,8 +111,10 @@ export default function CollectClient({
       if (portfolio.createdAt) {
         const foundedYear = getFoundedYear(portfolio.createdAt);
         if (foundedYear === currentYear) {
+          // 창립 연도와 현재 연도를 기반으로 기수 계산
+          const generation = currentYear - foundedYear + 1;
           const title = portfolio.isOfficial
-            ? '4기 전공동아리'
+            ? `${generation}기 전공동아리`
             : `${currentYear}년 일반동아리`;
           if (!generationTitle) generationTitle = title;
           withTitle.push(portfolio);
