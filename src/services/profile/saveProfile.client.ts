@@ -396,7 +396,7 @@ export async function saveProfileData(
 
     // 희망직무 처리 (단일 선택이므로 job_id가 하나만 있을 수 있음)
     // updateStudentJobs 함수를 재사용하여 upsert 로직 중복 제거
-    await updateStudentJobs(userId, saveData.studentJobs, []);
+    await updateStudentJobs(userId, saveData.studentJobs);
 
     return { success: true };
   } catch (error) {
