@@ -41,9 +41,11 @@ function calculateProjectGrade(
   }
 
   // 개인 프로젝트: 학생의 입학년도로 계산
-  return !project.isTeam && sortData.joinAt
-    ? calculateGradeFromJoinAt(sortData.joinAt)
-    : 0;
+  if (!project.isTeam && sortData.joinAt) {
+    const grade = calculateGradeFromJoinAt(sortData.joinAt);
+    return grade >= 1 && grade <= 3 ? grade : 0;
+  }
+  return 0;
 }
 
 /**
