@@ -46,6 +46,8 @@ export const projectConfig: FormConfig = {
               console.log('[projectConfig.redirect] redirectPath:', redirectPath);
             }
             return redirectPath;
+          } else {
+            console.error('[projectConfig.redirect] Profile not found for ownerId:', ownerId);
           }
         } catch (error) {
           console.error('[projectConfig.redirect] Error getting profile info:', error);
