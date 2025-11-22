@@ -53,7 +53,7 @@ const ProfileEditModal = ({
           string,
           MultiInputItem[][] | string[] | boolean | File | null | string
         >,
-        isTeamValue
+        mode === 'update'
           ? { profile_id: variables.profile_id }
           : { owner: ownerId, is_team: isTeamValue },
       );
@@ -62,10 +62,10 @@ const ProfileEditModal = ({
         const successMessage =
           mode === 'create'
             ? isTeamValue
-              ? '팀 프로필이 성공적으로 생성되었습니다.'
+              ? '동아리가 성공적으로 생성되었습니다.'
               : '프로필이 성공적으로 생성되었습니다.'
             : isTeamValue
-              ? '팀 프로필이 성공적으로 수정되었습니다.'
+              ? '동아리가 성공적으로 수정되었습니다.'
               : '프로필이 성공적으로 수정되었습니다.';
         showToast(successMessage, 'success', 3000, '성공');
         onClose();
@@ -103,7 +103,7 @@ const ProfileEditModal = ({
     return (
       <div className="p-8 text-center">
         {isTeamValue
-          ? '팀 프로필 정보를 불러오는 중...'
+          ? '동아리 정보를 불러오는 중...'
           : '프로필 정보를 불러오는 중...'}
       </div>
     );
@@ -114,15 +114,18 @@ const ProfileEditModal = ({
       title={
         mode === 'update'
           ? isTeamValue
-            ? '팀 프로필 수정'
+            ? '동아리 수정'
             : '프로필 수정'
-          : '프로필 만들기'
+          : isTeamValue
+            ? '동아리 만들기'
+            : '프로필 만들기'
       }
       config={config}
       initialValues={initialValues}
       onSubmit={canSave ? handleProfileSubmit : undefined}
       onDelete={mode === 'update' ? handleProfileDelete : undefined}
       mode={mode}
+      onClose={onClose}
     />
   );
 };
