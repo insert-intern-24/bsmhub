@@ -5,7 +5,7 @@ import SkillTagProvider from '@/app/components/ui/tag/SkillTagProvider';
 import {
   PortfolioDetailProps as PortfolioDetailType,
   ItemProps,
-} from '@/app/(box-layout)/portfolio/types';
+} from '@/app/components/portfolio/types';
 
 const modeTextMap: Record<ItemProps['mode'] | 'skill', string> = {
   link: '링크',

@@ -1,4 +1,4 @@
-import { PortfolioData, PortfolioVisitTrackerData } from '@/app/(box-layout)/portfolio/types';
+import { PortfolioData, PortfolioVisitTrackerData } from '@/app/components/portfolio/types';
 
 const STORAGE_KEY = 'recentPortfolios';
 const MAX_ITEMS = 4;

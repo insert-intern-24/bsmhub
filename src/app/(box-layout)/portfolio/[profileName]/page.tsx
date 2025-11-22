@@ -1,4 +1,4 @@
-import Portfolio from '../Portfolio';
+import Portfolio from '@/app/components/portfolio/Portfolio';
 
 interface PortfolioProps {
   params: Promise<{ profileName: string }>;
