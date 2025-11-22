@@ -13,12 +13,12 @@ export const projectConfig: FormConfig = {
     buildPath: async (formData, mode, variables) => {
       console.log('[projectConfig.redirect] buildPath called', { formData, mode, variables });
 
-      // project_name: [[{ name: '프로젝트명' }]]
+      // project_name: [[{ value: '프로젝트명' }]]
       const nameData = formData.project_name as unknown[][];
-      const projectName = (nameData?.[0]?.[0] as { name?: string })?.name;
+      const projectName = (nameData?.[0]?.[0] as { value?: string })?.value;
       console.log('[projectConfig.redirect] projectName:', projectName);
 
-      // project_owner: [[{ owner: 'profile_id' }]]
+      // project_owner: [[{ owner: 'profile_id' }]] - dropdownInputList는 name으로 저장
       const ownerData = formData.project_owner as unknown[][];
       const ownerId = (ownerData?.[0]?.[0] as { owner?: string })?.owner;
       console.log('[projectConfig.redirect] ownerId:', ownerId);

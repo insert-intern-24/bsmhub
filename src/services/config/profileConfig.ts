@@ -17,11 +17,12 @@ export const profileConfig: FormConfig = {
     buildPath: async (formData, mode, variables) => {
       console.log('[profileConfig.redirect] buildPath called', { formData, mode, variables });
 
-      // profile_full_name: [[{ name: '홍길동' }]]
+      // profile_full_name: [[{ value: '홍길동' }]]
       const nameData = formData.profile_full_name as unknown[][];
       console.log('[profileConfig.redirect] nameData:', nameData);
 
-      const profileName = (nameData?.[0]?.[0] as { name?: string })?.name;
+      // InputList는 value 필드에 값을 저장함
+      const profileName = (nameData?.[0]?.[0] as { value?: string })?.value;
       console.log('[profileConfig.redirect] profileName:', profileName);
 
       // is_team은 variables에서 가져옴 (ProfileEditModal props)

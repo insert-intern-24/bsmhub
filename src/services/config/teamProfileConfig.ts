@@ -12,11 +12,12 @@ export const teamProfileConfig: FormConfig = {
     buildPath: async (formData, mode, variables) => {
       console.log('[teamProfileConfig.redirect] buildPath called', { formData, mode, variables });
 
-      // profile_full_name: [[{ name: '동아리명' }]]
+      // profile_full_name: [[{ value: '동아리명' }]]
       const nameData = formData.profile_full_name as unknown[][];
       console.log('[teamProfileConfig.redirect] nameData:', nameData);
 
-      const profileName = (nameData?.[0]?.[0] as { name?: string })?.name;
+      // InputList는 value 필드에 값을 저장함
+      const profileName = (nameData?.[0]?.[0] as { value?: string })?.value;
       console.log('[teamProfileConfig.redirect] profileName:', profileName);
 
       if (profileName) {
