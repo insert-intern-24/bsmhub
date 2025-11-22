@@ -437,6 +437,7 @@ export const projectConfig: FormConfig = {
           const { data, error } = await supabase
             .from('profile')
             .select('profile_id, profile_name')
+            .eq('is_team', false)
             .order('profile_name');
           if (error) {
             console.error('Error fetching profiles:', error);

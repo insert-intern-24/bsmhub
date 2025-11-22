@@ -8,11 +8,23 @@ import getAccount from '@/services/auth/getAccount.server';
 import AutoCarousel from '../components/card/home/AutoCarousel';
 import fs from 'node:fs';
 import path from 'node:path';
+import { sortProjectsByThumbnailAndGrade } from '@/utils/project/sortProjects';
+import { getProjectSortData } from '@/services/project/getProjectSortData.server';
 
 const ALLOWED_EXTENSIONS = new Set(['.png']);
 
 export default async function Home() {
   const projects = await getProjects();
+
+  // 정렬을 위한 추가 데이터 조회
+  const projectIds = projects.map((p) => p.id);
+  const sortDataMap = await getProjectSortData(projectIds);
+
+  // 프로젝트 정렬
+  const sortedProjects = sortProjectsByThumbnailAndGrade(
+    projects,
+    sortDataMap,
+  );
 
   const user = await getAccount();
 
@@ -48,7 +60,7 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <ProjectList projects={projects} />
+      <ProjectList projects={sortedProjects} />
     </div>
   );
 }

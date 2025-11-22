@@ -12,6 +12,7 @@ export const getTeamProjects = async (teamName: string): Promise<TeamProjectType
       project_name,
       project_thumbnail,
       description,
+      created_at,
       profile!projects_owner_fkey!inner (
         profile_name,
         is_team
@@ -26,6 +27,7 @@ export const getTeamProjects = async (teamName: string): Promise<TeamProjectType
     `)
     .eq('profile.profile_name', teamName)
     .eq('profile.is_team', true)
+    .order('created_at', { ascending: false })
 
   if (error) {
     console.error('팀 프로젝트 조회 중 오류', error)

@@ -21,7 +21,7 @@ const SidebarLayout = ({ header, children, className = '' }: SidebarLayoutProps)
       {header && <div className="pt-[4.5rem]">{header}</div>}
 
       {/* Sticky 영역 */}
-      <aside className={`sticky top-24 self-start mobile:static ${header ? 'mt-[1.625rem]' : 'pt-[4.5rem]'}`}>
+      <aside className={`sticky top-24 self-start mobile:static ${header ? 'mt-4' : 'pt-[4.5rem]'}`}>
         <div className="flex-col w-full gap-[1.625rem]">{children}</div>
       </aside>
     </div>

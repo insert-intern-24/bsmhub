@@ -315,7 +315,6 @@ export async function updateProfileCompetitions(
 export async function updateStudentJobs(
   studentId: string,
   jobIds: number[],
-  existingJobs: Array<{ job_id: number }> = [],
 ): Promise<void> {
   const supabase = createClient();
 

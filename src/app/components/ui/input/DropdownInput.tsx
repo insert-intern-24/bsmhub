@@ -43,7 +43,6 @@ const DropdownInput = ({
   onInputFocus,
   dropdownInputConfig,
   onOptionSelect,
-  onlyOne = false,
   onDelete,
 }: DropdownInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -124,7 +123,7 @@ const DropdownInput = ({
       )}
       {icon && iconMap[icon] && <button type="button">{iconMap[icon]}</button>}
       {suggestions.length > 0 && (
-        <ul className="absolute z-50 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-auto min-w-64 top-full">
+        <ul className="absolute z-50 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-auto min-w-64 top-full left-0">
           {suggestions.map((item, index) => (
             <li
               key={index}

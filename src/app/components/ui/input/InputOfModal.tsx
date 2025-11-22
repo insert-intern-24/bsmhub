@@ -23,6 +23,7 @@ interface InputOfModalProps {
   onSubmit?: (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>) => void;
   onDelete?: () => void;
   mode?: 'create' | 'update';
+  onClose?: () => void;
 }
 
 const InputOfModal = ({
@@ -33,6 +34,7 @@ const InputOfModal = ({
   submitButtonText = '제출하기',
   initialValues,
   mode,
+  onClose,
 }: InputOfModalProps) => {
   const { control, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>, field) => {
@@ -105,12 +107,16 @@ const InputOfModal = ({
   const showDeleteButton = config.deleteable && mode === 'update' && !isDeleting;
 
   return (
-    <form 
+    <form
       className="flex-col items-start w-[64rem] p-[4rem] gap-6 bg-white border-0 outline-none"
       onSubmit={handleSubmit(onFormSubmit)}
       onKeyDown={(e) => {
         if (e.key === 'Enter' && e.target instanceof HTMLInputElement) {
           e.preventDefault();
+        }
+        if (e.key === 'Escape' && onClose) {
+          e.preventDefault();
+          onClose();
         }
       }}
     >

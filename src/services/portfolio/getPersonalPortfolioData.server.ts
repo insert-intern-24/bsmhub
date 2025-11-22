@@ -2,7 +2,7 @@ import { createClient } from '@/services/supabase/client';
 import {
   PortfolioData,
   ProfileWithProjects,
-} from '@/app/(box-layout)/portfolio/types';
+} from '@/app/components/portfolio/types';
 
 export async function getPersonalPortfolioData(): Promise<PortfolioData[]> {
   const supabase = await createClient();

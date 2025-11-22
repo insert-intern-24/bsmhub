@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react';
 import { addRecentPortfolio } from '@/utils/localStorage/recentPortfolios';
-import { PortfolioVisitTrackerData } from '@/app/(box-layout)/portfolio/types';
-import { ProfileType } from '@/app/(box-layout)/portfolio/types';
+import { PortfolioVisitTrackerData } from '@/app/components/portfolio/types';
+import { ProfileType } from '@/app/components/portfolio/types';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 
@@ -57,4 +57,3 @@ const PortfolioVisitTracker = ({
 };
 
 export default PortfolioVisitTracker;
-

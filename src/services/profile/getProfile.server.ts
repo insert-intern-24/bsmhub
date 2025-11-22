@@ -1,5 +1,5 @@
 'use server';
-import { ProfileType } from "@/app/(box-layout)/portfolio/types";
+import { ProfileType } from '@/app/components/portfolio/types';
 import { createClient } from "@/services/supabase/server"
 
 
