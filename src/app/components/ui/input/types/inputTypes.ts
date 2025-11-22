@@ -132,6 +132,29 @@ export type FormFieldConfig =
   | PictureFieldConfig
   | DropdownInputListFieldConfig;
 
+// 리다이렉트 설정
+export interface RedirectConfig {
+  /**
+   * 저장 후 리다이렉트 경로 생성
+   * @param formData - 사용자가 제출한 폼 데이터
+   * @param mode - 생성 또는 수정 모드
+   * @param variables - GraphQL variables (is_team, owner 등 추가 정보)
+   * @returns 리다이렉트 경로 (null이면 router.refresh())
+   */
+  buildPath?: (
+    formData: Record<string, unknown>,
+    mode: 'create' | 'update',
+    variables?: Record<string, unknown>,
+  ) => Promise<string | null>;
+
+  /**
+   * 삭제 후 리다이렉트 경로 생성
+   * @param variables - GraphQL variables
+   * @returns 리다이렉트 경로
+   */
+  deletePath?: (variables?: Record<string, unknown>) => string;
+}
+
 // 전체 폼 설정
 export interface FormConfig {
   fields: FormFieldConfig[];
@@ -146,6 +169,12 @@ export interface FormConfig {
   mainTable?: string; // 메인 테이블 이름 (예: 'projects', 'profile')
   idField?: string; // 메인 테이블의 ID 필드명 (예: 'project_id', 'profile_id')
   deleteable?: boolean; // 삭제 가능 여부 (기본값: false)
+
+  /**
+   * 리다이렉트 설정 (선택사항)
+   * 저장/삭제 후 리다이렉트할 경로를 정의
+   */
+  redirect?: RedirectConfig;
 
   /**
    * 관계 테이블 처리 콜백 (선택사항)

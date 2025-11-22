@@ -8,6 +8,33 @@ import {
 } from '@/services/graphQL/relationTableHelper.graphql';
 
 export const teamProfileConfig: FormConfig = {
+  redirect: {
+    buildPath: async (formData, mode, variables) => {
+      // 개발 디버깅용 플래그 (환경변수 DEBUG_TEAM_PROFILE_REDIRECT='true'로 활성화)
+      const DEBUG = process.env.DEBUG_TEAM_PROFILE_REDIRECT === 'true';
+      // 핵심 로직: formData에서 profile_full_name 추출 후 경로 생성
+      const nameData = formData.profile_full_name as unknown[][];
+      const profileName = (nameData?.[0]?.[0] as { value?: string })?.value;
+      const redirectPath = profileName ? `/team/${encodeURIComponent(profileName)}` : null;
+      if (DEBUG) {
+        console.log('[teamProfileConfig.redirect] buildPath debug', {
+          formData,
+          mode,
+          variables,
+          nameData,
+          profileName,
+          redirectPath,
+        });
+        if (!profileName) {
+          console.warn('[teamProfileConfig.redirect] No profileName found, returning null');
+        }
+      }
+      return redirectPath;
+    },
+    deletePath: () => {
+      return '/team';
+    },
+  },
   deleteable: true,
   graphql: {
     read: `

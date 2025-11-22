@@ -6,9 +6,71 @@ import {
   createChangeCalculator,
   processGraphQLRelationTables,
 } from '@/services/graphQL/relationTableHelper.graphql';
-import { getSelectableProfilesByStudentId } from '@/services/profile/getProfileApi.client';
+import { getSelectableProfilesByStudentId, getProfileById } from '@/services/profile/getProfileApi.client';
 
 export const projectConfig: FormConfig = {
+  redirect: {
+    buildPath: async (formData, mode, variables) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[projectConfig.redirect] buildPath called', { formData, mode, variables });
+      }
+
+      // project_name: [[{ value: '프로젝트명' }]]
+      const nameData = formData.project_name as unknown[][];
+      const projectName = (nameData?.[0]?.[0] as { value?: string })?.value;
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[projectConfig.redirect] projectName:', projectName);
+      }
+
+      // project_owner: [[{ value: 'profile_id' }]] - dropdownInputList도 value 필드 사용
+      const ownerData = formData.project_owner as unknown[][];
+      const ownerId = (ownerData?.[0]?.[0] as { value?: string })?.value;
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[projectConfig.redirect] ownerId:', ownerId);
+      }
+
+      if (projectName && ownerId) {
+        // owner의 프로필 정보 조회하여 개인/팀 구분
+        try {
+          const profileInfo = await getProfileById(ownerId);
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[projectConfig.redirect] profileInfo:', profileInfo);
+          }
+
+          if (profileInfo) {
+            const basePath = profileInfo.is_team ? '/team' : '/portfolio';
+            const encodedProfileName = encodeURIComponent(profileInfo.profile_name);
+            const encodedProjectName = encodeURIComponent(projectName);
+            const redirectPath = `${basePath}/${encodedProfileName}/${encodedProjectName}`;
+            if (process.env.NODE_ENV === 'development') {
+              console.log('[projectConfig.redirect] redirectPath:', redirectPath);
+            }
+            return redirectPath;
+          } else {
+            console.error('[projectConfig.redirect] Profile not found for ownerId:', ownerId);
+          }
+        } catch (error) {
+          console.error('[projectConfig.redirect] Error getting profile info:', error);
+        }
+      } else {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('[projectConfig.redirect] Missing projectName or ownerId');
+        }
+      }
+      return null;
+    },
+    deletePath: () => {
+      // URL에서 프로필 페이지 경로 추출
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      // pathParts: ['portfolio' | 'team', profileName, projectName]
+      if (pathParts.length >= 2) {
+        const basePath = pathParts[0]; // 'portfolio' 또는 'team'
+        const profileName = pathParts[1];
+        return `/${basePath}/${profileName}`;
+      }
+      return '/project';
+    },
+  },
   deleteable: true,
   graphql: {
     read: `

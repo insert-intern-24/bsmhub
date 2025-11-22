@@ -57,7 +57,22 @@ const ProjectEditModal = ({
             : '프로젝트가 성공적으로 수정되었습니다.';
         showToast(successMessage, 'success', 3000, '성공');
         onClose();
-        router.refresh();
+
+        // Config의 redirect 설정 사용
+        if (config.redirect?.buildPath) {
+          const redirectPath = await config.redirect.buildPath(
+            formData as Record<string, unknown>,
+            mode,
+            variables,
+          );
+          if (redirectPath) {
+            router.push(redirectPath);
+          } else {
+            router.refresh();
+          }
+        } else {
+          router.refresh();
+        }
       } else {
         const errorMessage = formatErrorMessage(result.message, 'project');
         showToast(errorMessage, 'error', 2000, '오류');
@@ -79,7 +94,14 @@ const ProjectEditModal = ({
         );
         showToast(successMessage, 'success', 3000, '성공');
         onClose();
-        router.refresh();
+
+        // Config의 redirect 설정 사용
+        if (config.redirect?.deletePath) {
+          const redirectPath = config.redirect.deletePath(variables);
+          router.push(redirectPath);
+        } else {
+          router.refresh();
+        }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.';
         showToast(errorMessage, 'error', 3000, '오류');
