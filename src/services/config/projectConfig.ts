@@ -18,9 +18,9 @@ export const projectConfig: FormConfig = {
       const projectName = (nameData?.[0]?.[0] as { value?: string })?.value;
       console.log('[projectConfig.redirect] projectName:', projectName);
 
-      // project_owner: [[{ owner: 'profile_id' }]] - dropdownInputList는 name으로 저장
+      // project_owner: [[{ value: 'profile_id' }]] - dropdownInputList도 value 필드 사용
       const ownerData = formData.project_owner as unknown[][];
-      const ownerId = (ownerData?.[0]?.[0] as { owner?: string })?.owner;
+      const ownerId = (ownerData?.[0]?.[0] as { value?: string })?.value;
       console.log('[projectConfig.redirect] ownerId:', ownerId);
 
       if (projectName && ownerId) {
