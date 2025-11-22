@@ -8,12 +8,16 @@ export const getProjectDetailRow = async (
   const supabase = await createClient();
 
   // profile_name으로 profile_id를 조회
-  const { data: profileData } = await supabase
+  const { data: profileData, error: profileError } = await supabase
     .from('profile')
     .select('profile_id')
     .eq('profile_name', ownerName)
     .maybeSingle<{ profile_id: string }>();
 
+  if (profileError) {
+    console.error('프로필 조회 중 오류:', profileError);
+    return null;
+  }
   if (!profileData) {
     return null;
   }
