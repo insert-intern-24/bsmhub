@@ -20,7 +20,7 @@ export interface ProjectSortData {
  * 프로젝트의 학년을 계산
  * @param project - CardProps
  * @param sortData - 정렬을 위한 추가 데이터
- * @returns 학년 (3, 2, 1), 계산 불가능한 경우 0
+ * @returns 학년 (1, 2, 3, 4), 계산 불가능한 경우 0
  */
 function calculateProjectGrade(
   project: CardProps,
