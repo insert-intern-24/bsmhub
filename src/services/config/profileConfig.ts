@@ -15,39 +15,19 @@ import { getJobs } from '@/services/portfolio/getJobs.client';
 export const profileConfig: FormConfig = {
   redirect: {
     buildPath: async (formData, mode, variables) => {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[profileConfig.redirect] buildPath called', { formData, mode, variables });
-      }
-
       // profile_full_name: [[{ value: '홍길동' }]]
       const nameData = formData.profile_full_name as unknown[][];
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[profileConfig.redirect] nameData:', nameData);
-      }
 
       // InputList는 value 필드에 값을 저장함
       const profileName = (nameData?.[0]?.[0] as { value?: string })?.value;
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[profileConfig.redirect] profileName:', profileName);
-      }
 
       // is_team은 variables에서 가져옴 (ProfileEditModal props)
       const isTeam = (variables?.is_team as boolean) || false;
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[profileConfig.redirect] isTeam:', isTeam);
-      }
 
       if (profileName) {
         const basePath = isTeam ? '/team' : '/portfolio';
         const redirectPath = `${basePath}/${encodeURIComponent(profileName)}`;
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[profileConfig.redirect] redirectPath:', redirectPath);
-        }
         return redirectPath;
-      }
-
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('[profileConfig.redirect] No profileName found, returning null');
       }
       return null;
     },
