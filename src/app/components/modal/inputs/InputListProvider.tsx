@@ -126,6 +126,7 @@ const InputListProvider = ({
       setFocusedInputIndex(index);
       if (onlyOne) {
         // 단일 선택 드롭다운에서는 모든 옵션을 표시 (선택된 값 포함)
+        // tableData는 이미 query에서 필터링됨
         setSuggestions(tableData);
       } else {
         // 복수 선택 드롭다운에서는 이미 선택된 값들을 제외한 옵션 표시
@@ -257,7 +258,7 @@ const InputListProvider = ({
     }
     
     dispatch({ type: 'DELETE_INPUT', index });
-    
+
     // 복수 드롭다운에서 삭제 후 드롭다운 열기
     if (dropdownInputConfig && tableData.length > 0) {
       setTimeout(() => {

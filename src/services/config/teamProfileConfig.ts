@@ -176,15 +176,30 @@ export const teamProfileConfig: FormConfig = {
         valueColumnName: 'profile_id',
         query: async () => {
           const supabase = await createClient();
+
+          const { data: teams } = await supabase
+            .from('profile')
+            .select('owner')
+            .eq('is_team', true)
+            .not('owner', 'is', null);
+
+          const ownerIds = new Set(
+            teams?.map((team: { owner: string | null }) => team.owner).filter(Boolean) ?? []
+          );
+
           const { data, error } = await supabase
             .from('profile')
             .select('profile_id, profile_name')
             .eq('is_team', false);
+
           if (error) {
             console.error('Error fetching data:', error);
             return [];
           }
-          return data || [];
+
+          return data?.filter((profile: { profile_id: string; profile_name: string }) =>
+            !ownerIds.has(profile.profile_id)
+          ) ?? [];
         },
       },
       columnInfo: { table: 'team_member', column: '*' },
