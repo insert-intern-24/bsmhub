@@ -60,7 +60,6 @@ export function calculateGradeFromStudentNumber(
   if (!studentNumber) return 0;
 
   const studentNumberStr = studentNumber.toString();
-  if (studentNumberStr.length < 1) return 0;
 
   const grade = parseInt(studentNumberStr[0], 10);
   if (isNaN(grade) || grade < 1 || grade > 4) return 0;
