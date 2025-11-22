@@ -175,7 +175,7 @@ export const getProfileById = async (
       .maybeSingle<{ profile_name: string; is_team: boolean }>();
 
     if (error) {
-      console.error('Error fetching profile by ID:', error);
+      console.error('Error fetching profile by ID:', profileId, error);
       return null;
     }
 

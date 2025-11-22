@@ -10,23 +10,33 @@ import {
 export const teamProfileConfig: FormConfig = {
   redirect: {
     buildPath: async (formData, mode, variables) => {
-      console.log('[teamProfileConfig.redirect] buildPath called', { formData, mode, variables });
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[teamProfileConfig.redirect] buildPath called', { formData, mode, variables });
+      }
 
       // profile_full_name: [[{ value: '동아리명' }]]
       const nameData = formData.profile_full_name as unknown[][];
-      console.log('[teamProfileConfig.redirect] nameData:', nameData);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[teamProfileConfig.redirect] nameData:', nameData);
+      }
 
       // InputList는 value 필드에 값을 저장함
       const profileName = (nameData?.[0]?.[0] as { value?: string })?.value;
-      console.log('[teamProfileConfig.redirect] profileName:', profileName);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[teamProfileConfig.redirect] profileName:', profileName);
+      }
 
       if (profileName) {
         const redirectPath = `/team/${encodeURIComponent(profileName)}`;
-        console.log('[teamProfileConfig.redirect] redirectPath:', redirectPath);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[teamProfileConfig.redirect] redirectPath:', redirectPath);
+        }
         return redirectPath;
       }
 
-      console.warn('[teamProfileConfig.redirect] No profileName found, returning null');
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[teamProfileConfig.redirect] No profileName found, returning null');
+      }
       return null;
     },
     deletePath: () => {

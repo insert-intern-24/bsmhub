@@ -11,37 +11,49 @@ import { getSelectableProfilesByStudentId, getProfileById } from '@/services/pro
 export const projectConfig: FormConfig = {
   redirect: {
     buildPath: async (formData, mode, variables) => {
-      console.log('[projectConfig.redirect] buildPath called', { formData, mode, variables });
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[projectConfig.redirect] buildPath called', { formData, mode, variables });
+      }
 
       // project_name: [[{ value: '프로젝트명' }]]
       const nameData = formData.project_name as unknown[][];
       const projectName = (nameData?.[0]?.[0] as { value?: string })?.value;
-      console.log('[projectConfig.redirect] projectName:', projectName);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[projectConfig.redirect] projectName:', projectName);
+      }
 
       // project_owner: [[{ value: 'profile_id' }]] - dropdownInputList도 value 필드 사용
       const ownerData = formData.project_owner as unknown[][];
       const ownerId = (ownerData?.[0]?.[0] as { value?: string })?.value;
-      console.log('[projectConfig.redirect] ownerId:', ownerId);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[projectConfig.redirect] ownerId:', ownerId);
+      }
 
       if (projectName && ownerId) {
         // owner의 프로필 정보 조회하여 개인/팀 구분
         try {
           const profileInfo = await getProfileById(ownerId);
-          console.log('[projectConfig.redirect] profileInfo:', profileInfo);
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[projectConfig.redirect] profileInfo:', profileInfo);
+          }
 
           if (profileInfo) {
             const basePath = profileInfo.is_team ? '/team' : '/portfolio';
             const encodedProfileName = encodeURIComponent(profileInfo.profile_name);
             const encodedProjectName = encodeURIComponent(projectName);
             const redirectPath = `${basePath}/${encodedProfileName}/${encodedProjectName}`;
-            console.log('[projectConfig.redirect] redirectPath:', redirectPath);
+            if (process.env.NODE_ENV === 'development') {
+              console.log('[projectConfig.redirect] redirectPath:', redirectPath);
+            }
             return redirectPath;
           }
         } catch (error) {
           console.error('[projectConfig.redirect] Error getting profile info:', error);
         }
       } else {
-        console.warn('[projectConfig.redirect] Missing projectName or ownerId');
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('[projectConfig.redirect] Missing projectName or ownerId');
+        }
       }
       return null;
     },
