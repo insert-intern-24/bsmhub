@@ -30,7 +30,7 @@ export function extractYearFromDate(dateString: string | null): number {
  * 입학년도(join_at)로 현재 학년 계산
  * 현재 연도 기준: 현재 연도 - 입학년도 + 1 = 학년
  * @param joinAt - 입학년도 날짜 문자열
- * @returns 학년 (1, 2, 3), 계산 불가능한 경우 0
+ * @returns 학년 (1, 2, 3, 4), 계산 불가능한 경우 0
  */
 export function calculateGradeFromJoinAt(joinAt: string | null): number {
   if (!joinAt) return 0;
