@@ -289,8 +289,8 @@ export class GraphQLDataService {
 
       console.log('Save Data - Response:', JSON.stringify(response, null, 2));
 
-      // 관계 테이블 데이터 처리 (Update 시에만)
-      if (isUpdate && relationTableData.size > 0) {
+      // 관계 테이블 데이터 처리 (Create 또는 Update 시)
+      if (relationTableData.size > 0) {
         console.log('Processing relation tables...');
 
         // FormConfig의 afterSave 콜백이 있으면 호출
