@@ -15,17 +15,27 @@ import { getJobs } from '@/services/portfolio/getJobs.client';
 export const profileConfig: FormConfig = {
   redirect: {
     buildPath: async (formData, mode, variables) => {
+      console.log('[profileConfig.redirect] buildPath called', { formData, mode, variables });
+
       // profile_full_name: [[{ name: '홍길동' }]]
       const nameData = formData.profile_full_name as unknown[][];
+      console.log('[profileConfig.redirect] nameData:', nameData);
+
       const profileName = (nameData?.[0]?.[0] as { name?: string })?.name;
+      console.log('[profileConfig.redirect] profileName:', profileName);
 
       // is_team은 variables에서 가져옴 (ProfileEditModal props)
       const isTeam = (variables?.is_team as boolean) || false;
+      console.log('[profileConfig.redirect] isTeam:', isTeam);
 
       if (profileName) {
         const basePath = isTeam ? '/team' : '/portfolio';
-        return `${basePath}/${encodeURIComponent(profileName)}`;
+        const redirectPath = `${basePath}/${encodeURIComponent(profileName)}`;
+        console.log('[profileConfig.redirect] redirectPath:', redirectPath);
+        return redirectPath;
       }
+
+      console.warn('[profileConfig.redirect] No profileName found, returning null');
       return null;
     },
     deletePath: (variables) => {
