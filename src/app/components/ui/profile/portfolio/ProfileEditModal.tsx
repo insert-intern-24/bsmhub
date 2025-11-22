@@ -48,9 +48,10 @@ const ProfileEditModal = ({
     >,
   ): void => {
     void (async () => {
-      const additionalVariables = isTeamValue
-        ? { profile_id: variables.profile_id }
-        : { owner: ownerId, is_team: isTeamValue };
+      const additionalVariables =
+        mode === 'update'
+          ? { profile_id: variables.profile_id }
+          : { owner: ownerId, is_team: isTeamValue };
 
       const result = await saveData(
         formData as unknown as Record<
@@ -67,8 +68,8 @@ const ProfileEditModal = ({
               ? '동아리가 성공적으로 생성되었습니다.'
               : '프로필이 성공적으로 생성되었습니다.'
             : isTeamValue
-              ? '동아리가 성공적으로 수정되었습니다.'
-              : '프로필이 성공적으로 수정되었습니다.';
+            ? '동아리가 성공적으로 수정되었습니다.'
+            : '프로필이 성공적으로 수정되었습니다.';
         showToast(successMessage, 'success', 3000, '성공');
         onClose();
 
@@ -104,20 +105,24 @@ const ProfileEditModal = ({
         const successMessage = await createDeleteHandler(
           config,
           { profile_id: { eq: variables.profile_id } },
-          '프로필이 성공적으로 삭제되었습니다.'
+          '프로필이 성공적으로 삭제되었습니다.',
         );
         showToast(successMessage, 'success', 3000, '성공');
         onClose();
 
         // Config의 redirect 설정 사용
         if (config.redirect?.deletePath) {
-          const redirectPath = config.redirect.deletePath({ ...variables, is_team: isTeamValue });
+          const redirectPath = config.redirect.deletePath({
+            ...variables,
+            is_team: isTeamValue,
+          });
           router.push(redirectPath);
         } else {
           router.refresh();
         }
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.';
+        const errorMessage =
+          err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.';
         showToast(errorMessage, 'error', 3000, '오류');
       }
     })();
@@ -141,8 +146,8 @@ const ProfileEditModal = ({
             ? '동아리 수정'
             : '프로필 수정'
           : isTeamValue
-            ? '동아리 만들기'
-            : '프로필 만들기'
+          ? '동아리 만들기'
+          : '프로필 만들기'
       }
       config={config}
       initialValues={initialValues}
