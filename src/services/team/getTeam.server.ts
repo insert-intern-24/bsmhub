@@ -54,7 +54,7 @@ export const getTeamsByProfileName = async (
     .select('profile_id, owner')
     .eq('profile_name', profileName)
     .eq('is_team', false)
-    .maybeSingle<{ profile_id: number; owner: string | null }>();
+    .maybeSingle<{ profile_id: string; owner: string | null }>();
 
   if (profileError) {
     console.error('사용자 프로필 조회 중 오류:', profileError);
@@ -66,7 +66,7 @@ export const getTeamsByProfileName = async (
     return [];
   }
 
-  const teamIds: number[] = [];
+  const teamIds: string[] = [];
 
   // 1. owner로 등록된 팀들을 조회합니다 (동아리장으로 있는 팀)
   if (userProfile.owner) {
@@ -83,7 +83,7 @@ export const getTeamsByProfileName = async (
 
     if (ownedTeams && ownedTeams.length > 0) {
       teamIds.push(
-        ...(ownedTeams as { profile_id: number }[]).map((t) => t.profile_id),
+        ...(ownedTeams as { profile_id: string }[]).map((t) => t.profile_id),
       );
     }
   }
@@ -101,7 +101,7 @@ export const getTeamsByProfileName = async (
 
   if (teamMemberships && teamMemberships.length > 0) {
     teamIds.push(
-      ...(teamMemberships as { profile_id: number }[]).map(
+      ...(teamMemberships as { profile_id: string }[]).map(
         (tm) => tm.profile_id,
       ),
     );
