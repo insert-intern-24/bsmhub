@@ -283,13 +283,27 @@ export const teamProfileConfig: FormConfig = {
       }
     }
 
-    // GraphQL 처리
-    await processGraphQLRelationTables(
-      graphqlTables,
-      profileId,
-      'profile_id',
-      originalRelationData,
-    );
+    // GraphQL 처리 - team_member를 먼저 처리 (RLS 정책 때문)
+    const teamMemberTable = graphqlTables.find(t => t.tableName === 'team_member');
+    const otherTables = graphqlTables.filter(t => t.tableName !== 'team_member');
+
+    if (teamMemberTable) {
+      await processGraphQLRelationTables(
+        [teamMemberTable],
+        profileId,
+        'profile_id',
+        originalRelationData,
+      );
+    }
+
+    if (otherTables.length > 0) {
+      await processGraphQLRelationTables(
+        otherTables,
+        profileId,
+        'profile_id',
+        originalRelationData,
+      );
+    }
 
     console.log('[teamProfileConfig] afterSave completed');
   },
