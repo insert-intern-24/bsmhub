@@ -13,6 +13,26 @@ import {
 import { getJobs } from '@/services/portfolio/getJobs.client';
 
 export const profileConfig: FormConfig = {
+  redirect: {
+    buildPath: async (formData, mode, variables) => {
+      // profile_full_name: [[{ name: '홍길동' }]]
+      const nameData = formData.profile_full_name as unknown[][];
+      const profileName = (nameData?.[0]?.[0] as { name?: string })?.name;
+
+      // is_team은 variables에서 가져옴 (ProfileEditModal props)
+      const isTeam = (variables?.is_team as boolean) || false;
+
+      if (profileName) {
+        const basePath = isTeam ? '/team' : '/portfolio';
+        return `${basePath}/${encodeURIComponent(profileName)}`;
+      }
+      return null;
+    },
+    deletePath: (variables) => {
+      const isTeam = (variables?.is_team as boolean) || false;
+      return isTeam ? '/team' : '/portfolio';
+    },
+  },
   graphql: {
     read: `
       query GetProfile($owner: String!) {

@@ -6,9 +6,43 @@ import {
   createChangeCalculator,
   processGraphQLRelationTables,
 } from '@/services/graphQL/relationTableHelper.graphql';
-import { getSelectableProfilesByStudentId } from '@/services/profile/getProfileApi.client';
+import { getSelectableProfilesByStudentId, getProfileById } from '@/services/profile/getProfileApi.client';
 
 export const projectConfig: FormConfig = {
+  redirect: {
+    buildPath: async (formData, mode, variables) => {
+      // project_name: [[{ name: '프로젝트명' }]]
+      const nameData = formData.project_name as unknown[][];
+      const projectName = (nameData?.[0]?.[0] as { name?: string })?.name;
+
+      // project_owner: [[{ owner: 'profile_id' }]]
+      const ownerData = formData.project_owner as unknown[][];
+      const ownerId = (ownerData?.[0]?.[0] as { owner?: string })?.owner;
+
+      if (projectName && ownerId) {
+        // owner의 프로필 정보 조회하여 개인/팀 구분
+        const profileInfo = await getProfileById(ownerId);
+        if (profileInfo) {
+          const basePath = profileInfo.is_team ? '/team' : '/portfolio';
+          const encodedProfileName = encodeURIComponent(profileInfo.profile_name);
+          const encodedProjectName = encodeURIComponent(projectName);
+          return `${basePath}/${encodedProfileName}/${encodedProjectName}`;
+        }
+      }
+      return null;
+    },
+    deletePath: () => {
+      // URL에서 프로필 페이지 경로 추출
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      // pathParts: ['portfolio' | 'team', profileName, projectName]
+      if (pathParts.length >= 2) {
+        const basePath = pathParts[0]; // 'portfolio' 또는 'team'
+        const profileName = pathParts[1];
+        return `/${basePath}/${profileName}`;
+      }
+      return '/project';
+    },
+  },
   deleteable: true,
   graphql: {
     read: `

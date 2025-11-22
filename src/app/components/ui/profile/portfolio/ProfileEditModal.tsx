@@ -48,14 +48,16 @@ const ProfileEditModal = ({
     >,
   ): void => {
     void (async () => {
+      const additionalVariables = isTeamValue
+        ? { profile_id: variables.profile_id }
+        : { owner: ownerId, is_team: isTeamValue };
+
       const result = await saveData(
         formData as unknown as Record<
           string,
           MultiInputItem[][] | string[] | boolean | File | null | string
         >,
-        isTeamValue
-          ? { profile_id: variables.profile_id }
-          : { owner: ownerId, is_team: isTeamValue },
+        additionalVariables,
       );
 
       if (result.success) {
@@ -70,37 +72,18 @@ const ProfileEditModal = ({
         showToast(successMessage, 'success', 3000, '성공');
         onClose();
 
-        // GraphQL 응답에서 프로필 정보 추출
-        const responseData = result.data as Record<string, unknown> | undefined;
-        let profileName: string | null = null;
-        let isTeam = isTeamValue;
-
-        if (responseData) {
-          // Update 응답: updateprofileCollection.records[0]
-          const updateCollection = responseData.updateprofileCollection as
-            | { records?: Array<{ profile_name?: string; is_team?: boolean }> }
-            | undefined;
-
-          // Insert 응답: insertIntoprofileCollection.records[0]
-          const insertCollection = responseData.insertIntoprofileCollection as
-            | { records?: Array<{ profile_name?: string; is_team?: boolean }> }
-            | undefined;
-
-          const record = updateCollection?.records?.[0] || insertCollection?.records?.[0];
-
-          if (record) {
-            profileName = record.profile_name || null;
-            if (record.is_team !== undefined) {
-              isTeam = record.is_team;
-            }
+        // Config의 redirect 설정 사용
+        if (config.redirect?.buildPath) {
+          const redirectPath = await config.redirect.buildPath(
+            formData as Record<string, unknown>,
+            mode,
+            { ...variables, ...additionalVariables },
+          );
+          if (redirectPath) {
+            router.push(redirectPath);
+          } else {
+            router.refresh();
           }
-        }
-
-        // 프로필 이름이 있으면 해당 페이지로 리다이렉트, 없으면 refresh
-        if (profileName) {
-          const basePath = isTeam ? '/team' : '/portfolio';
-          const encodedProfileName = encodeURIComponent(profileName);
-          router.push(`${basePath}/${encodedProfileName}`);
         } else {
           router.refresh();
         }
@@ -126,9 +109,13 @@ const ProfileEditModal = ({
         showToast(successMessage, 'success', 3000, '성공');
         onClose();
 
-        // 프로필 삭제 후 목록 페이지로 리다이렉트
-        const basePath = isTeamValue ? '/team' : '/portfolio';
-        router.push(basePath);
+        // Config의 redirect 설정 사용
+        if (config.redirect?.deletePath) {
+          const redirectPath = config.redirect.deletePath({ ...variables, is_team: isTeamValue });
+          router.push(redirectPath);
+        } else {
+          router.refresh();
+        }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.';
         showToast(errorMessage, 'error', 3000, '오류');
