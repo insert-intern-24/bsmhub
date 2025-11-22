@@ -48,13 +48,13 @@ export const getTeamsByProfileName = async (
 ): Promise<TeamData[] | null> => {
   const supabase = await createClient();
 
-  // 먼저 profileName으로 사용자의 프로필 ID를 찾습니다
+  // 먼저 profileName으로 사용자의 프로필 ID와 owner(student_id)를 찾습니다
   const { data: userProfile, error: profileError } = await supabase
     .from('profile')
-    .select('profile_id')
+    .select('profile_id, owner')
     .eq('profile_name', profileName)
     .eq('is_team', false)
-    .maybeSingle<{ profile_id: number }>();
+    .maybeSingle<{ profile_id: number; owner: string | null }>();
 
   if (profileError) {
     console.error('사용자 프로필 조회 중 오류:', profileError);
@@ -66,7 +66,29 @@ export const getTeamsByProfileName = async (
     return [];
   }
 
-  // 사용자가 속한 팀들을 조회합니다
+  const teamIds: number[] = [];
+
+  // 1. owner로 등록된 팀들을 조회합니다 (동아리장으로 있는 팀)
+  if (userProfile.owner) {
+    const { data: ownedTeams, error: ownerError } = await supabase
+      .from('profile')
+      .select('profile_id')
+      .eq('owner', userProfile.owner)
+      .eq('is_team', true);
+
+    if (ownerError) {
+      console.error('owner 팀 조회 중 오류:', ownerError);
+      return null;
+    }
+
+    if (ownedTeams && ownedTeams.length > 0) {
+      teamIds.push(
+        ...(ownedTeams as { profile_id: number }[]).map((t) => t.profile_id),
+      );
+    }
+  }
+
+  // 2. 사용자가 팀원으로 속한 팀들을 조회합니다
   const { data: teamMemberships, error: memberError } = await supabase
     .from('team_member')
     .select('profile_id')
@@ -77,13 +99,21 @@ export const getTeamsByProfileName = async (
     return null;
   }
 
-  if (!teamMemberships || teamMemberships.length === 0) {
+  if (teamMemberships && teamMemberships.length > 0) {
+    teamIds.push(
+      ...(teamMemberships as { profile_id: number }[]).map(
+        (tm) => tm.profile_id,
+      ),
+    );
+  }
+
+  // 팀이 하나도 없으면 빈 배열 반환
+  if (teamIds.length === 0) {
     return [];
   }
 
-  const teamIds = (teamMemberships as { profile_id: number }[]).map(
-    (tm) => tm.profile_id,
-  );
+  // 중복 제거
+  const uniqueTeamIds = Array.from(new Set(teamIds));
 
   // 해당 팀들의 정보를 조회합니다
   const { data, error } = await supabase
@@ -115,7 +145,7 @@ export const getTeamsByProfileName = async (
     `,
     )
     .eq('is_team', true)
-    .in('profile_id', teamIds);
+    .in('profile_id', uniqueTeamIds);
 
   if (error) {
     console.error('프로필별 팀 데이터 조회 중 오류:', error);
