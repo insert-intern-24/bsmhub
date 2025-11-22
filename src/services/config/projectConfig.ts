@@ -11,23 +11,37 @@ import { getSelectableProfilesByStudentId, getProfileById } from '@/services/pro
 export const projectConfig: FormConfig = {
   redirect: {
     buildPath: async (formData, mode, variables) => {
+      console.log('[projectConfig.redirect] buildPath called', { formData, mode, variables });
+
       // project_name: [[{ name: '프로젝트명' }]]
       const nameData = formData.project_name as unknown[][];
       const projectName = (nameData?.[0]?.[0] as { name?: string })?.name;
+      console.log('[projectConfig.redirect] projectName:', projectName);
 
       // project_owner: [[{ owner: 'profile_id' }]]
       const ownerData = formData.project_owner as unknown[][];
       const ownerId = (ownerData?.[0]?.[0] as { owner?: string })?.owner;
+      console.log('[projectConfig.redirect] ownerId:', ownerId);
 
       if (projectName && ownerId) {
         // owner의 프로필 정보 조회하여 개인/팀 구분
-        const profileInfo = await getProfileById(ownerId);
-        if (profileInfo) {
-          const basePath = profileInfo.is_team ? '/team' : '/portfolio';
-          const encodedProfileName = encodeURIComponent(profileInfo.profile_name);
-          const encodedProjectName = encodeURIComponent(projectName);
-          return `${basePath}/${encodedProfileName}/${encodedProjectName}`;
+        try {
+          const profileInfo = await getProfileById(ownerId);
+          console.log('[projectConfig.redirect] profileInfo:', profileInfo);
+
+          if (profileInfo) {
+            const basePath = profileInfo.is_team ? '/team' : '/portfolio';
+            const encodedProfileName = encodeURIComponent(profileInfo.profile_name);
+            const encodedProjectName = encodeURIComponent(projectName);
+            const redirectPath = `${basePath}/${encodedProfileName}/${encodedProjectName}`;
+            console.log('[projectConfig.redirect] redirectPath:', redirectPath);
+            return redirectPath;
+          }
+        } catch (error) {
+          console.error('[projectConfig.redirect] Error getting profile info:', error);
         }
+      } else {
+        console.warn('[projectConfig.redirect] Missing projectName or ownerId');
       }
       return null;
     },

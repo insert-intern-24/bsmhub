@@ -8,6 +8,21 @@ import {
 } from '@/services/graphQL/relationTableHelper.graphql';
 
 export const teamProfileConfig: FormConfig = {
+  redirect: {
+    buildPath: async (formData, mode, variables) => {
+      // profile_full_name: [[{ name: '동아리명' }]]
+      const nameData = formData.profile_full_name as unknown[][];
+      const profileName = (nameData?.[0]?.[0] as { name?: string })?.name;
+
+      if (profileName) {
+        return `/team/${encodeURIComponent(profileName)}`;
+      }
+      return null;
+    },
+    deletePath: () => {
+      return '/team';
+    },
+  },
   deleteable: true,
   graphql: {
     read: `
