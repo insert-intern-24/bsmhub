@@ -4,7 +4,6 @@ import React, { useState, useMemo } from 'react';
 import CategoryTag from '@/app/components/ui/tag/CategoryTag';
 import { CardProps } from '@/app/components/card/project/ProjectCard';
 import ProjectGrid from '@/app/components/feature/project/components/ProjectGrid';
-import { shuffleArray } from '@/utils/shuffle';
 
 interface HomeProjectListProps {
   projects: CardProps[];
@@ -14,7 +13,6 @@ export default function HomeProjectList({ projects }: HomeProjectListProps) {
   const [selectedCategory, setSelectedCategory] = useState<'All' | string>(
     'All',
   );
-  const shuffledProjects = useMemo(() => shuffleArray(projects), [projects]);
 
   const categories = useMemo(() => {
     const uniqueCategories = new Set<string>();
@@ -30,11 +28,11 @@ export default function HomeProjectList({ projects }: HomeProjectListProps) {
 
   const filteredProjects = useMemo(() => {
     return selectedCategory === 'All'
-      ? shuffledProjects
-      : shuffledProjects.filter(
+      ? projects
+      : projects.filter(
           (project) => project.category === selectedCategory,
         );
-  }, [shuffledProjects, selectedCategory]);
+  }, [projects, selectedCategory]);
 
   return (
     <div className="flex-col gap-[0.90625rem] w-full">
