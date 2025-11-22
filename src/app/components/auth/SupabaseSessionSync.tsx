@@ -24,18 +24,28 @@ export default function SupabaseSessionSync() {
           // sessionData가 객체이며 null이 아닌지 확인
           if (typeof sessionData !== 'object' || sessionData === null) {
             console.warn('Invalid session data format in localStorage');
+            localStorage.removeItem(storageKey);
             return;
           }
           // access_token과 refresh_token이 모두 존재하는지 확인
           if (!sessionData.access_token || !sessionData.refresh_token) {
             console.warn('Session data missing access_token or refresh_token');
+            localStorage.removeItem(storageKey);
             return;
           }
 
-          await supabase.auth.setSession({
+          // localStorage의 세션을 쿠키로 복원 시도
+          const { error } = await supabase.auth.setSession({
             access_token: sessionData.access_token,
             refresh_token: sessionData.refresh_token,
           });
+
+          // 세션 복원 실패 시 localStorage 제거 (만료되었거나 무효한 세션)
+          if (error) {
+            console.warn('Failed to restore session from localStorage:', error.message);
+            localStorage.removeItem(storageKey);
+            return;
+          }
           return;
         }
 
