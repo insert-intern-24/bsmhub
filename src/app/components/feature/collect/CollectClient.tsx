@@ -11,6 +11,10 @@ import { useSearchParams } from 'next/navigation';
 import { PROJECT_TABS, TEAM_TABS, OFFICIAL_TAB, ALL_TAB } from './constants';
 import { Title } from '@/app/components/ui/text/text';
 import { getFoundedYear } from '@/utils/date';
+import {
+  calculateGeneration,
+  getCurrentYear,
+} from '@/utils/student/studentCalculations';
 
 interface CollectClientProps {
   initialProjects?: CardProps[];
@@ -102,7 +106,7 @@ export default function CollectClient({
   }, [initialProjects, searchTerm, currentTab, type]);
 
   const teamPortfolios = useMemo(() => {
-    const currentYear = new Date().getFullYear();
+    const currentYear = getCurrentYear();
     const withTitle: PortfolioCardProps[] = [];
     const withoutTitle: PortfolioCardProps[] = [];
     let generationTitle: string | undefined;
@@ -112,7 +116,7 @@ export default function CollectClient({
         const foundedYear = getFoundedYear(portfolio.createdAt);
         if (foundedYear === currentYear) {
           // 창립 연도와 현재 연도를 기반으로 기수 계산
-          const generation = currentYear - foundedYear + 1;
+          const generation = calculateGeneration(foundedYear, currentYear);
           const title = portfolio.isOfficial
             ? `${generation}기 전공동아리`
             : `${currentYear}년 일반동아리`;
