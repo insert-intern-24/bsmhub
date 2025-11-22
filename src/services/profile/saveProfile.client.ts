@@ -4,6 +4,7 @@ import { createClient } from '@/services/supabase/client';
 import { Tables } from '@/services/supabase/database.types';
 import { FormConfig } from '@/app/components/ui/input/types/inputTypes';
 import { extractColumnInfoFromFormConfig } from '@/services/graphQL/form-config-utils.graphql';
+import { updateStudentJobs } from '@/services/graphQL/relationTableHelper.graphql';
 
 interface ProfileLinkData {
   link: string;
@@ -166,6 +167,7 @@ export interface ProfileSaveData {
   profileSkills: string[];
   studentCertificates: string[];
   profileCompetitions: string[];
+  studentJobs: number[];
 }
 
 export function transformFormDataToSaveFormat(
@@ -180,6 +182,7 @@ export function transformFormDataToSaveFormat(
     profileSkills: [],
     studentCertificates: [],
     profileCompetitions: [],
+    studentJobs: [],
   };
 
   const columnInfoMap = extractColumnInfoFromFormConfig(formConfig);
@@ -252,6 +255,18 @@ export function transformFormDataToSaveFormat(
               return String(compItem[0]?.value || '');
             })
             .filter((comp) => comp.trim() !== '');
+        }
+      }
+      if (fieldName === 'student_jobs') {
+        // 단일 선택이므로 첫 번째 항목의 첫 번째 input의 value가 job_id
+        if (Array.isArray(value) && value.length > 0) {
+          const firstItem = value[0] as Array<{ value: string | number }>;
+          if (firstItem && firstItem.length > 0 && firstItem[0]?.value) {
+            const jobId = Number(firstItem[0].value);
+            if (!isNaN(jobId)) {
+              result.studentJobs = [jobId];
+            }
+          }
         }
       }
     }
@@ -379,9 +394,14 @@ export async function saveProfileData(
       }
     }
 
+    // 희망직무 처리 (단일 선택이므로 job_id가 하나만 있을 수 있음)
+    // updateStudentJobs 함수를 재사용하여 upsert 로직 중복 제거
+    await updateStudentJobs(userId, saveData.studentJobs);
+
     return { success: true };
   } catch (error) {
     console.error('Profile save error:', error);
     return { success: false, error: '예상치 못한 오류가 발생했습니다.' };
   }
 }
+

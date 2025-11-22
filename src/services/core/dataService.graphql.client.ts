@@ -10,6 +10,7 @@ import {
   graphqlToFormData,
   formDataToGraphQL,
 } from '@/services/graphQL/dataTransformer.graphql';
+import { getMainTable } from '@/services/graphQL/metadataExtractor.graphql';
 
 /**
  * 작업 결과 타입
@@ -211,12 +212,17 @@ export class GraphQLDataService {
       let finalVariables: Record<string, unknown>;
 
       if (isUpdate) {
-        // Update: $set에는 실제 변경할 필드만 포함 (owner, is_team 제외)
-        // owner와 is_team은 filter에만 사용
+        // Update: $set에는 실제 변경할 필드만 포함
         const updateSet = { ...mainTableData };
 
         // 업데이트 시 변경하면 안 되는 필드 제거
-        delete updateSet.owner;
+        // profile의 owner(auth.uid)는 변경 불가하지만, project의 owner(profile_id)는 변경 가능
+        // mainTable이 'projects'이고 project_id가 있으면 owner 유지, 아니면 제거
+        const mainTable = getMainTable(formConfig);
+        const isProjectsTable = mainTable === 'projects';
+        if (!(isProjectsTable && variables?.project_id)) {
+          delete updateSet.owner; // profile 업데이트인 경우에만 owner 제거
+        }
         delete updateSet.is_team;
         delete updateSet.project_id;
 
@@ -235,15 +241,22 @@ export class GraphQLDataService {
           console.warn('No fields to update - skipping main table update');
         }
 
-        // 🔥 핵심 수정: profile_id로 필터링 (owner 대신)
-        // profile_id가 있으면 사용하고, 없으면 owner 사용
-        const filterField = this.currentProfileId
+        // 🔥 핵심 수정: 테이블별 적절한 filter 필드 선택
+        // 프로젝트 테이블인 경우 profile_id 사용하지 않음
+        // mainTable은 위에서 이미 선언됨
+
+        const filterField = isProjectsTable && variables?.project_id
+          ? 'project_id'
+          : !isProjectsTable && this.currentProfileId
           ? 'profile_id'
           : variables?.project_id
           ? 'project_id'
           : 'owner';
         const filterValue =
-          this.currentProfileId || variables?.project_id || variables?.owner;
+          (isProjectsTable && variables?.project_id) ||
+          (!isProjectsTable && this.currentProfileId) ||
+          variables?.project_id ||
+          variables?.owner;
 
         console.log(`Using filter: ${filterField} = ${filterValue}`);
 

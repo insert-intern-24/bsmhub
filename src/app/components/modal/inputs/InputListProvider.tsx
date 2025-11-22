@@ -94,6 +94,7 @@ const InputListProvider = ({
     Record<string, unknown>[]
   >([]);
   const [showSuggestions, setShowSuggestions] = React.useState(false);
+  const [focusedInputIndex, setFocusedInputIndex] = React.useState<number | null>(null);
   // const [loading, setLoading] = React.useState(false)
   // const [error, setError] = React.useState<string | null>(null)
 
@@ -119,20 +120,27 @@ const InputListProvider = ({
     }
   }, [dropdownInputConfig, showToast]);
 
-  // onlyOne일 때 input 클릭/포커스 시 모든 옵션 표시
-  const handleInputFocus = () => {
-    if (onlyOne && dropdownInputConfig && tableData.length > 0) {
-      const selectedValues = new Set(
-        inputs
-          .flat()
-          .map((item) => item.value)
-          .filter(Boolean),
-      );
-      const filtered = tableData.filter((item) => {
-        const itemValue = item[dropdownInputConfig.valueColumnName] as string;
-        return !selectedValues.has(itemValue);
-      });
-      setSuggestions(filtered);
+  // input 클릭/포커스 시 드롭다운 표시
+  const handleInputFocus = (index: number) => {
+    if (dropdownInputConfig && tableData.length > 0) {
+      setFocusedInputIndex(index);
+      if (onlyOne) {
+        // 단일 선택 드롭다운에서는 모든 옵션을 표시 (선택된 값 포함)
+        setSuggestions(tableData);
+      } else {
+        // 복수 선택 드롭다운에서는 이미 선택된 값들을 제외한 옵션 표시
+        const selectedValues = new Set(
+          inputs
+            .flat()
+            .map((item) => item.value)
+            .filter(Boolean),
+        );
+        const filtered = tableData.filter((item) => {
+          const itemValue = item[dropdownInputConfig.valueColumnName] as string;
+          return !selectedValues.has(String(itemValue));
+        });
+        setSuggestions(filtered);
+      }
       setShowSuggestions(true);
     }
   };
@@ -140,36 +148,19 @@ const InputListProvider = ({
   // 추천 필터링 함수
   const handleInputChange = (value: string) => {
     if (dropdownInputConfig && tableData.length > 0) {
-      // 이미 선택된 값들을 추출
-      const selectedValues = new Set(
-        inputs
-          .flat()
-          .map((item) => item.value)
-          .filter(Boolean),
-      );
-
-      // onlyOne일 때 빈 값이면 모든 옵션 표시
+      // onlyOne일 때 빈 값이면 모든 옵션 표시 (단일 선택 드롭다운)
       if (onlyOne && value === '') {
-        const filtered = tableData.filter((item) => {
-          const itemValue = item[dropdownInputConfig.valueColumnName] as string;
-          return !selectedValues.has(itemValue);
-        });
-        setSuggestions(filtered);
+        setSuggestions(tableData);
         setShowSuggestions(true);
         return;
       }
 
+      // 입력값으로 필터링
       const filtered = tableData.filter((item) => {
-        const itemValue = item[dropdownInputConfig.valueColumnName] as string;
         const itemName = (
           item[dropdownInputConfig.nameColumnName] as string
         )?.toLowerCase();
-
-        // 이미 선택된 값은 제외하고, 입력값으로 필터링
-        return (
-          !selectedValues.has(itemValue) &&
-          itemName?.includes(value.toLowerCase())
-        );
+        return itemName?.includes(value.toLowerCase());
       });
       setSuggestions(filtered);
       setShowSuggestions(filtered.length > 0);
@@ -183,6 +174,7 @@ const InputListProvider = ({
   const handleOptionSelect = () => {
     setShowSuggestions(false);
     setSuggestions([]);
+    setFocusedInputIndex(null);
   };
 
   // inputs가 변경될 때마다 콜백 호출
@@ -190,6 +182,25 @@ const InputListProvider = ({
     onInputsChange?.(inputs);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputs]);
+
+  // 외부 클릭 시 드롭다운 닫기
+  React.useEffect(() => {
+    const handleClickOutside = () => {
+      if (showSuggestions) {
+        setShowSuggestions(false);
+        setSuggestions([]);
+        setFocusedInputIndex(null);
+      }
+    };
+
+    if (showSuggestions) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showSuggestions]);
 
   const handleAddInput = () => {
     // maxInputs 체크
@@ -235,11 +246,37 @@ const InputListProvider = ({
             value: '',
           });
         });
+        // 삭제 후 드롭다운 열기
+        if (dropdownInputConfig) {
+          setTimeout(() => {
+            handleInputFocus(index);
+          }, 0);
+        }
       }
       return;
     }
     
     dispatch({ type: 'DELETE_INPUT', index });
+    
+    // 복수 드롭다운에서 삭제 후 드롭다운 열기
+    if (dropdownInputConfig && tableData.length > 0) {
+      setTimeout(() => {
+        // 삭제 후 남은 항목들 중에서 선택된 값들 추출
+        const remainingInputs = inputs.filter((_, i) => i !== index);
+        const selectedValues = new Set(
+          remainingInputs
+            .flat()
+            .map((item) => item.value)
+            .filter(Boolean),
+        );
+        const filtered = tableData.filter((item) => {
+          const itemValue = item[dropdownInputConfig.valueColumnName] as string;
+          return !selectedValues.has(String(itemValue));
+        });
+        setSuggestions(filtered);
+        setShowSuggestions(true);
+      }, 0);
+    }
   };
 
   // const canAddMore = !maxInputs || inputs.length < maxInputs
@@ -275,9 +312,9 @@ const InputListProvider = ({
                 },
               }))}
               dropdownInputConfig={dropdownInputConfig}
-              suggestions={showSuggestions ? suggestions : []}
+              suggestions={showSuggestions && focusedInputIndex === index ? suggestions : []}
               onInputChange={handleInputChange}
-              onInputFocus={handleInputFocus}
+              onInputFocus={() => handleInputFocus(index)}
               tableData={tableData}
               onDelete={handleDeleteInput}
               groupIndex={index}

@@ -306,6 +306,63 @@ export async function updateProfileCompetitions(
   }
 }
 
+/**
+ * student_jobs 테이블 업데이트 (단일 선택 - 전체 교체 방식)
+ * @param studentId - 학생 ID
+ * @param jobIds - 새로운 직무 ID 배열 (단일 선택이므로 최대 1개)
+ * @param existingJobs - 기존 직무 데이터 배열 (캐시된 데이터, job_id 포함)
+ */
+export async function updateStudentJobs(
+  studentId: string,
+  jobIds: number[],
+): Promise<void> {
+  const supabase = createClient();
+
+  // 단일 선택이므로 배열이어도 첫 번째 항목만 사용
+  const newJobId = jobIds.length > 0 ? jobIds[0] : null;
+
+  if (newJobId !== null) {
+    // upsert 방식: 기존 레코드가 있으면 job_id 업데이트, 없으면 insert
+    // student_id를 기준으로 기존 레코드 확인 후 upsert
+    const { data: existingRecord } = await supabase
+      .from('student_jobs')
+      .select('job_id')
+      .eq('student_id', studentId)
+      .maybeSingle();
+
+    if (existingRecord) {
+      // 기존 레코드가 있으면 job_id만 업데이트
+      const { error: updateError } = await supabase
+        .from('student_jobs')
+        .update({ job_id: newJobId } as never)
+        .eq('student_id', studentId);
+      if (updateError) {
+        console.error('Failed to update student_jobs:', updateError);
+        throw updateError;
+      }
+    } else {
+      // 기존 레코드가 없으면 insert
+      const { error: insertError } = await supabase
+        .from('student_jobs')
+        .insert({ student_id: studentId, job_id: newJobId } as never);
+      if (insertError) {
+        console.error('Failed to insert into student_jobs:', insertError);
+        throw insertError;
+      }
+    }
+  } else {
+    // job_id가 null이면 기존 레코드 삭제
+    const { error: deleteError } = await supabase
+      .from('student_jobs')
+      .delete()
+      .eq('student_id', studentId);
+    if (deleteError) {
+      console.error('Failed to delete from student_jobs:', deleteError);
+      throw deleteError;
+    }
+  }
+}
+
 // GraphQL relation handler 헬퍼 함수들
 
 /**
@@ -451,6 +508,12 @@ export async function processRestRelationTables(
         case 'profile_competitions':
           processedData = (relationData as Array<{ prize: string }>)
             .map((item) => item.prize)
+            .filter(Boolean);
+          break;
+        case 'student_jobs':
+          // 단일 선택이므로 job_id 배열 추출
+          processedData = (relationData as Array<{ job_id: number }>)
+            .map((item) => item.job_id)
             .filter(Boolean);
           break;
         default:

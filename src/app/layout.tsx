@@ -9,7 +9,7 @@ import { ToastProvider, Toast } from '@/app/components/toast';
 import QueryProvider from './providers/QueryProvider';
 import ErrorHandler from './providers/ErrorHandler';
 import Navigator from '@/app/components/layout/header/Navigator';
-// import Providers from './providers';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import type { Metadata } from 'next';
 import GoogleOneTab from '@/app/components/feature/auth/GoogleOneTab';
 import SupabaseSessionSync from './components/feature/auth/SupabaseSessionSync';
@@ -37,6 +37,7 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
         />
+        <GoogleAnalytics gaId="G-M1JSE5S34F" />
       </head>
       <body className="bg-[#F5F5F7] pt-14">
         <QueryProvider>

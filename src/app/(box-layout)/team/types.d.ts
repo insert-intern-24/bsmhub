@@ -15,6 +15,7 @@ export type TeamData = MergeDeep<
 >;
 
 export type TeamProjectType = PersonalProjectType & {
+  created_at?: string;
   profile: Pick<Tables<'profile'>, 'profile_name' | 'is_team'>;
   project_contributors: {
     profile: Pick<

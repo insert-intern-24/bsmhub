@@ -66,55 +66,26 @@ const MultiInput = ({
         } = input;
         const widthStyle = width ? { width: `${width}%` } : { flex: 1 };
 
-        // 첫 번째 input이고 dropdownInputConfig가 있으면 특별 처리
+        // 첫 번째 input이고 dropdownInputConfig가 있으면 DropdownInput 사용
         if (index === 0 && dropdownInputConfig) {
-          const value = inputProps.value as string | number;
-          // value를 문자열로 변환하여 비교 (숫자 0도 처리)
-          const valueStr = String(value);
-          const selectedItem = tableData.find(
-            (item) => String(item[dropdownInputConfig.valueColumnName]) === valueStr,
+          return (
+            <div key={index} style={widthStyle}>
+              <DropdownInput
+                type={type}
+                mode={mode}
+                icon={icon}
+                suggestions={suggestions}
+                tableData={tableData}
+                onInputChange={onInputChange!}
+                onInputFocus={onInputFocus}
+                dropdownInputConfig={dropdownInputConfig}
+                onOptionSelect={onOptionSelect}
+                onlyOne={onlyOne}
+                onDelete={onDelete ? () => onDelete(groupIndex!) : undefined}
+                {...inputProps}
+              />
+            </div>
           );
-          const displayName = selectedItem
-            ? (selectedItem[dropdownInputConfig.nameColumnName] as string)
-            : '';
-
-          // value가 0일 때도 처리할 수 있도록 조건 수정
-          if ((value !== undefined && value !== null && value !== '') && displayName) {
-            // 선택된 상태: 이름 표시 + X 버튼 (항상 표시)
-            return (
-              <div
-                key={index}
-                style={widthStyle}
-                className="flex items-center gap-2 px-2.5 py-1 text-gray-base text-body bg-light-gray-outline rounded input-common"
-              >
-                <span>{displayName}</span>
-                <button
-                  type="button"
-                  onClick={() => onDelete?.(groupIndex!)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  ×
-                </button>
-              </div>
-            );
-          } else {
-            // 입력 상태: DropdownInput 사용
-            return (
-              <div key={index} style={widthStyle}>
-                <DropdownInput
-                  type={type}
-                  mode={mode}
-                  icon={icon}
-                  suggestions={suggestions}
-                  onInputChange={onInputChange!}
-                  onInputFocus={onInputFocus}
-                  dropdownInputConfig={dropdownInputConfig}
-                  onOptionSelect={onOptionSelect}
-                  {...inputProps}
-                />
-              </div>
-            );
-          }
         }
 
         return (
