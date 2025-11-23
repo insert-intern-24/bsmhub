@@ -22,6 +22,18 @@ export default function Editor() {
     }
   }
 
+  const handleSave = (data: { html: string; json: JSONContent }) => {
+    // console.log("Save button clicked!")
+    // console.log("Saved HTML:", data.html)
+    // console.log("Saved JSON:", data.json)
+    alert("에디터 내용이 저장되었습니다!")
+  }
+
+  const handleCancel = () => {
+    // console.log("Cancel button clicked!")
+    alert("에디터 내용이 초기 상태로 복원되었습니다!")
+  }
+
   return (
     <div style={{ padding: "2rem", maxWidth: "1200px", margin: "0 auto" }}>
       <div style={{ marginBottom: "2rem" }}>
@@ -34,6 +46,8 @@ export default function Editor() {
             console.log("Content updated - HTML:", html)
             console.log("Content updated - JSON:", json)
           }}
+          onSave={handleSave}
+          onCancel={handleCancel}
         />
         <div style={{ marginTop: "1rem" }}>
           <button onClick={handleGetData}>Get Data (ref 사용)</button>

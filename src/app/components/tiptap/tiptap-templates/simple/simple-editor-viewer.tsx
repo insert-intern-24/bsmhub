@@ -1,6 +1,7 @@
 "use client"
 
-import { renderToHTMLString } from "@tiptap/static-renderer"
+import { renderToReactElement } from "@tiptap/static-renderer/pm/react"
+import { Node as ProsemirrorNode } from "@tiptap/pm/model"
 import type { SimpleEditorViewerProps } from "./types"
 import { createEditorExtensions } from "./utils/extensions"
 
@@ -64,61 +65,87 @@ export function SimpleEditorViewer({
 
   // 커스텀 노드 매핑
   const nodeMapping = {
-    youtube: ({ node }: { node: any }) => {
-      const url = node.attrs?.url
+    youtube: ({ node }: { node: ProsemirrorNode }) => {
+      const url = node.attrs.url
       if (!url) {
-        return '<div data-type="youtube">No YouTube URL provided</div>'
+        return <div data-type="youtube">No YouTube URL provided</div>
       }
 
       const embedUrl = getYouTubeEmbedUrl(url)
-      const width = node.attrs?.width || "100%"
-      const height = node.attrs?.height || "100%"
+      const width = node.attrs.width || "100%"
+      const height = node.attrs.height || "100%"
 
-      return `
-        <div class="tiptap-youtube-node" data-type="youtube">
-          <div class="tiptap-youtube-node-embed">
+      return (
+        <div className="tiptap-youtube-node" data-type="youtube">
+          <div className="tiptap-youtube-node-embed">
             <iframe
-              src="${embedUrl}"
-              width="${width}"
-              height="${height}"
-              frameborder="0"
+              src={embedUrl}
+              width={width}
+              height={height}
+              frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
+              allowFullScreen
               title="YouTube Embed"
             ></iframe>
           </div>
         </div>
-      `
+      )
     },
-    figma: ({ node }: { node: any }) => {
-      const url = node.attrs?.url
+    figma: ({ node }: { node: ProsemirrorNode }) => {
+      const url = node.attrs.url
       if (!url) {
-        return '<div data-type="figma">No Figma URL provided</div>'
+        return <div data-type="figma">No Figma URL provided</div>
       }
 
       const embedUrl = getFigmaEmbedUrl(url)
 
-      return `
-        <div class="tiptap-figma-node" data-type="figma">
-          <div class="tiptap-figma-node-embed">
+      return (
+        <div className="tiptap-figma-node" data-type="figma">
+          <div className="tiptap-figma-node-embed">
             <iframe
-              src="${embedUrl}"
+              src={embedUrl}
               width="100%"
               height="450"
-              frameborder="0"
-              allowfullscreen
+              frameBorder="0"
+              allowFullScreen
               title="Figma Embed"
             ></iframe>
           </div>
         </div>
-      `
+      )
+    },
+    taskItem: ({
+      node,
+      children,
+    }: {
+      node: ProsemirrorNode
+      children?: React.ReactNode
+    }) => {
+      return (
+        <li
+          data-type="taskItem"
+          data-checked={node.attrs.checked}
+          className="flex items-start"
+        >
+          <label className="flex items-center select-none">
+            <input
+              type="checkbox"
+              checked={node.attrs.checked}
+              disabled
+              className="checkbox"
+            />
+            <span />
+          </label>
+          <div className="flex-1 min-w-0">{children}</div>
+        </li>
+      )
     },
   }
 
-  // Static Renderer를 사용하여 HTML 생성
-  let html = ""
+  // Static Renderer를 사용하여 React Element 생성
+  let element: React.ReactNode = null
   try {
-    html = renderToHTMLString({
+    element = renderToReactElement({
       extensions,
       content,
       options: {
@@ -127,14 +154,13 @@ export function SimpleEditorViewer({
     })
   } catch (error) {
     console.error("Static render error:", error)
-    html = '<div class="error">콘텐츠를 렌더링하는 중 오류가 발생했습니다.</div>'
+    element = <div className="error">콘텐츠를 렌더링하는 중 오류가 발생했습니다.</div>
   }
 
   return (
-    <div
-      className={`simple-editor-viewer ${className}`}
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
+    <div className={`simple-editor-viewer tiptap ProseMirror ${className}`}>
+      {element}
+    </div>
   )
 }
 

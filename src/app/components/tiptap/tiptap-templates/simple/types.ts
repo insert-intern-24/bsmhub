@@ -29,6 +29,17 @@ export interface SimpleEditorProps {
    * @default handleImageUpload from @/utils/lib/tiptap-utils
    */
   imageUploadHandler?: ImageUploadHandler
+
+  /**
+   * 저장 버튼 클릭 시 호출되는 콜백
+   * @param content - 현재 에디터 콘텐츠 (HTML과 JSON)
+   */
+  onSave?: (content: { html: string; json: JSONContent }) => void
+
+  /**
+   * 취소 버튼 클릭 시 호출되는 콜백
+   */
+  onCancel?: () => void
 }
 
 /**

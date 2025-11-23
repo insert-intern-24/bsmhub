@@ -63,6 +63,8 @@ import { UndoRedoButton } from "@/app/components/tiptap/tiptap-ui/undo-redo-butt
 import { ArrowLeftIcon } from "@/app/components/tiptap/tiptap-icons/arrow-left-icon"
 import { HighlighterIcon } from "@/app/components/tiptap/tiptap-icons/highlighter-icon"
 import { LinkIcon } from "@/app/components/tiptap/tiptap-icons/link-icon"
+import { SaveIcon } from "@/app/components/tiptap/tiptap-icons/save-icon"
+import { CloseIcon } from "@/app/components/tiptap/tiptap-icons/close-icon"
 
 // --- Hooks ---
 import { useIsBreakpoint } from "@/utils/hook/tiptap/use-is-breakpoint"
@@ -70,7 +72,7 @@ import { useWindowSize } from "@/utils/hook/tiptap/use-window-size"
 import { useCursorVisibility } from "@/utils/hook/tiptap/use-cursor-visibility"
 
 // --- Components ---
-import { ThemeToggle } from "@/app/components/tiptap/tiptap-templates/simple/theme-toggle"
+// import { ThemeToggle } from "@/app/components/tiptap/tiptap-templates/simple/theme-toggle"
 
 // --- Lib ---
 import { handleImageUpload, MAX_FILE_SIZE } from "@/utils/lib/tiptap-utils"
@@ -83,10 +85,14 @@ import defaultContent from "@/app/components/tiptap/tiptap-templates/simple/data
 const MainToolbarContent = ({
   onHighlighterClick,
   onLinkClick,
+  onSave,
+  onCancel,
   isMobile,
 }: {
   onHighlighterClick: () => void
   onLinkClick: () => void
+  onSave?: () => void
+  onCancel?: () => void
   isMobile: boolean
 }) => {
   return (
@@ -150,9 +156,29 @@ const MainToolbarContent = ({
 
       {isMobile && <ToolbarSeparator />}
 
-      <ToolbarGroup>
+      {/* <ToolbarGroup>
         <ThemeToggle />
-      </ToolbarGroup>
+      </ToolbarGroup> */}
+
+      {(onSave || onCancel) && (
+        <>
+          <ToolbarSeparator />
+          <ToolbarGroup>
+            {onSave && (
+              <Button data-style="ghost" onClick={onSave} title="저장">
+                <SaveIcon className="tiptap-button-icon" />
+                {!isMobile && <span>저장</span>}
+              </Button>
+            )}
+            {onCancel && (
+              <Button data-style="ghost" onClick={onCancel} title="취소">
+                <CloseIcon className="tiptap-button-icon" />
+                {!isMobile && <span>취소</span>}
+              </Button>
+            )}
+          </ToolbarGroup>
+        </>
+      )}
     </>
   )
 }
@@ -188,7 +214,7 @@ const MobileToolbarContent = ({
 
 export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
   function SimpleEditor(
-    { initialContent, onChange, onUpdate, imageUploadHandler },
+    { initialContent, onChange, onUpdate, imageUploadHandler, onSave, onCancel },
     ref
   ) {
     const isMobile = useIsBreakpoint()
@@ -197,6 +223,7 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
       "main"
     )
     const toolbarRef = useRef<HTMLDivElement>(null)
+    const initialContentRef = useRef(initialContent || defaultContent)
 
     // Extensions 생성 (imageUploadHandler가 있으면 포함)
     const extensions = createEditorExtensions({
@@ -270,6 +297,24 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
       }
     }, [isMobile, mobileView])
 
+    // 저장 핸들러
+    const handleSave = () => {
+      if (!editor) return
+
+      const html = editor.getHTML()
+      const json = editor.getJSON()
+
+      onSave?.({ html, json })
+    }
+
+    // 취소 핸들러 - 초기 상태로 복원
+    const handleCancel = () => {
+      if (!editor) return
+
+      editor.commands.setContent(initialContentRef.current)
+      onCancel?.()
+    }
+
     return (
       <div className="simple-editor-wrapper">
         <EditorContext.Provider value={{ editor }}>
@@ -288,6 +333,8 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
                 <MainToolbarContent
                   onHighlighterClick={() => setMobileView("highlighter")}
                   onLinkClick={() => setMobileView("link")}
+                  onSave={onSave ? handleSave : undefined}
+                  onCancel={onCancel ? handleCancel : undefined}
                   isMobile={isMobile}
                 />
               ) : (
