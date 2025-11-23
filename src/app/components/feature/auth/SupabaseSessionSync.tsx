@@ -7,7 +7,11 @@ import { createClient } from '@/services/supabase/client';
  * Supabase 세션을 쿠키와 localStorage 간 양방향 동기화하는 컴포넌트
  * - admin-web(localStorage) ↔ bsmhub(cookie) 세션 공유
  */
+import { useToast } from '@/app/components/toast/ToastContext';
+
 export default function SupabaseSessionSync() {
+  const { showToast } = useToast();
+
   useEffect(() => {
     const syncSession = async () => {
       try {
@@ -69,6 +73,18 @@ export default function SupabaseSessionSync() {
         }
       } catch (error) {
         console.error('Failed to sync Supabase session:', error);
+        // If the refresh token is invalid, we should clear the localStorage to prevent
+        // the client from trying to sync the invalid token again.
+        if (
+          error &&
+          typeof error === 'object' &&
+          'code' in error &&
+          (error as any).code === 'refresh_token_already_used'
+        ) {
+          const storageKey = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_KEY || 'sb-bsmhubsp-auth-token';
+          localStorage.removeItem(storageKey);
+          showToast('세션이 만료되었습니다. 다시 로그인해주세요.', 'warning');
+        }
       }
     };
 
@@ -99,7 +115,7 @@ export default function SupabaseSessionSync() {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [showToast]);
 
   return null;
 }
