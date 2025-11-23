@@ -1,4 +1,5 @@
 import { CardProps } from '@/app/components/card/project/ProjectCard';
+import { ProjectData } from '@/services/project/getProjects.server';
 import {
   calculateGradeFromJoinAt,
   extractYearFromDate,
@@ -6,31 +7,14 @@ import {
 } from '@/utils/student/studentCalculations';
 
 /**
- * 프로젝트 정렬을 위한 추가 데이터 타입
- */
-export interface ProjectSortData {
-  projectId: number;
-  isTeam: boolean;
-  joinAt?: string | null; // 학생의 입학년도 (개인 프로젝트용)
-  createdAt?: string | null; // 프로젝트 생성년도 (팀 프로젝트용)
-  hasHtmlDescription: boolean; // HTML 설명 유무
-}
-
-/**
  * 프로젝트의 학년을 계산
- * @param project - CardProps
- * @param sortData - 정렬을 위한 추가 데이터
+ * @param project - ProjectData
  * @returns 학년 (1, 2, 3, 4), 계산 불가능한 경우 0
  */
-function calculateProjectGrade(
-  project: CardProps,
-  sortData: ProjectSortData | undefined,
-): number {
-  if (!sortData) return 0;
-
+function calculateProjectGrade(project: ProjectData): number {
   // 팀 프로젝트: 프로젝트 생성년도로 계산
-  if (project.isTeam && sortData.createdAt) {
-    const createdYear = extractYearFromDate(sortData.createdAt);
+  if (project.isTeam && project.createdAt) {
+    const createdYear = extractYearFromDate(project.createdAt);
     if (createdYear === -1) return 0;
 
     const currentYear = getCurrentYear();
@@ -41,8 +25,8 @@ function calculateProjectGrade(
   }
 
   // 개인 프로젝트: 학생의 입학년도로 계산
-  if (!project.isTeam && sortData.joinAt) {
-    const grade = calculateGradeFromJoinAt(sortData.joinAt);
+  if (!project.isTeam && project.joinAt) {
+    const grade = calculateGradeFromJoinAt(project.joinAt);
     return grade >= 1 && grade <= 3 ? grade : 0;
   }
   return 0;
@@ -68,18 +52,13 @@ function hasRealThumbnail(projectImage: string | undefined): boolean {
  * 2. HTML 설명 유무 (HTML 설명이 있는 프로젝트가 위로)
  * 3. 학년 (3학년 > 2학년 > 1학년 > 0)
  *
- * @param projects - 정렬할 프로젝트 배열
- * @param sortDataMap - 프로젝트 ID를 키로 하는 정렬 데이터 맵
+ * @param projects - 정렬할 프로젝트 배열 (ProjectData[])
  * @returns 정렬된 프로젝트 배열
  */
 export function sortProjectsByThumbnailAndGrade(
-  projects: CardProps[],
-  sortDataMap: Map<number, ProjectSortData>,
-): CardProps[] {
+  projects: ProjectData[],
+): ProjectData[] {
   return [...projects].sort((a, b) => {
-    const sortDataA = sortDataMap.get(a.id);
-    const sortDataB = sortDataMap.get(b.id);
-
     // 1순위: 썸네일 유무
     const hasThumbnailA = hasRealThumbnail(a.projectImage);
     const hasThumbnailB = hasRealThumbnail(b.projectImage);
@@ -90,8 +69,8 @@ export function sortProjectsByThumbnailAndGrade(
     }
 
     // 2순위: HTML 설명 유무
-    const hasHtmlDescA = sortDataA?.hasHtmlDescription ?? false;
-    const hasHtmlDescB = sortDataB?.hasHtmlDescription ?? false;
+    const hasHtmlDescA = a.hasHtmlDescription;
+    const hasHtmlDescB = b.hasHtmlDescription;
 
     if (hasHtmlDescA !== hasHtmlDescB) {
       // HTML 설명이 있는 프로젝트가 위로
@@ -99,8 +78,8 @@ export function sortProjectsByThumbnailAndGrade(
     }
 
     // 3순위: 학년별 정렬 (3학년 > 2학년 > 1학년 > 0)
-    const gradeA = calculateProjectGrade(a, sortDataA);
-    const gradeB = calculateProjectGrade(b, sortDataB);
+    const gradeA = calculateProjectGrade(a);
+    const gradeB = calculateProjectGrade(b);
 
     // 학년이 높은 순서대로 (3 > 2 > 1 > 0)
     return gradeB - gradeA;
