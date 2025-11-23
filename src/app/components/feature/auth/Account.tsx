@@ -13,12 +13,14 @@ import {
 } from '@/services/profile/getProfileApi.client';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const Account = () => {
   const supabase = createClient();
   const currentUser = useCurrentUser();
   const [profileName, setProfileName] = useState<string | null>(null);
   const { openModal, closeModal } = useModal();
+  const router = useRouter();
 
   const handleMakeProfile = useCallback(() => {
     if (!currentUser?.id) return;
@@ -78,7 +80,12 @@ const Account = () => {
       ) : (
         <DropdownItem onSelect={handleMakeProfile}>프로필 만들기</DropdownItem>
       )}
-      <DropdownItem onSelect={() => supabase.auth.signOut()}>
+      <DropdownItem
+        onSelect={async () => {
+          await supabase.auth.signOut();
+          router.refresh();
+        }}
+      >
         로그아웃
       </DropdownItem>
     </Dropdown>
