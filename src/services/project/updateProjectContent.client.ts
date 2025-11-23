@@ -1,4 +1,5 @@
 import { createClient } from '@/services/supabase/client';
+import type { Database } from '@/services/supabase/database.types';
 
 export default async function updateProjectContent(
   project_id: number,
@@ -6,14 +7,18 @@ export default async function updateProjectContent(
 ) {
   const supabase = createClient();
 
-  const payload = {
+  type ProjectHtmlDescriptionInsert =
+    Database['public']['Tables']['project_html_description']['Insert'];
+
+  const payload: ProjectHtmlDescriptionInsert = {
     html_content: content,
     project_id,
   };
 
   const { error } = await supabase
+    .schema('public')
     .from('project_html_description')
-    .upsert(payload as any, {
+    .upsert(payload, {
       onConflict: 'project_id',
     });
   if (error) {
