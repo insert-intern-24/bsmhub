@@ -1,4 +1,5 @@
 import type { Extension } from "@tiptap/react"
+import { ReactNodeViewRenderer } from "@tiptap/react"
 import { StarterKit } from "@tiptap/starter-kit"
 import { Image } from "@tiptap/extension-image"
 import { TaskItem, TaskList } from "@tiptap/extension-list"
@@ -14,6 +15,7 @@ import { createLowlight } from "lowlight"
 import { ImageUploadNode } from "@/app/components/tiptap/tiptap-node/image-upload-node"
 import { YoutubeNode } from "@/app/components/tiptap/tiptap-node/youtube-node"
 import { FigmaNode } from "@/app/components/tiptap/tiptap-node/figma-node"
+import { CodeBlockNode } from "@/app/components/tiptap/tiptap-node/code-block-node/code-block-node"
 
 // Register common languages for code highlighting
 import javascript from "highlight.js/lib/languages/javascript"
@@ -25,6 +27,21 @@ import python from "highlight.js/lib/languages/python"
 import java from "highlight.js/lib/languages/java"
 import bash from "highlight.js/lib/languages/bash"
 import sql from "highlight.js/lib/languages/sql"
+import cpp from "highlight.js/lib/languages/cpp"
+import c from "highlight.js/lib/languages/c"
+import csharp from "highlight.js/lib/languages/csharp"
+import go from "highlight.js/lib/languages/go"
+import rust from "highlight.js/lib/languages/rust"
+import php from "highlight.js/lib/languages/php"
+import ruby from "highlight.js/lib/languages/ruby"
+import swift from "highlight.js/lib/languages/swift"
+import kotlin from "highlight.js/lib/languages/kotlin"
+import scss from "highlight.js/lib/languages/scss"
+import yaml from "highlight.js/lib/languages/yaml"
+import shell from "highlight.js/lib/languages/shell"
+import powershell from "highlight.js/lib/languages/powershell"
+import markdown from "highlight.js/lib/languages/markdown"
+import plaintext from "highlight.js/lib/languages/plaintext"
 
 // Create lowlight instance and register languages
 const lowlight = createLowlight()
@@ -33,11 +50,27 @@ lowlight.register("javascript", javascript)
 lowlight.register("typescript", typescript)
 lowlight.register("css", css)
 lowlight.register("html", html)
+lowlight.register("xml", html) // xml uses same as html
 lowlight.register("json", json)
 lowlight.register("python", python)
 lowlight.register("java", java)
 lowlight.register("bash", bash)
 lowlight.register("sql", sql)
+lowlight.register("cpp", cpp)
+lowlight.register("c", c)
+lowlight.register("csharp", csharp)
+lowlight.register("go", go)
+lowlight.register("rust", rust)
+lowlight.register("php", php)
+lowlight.register("ruby", ruby)
+lowlight.register("swift", swift)
+lowlight.register("kotlin", kotlin)
+lowlight.register("scss", scss)
+lowlight.register("yaml", yaml)
+lowlight.register("shell", shell)
+lowlight.register("powershell", powershell)
+lowlight.register("markdown", markdown)
+lowlight.register("plaintext", plaintext)
 
 /**
  * Image upload handler type
@@ -90,7 +123,7 @@ export function createEditorExtensions(
     onImageUploadError = (error) => console.error("Upload failed:", error),
   } = options
 
-  const extensions: Extension[] = [
+  const extensions: any[] = [
     StarterKit.configure({
       horizontalRule: false,
       codeBlock: false, // CodeBlockLowlight로 대체
@@ -99,14 +132,18 @@ export function createEditorExtensions(
         enableClickSelection: true,
       },
     }),
-    CodeBlockLowlight.configure({
+    CodeBlockLowlight.extend({
+      addNodeView() {
+        return ReactNodeViewRenderer(CodeBlockNode)
+      },
+    }).configure({
       lowlight,
     }),
     YoutubeNode,
     HorizontalRule,
     TextAlign.configure({ types: ["heading", "paragraph"] }),
     TaskList,
-    TaskItem.configure({ nested: true }),
+      TaskItem.configure({ nested: true }) as unknown as Extension,
     Highlight.configure({ multicolor: true }),
     Image,
     Typography,
