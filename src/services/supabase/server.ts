@@ -37,6 +37,10 @@ export async function createClient(anon = false) {
           }
         },
       },
+      auth: {
+        detectSessionInUrl: false,
+        persistSession: true,
+      },
     },
   );
 }
