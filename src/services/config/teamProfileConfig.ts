@@ -177,29 +177,33 @@ export const teamProfileConfig: FormConfig = {
         query: async () => {
           const supabase = await createClient();
 
+          // 팀 owner 목록 조회
           const { data: teams } = await supabase
             .from('profile')
             .select('owner')
             .eq('is_team', true)
             .not('owner', 'is', null);
 
-          const ownerIds = new Set(
-            teams?.map((team: { owner: string | null }) => team.owner).filter(Boolean) ?? []
-          );
+          const ownerIds = (teams as { owner: string }[] | null)?.map((team) => team.owner) ?? [];
 
-          const { data, error } = await supabase
+          // owner가 아닌 개인 프로필만 DB에서 필터링하여 조회
+          let query = supabase
             .from('profile')
             .select('profile_id, profile_name')
             .eq('is_team', false);
 
+          if (ownerIds.length > 0) {
+            query = query.not('profile_id', 'in', `(${ownerIds.join(',')})`);
+          }
+
+          const { data, error } = await query;
+
           if (error) {
-            console.error('Error fetching data:', error);
+            console.error('Error fetching profiles:', error);
             return [];
           }
 
-          return data?.filter((profile: { profile_id: string; profile_name: string }) =>
-            !ownerIds.has(profile.profile_id)
-          ) ?? [];
+          return data ?? [];
         },
       },
       columnInfo: { table: 'team_member', column: '*' },
