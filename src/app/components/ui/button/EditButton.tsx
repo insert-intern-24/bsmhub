@@ -68,7 +68,7 @@ const EditButton = ({
       className={className}
     >
       <IconPencil size={12} />
-      Edit
+      수정
     </RoundedButton>
   );
 };
