@@ -1,5 +1,6 @@
 "use client"
 
+import { useMemo } from "react"
 import { renderToReactElement } from "@tiptap/static-renderer/pm/react"
 import { Node as ProsemirrorNode } from "@tiptap/pm/model"
 import type { SimpleEditorViewerProps } from "./types"
@@ -41,15 +42,43 @@ function getYouTubeEmbedUrl(url: string): string {
 }
 
 /**
+ * Parse Figma URL to extract type and file key
+ */
+function parseFigmaUrl(url: string): { type: string; fileKey: string } | null {
+  const regex = /figma\.com\/(design|board|proto|slides|deck|file)\/([a-zA-Z0-9]+)/
+  const match = url.match(regex)
+  
+  if (match && match[1] && match[2]) {
+    // Normalize 'file' to 'design'
+    const type = match[1] === 'file' ? 'design' : match[1]
+    return {
+      type,
+      fileKey: match[2]
+    }
+  }
+  
+  return null
+}
+
+/**
  * Figma URL에서 embed URL 생성
  */
 function getFigmaEmbedUrl(url: string): string {
-  // Figma file ID 추출
-  const fileIdMatch = url.match(/figma\.com\/(file|proto)\/([a-zA-Z0-9]+)/)
-  if (fileIdMatch && fileIdMatch[2]) {
-    return `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(url)}`
+  const parsed = parseFigmaUrl(url)
+  if (!parsed) {
+    return url
   }
-  return url
+  
+  const { type, fileKey } = parsed
+  const params = new URLSearchParams({
+    'embed-host': 'bsmhub',
+    'page-selector': 'true',
+    'viewport-controls': 'true',
+    'footer': 'true',
+    'theme': 'system'
+  })
+  
+  return `https://embed.figma.com/${type}/${fileKey}?${params.toString()}`
 }
 
 /**
@@ -61,10 +90,10 @@ export function SimpleEditorViewer({
   className = "",
 }: SimpleEditorViewerProps) {
   // Extensions 생성 (이미지 업로드 핸들러는 필요 없음)
-  const extensions = createEditorExtensions()
+  const extensions = useMemo(() => createEditorExtensions(), [])
 
-  // 커스텀 노드 매핑
-  const nodeMapping = {
+  // 커스텀 노드 매핑 (useMemo로 최적화)
+  const nodeMapping = useMemo(() => ({
     youtube: ({ node }: { node: ProsemirrorNode }) => {
       const url = node.attrs.url
       if (!url) {
@@ -140,7 +169,7 @@ export function SimpleEditorViewer({
         </li>
       )
     },
-  }
+  }), [])
 
   // Static Renderer를 사용하여 React Element 생성
   let element: React.ReactNode = null

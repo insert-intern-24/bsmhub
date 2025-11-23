@@ -10,21 +10,21 @@ import { ExternalLinkIcon } from "@/app/components/tiptap/tiptap-icons/external-
 import "@/app/components/tiptap/tiptap-node/figma-node/figma-node.scss"
 
 /**
- * Extract Figma file ID from URL
+ * Parse Figma URL to extract type and file key
  */
-function extractFigmaFileId(url: string): string | null {
-  const patterns = [
-    /figma\.com\/(?:file|design)\/([a-zA-Z0-9]+)/,
-    /figma\.com\/file\/([a-zA-Z0-9]+)/,
-  ]
-
-  for (const pattern of patterns) {
-    const match = url.match(pattern)
-    if (match && match[1]) {
-      return match[1]
+function parseFigmaUrl(url: string): { type: string; fileKey: string } | null {
+  const regex = /figma\.com\/(design|board|proto|slides|deck|file)\/([a-zA-Z0-9]+)/
+  const match = url.match(regex)
+  
+  if (match && match[1] && match[2]) {
+    // Normalize 'file' to 'design'
+    const type = match[1] === 'file' ? 'design' : match[1]
+    return {
+      type,
+      fileKey: match[2]
     }
   }
-
+  
   return null
 }
 
@@ -32,11 +32,21 @@ function extractFigmaFileId(url: string): string | null {
  * Convert Figma URL to embed URL
  */
 function getFigmaEmbedUrl(url: string): string {
-  const fileId = extractFigmaFileId(url)
-  if (fileId) {
-    return `https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/file/${fileId}`
+  const parsed = parseFigmaUrl(url)
+  if (!parsed) {
+    return url
   }
-  return url
+  
+  const { type, fileKey } = parsed
+  const params = new URLSearchParams({
+    'embed-host': 'bsmhub',
+    'page-selector': 'true',
+    'viewport-controls': 'true',
+    'footer': 'true',
+    'theme': 'system'
+  })
+  
+  return `https://embed.figma.com/${type}/${fileKey}?${params.toString()}`
 }
 
 export const FigmaNode: React.FC<NodeViewProps> = (props) => {
