@@ -15,6 +15,8 @@ import {
 } from '@/app/components/tiptap/tiptap-templates/simple';
 import updateProjectContent from '@/services/project/updateProjectContent.client';
 import { useToast } from '@/app/components/toast/ToastContext';
+import { handleProjectImageUpload } from '@/utils/lib/tiptap-utils';
+import RoundedButton from '@/app/components/ui/button/RoundedButton';
 
 interface ProjectMainContentProps {
   project: ProjectDetailViewModel;
@@ -98,13 +100,13 @@ const ProjectMainContent = ({ project, hasEditPermission }: ProjectMainContentPr
   return (
     <div className="relative w-full h-full">
       {hasEditPermission && !isEditing && (
-        <button
-          className="absolute top-8 right-4"
+        <RoundedButton
+          className="absolute top-8 right-0 !w-fit px-6"
           onClick={handleEditClick}
           aria-label="프로젝트 편집"
         >
-          <IconPencil className="text-gray-footer" size={12} />
-        </button>
+          <IconPencil className="text-white" size={12} /> 수정
+        </RoundedButton>
       )}
       <section
         className={`flex-1 w-full ${
@@ -121,6 +123,7 @@ const ProjectMainContent = ({ project, hasEditPermission }: ProjectMainContentPr
               }}
               onSave={handleSaveClick}
               onCancel={handleCancelClick}
+              imageUploadHandler={handleProjectImageUpload}
             />
           </div>
         ) : (
