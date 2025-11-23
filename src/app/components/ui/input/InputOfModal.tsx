@@ -36,7 +36,7 @@ const InputOfModal = ({
   mode,
   onClose,
 }: InputOfModalProps) => {
-  const { control, handleSubmit, formState: { errors }, reset } = useForm({
+  const { control, handleSubmit, formState: { errors }, reset, watch } = useForm({
     defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>, field) => {
       // 초기값이 제공된 경우 사용, 그렇지 않으면 기본값 사용
       if (initialValues && initialValues[field.fieldName] !== undefined) {
@@ -51,6 +51,14 @@ const InputOfModal = ({
       return acc;
     }, {} as Record<string, MultiInputItem[][] | string[] | boolean | File | null>)
   });
+
+  // 현재 폼 데이터를 watch로 추적하고 mode 및 owner 정보 추가
+  const formValues = watch();
+  const currentFormData = {
+    ...formValues,
+    _mode: mode, // mode 정보 추가
+    owner: (initialValues as Record<string, unknown>)?.owner, // owner 정보 추가 (update 모드에서 사용)
+  };
 
   const { openModal, closeModal } = useModal();
   const { showToast } = useToast();
@@ -192,6 +200,7 @@ const InputOfModal = ({
                       initialValue={value as MultiInputItem[][] | undefined}
                       onlyOne={field.inputConfig.onlyOne}
                       required={field.required}
+                      currentFormData={currentFormData as Record<string, unknown>}
                     />
                   );
                 }
@@ -204,6 +213,7 @@ const InputOfModal = ({
                       initialValue={value as MultiInputItem[][] | undefined}
                       onlyOne={field.inputConfig.onlyOne}
                       required={field.required}
+                      currentFormData={currentFormData as Record<string, unknown>}
                     />
                   );
                 }

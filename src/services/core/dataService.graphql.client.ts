@@ -289,8 +289,8 @@ export class GraphQLDataService {
 
       console.log('Save Data - Response:', JSON.stringify(response, null, 2));
 
-      // 관계 테이블 데이터 처리 (Update 시에만)
-      if (isUpdate && relationTableData.size > 0) {
+      // 관계 테이블 데이터 처리 (Create 또는 Update 시)
+      if (relationTableData.size > 0) {
         console.log('Processing relation tables...');
 
         // FormConfig의 afterSave 콜백이 있으면 호출
@@ -487,12 +487,39 @@ export class GraphQLDataService {
     response: unknown,
     variables?: Record<string, unknown>,
   ): string | number | null {
-    // 먼저 캐시된 profile_id가 있으면 사용
-    if (this.currentProfileId) {
-      return this.currentProfileId;
+    // 응답 객체에서 ID 찾기 (생성/업데이트 모두 응답 우선)
+    const resp = response as Record<string, unknown> | undefined;
+    if (resp) {
+      // updateXXXCollection 또는 insertIntoXXXCollection 패턴의 키 찾기
+      const mutationKey = Object.keys(resp).find(
+        (key) =>
+          (key.startsWith('update') || key.startsWith('insertInto')) &&
+          key.endsWith('Collection'),
+      );
+
+      if (mutationKey) {
+        const collection = resp[mutationKey] as
+          | {
+              records?: Array<Record<string, unknown>>;
+            }
+          | undefined;
+
+        if (collection?.records && collection.records.length > 0) {
+          const record = collection.records[0];
+          // profile_id, project_id 등 다양한 ID 필드 지원
+          const extractedId = (record.profile_id || record.project_id || record.id || null) as
+            | string
+            | number
+            | null;
+
+          if (extractedId) {
+            return extractedId;
+          }
+        }
+      }
     }
 
-    // variables에서 project_id 확인
+    // 응답에서 못 찾았으면 variables에서 확인
     if (variables?.project_id) {
       return variables.project_id as string | number;
     }
@@ -502,30 +529,9 @@ export class GraphQLDataService {
       return variables.owner as string | number;
     }
 
-    // 응답 객체에서 ID 찾기
-    const resp = response as Record<string, unknown> | undefined;
-    if (!resp) return null;
-
-    // updateXXXCollection 패턴의 키 찾기
-    const updateKey = Object.keys(resp).find(
-      (key) => key.startsWith('update') && key.endsWith('Collection'),
-    );
-
-    if (updateKey) {
-      const collection = resp[updateKey] as
-        | {
-            records?: Array<Record<string, unknown>>;
-          }
-        | undefined;
-
-      if (collection?.records && collection.records.length > 0) {
-        const record = collection.records[0];
-        // profile_id, project_id 등 다양한 ID 필드 지원
-        return (record.profile_id || record.project_id || record.id || null) as
-          | string
-          | number
-          | null;
-      }
+    // 마지막으로 캐시된 profile_id 사용 (업데이트 시)
+    if (this.currentProfileId) {
+      return this.currentProfileId;
     }
 
     return null;

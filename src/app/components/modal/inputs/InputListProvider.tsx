@@ -28,7 +28,7 @@ export type InputConfig = {
 export type DropdownInputConfig = {
   nameColumnName: string;
   valueColumnName: string;
-  query?: () => Promise<Record<string, unknown>[]>;
+  query?: (formData?: Record<string, unknown>) => Promise<Record<string, unknown>[]>;
 };
 
 interface InputListProviderProps {
@@ -39,6 +39,7 @@ interface InputListProviderProps {
   onlyOne?: boolean;
   required?: boolean;
   onInputsChange?: (inputs: MultiInputItem[][]) => void;
+  currentFormData?: Record<string, unknown>;
 }
 
 // 프레젠테이션 컴포넌트
@@ -51,6 +52,7 @@ const InputListProvider = ({
   // maxInputs,
   onlyOne = config.onlyOne ?? false,
   required = false,
+  currentFormData,
 }: InputListProviderProps) => {
   // config를 MultiInputItem으로 변환
   const initialConfig = config.inputs.map((input) => ({
@@ -105,7 +107,7 @@ const InputListProvider = ({
     if (dropdownInputConfig?.query) {
       // 커스텀 쿼리 함수가 있으면 사용
       dropdownInputConfig
-        .query()
+        .query(currentFormData)
         .then((data) => {
           setTableData(data);
         })
@@ -118,7 +120,7 @@ const InputListProvider = ({
           );
         });
     }
-  }, [dropdownInputConfig, showToast]);
+  }, [dropdownInputConfig, showToast, currentFormData]);
 
   // input 클릭/포커스 시 드롭다운 표시
   const handleInputFocus = (index: number) => {
@@ -126,6 +128,7 @@ const InputListProvider = ({
       setFocusedInputIndex(index);
       if (onlyOne) {
         // 단일 선택 드롭다운에서는 모든 옵션을 표시 (선택된 값 포함)
+        // tableData는 이미 query에서 필터링됨
         setSuggestions(tableData);
       } else {
         // 복수 선택 드롭다운에서는 이미 선택된 값들을 제외한 옵션 표시
@@ -257,7 +260,7 @@ const InputListProvider = ({
     }
     
     dispatch({ type: 'DELETE_INPUT', index });
-    
+
     // 복수 드롭다운에서 삭제 후 드롭다운 열기
     if (dropdownInputConfig && tableData.length > 0) {
       setTimeout(() => {

@@ -607,6 +607,11 @@ export async function processGraphQLRelationTables(
     return;
   }
 
+  // identifier를 적절한 타입으로 변환 (project_id는 숫자여야 함)
+  const typedIdentifier = identifierField === 'project_id'
+    ? Number(identifier)
+    : identifier;
+
   // Mutation 생성
   processedTables.forEach(({ tableName, changes }, index) => {
     const tableConfig = graphqlTables.find((t) => t.tableName === tableName);
@@ -619,7 +624,7 @@ export async function processGraphQLRelationTables(
         const deleteVarName = `${tableName}DeleteFilter${index}_${itemIndex}`;
         mutationBlock += `$${deleteVarName}: ${tableName}Filter!, `;
 
-        const deleteFilter = deleteFilterGen(item, identifier, identifierField);
+        const deleteFilter = deleteFilterGen(item, typedIdentifier, identifierField);
 
         mutationVariables[deleteVarName] = deleteFilter;
 
@@ -636,9 +641,10 @@ export async function processGraphQLRelationTables(
     if (changes.toInsert.length > 0) {
       const insertVarName = `${tableName}InsertObjects${index}`;
       mutationBlock += `$${insertVarName}: [${tableName}InsertInput!]!, `;
+
       mutationVariables[insertVarName] = changes.toInsert.map((item) => ({
         ...item,
-        [identifierField]: identifier,
+        [identifierField]: typedIdentifier,
       }));
 
       const insertFieldName = `insert${
