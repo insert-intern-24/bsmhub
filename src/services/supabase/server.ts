@@ -2,6 +2,29 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { Database } from '@/services/supabase/database.types';
 
+const fetchWithRetry = async (
+  url: RequestInfo | URL,
+  options: RequestInit = {},
+) => {
+  const MAX_RETRIES = 3;
+  let lastError;
+
+  for (let i = 0; i < MAX_RETRIES; i++) {
+    try {
+      return await fetch(url, {
+        ...options,
+        // @ts-expect-error - duplex is a valid option for node fetch but might not be in types
+        duplex: 'half',
+      });
+    } catch (error) {
+      lastError = error;
+      // Wait before retrying (exponential backoff: 100ms, 200ms, 400ms)
+      await new Promise((resolve) => setTimeout(resolve, 100 * Math.pow(2, i)));
+    }
+  }
+  throw lastError;
+};
+
 export async function createClient(anon = false) {
   const cookieStore = !anon
     ? await cookies()
@@ -16,6 +39,9 @@ export async function createClient(anon = false) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      global: {
+        fetch: fetchWithRetry,
+      },
       cookies: {
         getAll() {
           return cookieStore.getAll();
