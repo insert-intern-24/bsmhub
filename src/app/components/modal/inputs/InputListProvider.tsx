@@ -2,8 +2,14 @@
 
 import React from 'react';
 import { useInputList } from '@/utils/hook/useInputList';
-import MultiInput, { type MultiInputItem } from '@/app/components/ui/input/MultiInput';
-import { InputType, InputHTMLType, InputMode } from '@/app/components/ui/input/types/inputTypes';
+import MultiInput, {
+  type MultiInputItem,
+} from '@/app/components/ui/input/MultiInput';
+import {
+  InputType,
+  InputHTMLType,
+  InputMode,
+} from '@/app/components/ui/input/types/inputTypes';
 import { useToast } from '@/app/components/toast';
 
 // Input 설정 타입 - inputs 배열로 통일
@@ -71,22 +77,20 @@ const InputListProvider = ({
 
   // onlyOne이 false이고 initialValue가 없거나 빈 배열이면, 최소 하나의 빈 그룹 생성
   // initialValue가 있을 때도 config의 설정(textarea 등)을 병합
-  const defaultInitialValue = 
+  const defaultInitialValue =
     initialValue && initialValue.length > 0
       ? initialValue.map((group) =>
           group.map((item, subIndex) => ({
             ...item,
             // config의 설정을 병합하여 textarea prop 보장
             textarea: config.inputs[subIndex]?.textarea ?? item.textarea,
-          }))
+          })),
         )
       : onlyOne
-        ? initialConfig
-        : [initialConfig];
+      ? initialConfig
+      : [initialConfig];
 
-  const [{ inputs, activeIndex }, dispatch] = useInputList(
-    defaultInitialValue,
-  );
+  const [{ inputs, activeIndex }, dispatch] = useInputList(defaultInitialValue);
 
   // 테이블 데이터 및 추천 상태
   const [tableData, setTableData] = React.useState<Record<string, unknown>[]>(
@@ -96,7 +100,9 @@ const InputListProvider = ({
     Record<string, unknown>[]
   >([]);
   const [showSuggestions, setShowSuggestions] = React.useState(false);
-  const [focusedInputIndex, setFocusedInputIndex] = React.useState<number | null>(null);
+  const [focusedInputIndex, setFocusedInputIndex] = React.useState<
+    number | null
+  >(null);
   // const [loading, setLoading] = React.useState(false)
   // const [error, setError] = React.useState<string | null>(null)
 
@@ -113,10 +119,12 @@ const InputListProvider = ({
         })
         .catch((error) => {
           showToast(
-            error instanceof Error ? error.message : '데이터를 불러오는 중 오류가 발생했습니다.',
+            error instanceof Error
+              ? error.message
+              : '데이터를 불러오는 중 오류가 발생했습니다.',
             'error',
             3000,
-            '오류'
+            '오류',
           );
         });
     }
@@ -236,7 +244,7 @@ const InputListProvider = ({
       }
       return;
     }
-    
+
     // onlyOne일 때는 삭제하지 않고 값만 지움
     if (onlyOne) {
       const input = inputs[index];
@@ -258,7 +266,7 @@ const InputListProvider = ({
       }
       return;
     }
-    
+
     dispatch({ type: 'DELETE_INPUT', index });
 
     // 복수 드롭다운에서 삭제 후 드롭다운 열기
@@ -301,21 +309,30 @@ const InputListProvider = ({
                 // config의 설정을 병합하여 textarea prop 보장
                 textarea: config.inputs[subIndex]?.textarea ?? item.textarea,
                 mode: isReadOnly ? 'read' : item.mode || 'write',
-                onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+                onChange: (
+                  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+                ) => {
+                  const newValue = e.target.value;
                   dispatch({
                     type: 'UPDATE_VALUE',
                     index,
                     subIndex,
-                    value: e.target.value,
+                    value: newValue,
                   });
-                  // 값이 변경되면 드롭다운 닫기 (옵션 선택 시)
-                  if (dropdownInputConfig && e.target.value) {
-                    handleOptionSelect();
+                  // 기존 로직은 입력만 해도 handleOptionSelect로 추천을 닫아버려
+                  // 사용자가 타이핑하며 추천을 받아야 하는 UX를 방해했음.
+                  // 수정: 드롭다운 설정이 있을 경우 타이핑 시 필터링 갱신 유지.
+                  if (dropdownInputConfig) {
+                    handleInputChange(newValue);
                   }
                 },
               }))}
               dropdownInputConfig={dropdownInputConfig}
-              suggestions={showSuggestions && focusedInputIndex === index ? suggestions : []}
+              suggestions={
+                showSuggestions && focusedInputIndex === index
+                  ? suggestions
+                  : []
+              }
               onInputChange={handleInputChange}
               onInputFocus={() => handleInputFocus(index)}
               tableData={tableData}
