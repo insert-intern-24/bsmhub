@@ -1,6 +1,7 @@
 import Footer from './components/layout/footer/Footer';
 import './globals.css';
 import './responsive.css';
+import '@/global.scss';
 import '@/app/components/modal/inputs/common/common.css';
 import '@/app/components/modal/modal.css';
 import Header from '@/app/components/layout/header/Header';
