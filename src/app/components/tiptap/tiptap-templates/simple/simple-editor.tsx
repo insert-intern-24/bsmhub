@@ -321,6 +321,7 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
           <div className="simple-editor-container">
             <Toolbar
               ref={toolbarRef}
+              data-variant="fixed"
               style={{
                 ...(isMobile
                   ? {
