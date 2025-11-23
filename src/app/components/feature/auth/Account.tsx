@@ -81,8 +81,8 @@ const Account = () => {
         <DropdownItem onSelect={handleMakeProfile}>프로필 만들기</DropdownItem>
       )}
       <DropdownItem
-        onSelect={() => {
-          supabase.auth.signOut();
+        onSelect={async () => {
+          await supabase.auth.signOut();
           router.refresh();
         }}
       >
