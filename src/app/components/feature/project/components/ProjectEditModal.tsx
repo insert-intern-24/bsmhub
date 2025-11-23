@@ -111,9 +111,8 @@ const ProjectEditModal = ({
 
   if (isLoading) {
     return (
-      <div className="p-8 text-center">
-        프로젝트 정보를 불러오는 중...
-      </div>
+      <>
+      </>
     );
   }
 
