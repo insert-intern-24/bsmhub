@@ -174,26 +174,46 @@ export const teamProfileConfig: FormConfig = {
       dropdownInputConfig: {
         nameColumnName: 'profile_name',
         valueColumnName: 'profile_id',
-        query: async () => {
+        query: async (formData) => {
           const supabase = await createClient();
 
-          // 팀 owner 목록 조회
-          const { data: teams } = await supabase
+          // 현재 로그인한 사용자 조회
+          const { data: { user } } = await supabase.auth.getUser();
+
+          if (!user) {
+            console.error('User not authenticated');
+            return [];
+          }
+
+          let ownerStudentId: string;
+
+          // mode에 따라 owner 결정
+          if (formData?._mode === 'create') {
+            // 생성 모드: 현재 로그인한 유저가 owner
+            ownerStudentId = user.id;
+          } else {
+            // 수정 모드: formData에서 owner 추출 (없으면 현재 유저 사용)
+            ownerStudentId = (formData?.owner as string) || user.id;
+          }
+
+          // owner의 profile_id 조회
+          const { data: ownerProfile } = await supabase
             .from('profile')
-            .select('owner')
-            .eq('is_team', true)
-            .not('owner', 'is', null);
+            .select('profile_id')
+            .eq('owner', ownerStudentId)
+            .eq('is_team', false)
+            .maybeSingle();
 
-          const ownerIds = (teams as { owner: string }[] | null)?.map((team) => team.owner) ?? [];
+          const ownerProfileId = (ownerProfile as { profile_id?: string } | null)?.profile_id;
 
-          // owner가 아닌 개인 프로필만 DB에서 필터링하여 조회
+          // owner를 제외한 모든 개인 프로필 조회
           let query = supabase
             .from('profile')
             .select('profile_id, profile_name')
             .eq('is_team', false);
 
-          if (ownerIds.length > 0) {
-            query = query.not('profile_id', 'in', `(${ownerIds.join(',')})`);
+          if (ownerProfileId) {
+            query = query.neq('profile_id', ownerProfileId);
           }
 
           const { data, error } = await query;

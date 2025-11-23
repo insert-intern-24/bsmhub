@@ -28,7 +28,7 @@ export type InputConfig = {
 export type DropdownInputConfig = {
   nameColumnName: string;
   valueColumnName: string;
-  query?: () => Promise<Record<string, unknown>[]>;
+  query?: (formData?: Record<string, unknown>) => Promise<Record<string, unknown>[]>;
 };
 
 interface InputListProviderProps {
@@ -39,6 +39,7 @@ interface InputListProviderProps {
   onlyOne?: boolean;
   required?: boolean;
   onInputsChange?: (inputs: MultiInputItem[][]) => void;
+  currentFormData?: Record<string, unknown>;
 }
 
 // 프레젠테이션 컴포넌트
@@ -51,6 +52,7 @@ const InputListProvider = ({
   // maxInputs,
   onlyOne = config.onlyOne ?? false,
   required = false,
+  currentFormData,
 }: InputListProviderProps) => {
   // config를 MultiInputItem으로 변환
   const initialConfig = config.inputs.map((input) => ({
@@ -105,7 +107,7 @@ const InputListProvider = ({
     if (dropdownInputConfig?.query) {
       // 커스텀 쿼리 함수가 있으면 사용
       dropdownInputConfig
-        .query()
+        .query(currentFormData)
         .then((data) => {
           setTableData(data);
         })
@@ -118,7 +120,7 @@ const InputListProvider = ({
           );
         });
     }
-  }, [dropdownInputConfig, showToast]);
+  }, [dropdownInputConfig, showToast, currentFormData]);
 
   // input 클릭/포커스 시 드롭다운 표시
   const handleInputFocus = (index: number) => {
