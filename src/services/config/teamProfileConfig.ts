@@ -201,17 +201,56 @@ export const teamProfileConfig: FormConfig = {
       dropdownInputConfig: {
         nameColumnName: 'profile_name',
         valueColumnName: 'profile_id',
-        query: async () => {
+        query: async (formData) => {
           const supabase = await createClient();
-          const { data, error } = await supabase
+
+          // 현재 로그인한 사용자 조회
+          const { data: { user } } = await supabase.auth.getUser();
+
+          if (!user) {
+            console.error('User not authenticated');
+            return [];
+          }
+
+          let ownerStudentId: string;
+
+          // mode에 따라 owner 결정
+          if (formData?._mode === 'create') {
+            // 생성 모드: 현재 로그인한 유저가 owner
+            ownerStudentId = user.id;
+          } else {
+            // 수정 모드: formData에서 owner 추출 (없으면 현재 유저 사용)
+            ownerStudentId = (formData?.owner as string) || user.id;
+          }
+
+          // owner의 profile_id 조회
+          const { data: ownerProfile } = await supabase
+            .from('profile')
+            .select('profile_id')
+            .eq('owner', ownerStudentId)
+            .eq('is_team', false)
+            .maybeSingle();
+
+          const ownerProfileId = (ownerProfile as { profile_id?: string } | null)?.profile_id;
+
+          // owner를 제외한 모든 개인 프로필 조회
+          let query = supabase
             .from('profile')
             .select('profile_id, profile_name')
             .eq('is_team', false);
+
+          if (ownerProfileId) {
+            query = query.neq('profile_id', ownerProfileId);
+          }
+
+          const { data, error } = await query;
+
           if (error) {
-            console.error('Error fetching data:', error);
+            console.error('Error fetching profiles:', error);
             return [];
           }
-          return data || [];
+
+          return data ?? [];
         },
       },
       columnInfo: { table: 'team_member', column: '*' },
@@ -310,13 +349,27 @@ export const teamProfileConfig: FormConfig = {
       }
     }
 
-    // GraphQL 처리
-    await processGraphQLRelationTables(
-      graphqlTables,
-      profileId,
-      'profile_id',
-      originalRelationData,
-    );
+    // GraphQL 처리 - team_member를 먼저 처리 (RLS 정책 때문)
+    const teamMemberTable = graphqlTables.find(t => t.tableName === 'team_member');
+    const otherTables = graphqlTables.filter(t => t.tableName !== 'team_member');
+
+    if (teamMemberTable) {
+      await processGraphQLRelationTables(
+        [teamMemberTable],
+        profileId,
+        'profile_id',
+        originalRelationData,
+      );
+    }
+
+    if (otherTables.length > 0) {
+      await processGraphQLRelationTables(
+        otherTables,
+        profileId,
+        'profile_id',
+        originalRelationData,
+      );
+    }
 
     console.log('[teamProfileConfig] afterSave completed');
   },
