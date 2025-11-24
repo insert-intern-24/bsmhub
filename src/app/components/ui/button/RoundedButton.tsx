@@ -13,7 +13,7 @@ const RoundedButton = ({
   onClick,
   className = '',
 }: RoundedButtonProps) => {
-  const baseClassName = 'rounded-3xl h-10 flex justify-center items-center gap-3 bg-black text-white w-full cursor-pointer';
+  const baseClassName = 'rounded-3xl h-10 flex justify-center items-center gap-1 bg-black text-white w-full cursor-pointer text-body2';
   const finalClassName = `${baseClassName} ${className}`.trim();
 
   return (

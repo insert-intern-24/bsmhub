@@ -4,7 +4,9 @@ import type { ProjectSortData } from '@/utils/project/sortProjects';
 type ProjectWithProfile = {
   project_id: number;
   created_at: string | null;
-  project_html_description: string | null;
+  project_html_description: {
+    html_content: string;
+  }[] | null;
   profile: {
     profile_id: string;
     is_team: boolean;
@@ -30,7 +32,9 @@ export async function getProjectSortData(
       `
       project_id,
       created_at,
-      project_html_description,
+      project_html_description (
+        html_content
+      ),
       profile!projects_owner_fkey (
         profile_id,
         is_team,
@@ -52,14 +56,17 @@ export async function getProjectSortData(
     const profile = project.profile;
 
     if (profile) {
+      const htmlDescriptionExists =
+        project.project_html_description &&
+        project.project_html_description.length > 0 &&
+        project.project_html_description[0].html_content.trim() !== '';
+
       sortDataMap.set(project.project_id, {
         projectId: project.project_id,
         isTeam: profile.is_team,
         joinAt: profile.student?.join_at ?? null,
         createdAt: project.created_at ?? null,
-        hasHtmlDescription:
-          !!project.project_html_description &&
-          project.project_html_description.trim() !== '',
+        hasHtmlDescription: !!htmlDescriptionExists,
       });
     }
   });

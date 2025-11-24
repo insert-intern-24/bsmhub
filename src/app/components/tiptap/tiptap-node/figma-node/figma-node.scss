@@ -1,0 +1,70 @@
+.tiptap-figma-node {
+  margin: 1.5em 0;
+  border: 1px solid var(--tt-border-color);
+  border-radius: var(--tt-radius-md);
+  overflow: hidden;
+  background-color: var(--tt-card-bg-color);
+
+  &[data-drag-handle] {
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}
+
+.tiptap-figma-node-editor {
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+
+  input {
+    width: 100%;
+  }
+}
+
+.tiptap-figma-node-actions {
+  display: flex;
+  gap: 0.5em;
+  justify-content: flex-end;
+}
+
+.tiptap-figma-node-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.tiptap-figma-node-toolbar {
+  display: flex;
+  gap: 0.25em;
+  padding: 0.5em;
+  background-color: var(--tt-sidebar-bg-color);
+  border-bottom: 1px solid var(--tt-border-color);
+  justify-content: flex-end;
+}
+
+.tiptap-figma-node-embed {
+  width: 100%;
+  min-height: 450px;
+  position: relative;
+
+  iframe {
+    width: 100%;
+    height: 450px;
+    border: none;
+    display: block;
+  }
+}
+
+.tiptap-figma-node-placeholder {
+  padding: 3em 1em;
+  text-align: center;
+  color: var(--tt-color-text-gray);
+
+  p {
+    margin: 0 0 1em 0;
+  }
+}
+
