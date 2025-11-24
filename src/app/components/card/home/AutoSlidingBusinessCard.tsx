@@ -59,7 +59,11 @@ const AutoSlidingBusinessCard = () => {
   const { data, isLoading, error, loadMore } = useInfinitePortfolio();
 
   const displayCards =
-    data.length > 0 ? data.map(convertPortfolioToBusinessCard) : DEFAULT_CARDS;
+    data.length > 0
+      ? data
+          .map(convertPortfolioToBusinessCard)
+          .filter((card) => card.projects.length > 0)
+      : DEFAULT_CARDS;
 
   useEffect(() => {
     if (displayCards.length === 0) return;
