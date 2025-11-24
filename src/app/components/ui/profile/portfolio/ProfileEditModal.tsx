@@ -82,6 +82,12 @@ const ProfileEditModal = ({
           );
           if (redirectPath) {
             router.push(redirectPath);
+            // 프로필 생성 후 페이지 완전히 새로고침
+            if (mode === 'create') {
+              setTimeout(() => {
+                window.location.reload();
+              }, 100);
+            }
           } else {
             router.refresh();
           }
