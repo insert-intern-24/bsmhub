@@ -8,7 +8,6 @@ import {
   IconUsersGroup,
   IconAssembly,
   IconId,
-  IconAward,
   IconBell,
 } from '@tabler/icons-react';
 
