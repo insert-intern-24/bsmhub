@@ -73,21 +73,23 @@ const ProfileEditModal = ({
         showToast(successMessage, 'success', 3000, '성공');
         onClose();
 
-        // Config의 redirect 설정 사용
-        if (config.redirect?.buildPath) {
-          const redirectPath = await config.redirect.buildPath(
-            formData as Record<string, unknown>,
-            mode,
-            { ...variables, ...additionalVariables },
-          );
-          if (redirectPath) {
-            router.push(redirectPath);
-          } else {
-            router.refresh();
+        const redirectPath = config.redirect?.buildPath
+          ? await config.redirect.buildPath(
+              formData as Record<string, unknown>,
+              mode,
+              { ...variables, ...additionalVariables },
+            )
+          : null;
+
+        if (redirectPath) {
+          if (mode === 'create' && !isTeamValue) {
+            setTimeout(() => {
+              window.location.reload();
+            }, 100);
           }
-        } else {
-          router.refresh();
+          router.push(redirectPath);
         }
+        
       } else {
         const errorMessage = formatErrorMessage(result.message, 'profile');
         showToast(errorMessage, 'error', 2000, '오류');

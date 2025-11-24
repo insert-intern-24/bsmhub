@@ -79,7 +79,7 @@ export default function SupabaseSessionSync() {
           error &&
           typeof error === 'object' &&
           'code' in error &&
-          (error as any).code === 'refresh_token_already_used'
+          (error as { code?: string }).code === 'refresh_token_already_used'
         ) {
           const storageKey = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_KEY || 'sb-bsmhubsp-auth-token';
           localStorage.removeItem(storageKey);
