@@ -144,7 +144,7 @@ const InputOfModal = ({
               control={control}
               rules={{ 
                 validate: (value) => {
-                  if (!field.required) return true;
+                  if (!field.required && (!value || (Array.isArray(value) && value.length === 0))) return true;
                   
                   // Checkbox 타입 검증
                   if (field.type === 'checkbox' && !value) {
@@ -152,8 +152,28 @@ const InputOfModal = ({
                   }
                   
                   // 배열 타입 검증 (InputList, SkillTag, Picture)
-                  if (Array.isArray(value) && value.length === 0) {
-                    return `${field.label}은(는) 필수 항목입니다.`;
+                  if (Array.isArray(value)) {
+                    if (field.required && value.length === 0) {
+                      return `${field.label}은(는) 필수 항목입니다.`;
+                    }
+
+                    // InputList 및 DropdownInputList에 대한 Zod 검증
+                    if ((field.type === 'inputList' || field.type === 'dropdownInputList') && field.inputConfig?.inputs) {
+                      const inputs = value as MultiInputItem[][];
+                      
+                      const validationError = inputs
+                        .flatMap((group) =>
+                          group.map((item, i) => {
+                            const schema = field.inputConfig?.inputs[i]?.zodSchema;
+                            if (!schema) return null;
+                            const result = schema.safeParse(item.value);
+                            return result.success ? null : result.error.issues[0].message;
+                          }),
+                        )
+                        .find((msg) => msg !== null);
+
+                      if (validationError) return validationError;
+                    }
                   }
                   
                   return true;
