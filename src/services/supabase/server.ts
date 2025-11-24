@@ -72,7 +72,7 @@ export async function createClient(useExternalUrl = false, anon = false) {
       },
       cookies: {
         getAll() {
-          let cookies = cookieStore.getAll();
+          const cookies = cookieStore.getAll();
           cookies.map((c) => {
             if (c.name.startsWith(`sb-${publicHost?.split('.')[0]}`)) {
               cookies.push({
