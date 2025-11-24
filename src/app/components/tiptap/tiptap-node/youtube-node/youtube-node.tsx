@@ -36,6 +36,8 @@ function getYouTubeEmbedUrl(url: string): string {
   if (videoId) {
     return `https://www.youtube.com/embed/${videoId}`
   }
+
+  // If we can't extract the video ID, return empty string to prevent XSS
   return ""
 }
 
