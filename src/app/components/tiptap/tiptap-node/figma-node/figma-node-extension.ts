@@ -107,9 +107,18 @@ export const FigmaNode = Node.create<FigmaNodeOptions>({
           if (typeof node === "string") return false
           const element = node as HTMLElement
           const src = element.getAttribute("src")
-          if (src && src.includes("figma.com")) {
-            return {
-              url: src,
+          if (src) {
+            try {
+              const url = new URL(src)
+              const allowedHosts = ["figma.com", "www.figma.com", "embed.figma.com"]
+              if (allowedHosts.includes(url.hostname)) {
+                return {
+                  url: src,
+                }
+              }
+            } catch {
+              // Invalid URL, reject it
+              return false
             }
           }
           return false

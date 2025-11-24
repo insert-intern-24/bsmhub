@@ -133,11 +133,20 @@ export const YoutubeNode = Node.create<YoutubeNodeOptions>({
           if (typeof node === "string") return false
           const element = node as HTMLElement
           const src = element.getAttribute("src")
-          if (src && src.includes("youtube.com")) {
-            return {
-              url: src,
-              width: element.getAttribute("width") || 640,
-              height: element.getAttribute("height") || 480,
+          if (src) {
+            try {
+              const url = new URL(src)
+              const allowedHosts = ["youtube.com", "www.youtube.com"]
+              if (allowedHosts.includes(url.hostname)) {
+                return {
+                  url: src,
+                  width: element.getAttribute("width") || 640,
+                  height: element.getAttribute("height") || 480,
+                }
+              }
+            } catch {
+              // Invalid URL, reject it
+              return false
             }
           }
           return false
