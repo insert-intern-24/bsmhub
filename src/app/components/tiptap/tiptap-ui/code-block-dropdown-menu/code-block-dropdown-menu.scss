@@ -1,0 +1,13 @@
+.tiptap-code-block-dropdown-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.25rem;
+  max-height: 400px;
+  overflow-y: auto;
+
+  button {
+    justify-content: flex-start;
+    font-size: 0.875rem;
+    padding: 0.5em 0.75em;
+  }
+}
