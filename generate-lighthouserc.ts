@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { config } from 'dotenv';
-import { getAllRoutes } from './src/app/sitemap.xml/sitemap';
+import { getAllRoutes } from './src/app/sitemap.xml/generator';
 
 config({ path: '.env.local' });
 
