@@ -70,6 +70,9 @@ export const profileConfig: FormConfig = {
                   node {
                     competition_id
                     prize
+                    competitions {
+                      competition_name
+                    }
                   }
                 }
               }
@@ -280,9 +283,15 @@ export const profileConfig: FormConfig = {
         onlyOne: false,
         inputs: [
           {
+            name: 'competitions.competition_name',
+            type: 'text',
+            placeholder: '대회이름을 입력하세요',
+            required: true,
+          },
+          {
             name: 'prize',
             type: 'text',
-            placeholder: '수상내역을 입력하세요',
+            placeholder: '상명을 입력하세요',
             required: true,
           },
         ],
