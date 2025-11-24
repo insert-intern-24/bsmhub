@@ -8,14 +8,15 @@ import {
   IconUsersGroup,
   IconAssembly,
   IconId,
-  IconAward,
+  IconBell,
 } from '@tabler/icons-react';
 
 export const navigation = [
   { label: '프로젝트', href: '/project', icon: IconAssembly },
   { label: '동아리', href: '/team', icon: IconUsersGroup },
   { label: '포트폴리오', href: '/portfolio', icon: IconId },
-  { label: '대회', href: '/major', icon: IconAward },
+  { label: '공지사항', href: 'https://sleepy-apple-8a6.notion.site/2b5d5ab3072f8081aa9ae5a6dbe38227?source=copy_link', icon: IconBell, external: true },
+  // { label: '대회', href: '/major', icon: IconAward },
 ];
 
 const Header = () => {
@@ -35,13 +36,22 @@ const Header = () => {
           </div>
         </Link>
         <nav className="flex-row gap-4 items-center mobile:hidden">
-          <HeaderDropdown />
+          <div className="flex-center">
+            <HeaderDropdown />
+          </div>
           {navigation.map((item) => (
-            <Link key={item.label} href={item.href}>
+            <Link 
+              key={item.label} 
+              href={item.href} 
+              className="flex items-center"
+              {...(item.external && { target: "_blank", rel: "noopener noreferrer nofollow" })}
+            >
               <Label>{item.label}</Label>
             </Link>
           ))}
-          <Account />
+          <div className="flex-center">
+            <Account />
+          </div>
         </nav>
       </div>
     </header>
