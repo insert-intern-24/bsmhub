@@ -32,6 +32,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+    /*
+      suppressHydrationWarning: NProgress 등 클라이언트 전용 컴포넌트(NavigationProgressBar, NavigationEvents)로 인해
+      서버와 클라이언트 렌더링 결과가 일치하지 않는 hydration 경고를 억제합니다.
+    */
     <html lang="ko" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -40,7 +44,7 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
         />
-        <GoogleAnalytics gaId="G-M1JSE5S34F" />
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ''} />
       </head>
       <body className="bg-[#F5F5F7] pt-14">
         <NavigationProgressBar />

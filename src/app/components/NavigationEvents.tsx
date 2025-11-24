@@ -5,40 +5,36 @@ import NProgress from 'nprogress';
 
 export default function NavigationEvents() {
   useEffect(() => {
-    const handleAnchorClick = (e: MouseEvent) => {
-      const target = e.currentTarget as HTMLAnchorElement;
-      const href = target.href;
-      const currentUrl = window.location.href;
+    // 이벤트 위임 패턴: body에 단일 리스너만 추가하여 성능 최적화 및 메모리 누수 방지
+    const handleBodyClick = (e: MouseEvent) => {
+      let target = e.target as HTMLElement | null;
       
-      // 같은 페이지가 아니면 NProgress 시작
-      if (href !== currentUrl) {
-        NProgress.start();
+      // 클릭된 요소가 <a> 태그이거나 <a> 태그의 자식 요소인 경우 <a> 태그 찾기
+      while (target && target !== document.body) {
+        if (target.tagName === 'A' && (target as HTMLAnchorElement).href) {
+          const anchor = target as HTMLAnchorElement;
+          const href = anchor.href;
+          const currentUrl = window.location.href;
+          
+          // 외부 링크나 새 탭으로 여는 링크는 제외
+          if (anchor.target === '_blank' || anchor.getAttribute('rel')?.includes('external')) {
+            return;
+          }
+          
+          // 같은 페이지가 아니면 NProgress 시작
+          if (href !== currentUrl) {
+            NProgress.start();
+          }
+          break;
+        }
+        target = target.parentElement;
       }
     };
 
-    const handleMutation = () => {
-      const anchors = document.querySelectorAll('a[href]');
-      anchors.forEach((anchor) => {
-        anchor.addEventListener('click', handleAnchorClick as EventListener);
-      });
-    };
-
-    // 초기 앵커 태그에 이벤트 리스너 추가
-    handleMutation();
-
-    // DOM 변경 감지하여 새로운 앵커 태그에도 이벤트 리스너 추가
-    const observer = new MutationObserver(handleMutation);
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
+    document.body.addEventListener('click', handleBodyClick);
 
     return () => {
-      observer.disconnect();
-      const anchors = document.querySelectorAll('a[href]');
-      anchors.forEach((anchor) => {
-        anchor.removeEventListener('click', handleAnchorClick as EventListener);
-      });
+      document.body.removeEventListener('click', handleBodyClick);
     };
   }, []);
 
