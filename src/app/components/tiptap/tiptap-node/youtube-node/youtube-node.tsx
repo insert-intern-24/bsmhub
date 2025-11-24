@@ -36,7 +36,7 @@ function getYouTubeEmbedUrl(url: string): string {
   if (videoId) {
     return `https://www.youtube.com/embed/${videoId}`
   }
-  return url
+  return ""
 }
 
 /**
