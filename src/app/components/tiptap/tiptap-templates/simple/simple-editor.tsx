@@ -8,7 +8,7 @@ import { renderToHTMLString } from "@tiptap/static-renderer"
 import type { SimpleEditorProps, SimpleEditorRef } from "./types"
 
 // --- Extensions ---
-import { createEditorExtensions, type ImageUploadHandler } from "./utils/extensions"
+import { createEditorExtensions } from "./utils/extensions"
 
 // --- UI Primitives ---
 import { Button } from "@/app/components/tiptap/tiptap-ui-primitive/button"
@@ -18,11 +18,7 @@ import {
   ToolbarSeparator,
 } from "@/app/components/tiptap/tiptap-ui-primitive/toolbar"
 
-// --- Tiptap Node ---
-import { ImageUploadNode } from "@/app/components/tiptap/tiptap-node/image-upload-node/image-upload-node-extension"
-import { HorizontalRule } from "@/app/components/tiptap/tiptap-node/horizontal-rule-node/horizontal-rule-node-extension"
-import { FigmaNode } from "@/app/components/tiptap/tiptap-node/figma-node"
-import { YoutubeNode } from "@/app/components/tiptap/tiptap-node/youtube-node"
+// --- Tiptap Node Styles ---
 import "@/app/components/tiptap/tiptap-node/blockquote-node/blockquote-node.scss"
 import "@/app/components/tiptap/tiptap-node/code-block-node/code-block-node.scss"
 import "@/app/components/tiptap/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss"

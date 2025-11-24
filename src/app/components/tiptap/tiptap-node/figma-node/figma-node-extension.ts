@@ -7,7 +7,7 @@ export interface FigmaNodeOptions {
    * HTML attributes to add to the figma iframe element.
    * @default {}
    */
-  HTMLAttributes: Record<string, any>
+  HTMLAttributes: Record<string, unknown>
 }
 
 declare module "@tiptap/react" {
