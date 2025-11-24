@@ -1,4 +1,3 @@
-
 import { ProjectData } from '@/services/project/getProjects.server';
 import {
   calculateGradeFromJoinAt,

@@ -7,10 +7,7 @@ import { useModal } from '@/app/components/modal';
 import { useCurrentUser } from '@/utils/hook/useCurrentUser';
 import { openProjectModal } from '@/utils/modal/openProjectModal';
 import { openTeamModal } from '@/utils/modal/openTeamModal';
-import {
-  checkProfileExistence,
-  getProfileByStudentId,
-} from '@/services/profile/getProfileApi.client';
+import { getProfileByStudentId } from '@/services/profile/getProfileApi.client';
 
 const HeaderDropdown = () => {
   const currentUser = useCurrentUser();
@@ -32,10 +29,7 @@ const HeaderDropdown = () => {
     let mounted = true;
 
     const init = async () => {
-      const [profile, exists] = await Promise.all([
-        getProfileByStudentId(currentUser.id),
-        checkProfileExistence(currentUser.id),
-      ]);
+      const profile = await getProfileByStudentId(currentUser.id);
 
       if (!mounted) return;
       if (profile) {
