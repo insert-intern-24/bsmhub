@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@next/third-parties": "^16.0.3",
+    "@sentry/nextjs": "^10.26.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.76.1",
     "@tabler/icons-react": "^3.35.0",
