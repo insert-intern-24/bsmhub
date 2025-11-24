@@ -380,40 +380,6 @@ export const handleImageUpload = async (
   return uploadProjectImage(file, onProgress, abortSignal);
 }
 
-/**
- * Handles project image upload to project-html-description-image bucket
- * @param file The file to upload
- * @param onProgress Optional callback for tracking upload progress
- * @param abortSignal Optional AbortSignal for cancelling the upload
- * @returns Promise resolving to the URL of the uploaded image
- */
-export const handleProjectImageUpload = async (
-  file: File,
-  onProgress?: (event: { progress: number }) => void,
-  abortSignal?: AbortSignal
-): Promise<string> => {
-  // Validate file
-  if (!file) {
-    throw new Error("No file provided")
-  }
-
-  if (file.size > MAX_FILE_SIZE) {
-    throw new Error(
-      `File size exceeds maximum allowed (${MAX_FILE_SIZE / (1024 * 1024)}MB)`
-    )
-  }
-
-  // Import uploadProjectImage function
-  const uploadProjectImageModule = await import("@/services/project/uploadProjectImage.client");
-  const uploadProjectImage = uploadProjectImageModule.default;
-  
-  if (!uploadProjectImage) {
-    throw new Error("uploadProjectImage function not found");
-  }
-  
-  return uploadProjectImage(file, onProgress, abortSignal);
-}
-
 type ProtocolOptions = {
   /**
    * The protocol scheme to be registered.

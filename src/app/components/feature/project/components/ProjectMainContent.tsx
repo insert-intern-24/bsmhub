@@ -15,7 +15,7 @@ import {
 } from '@/app/components/tiptap/tiptap-templates/simple';
 import updateProjectContent from '@/services/project/updateProjectContent.client';
 import { useToast } from '@/app/components/toast/ToastContext';
-import { handleProjectImageUpload } from '@/utils/lib/tiptap-utils';
+import { handleImageUpload } from '@/utils/lib/tiptap-utils';
 import RoundedButton from '@/app/components/ui/button/RoundedButton';
 
 interface ProjectMainContentProps {
@@ -123,7 +123,7 @@ const ProjectMainContent = ({ project, hasEditPermission }: ProjectMainContentPr
               }}
               onSave={handleSaveClick}
               onCancel={handleCancelClick}
-              imageUploadHandler={handleProjectImageUpload}
+              imageUploadHandler={handleImageUpload}
             />
           </div>
         ) : (
