@@ -1,7 +1,13 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { Database } from '@/services/supabase/database.types';
-
+/**
+ * Supabase 요청에 대한 재시도 로직을 포함한 fetch wrapper
+ * @param url - 요청할 URL
+ * @param options - fetch options
+ * @returns fetch Response
+ * @throws 최대 재시도 횟수 초과 시 마지막 에러 발생
+ */
 const fetchWithRetry = async (
   url: RequestInfo | URL,
   options: RequestInit = {},
