@@ -24,7 +24,7 @@ export const Modal = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isOpen, modalContent]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
