@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Footer from './components/layout/footer/Footer';
 import './globals.css';
 import './responsive.css';
@@ -43,7 +44,9 @@ export default function RootLayout({
         <GoogleAnalytics gaId="G-M1JSE5S34F" />
       </head>
       <body className="bg-[#F5F5F7] pt-14">
-        <NavigationProgressBar />
+        <Suspense fallback={null}>
+          <NavigationProgressBar />
+        </Suspense>
         <NavigationEvents />
         <QueryProvider>
           <ModalProvider>
