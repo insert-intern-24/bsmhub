@@ -112,4 +112,3 @@ export async function createClient(useExternalUrl = false, anon = false) {
     },
   );
 }
-//sb-10-auth-token
