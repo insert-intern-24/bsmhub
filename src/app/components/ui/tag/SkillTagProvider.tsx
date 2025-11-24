@@ -116,12 +116,10 @@ const SkillTagProvider = ({
         }
       }
 
-      // 2. 로컬에 없으면 DB에서 조회/생성
+      // 2. 로컬에 없으면 에러 처리
       if (skillId === undefined) {
-        skillId = await getOrCreateSkillId(trimmedValue);
-        
-        // 새로 생성된 스킬이면 로컬 상태에도 추가 (선택 사항, UX 개선)
-        // 여기서는 간단히 리패치하거나, 다음 렌더링에서 반영되도록 둠
+        showToast('등록되지 않은 스킬입니다.', 'error', 3000, '오류');
+        return;
       }
 
       if (inputs.some((input) => Number(input[0].value) === skillId)) {
