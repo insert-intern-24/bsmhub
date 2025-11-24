@@ -50,7 +50,7 @@ export async function updateSession(request: NextRequest) {
       error &&
       typeof error === 'object' &&
       'code' in error &&
-      (error as any).code === 'refresh_token_already_used'
+      (error as { code?: string }).code === 'refresh_token_already_used'
     ) {
       // Clear all cookies
       const cookies = request.cookies.getAll();
