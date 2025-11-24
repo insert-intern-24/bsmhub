@@ -133,8 +133,9 @@ export const profileConfig: FormConfig = {
   fields: [
     {
       fieldName: 'profile_full_name',
-      label: '이름',
+      label: '닉네임',
       type: 'inputList',
+      description: '닉네임은 프로필 페이지의 라우터에 사용됩니다.',
       required: true,
       columnInfo: { table: 'profile', column: 'profile_name' },
       inputConfig: {
@@ -143,7 +144,7 @@ export const profileConfig: FormConfig = {
           {
             name: 'name',
             type: 'text',
-            placeholder: '이름을 입력하세요',
+            placeholder: '닉네임을 입력하세요',
             required: true,
           },
         ],
