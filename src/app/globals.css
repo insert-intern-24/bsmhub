@@ -96,30 +96,3 @@ input[type="search"]::-webkit-search-results-decoration {
 html {
   font-size: 12px;
 }
-
-/* NProgress 커스텀 스타일 */
-#nprogress {
-  pointer-events: none;
-}
-
-#nprogress .bar {
-  background: #0066FF;
-  position: fixed;
-  z-index: 9999;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-}
-
-#nprogress .peg {
-  display: block;
-  position: absolute;
-  right: 0px;
-  width: 100px;
-  height: 100%;
-  box-shadow: 0 0 10px #0066FF, 0 0 5px #0066FF;
-  opacity: 1.0;
-  transform: rotate(3deg) translate(0px, -4px);
-}
-
