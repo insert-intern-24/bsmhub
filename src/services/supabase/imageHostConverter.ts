@@ -1,5 +1,5 @@
 export function convertToDatabaseImageURL(url: string): string {
-  return url.replace(process.env.NEXT_PUBLIC_SUPABASE_URL!, '{{supabaseHost}}');
+  return url.replace(process.env.NEXT_PUBLIC_SUPABASE_URL!, '{{supabaseHost}}').replace(process.env.NEXT_PUBLIC_SUPABASE_INTERNAL_URL!, '{{supabaseHost}}');
 }
 
 export function convertFromDatabaseImageURL(url: string): string {
@@ -9,7 +9,7 @@ export function convertFromDatabaseImageURL(url: string): string {
   cleanedUrl = cleanedUrl.replace(/^'|'$/g, '');
   
   // {{supabaseHost}}를 실제 URL로 변환
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, '') || '';
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_INTERNAL_URL?.replace(/\/$/, '') || '';
   cleanedUrl = cleanedUrl.replace('{{supabaseHost}}', supabaseUrl);
   
   // 이중 슬래시 제거 (http:// 또는 https:// 다음의 슬래시는 제외)
