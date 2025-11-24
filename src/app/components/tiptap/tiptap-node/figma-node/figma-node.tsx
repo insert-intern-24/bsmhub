@@ -32,9 +32,21 @@ function parseFigmaUrl(url: string): { type: string; fileKey: string } | null {
  * Convert Figma URL to embed URL
  */
 function getFigmaEmbedUrl(url: string): string {
+  // Validate the URL first
+  try {
+    const urlObj = new URL(url)
+    const allowedHosts = ["figma.com", "www.figma.com"]
+    if (!allowedHosts.includes(urlObj.hostname)) {
+      return ""
+    }
+  } catch {
+    // Invalid URL
+    return ""
+  }
+  
   const parsed = parseFigmaUrl(url)
   if (!parsed) {
-    return url
+    return ""
   }
   
   const { type, fileKey } = parsed

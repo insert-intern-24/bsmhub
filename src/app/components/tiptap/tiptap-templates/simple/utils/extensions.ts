@@ -123,6 +123,7 @@ export function createEditorExtensions(
     onImageUploadError = (error) => console.error("Upload failed:", error),
   } = options
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const extensions: any[] = [
     StarterKit.configure({
       horizontalRule: false,

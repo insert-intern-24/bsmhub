@@ -22,10 +22,10 @@ export default function Editor() {
     }
   }
 
-  const handleSave = (data: { html: string; json: JSONContent }) => {
+  const handleSave = (_data: { html: string; json: JSONContent }) => {
     // console.log("Save button clicked!")
-    // console.log("Saved HTML:", data.html)
-    // console.log("Saved JSON:", data.json)
+    // console.log("Saved HTML:", _data.html)
+    // console.log("Saved JSON:", _data.json)
     alert("에디터 내용이 저장되었습니다!")
   }
 

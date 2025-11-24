@@ -144,13 +144,9 @@ export function canColorHighlight(
 
     return editor.can().setMark("highlight")
   } else {
-    if (!isExtensionAvailable(editor, ["nodeBackground"])) return false
-
-    try {
-      return editor.can().toggleNodeBackgroundColor("test")
-    } catch {
-      return false
-    }
+    // Node background extension is not implemented yet
+    // TODO: Implement nodeBackground extension if needed
+    return false
   }
 }
 
@@ -202,7 +198,8 @@ export function removeHighlight(
   if (mode === "mark") {
     return editor.chain().focus().unsetMark("highlight").run()
   } else {
-    return editor.chain().focus().unsetNodeBackgroundColor().run()
+    // Node background extension is not implemented yet
+    return false
   }
 }
 
@@ -291,16 +288,9 @@ export function useColorHighlight(config: UseColorHighlightConfig) {
 
       return true
     } else {
-      const success = editor
-        .chain()
-        .focus()
-        .toggleNodeBackgroundColor(highlightColor)
-        .run()
-
-      if (success) {
-        onApplied?.({ color: highlightColor, label, mode })
-      }
-      return success
+      // Node background extension is not implemented yet
+      // TODO: Implement nodeBackground extension if needed
+      return false
     }
   }, [canColorHighlightState, highlightColor, editor, label, onApplied, mode])
 
