@@ -15,6 +15,8 @@ import type { Metadata } from 'next';
 import GoogleOneTab from '@/app/components/feature/auth/GoogleOneTab';
 import SupabaseSessionSync from './components/feature/auth/SupabaseSessionSync';
 import BusinessCardHolder from './components/card/home/BusinessCardHolder';
+import NavigationProgressBar from './components/ProgressBar';
+import NavigationEvents from './components/NavigationEvents';
 
 export const metadata: Metadata = {
   title: 'BSMHub',
@@ -30,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
@@ -41,6 +43,8 @@ export default function RootLayout({
         <GoogleAnalytics gaId="G-M1JSE5S34F" />
       </head>
       <body className="bg-[#F5F5F7] pt-14">
+        <NavigationProgressBar />
+        <NavigationEvents />
         <QueryProvider>
           <ModalProvider>
             <ToastProvider>
