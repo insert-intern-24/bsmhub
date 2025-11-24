@@ -85,6 +85,7 @@ pipeline {
                     // 미사용 이미지 정리
                     echo '🧽 Cleaning up unused images...'
                     sh 'docker image prune -f'
+                    sh 'docker builder prune -f'
 
                     // 리소스 사용량 확인
                     echo '📊 Current Docker resource usage:'

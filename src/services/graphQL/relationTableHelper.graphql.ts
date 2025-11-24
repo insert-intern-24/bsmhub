@@ -79,19 +79,18 @@ export async function getOrCreateCertificateIds(
 }
 
 /**
- * prize를 competition_id로 변환 (없으면 생성)
+ * competition_name을 competition_id로 변환 (없으면 생성)
  */
 export async function getOrCreateCompetitionIds(
-  prizes: string[],
+  competitionNames: string[],
 ): Promise<number[]> {
-  if (prizes.length === 0) return [];
+  if (competitionNames.length === 0) return [];
 
   const supabase = createClient();
   const competitionIds: number[] = [];
 
-  for (const prize of prizes) {
-    // 간단한 대회명 생성 (실제로는 더 정교한 로직이 필요할 수 있음)
-    const competitionName = `대회 - ${prize}`;
+  for (const competitionName of competitionNames) {
+    if (!competitionName || competitionName.trim() === '') continue;
 
     const { data: existingCompetition } = await supabase
       .from('competitions')
@@ -262,25 +261,42 @@ export async function updateStudentCertificates(
 /**
  * profile_competitions 테이블 업데이트 (개별 삭제 + upsert)
  * @param profileId - 프로필 ID
- * @param prizes - 새로운 수상 이력 배열
- * @param existingComps - 기존 수상 이력 데이터 배열 (캐시된 데이터, competition_id 포함)
+ * @param competitions - 새로운 수상 이력 배열 (competition_name, prize 포함)
+ * @param existingComps - 기존 수상 이력 데이터 배열 (캐시된 데이터, competition_id, prize 포함)
  */
 export async function updateProfileCompetitions(
   profileId: string,
-  prizes: string[],
-  existingComps: Array<{ competition_id: number; prize: string }> = [],
+  competitions: Array<{ competition_name: string; prize: string }>,
+  existingComps: Array<{
+    competition_id: number;
+    prize: string;
+    competitions?: { competition_name: string };
+  }> = [],
 ): Promise<void> {
   const supabase = createClient();
 
-  const existingPrizes = new Set(existingComps.map((c) => c.prize));
-  const newPrizes = new Set(prizes);
-
-  // 2. 삭제할 항목 찾기
-  const compsToDelete = existingComps.filter(
-    (comp) => !newPrizes.has(comp.prize),
+  // 기존 데이터를 competition_name과 prize 조합으로 비교하기 위한 Set 생성
+  const existingKeys = new Set(
+    existingComps.map(
+      (c) =>
+        `${c.competitions?.competition_name || ''}|${c.prize}`,
+    ),
   );
 
-  // 3. 개별 삭제 - competition_id를 이미 알고 있음
+  // 새로운 데이터를 competition_name과 prize 조합으로 비교하기 위한 Set 생성
+  const newKeys = new Set(
+    competitions.map((c) => `${c.competition_name}|${c.prize}`),
+  );
+
+  // 삭제할 항목 찾기 (기존에 있지만 새로운 데이터에 없는 것)
+  const compsToDelete = existingComps.filter(
+    (comp) =>
+      !newKeys.has(
+        `${comp.competitions?.competition_name || ''}|${comp.prize}`,
+      ),
+  );
+
+  // 개별 삭제 - competition_id를 이미 알고 있음
   for (const comp of compsToDelete) {
     await supabase
       .from('profile_competitions')
@@ -289,16 +305,20 @@ export async function updateProfileCompetitions(
       .eq('competition_id', comp.competition_id);
   }
 
-  // 4. 추가할 항목 찾기
-  const prizesToAdd = prizes.filter((prize) => !existingPrizes.has(prize));
+  // 추가할 항목 찾기 (새로운 데이터에 있지만 기존에 없는 것)
+  const competitionsToAdd = competitions.filter(
+    (comp) =>
+      !existingKeys.has(`${comp.competition_name}|${comp.prize}`),
+  );
 
-  // 5. 새 항목 삽입
-  if (prizesToAdd.length > 0) {
-    const competitionIds = await getOrCreateCompetitionIds(prizesToAdd);
+  // 새 항목 삽입
+  if (competitionsToAdd.length > 0) {
+    const competitionNames = competitionsToAdd.map((c) => c.competition_name);
+    const competitionIds = await getOrCreateCompetitionIds(competitionNames);
     if (competitionIds.length > 0) {
       const compPayloads = competitionIds.map((compId, index) => ({
         competition_id: compId,
-        prize: prizesToAdd[index],
+        prize: competitionsToAdd[index].prize,
         profile_id: profileId,
       }));
       await supabase.from('profile_competitions').insert(compPayloads as never);
@@ -506,9 +526,22 @@ export async function processRestRelationTables(
             .filter(Boolean);
           break;
         case 'profile_competitions':
-          processedData = (relationData as Array<{ prize: string }>)
-            .map((item) => item.prize)
-            .filter(Boolean);
+          processedData = (
+            relationData as Array<{
+              prize: string;
+              competitions?: { competition_name: string };
+            }>
+          )
+            .map((item) => ({
+              competition_name:
+                item.competitions?.competition_name || '',
+              prize: item.prize || '',
+            }))
+            .filter(
+              (item) =>
+                item.competition_name.trim() !== '' &&
+                item.prize.trim() !== '',
+            );
           break;
         case 'student_jobs':
           // 단일 선택이므로 job_id 배열 추출
