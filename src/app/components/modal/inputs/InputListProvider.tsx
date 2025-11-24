@@ -111,10 +111,8 @@ const InputListProvider = ({
   const { showToast } = useToast();
   const debouncedCurrentFormData = useDebounce(currentFormData, 300);
 
-  // 이전 formData 값을 추적하여 dependsOnFormData가 true일 때만 재실행
-  const prevFormDataRef = React.useRef<Record<string, unknown> | undefined>(
-    undefined,
-  );
+  // 정적 쿼리(dependsOnFormData=false)의 초기 로드 완료 여부를 추적
+  const staticQueryLoadedRef = React.useRef(false);
 
   // dropdownInputConfig가 있으면 테이블 데이터 로드
   React.useEffect(() => {
@@ -122,29 +120,12 @@ const InputListProvider = ({
       return;
     }
 
-    // dependsOnFormData가 false이고 이미 초기 로드가 되었다면 재실행하지 않음
-    // (debouncedCurrentFormData 변경에 의한 불필요한 재실행 방지)
-    if (
-      !dropdownInputConfig.dependsOnFormData &&
-      prevFormDataRef.current !== undefined
-    ) {
-      return;
-    }
-
-    // dependsOnFormData가 true일 때만 formData 변경을 추적
-    if (dropdownInputConfig.dependsOnFormData) {
-      // formData가 실제로 변경되지 않았다면 재실행하지 않음
-      if (
-        prevFormDataRef.current !== undefined &&
-        JSON.stringify(prevFormDataRef.current) ===
-          JSON.stringify(debouncedCurrentFormData)
-      ) {
+    // 정적 쿼리(dependsOnFormData=false)의 경우 초기 로드만 수행
+    if (!dropdownInputConfig.dependsOnFormData) {
+      if (staticQueryLoadedRef.current) {
         return;
       }
-      prevFormDataRef.current = debouncedCurrentFormData;
-    } else {
-      // 정적 쿼리의 경우 초기 로드만 수행
-      prevFormDataRef.current = {};
+      staticQueryLoadedRef.current = true;
     }
 
     const queryData = dropdownInputConfig.dependsOnFormData
