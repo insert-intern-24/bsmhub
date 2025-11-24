@@ -116,7 +116,7 @@ const InputOfModal = ({
 
   return (
     <form
-      className="flex-col items-start w-[64rem] p-[4rem] gap-6 bg-white border-0 outline-none"
+      className="flex flex-col items-start w-[64rem] max-w-full p-6 md:p-[4rem] gap-6 bg-white border-0 outline-none"
       onSubmit={handleSubmit(onFormSubmit)}
       onKeyDown={(e) => {
         if (e.key === 'Enter' && e.target instanceof HTMLInputElement) {
@@ -136,6 +136,7 @@ const InputOfModal = ({
             <LabelOfInputs 
               label={field.label}
               required={field.required}
+              description={field.description}
             />
             
             <Controller

@@ -4,12 +4,22 @@ import { LabelInputsProps } from './types/inputTypes';
 const LabelOfInputs = ({
   label = 'Label',
   required = false,
+  description,
 }: LabelInputsProps) => {
   return (
-    <label className="text-black text-label">
-      {label} {required && <span className="text-red-500">*</span>}
-    </label>
+    <div className="flex flex-row items-center w-full flex-nowrap">
+      <span className="text-black text-label whitespace-nowrap">
+        {label}
+      </span>
+      {required && <span className="mr-1 text-red-primary whitespace-nowrap">*</span>}
+      {description && (
+        <span className="text-gray-footer whitespace-nowrap text-label">
+          {description}
+        </span>
+      )}
+    </div>
   );
 };
 
 export default LabelOfInputs;
+ 
