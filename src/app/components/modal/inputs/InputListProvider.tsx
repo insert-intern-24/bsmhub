@@ -11,6 +11,7 @@ import {
   InputMode,
 } from '@/app/components/ui/input/types/inputTypes';
 import { useToast } from '@/app/components/toast';
+import { useDebounce } from '@/utils/hook/useDebounce';
 
 // Input 설정 타입 - inputs 배열로 통일
 export type InputConfig = {
@@ -35,6 +36,7 @@ export type DropdownInputConfig = {
   nameColumnName: string;
   valueColumnName: string;
   query?: (formData?: Record<string, unknown>) => Promise<Record<string, unknown>[]>;
+  dependsOnFormData?: boolean;
 };
 
 interface InputListProviderProps {
@@ -107,13 +109,20 @@ const InputListProvider = ({
   // const [error, setError] = React.useState<string | null>(null)
 
   const { showToast } = useToast();
+  const debouncedCurrentFormData = useDebounce(currentFormData, 300);
 
   // dropdownInputConfig가 있으면 테이블 데이터 로드
   React.useEffect(() => {
     if (dropdownInputConfig?.query) {
+      // dependsOnFormData가 true일 때만 debouncedCurrentFormData를 사용하고,
+      // 그렇지 않으면(정적 쿼리) 의존성 배열에 포함하지 않음(또는 undefined 전달)
+      const queryData = dropdownInputConfig.dependsOnFormData
+        ? debouncedCurrentFormData
+        : undefined;
+
       // 커스텀 쿼리 함수가 있으면 사용
       dropdownInputConfig
-        .query(currentFormData)
+        .query(queryData)
         .then((data) => {
           setTableData(data);
         })
@@ -128,7 +137,13 @@ const InputListProvider = ({
           );
         });
     }
-  }, [dropdownInputConfig, showToast, currentFormData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    dropdownInputConfig,
+    showToast,
+    // dependsOnFormData가 true일 때만 debouncedCurrentFormData가 변경될 때 재실행
+    dropdownInputConfig?.dependsOnFormData ? debouncedCurrentFormData : null,
+  ]);
 
   // input 클릭/포커스 시 드롭다운 표시
   const handleInputFocus = (index: number) => {
