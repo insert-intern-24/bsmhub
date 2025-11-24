@@ -123,8 +123,7 @@ export function createEditorExtensions(
     onImageUploadError = (error) => console.error("Upload failed:", error),
   } = options
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const extensions: any[] = [
+  const extensions: Extension[] = [
     StarterKit.configure({
       horizontalRule: false,
       codeBlock: false, // CodeBlockLowlight로 대체
@@ -139,19 +138,19 @@ export function createEditorExtensions(
       },
     }).configure({
       lowlight,
-    }),
-    YoutubeNode,
-    HorizontalRule,
+    }) as Extension,
+    YoutubeNode as Extension,
+    HorizontalRule as Extension,
     TextAlign.configure({ types: ["heading", "paragraph"] }),
-    TaskList,
-      TaskItem.configure({ nested: true }) as unknown as Extension,
-    Highlight.configure({ multicolor: true }),
-    Image,
-    Typography,
-    Superscript,
-    Subscript,
-    Selection,
-    FigmaNode,
+    TaskList as Extension,
+    TaskItem.configure({ nested: true }) as Extension,
+    Highlight.configure({ multicolor: true }) as Extension,
+    Image as Extension,
+    Typography as Extension,
+    Superscript as Extension,
+    Subscript as Extension,
+    Selection as Extension,
+    FigmaNode as Extension,
   ]
 
   // ImageUploadNode는 upload handler가 제공된 경우에만 추가
@@ -163,7 +162,7 @@ export function createEditorExtensions(
         limit: maxImageLimit,
         upload: imageUploadHandler,
         onError: onImageUploadError,
-      })
+      }) as Extension
     )
   }
 

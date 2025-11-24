@@ -16,13 +16,13 @@ export default function Editor() {
 
   const handleGetData = () => {
     if (editorRef.current) {
-      const data = editorRef.current.getData()
-      console.log("Editor Data:", data)
-      setContent(data.json)
+      editorRef.current.getData()
+      console.log("Editor Data:", editorRef.current.getData())
+      setContent(editorRef.current.getData().json)
     }
   }
 
-  const handleSave = (_data: { html: string; json: JSONContent }) => {
+  const handleSave = () => {
     // console.log("Save button clicked!")
     // console.log("Saved HTML:", _data.html)
     // console.log("Saved JSON:", _data.json)

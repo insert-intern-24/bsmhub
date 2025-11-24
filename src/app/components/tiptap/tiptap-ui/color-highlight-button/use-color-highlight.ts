@@ -12,7 +12,6 @@ import { useIsBreakpoint } from "@/utils/hook/tiptap/use-is-breakpoint"
 import {
   isMarkInSchema,
   isNodeTypeSelected,
-  isExtensionAvailable,
 } from "@/utils/lib/tiptap-utils"
 
 // --- Icons ---
@@ -218,7 +217,8 @@ export function shouldShowButton(props: {
   if (mode === "mark") {
     if (!isMarkInSchema("highlight", editor)) return false
   } else {
-    if (!isExtensionAvailable(editor, ["nodeBackground"])) return false
+    // Node background mode is not implemented
+    return false
   }
 
   if (hideWhenUnavailable && !editor.isActive("code")) {
@@ -292,6 +292,9 @@ export function useColorHighlight(config: UseColorHighlightConfig) {
       // TODO: Implement nodeBackground extension if needed
       return false
     }
+    
+    // Node background mode is not implemented
+    return false
   }, [canColorHighlightState, highlightColor, editor, label, onApplied, mode])
 
   const handleRemoveHighlight = useCallback(() => {

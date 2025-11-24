@@ -104,6 +104,9 @@ importers:
       google-one-tap:
         specifier: ^1.0.6
         version: 1.0.6
+      hast-util-to-html:
+        specifier: ^9.0.5
+        version: 9.0.5
       immer:
         specifier: ^10.2.0
         version: 10.2.0
