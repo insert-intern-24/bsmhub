@@ -4,7 +4,7 @@ import RoundedButton from '@/app/components/ui/button/RoundedButton';
 import {
   IconPencil,
   IconPlayerPlayFilled,
-  IconPlaylistAdd,
+  // IconPlaylistAdd,
 } from '@tabler/icons-react';
 
 interface ProjectActionsSectionProps {
@@ -62,10 +62,10 @@ const ProjectActionButton = ({
 export const ProjectActionsSection = (props: ProjectActionsSectionProps) => (
   <div className="flex w-full gap-1">
     <ProjectActionButton {...props} />
-    {props.hasEditPermission && (
+    {/* {props.hasEditPermission && (
       <button className="flex h-10 w-10 items-center justify-center rounded-full bg-light-gray-input cursor-pointer">
         <IconPlaylistAdd size={12} color="black" />
       </button>
-    )}
+    )} */}
   </div>
 );
