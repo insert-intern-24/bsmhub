@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { Database } from '@/services/supabase/database.types';
+import { addLog } from '@/utils/performance/requestLogStore';
 
 const fetchWithRetry = async (
   url: RequestInfo | URL,
@@ -10,13 +11,31 @@ const fetchWithRetry = async (
   let lastError;
 
   for (let i = 0; i < MAX_RETRIES; i++) {
+    const start = performance.now();
     try {
-      return await fetch(url, {
+      const response = await fetch(url, {
         ...options,
         // @ts-expect-error - duplex is a valid option for node fetch but might not be in types
         duplex: 'half',
       });
+      const end = performance.now();
+      addLog({
+        type: 'supabase',
+        name: url.toString(),
+        duration: end - start,
+        timestamp: Date.now(),
+        meta: { status: response.status, attempt: i + 1 },
+      });
+      return response;
     } catch (error) {
+      const end = performance.now();
+      addLog({
+        type: 'supabase-error',
+        name: url.toString(),
+        duration: end - start,
+        timestamp: Date.now(),
+        meta: { error: String(error), attempt: i + 1 },
+      });
       lastError = error;
       // Wait before retrying (exponential backoff: 100ms, 200ms, 400ms)
       await new Promise((resolve) => setTimeout(resolve, 100 * Math.pow(2, i)));
