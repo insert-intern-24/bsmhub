@@ -1,6 +1,5 @@
 'use client';
 
-import { Body2 } from '@/app/components/ui/text/text';
 import RoundedButton from '@/app/components/ui/button/RoundedButton';
 import {
   IconPencil,
@@ -47,13 +46,13 @@ const ProjectActionButton = ({
     >
       {hasEditPermission ? (
         <>
-          <IconPencil size={12} color="white" />
-          <Body2 className="text-white">Edit</Body2>
+          <IconPencil size={12} />
+          수정
         </>
       ) : (
         <>
-          <IconPlayerPlayFilled size={12} color="white" />
-          <Body2 className="text-white">Play</Body2>
+          <IconPlayerPlayFilled size={12} />
+          Play
         </>
       )}
     </RoundedButton>
