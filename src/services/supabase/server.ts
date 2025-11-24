@@ -60,7 +60,7 @@ export async function createClient(useExternalUrl = false, anon = false) {
   return createServerClient<Database>(
     useExternalUrl
       ? process.env.NEXT_PUBLIC_SUPABASE_URL!
-      : process.env.NEXT_PUBLIC_INTERNAL_SUPABASE_URL!,
+      : process.env.NEXT_PUBLIC_SUPABASE_INTERNAL_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       global: {

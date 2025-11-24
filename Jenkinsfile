@@ -6,7 +6,7 @@ pipeline {
         SUPABASE_KEY = credentials('NEXT_PUBLIC_SUPABASE_ANON_KEY')
         GOOGLE_CLIENT = credentials('NEXT_PUBLIC_GOOGLE_CLIENT_ID')
         NEXT_PUBLIC_SUPABASE_URL = 'https://bsmhubsp.insert.team'
-        NEXT_PUBLIC_INTERNAL_SUPABASE_URL = 'http://10.59.0.103:8000'
+        NEXT_PUBLIC_SUPABASE_INTERNAL_URL = 'http://10.59.0.103:8000'
         DEPLOY_SERVER = '10.59.0.106'
         DEPLOY_CREDS = credentials('DEPLOY_SERVER_CREDS')
         REPO_OWNER = 'insert-intern-24'
@@ -76,7 +76,7 @@ pipeline {
                         NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_KEY}
                         NEXT_PUBLIC_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT}
                         NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-                        NEXT_PUBLIC_INTERNAL_SUPABASE_URL=${NEXT_PUBLIC_INTERNAL_SUPABASE_URL}
+                        NEXT_PUBLIC_SUPABASE_INTERNAL_URL=${NEXT_PUBLIC_SUPABASE_INTERNAL_URL}
                         NEXT_PUBLIC_SITE_URL=http://${DEPLOY_SERVER}:${PORT}
                     """.stripIndent()
                     sh 'cat .env.local'
