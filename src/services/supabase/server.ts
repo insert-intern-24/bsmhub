@@ -1,7 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { Database } from '@/services/supabase/database.types';
-import { addLog } from '@/utils/performance/requestLogStore';
 
 const fetchWithRetry = async (
   url: RequestInfo | URL,
@@ -19,23 +18,20 @@ const fetchWithRetry = async (
         duplex: 'half',
       });
       const end = performance.now();
-      addLog({
-        type: 'supabase',
-        name: url.toString(),
-        duration: end - start,
-        timestamp: Date.now(),
-        meta: { status: response.status, attempt: i + 1 },
-      });
+      const duration = end - start;
+      const method = options.method || 'GET';
+
+      const logMsg = `[Supabase] ${method} ${url} - ${duration.toFixed(2)}ms (Status: ${response.status})`;
+      if (duration > 500) {
+        console.warn(`\x1b[33m${logMsg} [SLOW]\x1b[0m`);
+      } else {
+        console.log(logMsg);
+      }
+
       return response;
     } catch (error) {
       const end = performance.now();
-      addLog({
-        type: 'supabase-error',
-        name: url.toString(),
-        duration: end - start,
-        timestamp: Date.now(),
-        meta: { error: String(error), attempt: i + 1 },
-      });
+      console.error(`[Supabase Error] ${options.method || 'GET'} ${url} - ${(end - start).toFixed(2)}ms`, error);
       lastError = error;
       // Wait before retrying (exponential backoff: 100ms, 200ms, 400ms)
       await new Promise((resolve) => setTimeout(resolve, 100 * Math.pow(2, i)));

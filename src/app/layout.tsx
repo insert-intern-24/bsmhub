@@ -14,7 +14,6 @@ import type { Metadata } from 'next';
 import GoogleOneTab from '@/app/components/feature/auth/GoogleOneTab';
 import SupabaseSessionSync from './components/feature/auth/SupabaseSessionSync';
 import BusinessCardHolder from './components/card/home/BusinessCardHolder';
-import ServerTimingReporter from '@/app/components/debug/ServerTimingReporter';
 
 export const metadata: Metadata = {
   title: 'BSMHub',
@@ -54,7 +53,6 @@ export default function RootLayout({
                 <BusinessCardHolder />
                 <Modal />
                 <Toast />
-                <ServerTimingReporter />
               </ErrorHandler>
             </ToastProvider>
           </ModalProvider>
