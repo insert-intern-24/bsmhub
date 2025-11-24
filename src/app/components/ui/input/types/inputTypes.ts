@@ -62,12 +62,14 @@ export type BaseInputProps = PictureInputProps | StandardInputProps;
 
 export type LabelInputsProps = BaseInputProps & {
   label?: string;
+  description?: string; // 라벨 옆에 표시할 부가 설명
 };
 
 // FormField 타입별 설정
 interface BaseFieldConfig {
   label: string;
   required?: boolean;
+  description?: string; // 라벨 옆에 표시할 부가 설명
   fieldName: string; // "테이블명.속성" 형식으로 데이터베이스 컬럼 매핑
   columnInfo?: ColumnInfo; // GraphQL 쿼리 생성을 위한 컬럼 정보
   relationHandler?: {

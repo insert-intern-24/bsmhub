@@ -136,6 +136,7 @@ const InputOfModal = ({
             <LabelOfInputs 
               label={field.label}
               required={field.required}
+              description={field.description}
             />
             
             <Controller
