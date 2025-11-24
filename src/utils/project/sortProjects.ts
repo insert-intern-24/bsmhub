@@ -1,4 +1,3 @@
-import { CardProps } from '@/app/components/card/project/ProjectCard';
 import { ProjectData } from '@/services/project/getProjects.server';
 import {
   calculateGradeFromJoinAt,
