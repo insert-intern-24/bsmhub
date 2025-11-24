@@ -11,12 +11,12 @@ export const Modal = () => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      // 모달이 열릴 때 스크롤을 최상단으로 이동 (렌더링 후 실행을 위해 setTimeout 사용)
-      setTimeout(() => {
+      // 모달이 열릴 때 스크롤을 최상단으로 이동 (렌더링 후 실행을 위해 requestAnimationFrame 사용)
+      requestAnimationFrame(() => {
         if (contentRef.current) {
           contentRef.current.scrollTop = 0;
         }
-      }, 0);
+      });
     } else {
       document.body.style.overflow = 'unset';
     }
