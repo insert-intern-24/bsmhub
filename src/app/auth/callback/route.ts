@@ -11,7 +11,7 @@ export async function GET(request: Request) {
       throw new Error('No code provided');
     }
 
-    const supabase = await createClient();
+    const supabase = await createClient(true);
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (error) {

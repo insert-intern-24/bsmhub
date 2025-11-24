@@ -21,7 +21,9 @@ const fetchWithRetry = async (
       const duration = end - start;
       const method = options.method || 'GET';
 
-      const logMsg = `[Supabase] ${method} ${url} - ${duration.toFixed(2)}ms (Status: ${response.status})`;
+      const logMsg = `[Supabase] ${method} ${url} - ${duration.toFixed(
+        2,
+      )}ms (Status: ${response.status})`;
       if (duration > 500) {
         console.warn(`\x1b[33m${logMsg} [SLOW]\x1b[0m`);
       } else {
@@ -31,7 +33,12 @@ const fetchWithRetry = async (
       return response;
     } catch (error) {
       const end = performance.now();
-      console.error(`[Supabase Error] ${options.method || 'GET'} ${url} - ${(end - start).toFixed(2)}ms`, error);
+      console.error(
+        `[Supabase Error] ${options.method || 'GET'} ${url} - ${(
+          end - start
+        ).toFixed(2)}ms`,
+        error,
+      );
       lastError = error;
       // Wait before retrying (exponential backoff: 100ms, 200ms, 400ms)
       await new Promise((resolve) => setTimeout(resolve, 100 * Math.pow(2, i)));
@@ -40,7 +47,7 @@ const fetchWithRetry = async (
   throw lastError;
 };
 
-export async function createClient(anon = false) {
+export async function createClient(useExternalUrl = false, anon = false) {
   const cookieStore = !anon
     ? await cookies()
     : {
@@ -51,7 +58,9 @@ export async function createClient(anon = false) {
       };
 
   return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    useExternalUrl
+      ? process.env.NEXT_PUBLIC_SUPABASE_URL!
+      : process.env.NEXT_PUBLIC_INTERNAL_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       global: {
@@ -68,7 +77,8 @@ export async function createClient(anon = false) {
               cookieStore.set(name, value, {
                 ...options,
                 path: '/',
-                sameSite: (options?.sameSite as 'lax' | 'strict' | 'none') || 'lax',
+                sameSite:
+                  (options?.sameSite as 'lax' | 'strict' | 'none') || 'lax',
               });
             });
           } catch {
@@ -85,4 +95,3 @@ export async function createClient(anon = false) {
     },
   );
 }
-
