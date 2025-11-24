@@ -12,8 +12,6 @@ import {
 } from '@/services/graphQL/relationTableHelper.graphql';
 import { getJobs } from '@/services/portfolio/getJobs.client';
 
-import { z } from 'zod';
-
 export const profileConfig: FormConfig = {
   redirect: {
     buildPath: async (formData, mode, variables) => {
