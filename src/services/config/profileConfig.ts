@@ -11,6 +11,7 @@ import {
   processGraphQLRelationTables,
 } from '@/services/graphQL/relationTableHelper.graphql';
 import { getJobs } from '@/services/portfolio/getJobs.client';
+import { z } from 'zod';
 
 export const profileConfig: FormConfig = {
   redirect: {
@@ -70,6 +71,9 @@ export const profileConfig: FormConfig = {
                   node {
                     competition_id
                     prize
+                    competitions {
+                      competition_name
+                    }
                   }
                 }
               }
@@ -133,8 +137,9 @@ export const profileConfig: FormConfig = {
   fields: [
     {
       fieldName: 'profile_full_name',
-      label: '이름',
+      label: '닉네임',
       type: 'inputList',
+      description: '닉네임은 프로필 페이지의 라우터에 사용됩니다.',
       required: true,
       columnInfo: { table: 'profile', column: 'profile_name' },
       inputConfig: {
@@ -143,8 +148,15 @@ export const profileConfig: FormConfig = {
           {
             name: 'name',
             type: 'text',
-            placeholder: '이름을 입력하세요',
+            placeholder: '닉네임을 입력하세요',
             required: true,
+            zodSchema: z
+              .string()
+              .min(1)
+              .regex(
+                /^[가-힣A-Za-z0-9_-]+$/,
+                '한글, 영문, 숫자, 언더스코어(_), 하이픈(-)만 사용할 수 있습니다.',
+              ),
           },
         ],
       },
@@ -279,9 +291,15 @@ export const profileConfig: FormConfig = {
         onlyOne: false,
         inputs: [
           {
+            name: 'competitions.competition_name',
+            type: 'text',
+            placeholder: '대회이름을 입력하세요',
+            required: true,
+          },
+          {
             name: 'prize',
             type: 'text',
-            placeholder: '수상내역을 입력하세요',
+            placeholder: '상명을 입력하세요',
             required: true,
           },
         ],

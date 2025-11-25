@@ -3,15 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--dns-result-order=ipv4first' next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_OPTIONS='--dns-result-order=ipv4first' next start",
     "lint": "eslint",
     "prepare": "husky"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.16",
     "@next/third-parties": "^16.0.3",
+    "@sentry/nextjs": "^10.26.0",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-popover": "^1.1.15",
     "@supabase/ssr": "^0.5.2",
@@ -51,21 +52,19 @@
     "lowlight": "^3.3.0",
     "next": "^15.5.6",
     "next-mdx-remote": "^5.0.0",
-    "next-nprogress-bar": "^2.4.7",
-    "nprogress": "^0.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.65.0",
     "react-hotkeys-hook": "^5.2.1",
     "tailwind-scrollbar": "^3.1.0",
-    "type-fest": "^4.41.0"
+    "type-fest": "^4.41.0",
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",
     "@types/dompurify": "^3.2.0",
     "@types/lodash.throttle": "^4.1.9",
     "@types/node": "^20.19.23",
-    "@types/nprogress": "^0.2.3",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "dotenv": "^17.2.3",

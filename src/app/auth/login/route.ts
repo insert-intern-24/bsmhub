@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 
 export const GET = async () => {
   try {
-    const supabase = await createClient();
+    const supabase = await createClient(true);
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
     const { data, error } = await supabase.auth.signInWithOAuth({

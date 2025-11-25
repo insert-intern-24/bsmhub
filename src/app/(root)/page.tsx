@@ -9,22 +9,14 @@ import AutoCarousel from '../components/card/home/AutoCarousel';
 import fs from 'node:fs';
 import path from 'node:path';
 import { sortProjectsByThumbnailAndGrade } from '@/utils/project/sortProjects';
-import { getProjectSortData } from '@/services/project/getProjectSortData.server';
 
 const ALLOWED_EXTENSIONS = new Set(['.png']);
 
 export default async function Home() {
   const projects = await getProjects();
 
-  // 정렬을 위한 추가 데이터 조회
-  const projectIds = projects.map((p) => p.id);
-  const sortDataMap = await getProjectSortData(projectIds);
-
   // 프로젝트 정렬
-  const sortedProjects = sortProjectsByThumbnailAndGrade(
-    projects,
-    sortDataMap,
-  );
+  const sortedProjects = sortProjectsByThumbnailAndGrade(projects);
 
   const user = await getAccount();
 

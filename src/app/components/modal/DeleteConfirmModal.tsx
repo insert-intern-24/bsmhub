@@ -21,7 +21,7 @@ const DeleteConfirmModal = ({
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   return (
-    <div className="flex-col items-start w-[32rem] p-[2rem] gap-6 bg-white border-0 outline-none">
+    <div className="flex flex-col items-start w-[32rem] max-w-full p-6 md:p-[2rem] gap-6 bg-white border-0 outline-none">
       <Title className="mb-3">{title}</Title>
 
       <Body className="mb-4 text-gray-700">

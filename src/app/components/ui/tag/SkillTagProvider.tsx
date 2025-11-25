@@ -104,7 +104,24 @@ const SkillTagProvider = ({
     }
 
     try {
-      const skillId = await getOrCreateSkillId(trimmedValue);
+      // 1. 로컬 상태(skills)에서 먼저 검색
+      let skillId: number | undefined;
+      
+      if (skills) {
+        const existingSkill = skills.find(
+          (s) => s.skill_name.toLowerCase() === trimmedValue.toLowerCase()
+        );
+        if (existingSkill) {
+          skillId = existingSkill.skill_id;
+        }
+      }
+
+      // 2. 로컬에 없으면 에러 처리
+      if (skillId === undefined) {
+        showToast('등록되지 않은 스킬입니다.', 'error', 3000, '오류');
+        return;
+      }
+
       if (inputs.some((input) => Number(input[0].value) === skillId)) {
         dispatch({ type: 'SET_ACTIVE', index: null });
         return;

@@ -14,12 +14,27 @@ export type ProjectType = Pick<
   'project_id' | 'project_name' | 'description' | 'project_thumbnail'
 >;
 
+// CardProps를 확장하여 정렬에 필요한 데이터를 포함하는 타입 정의
+export interface ProjectData extends CardProps {
+  createdAt: string | null;
+  joinAt: string | null;
+  hasHtmlDescription: boolean;
+}
+
 export type ProjectWithProfileType = {
   project_id: number;
   project_name: string;
   description: string;
   project_thumbnail: string;
-  profile: ProjectOwnerProfile;
+  created_at: string | null;
+  project_html_description: {
+    html_content: string;
+  }[];
+  profile: ProjectOwnerProfile & {
+    student?: {
+      join_at: string;
+    } | null;
+  };
   project_category: Pick<Tables<'project_category'>, 'category_name'>;
   project_contributors: ProjectContributor[];
 };
@@ -29,6 +44,10 @@ const PROJECT_SELECT_QUERY = `
   project_name,
   description,
   project_thumbnail,
+  created_at,
+  project_html_description (
+    html_content
+  ),
   profile!projects_owner_fkey (
     profile_id,
     profile_name,
@@ -36,7 +55,8 @@ const PROJECT_SELECT_QUERY = `
     is_team,
     is_official,
     student!profile_owner_fkey1 (
-      name
+      name,
+      join_at
     )
   ),
   project_category!projects_category_id_fkey (
@@ -56,9 +76,9 @@ const PROJECT_SELECT_QUERY = `
 `;
 
 /**
- * 프로젝트 데이터를 CardProps로 변환하는 helper 함수
+ * 프로젝트 데이터를 ProjectData로 변환하는 helper 함수
  */
-function mapProjectToCardProps(project: ProjectWithProfileType): CardProps {
+function mapProjectToProjectData(project: ProjectWithProfileType): ProjectData {
   return {
     id: project.project_id,
     title: project.project_name,
@@ -74,10 +94,18 @@ function mapProjectToCardProps(project: ProjectWithProfileType): CardProps {
       is_team: project.profile.is_team,
       student: project.profile.student,
     }),
+    // 정렬 데이터 추가
+    createdAt: project.created_at,
+    joinAt: project.profile.student?.join_at ?? null,
+    hasHtmlDescription:
+      project.project_html_description &&
+      project.project_html_description.length > 0 &&
+      !!project.project_html_description[0].html_content &&
+      project.project_html_description[0].html_content.trim() !== '',
   };
 }
 
-async function fetchProjects(limit?: number): Promise<CardProps[]> {
+async function fetchProjects(limit?: number): Promise<ProjectData[]> {
   const supabase = await createClient();
   let query = supabase.from('projects').select(PROJECT_SELECT_QUERY);
 
@@ -92,17 +120,17 @@ async function fetchProjects(limit?: number): Promise<CardProps[]> {
     return [];
   }
 
-  return (data as ProjectWithProfileType[]).map(mapProjectToCardProps);
+  return (data as ProjectWithProfileType[]).map(mapProjectToProjectData);
 }
 
-export const getProjects = async (limit?: number): Promise<CardProps[]> => {
+export const getProjects = async (limit?: number): Promise<ProjectData[]> => {
   return fetchProjects(limit);
 };
 
 export const getProjectsByProfileName = async (
   profileName: string,
   limit?: number,
-): Promise<CardProps[]> => {
+): Promise<ProjectData[]> => {
   const supabase = await createClient();
 
   // 먼저 profileName으로 사용자의 프로필 ID를 찾습니다
@@ -165,5 +193,5 @@ export const getProjectsByProfileName = async (
     return [];
   }
 
-  return (data as ProjectWithProfileType[]).map(mapProjectToCardProps);
+  return (data as ProjectWithProfileType[]).map(mapProjectToProjectData);
 };

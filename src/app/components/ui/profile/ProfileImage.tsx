@@ -2,6 +2,11 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/app/components/tiptap/tiptap-ui-primitive/tooltip/tooltip';
 
 type PresetSize = 'tiny' | 'small' | 'medium' | 'large';
 type CustomSize = { width: number; height: number };
@@ -21,13 +26,15 @@ const DEFAULT_FALLBACK_PROFILE =
 
 interface ProfileImageProps {
   src?: string | null;
-  /** 프로필 이름 (alt 텍스트 생성에 사용) */
+  /** 프로필 이름 (alt 텍스트 및 툴팁에 사용) */
   name?: string;
   size: Size;
   shape?: Shape;
   className?: string;
   /** true일 경우 name을 통해 Link 생성 */
   canRedirect?: boolean;
+  /** true일 경우 호버 시 툴팁 표시 */
+  showTooltip?: boolean;
 }
 
 const getShapeClassName = (shape: Shape): string => {
@@ -50,6 +57,7 @@ function ProfileImage({
   shape = 'circle',
   className,
   canRedirect,
+  showTooltip = false,
 }: ProfileImageProps) {
   const { width, height } = typeof size === 'string' ? sizeMap[size] : size;
 
@@ -77,11 +85,22 @@ function ProfileImage({
     </div>
   );
 
-  if (canRedirect && name) {
-    return <Link href={`/portfolio/${encodeURIComponent(name)}`}>{image}</Link>;
+  const imageWithLink = canRedirect && name ? (
+    <Link href={`/portfolio/${encodeURIComponent(name)}`}>{image}</Link>
+  ) : (
+    image
+  );
+
+  if (showTooltip && name) {
+    return (
+      <Tooltip placement="top" delay={0}>
+        <TooltipTrigger asChild>{imageWithLink}</TooltipTrigger>
+        <TooltipContent>{name}</TooltipContent>
+      </Tooltip>
+    );
   }
 
-  return image;
+  return imageWithLink;
 }
 
 export default ProfileImage;

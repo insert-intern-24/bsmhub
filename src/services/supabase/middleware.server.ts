@@ -39,7 +39,34 @@ export async function updateSession(request: NextRequest) {
 
   // IMPORTANT: DO NOT REMOVE auth.getUser()
 
-  await supabase.auth.getUser();
+  try {
+    await supabase.auth.getUser();
+  } catch (error) {
+    // console.error('Supabase auth error:', error);
+    // If the refresh token is invalid, we should clear the cookies to prevent
+    // the browser from sending the invalid token again and again.
+    // This effectively logs the user out.
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      (error as { code?: string }).code === 'refresh_token_already_used'
+    ) {
+      // Clear all cookies
+      const cookies = request.cookies.getAll();
+      cookies.forEach(({ name }) => {
+        if (name.startsWith('sb-')) {
+           supabaseResponse.cookies.set(name, '', { maxAge: 0 });
+        }
+      });
+      // Also clear the main response cookies just in case
+      request.cookies.getAll().forEach(({ name }) => {
+         if (name.startsWith('sb-')) {
+            request.cookies.set(name, '');
+         }
+      });
+    }
+  }
 
   // console.log(user);
 

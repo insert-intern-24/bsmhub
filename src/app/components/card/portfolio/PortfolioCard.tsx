@@ -37,6 +37,7 @@ const PortfolioCard = ({
             src={profile.profile_image}
             name={displayName}
             size="small"
+            showTooltip={true}
           />
           <ProfileInfo
             profile={{ ...profile, name: displayName }}
@@ -52,6 +53,7 @@ const PortfolioCard = ({
           src={profile.profile_image}
           name={displayName}
           size="small"
+          showTooltip={true}
         />
 
         <div className="flex-col gap-4 w-full overflow-hidden">

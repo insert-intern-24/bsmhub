@@ -15,8 +15,8 @@ import type { Metadata } from 'next';
 import GoogleOneTab from '@/app/components/feature/auth/GoogleOneTab';
 import SupabaseSessionSync from './components/feature/auth/SupabaseSessionSync';
 import BusinessCardHolder from './components/card/home/BusinessCardHolder';
-import NavigationProgressBar from './components/ProgressBar';
 import NavigationEvents from './components/NavigationEvents';
+import NavigationProgressBar from './components/ProgressBar';
 
 export const metadata: Metadata = {
   title: 'BSMHub',

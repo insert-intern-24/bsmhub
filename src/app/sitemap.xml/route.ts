@@ -1,5 +1,5 @@
 // src/app/api/sitemap-index/route.ts
-import sitemap from './sitemap';
+import sitemap from './generator';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600; // Revalidate every hour

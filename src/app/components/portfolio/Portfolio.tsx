@@ -20,7 +20,13 @@ interface PortfolioProps {
 }
 
 const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
-  const profile = (await getProfile(profileName)) ?? notFound();
+  const profile = await getProfile(profileName);
+  
+  // 프로필이 없으면 404 페이지 표시
+  if (!profile) {
+    notFound();
+  }
+  
   const uuid = profile.profile_id;
   const studentInfo = profile.student;
 
