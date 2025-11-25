@@ -186,10 +186,10 @@ const InputListProvider = ({
 
       // 입력값으로 필터링
       const filtered = tableData.filter((item) => {
-        const itemName = (
-          item[dropdownInputConfig.nameColumnName] as string
-        )?.toLowerCase();
-        return itemName?.includes(value.toLowerCase());
+        const itemName = String(
+          item[dropdownInputConfig.nameColumnName] ?? '',
+        ).toLowerCase();
+        return itemName.includes(String(value ?? '').toLowerCase());
       });
       setSuggestions(filtered);
       setShowSuggestions(filtered.length > 0);
