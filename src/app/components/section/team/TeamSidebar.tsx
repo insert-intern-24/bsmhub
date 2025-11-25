@@ -68,6 +68,7 @@ const TeamSidebar = async ({ teamDetail, projectCount }: TeamSidebarProps) => {
               shape="circle"
               name={member.profile.profile_name}
               canRedirect
+              showTooltip
             />
           ))}
         </div>
