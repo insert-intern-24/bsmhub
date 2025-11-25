@@ -7,7 +7,7 @@ import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConver
 
 export interface CardProps {
   id: number;
-  title?: string;
+  title: string;
   description: string;
   projectImage: string;
   ownerName: string;
@@ -43,7 +43,7 @@ const Card = ({
             className="object-cover"
           />
         </figure>
-        <ProjectCardMetadata description={description} authors={authors} />
+        <ProjectCardMetadata title={title} description={description} authors={authors} />
       </div>
     </Link>
   );
