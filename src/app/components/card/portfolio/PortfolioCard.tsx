@@ -12,6 +12,11 @@ const PortfolioCard = ({
   studentName,
   maxProjects,
 }: PortfolioCardProps) => {
+  // 중복 제거: 프로젝트 title 기준으로 집합 사용
+  const uniqueProjects = Array.from(
+    new Map(projects.map(project => [project.title, project])).values()
+  );
+  
   // 팀이 아닌 경우 studentName을 사용, 없으면 profile.name 사용
   const displayName = studentName || profile.name;
   const content = (
@@ -26,7 +31,7 @@ const PortfolioCard = ({
       <div className="@[450px]:hidden w-full h-fit flex-col flex-center">
         {/* Project Images Header - 모바일은 최대 3개 */}
         <ProjectImages
-          projects={projects}
+          projects={uniqueProjects}
           variant="default"
           maxProjects={maxProjects ?? 3}
         />
@@ -64,9 +69,9 @@ const PortfolioCard = ({
           />
 
           {/* Project Images - 데스크톱은 무제한 */}
-          {projects.length ? (
+          {uniqueProjects.length ? (
             <ProjectImages
-              projects={projects}
+              projects={uniqueProjects}
               variant="long"
               maxProjects={maxProjects}
             />
