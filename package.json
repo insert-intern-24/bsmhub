@@ -23,6 +23,7 @@
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tanstack/react-query": "^5.90.5",
     "@tanstack/react-query-devtools": "^5.90.2",
+    "@tiptap/core": "^3.11.0",
     "@tiptap/extension-code-block-lowlight": "^3.11.0",
     "@tiptap/extension-highlight": "^3.11.0",
     "@tiptap/extension-horizontal-rule": "^3.11.0",
