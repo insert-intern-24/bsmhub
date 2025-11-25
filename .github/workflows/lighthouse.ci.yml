@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: ['develop', 'release/v2']
+    branches: ["develop", "release/v2"]
 permissions:
   contents: read
 jobs:
@@ -11,6 +11,7 @@ jobs:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
       NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
+      NEXT_PUBLIC_SUPABASE_INTERNAL_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
