@@ -9,6 +9,7 @@ import AutoCarousel from '../components/card/home/AutoCarousel';
 import fs from 'node:fs';
 import path from 'node:path';
 import { sortProjectsByThumbnailAndGrade } from '@/utils/project/sortProjects';
+import { carouselLinkMap } from '@/services/config/carouselConfig';
 
 const ALLOWED_EXTENSIONS = new Set(['.png']);
 
@@ -36,13 +37,12 @@ export default async function Home() {
     carouselImages = [];
   }
 
-  const carouselSlides = carouselImages.map((src, index) => ({
-    src,
-    href:
-      index === 1
-        ? 'https://sleepy-apple-8a6.notion.site/2b5d5ab3072f8074970ee64034050974'
-        : undefined,
-  }));
+  // 파일명 기반으로 링크 매핑 (확장자 포함)
+  const carouselSlides = carouselImages.map((src) => {
+    const fileName = path.basename(src); // 예: '0.png'
+    const href = carouselLinkMap[fileName];
+    return { src, href };
+  });
 
   return (
     <div className="flex-col gap-4 w-full">
