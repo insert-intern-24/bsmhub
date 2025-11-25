@@ -36,7 +36,9 @@ const PortfolioCard = ({
           <ProfileImage
             src={profile.profile_image}
             name={displayName}
+            studentName={studentName}
             size="small"
+            showTooltip={true}
           />
           <ProfileInfo
             profile={{ ...profile, name: displayName }}
@@ -51,7 +53,9 @@ const PortfolioCard = ({
         <ProfileImage
           src={profile.profile_image}
           name={displayName}
+          studentName={studentName}
           size="small"
+          showTooltip={true}
         />
 
         <div className="flex-col gap-4 w-full overflow-hidden">
