@@ -35,9 +35,9 @@ export const isExternalLink = (
     }
   }
 
-  // 기본 패턴: /로 시작하는 경우만 내부 링크
-  // 그 외의 모든 경우는 외부 링크로 처리
-  return !url.startsWith('/');
+  // 기본 패턴: http:// 또는 https://로 시작하는 경우만 외부 링크
+  // 그 외의 모든 경우는 내부 링크로 처리
+  return /^https?:\/\//i.test(url);
 };
 
 /**
@@ -46,12 +46,13 @@ export const isExternalLink = (
  * @returns 프로토콜이 포함된 URL
  */
 export const normalizeExternalUrl = (url: string): string => {
-  // 이미 프로토콜이 있으면 그대로 반환
-  if (/^(https?:\/\/|\/\/)/i.test(url)) {
+  // 이미 http:// 또는 https://로 시작하면 그대로 반환
+  if (/^https?:\/\//i.test(url)) {
     return url;
   }
 
   // 프로토콜이 없으면 https:// 추가
+  // (입력 검증에서 http:// 또는 https://만 허용하므로 실제로는 호출되지 않지만, 안전을 위해 유지)
   return `https://${url}`;
 };
 

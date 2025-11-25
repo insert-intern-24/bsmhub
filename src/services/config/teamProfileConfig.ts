@@ -6,6 +6,7 @@ import {
   createChangeCalculator,
   processGraphQLRelationTables,
 } from '@/services/graphQL/relationTableHelper.graphql';
+import { z } from 'zod';
 
 export const teamProfileConfig: FormConfig = {
   redirect: {
@@ -174,6 +175,15 @@ export const teamProfileConfig: FormConfig = {
             type: 'text',
             placeholder: '링크 URL을 입력하세요',
             required: true,
+            // 외부 링크는 http:// 또는 https://로만 시작하도록 제한
+            // (mailto:, sms:, tel:, geo:, itms:, intent: 등 다른 프로토콜 및 상대 경로 차단)
+            zodSchema: z
+              .string()
+              .min(1)
+              .regex(
+                /^https?:\/\//i,
+                '링크는 http:// 또는 https://로 시작해야 합니다.',
+              ),
           },
           {
             name: 'alt',
@@ -183,9 +193,6 @@ export const teamProfileConfig: FormConfig = {
           },
         ],
       },
-      // 외부 링크 판단을 위한 정규식: /로 시작하지 않는 경우 외부 링크
-      // (내부 링크는 /로 시작, 외부 링크는 그 외 모든 경우)
-      externalLinkPattern: /^(?!\/)/,
     } as FormFieldConfig,
     {
       fieldName: 'team_members',
