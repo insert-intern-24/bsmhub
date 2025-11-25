@@ -15,6 +15,8 @@ import type { Metadata } from 'next';
 import GoogleOneTab from '@/app/components/feature/auth/GoogleOneTab';
 import SupabaseSessionSync from './components/feature/auth/SupabaseSessionSync';
 import BusinessCardHolder from './components/card/home/BusinessCardHolder';
+import NavigationEvents from './components/NavigationEvents';
+import NavigationProgressBar from './components/ProgressBar';
 
 export const metadata: Metadata = {
   title: 'BSMHub',
@@ -30,7 +32,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko">
+    /*
+      suppressHydrationWarning: NProgress 등 클라이언트 전용 컴포넌트(NavigationProgressBar, NavigationEvents)로 인해
+      서버와 클라이언트 렌더링 결과가 일치하지 않는 hydration 경고를 억제합니다.
+    */
+    <html lang="ko" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
@@ -41,6 +47,8 @@ export default function RootLayout({
         <GoogleAnalytics gaId="G-M1JSE5S34F" />
       </head>
       <body className="bg-[#F5F5F7] pt-14">
+        <NavigationProgressBar />
+        <NavigationEvents />
         <QueryProvider>
           <ModalProvider>
             <ToastProvider>
