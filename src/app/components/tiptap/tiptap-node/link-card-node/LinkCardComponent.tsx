@@ -66,9 +66,9 @@ export const LinkCardComponent = ({
           </div>
         )}
         {!image && loading && (
-            <div className="link-card__image link-card__image--placeholder">
-                Loading...
-            </div>
+          <div className="link-card__image link-card__image--placeholder">
+            Loading...
+          </div>
         )}
       </a>
     </NodeViewWrapper>
