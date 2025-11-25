@@ -139,15 +139,17 @@ export default function SearchTab({
       {/* 포트폴리오 목록 */}
       <section className="flex-col gap-3 p-4 w-full bg-[#FAFAFA] rounded-lg">
         {filteredData.length > 0 ? (
-          filteredData.map((data, index) => (
-            <PortfolioCard
-              key={index}
-              profile={data.profile}
-              projects={data.projects}
-              src={`/portfolio/${encodeURIComponent(data.profile.name)}`}
-              studentName={data.student?.name}
-            />
-          ))
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+            {filteredData.map((data, index) => (
+              <PortfolioCard
+                key={index}
+                profile={data.profile}
+                projects={data.projects}
+                src={`/portfolio/${encodeURIComponent(data.profile.name)}`}
+                studentName={data.student?.name}
+              />
+            ))}
+          </div>
         ) : (
           <div className="text-center text-gray-500">
             {portfolioData.length === 0
