@@ -4,9 +4,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 
+type CarouselSlide = string | {
+  src: string;
+  href?: string;
+};
+
 interface AutoCarouselProps {
   interval?: number;
-  images: string[];
+  images: CarouselSlide[];
 }
 
 // 간단한 자동 슬라이드 캐러셀
@@ -45,8 +50,11 @@ export default function AutoCarousel({ interval = 5000, images }: AutoCarouselPr
         className="flex transition-transform duration-500 ease-in-out absolute bottom-0 left-0 w-full h-full"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
-        {images.map((src, index) => (
-          <div key={index} className="relative flex-shrink-0 w-full h-full">
+        {images.map((slide, index) => {
+          const { src, href } =
+            typeof slide === 'string' ? { src: slide } : slide;
+
+          const slideContent = (
             <Image
               src={src}
               alt={`슬라이드 ${index + 1}`}
@@ -57,8 +65,28 @@ export default function AutoCarousel({ interval = 5000, images }: AutoCarouselPr
               quality={90}
               priority
             />
-          </div>
-        ))}
+          );
+
+          if (href) {
+            return (
+              <a
+                key={index}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="relative flex-shrink-0 w-full h-full"
+              >
+                {slideContent}
+              </a>
+            );
+          }
+
+          return (
+            <div key={index} className="relative flex-shrink-0 w-full h-full">
+              {slideContent}
+            </div>
+          );
+        })}
       </div>
 
       {len > 1 && (

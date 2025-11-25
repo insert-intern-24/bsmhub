@@ -9,6 +9,7 @@ import AutoCarousel from '../components/card/home/AutoCarousel';
 import fs from 'node:fs';
 import path from 'node:path';
 import { sortProjectsByThumbnailAndGrade } from '@/utils/project/sortProjects';
+import { carouselLinkMap } from '@/services/config/carouselConfig';
 
 const ALLOWED_EXTENSIONS = new Set(['.png']);
 
@@ -36,13 +37,20 @@ export default async function Home() {
     carouselImages = [];
   }
 
+  // 파일명 기반으로 링크 매핑 (확장자 포함)
+  const carouselSlides = carouselImages.map((src) => {
+    const fileName = path.basename(src); // 예: '0.png'
+    const href = carouselLinkMap[fileName];
+    return { src, href };
+  });
+
   return (
     <div className="flex-col gap-4 w-full">
       <OneTapComponent />
       <div className="flex-center">
         <div className="h-[19.4rem] w-full justify-between flex items-end mobile:justify-center mobile:h-[14.75rem]">
           <div className="h-full w-[54rem] mobile:hidden">
-            <AutoCarousel images={carouselImages} />
+            <AutoCarousel images={carouselSlides} />
           </div>
           <div className="h-[14.75rem] mobile:w-full">
             <AutoSlidingBusinessCard />
