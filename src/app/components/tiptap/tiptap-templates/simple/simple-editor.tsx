@@ -318,13 +318,6 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
             <Toolbar
               ref={toolbarRef}
               data-variant="fixed"
-              style={{
-                ...(isMobile
-                  ? {
-                      bottom: `calc(100% - ${height - rect.y}px)`,
-                    }
-                  : {}),
-              }}
             >
               {mobileView === "main" ? (
                 <MainToolbarContent
