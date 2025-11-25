@@ -211,6 +211,7 @@ export function SimpleEditorViewer({
             target="_blank"
             rel="noopener noreferrer"
             className="link-card"
+            aria-label={`링크 카드: ${title || href}`}
           >
             <div className="link-card__content">
               <div className="link-card__title">{title || href}</div>
