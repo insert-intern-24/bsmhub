@@ -11,7 +11,10 @@ export function convertFromDatabaseImageURL(url: string): string {
   const internalSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_INTERNAL_URL?.replace(/\/$/, '') || '';
   const externalSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, '') || '';
   
-  if(cleanedUrl.endsWith('.svg')) {
+  const excludedExtensions = ['.svg', '.ico', '.bmp'];
+  const isExcluded = excludedExtensions.some(ext => cleanedUrl.toLowerCase().endsWith(ext));
+
+  if(isExcluded) {
     cleanedUrl = cleanedUrl.replace('{{supabaseHost}}', externalSupabaseUrl);
   }else {
     // {{supabaseHost}}를 실제 URL로 변환
