@@ -1,7 +1,8 @@
 import { FormConfig } from '@/app/components/ui/input/types/inputTypes';
+import { ZodString } from 'zod';
 
 /**
- * Config에서 외부 링크 패턴을 가져와서 URL이 외부 링크인지 판단하는 함수
+ * Config에서 Zod 스키마의 정규식을 가져와서 URL이 외부 링크인지 판단하는 함수
  * @param url - 확인할 URL
  * @param config - FormConfig 객체
  * @param fieldName - 링크 필드명 (예: 'project_link', 'profile_link')
@@ -12,15 +13,26 @@ export const isExternalLink = (
   config: FormConfig,
   fieldName: string,
 ): boolean => {
-  // config에 정의된 외부 링크 패턴 사용
+  // config에서 해당 필드 찾기
   const linkField = config.fields.find((field) => field.fieldName === fieldName);
 
-  // BaseFieldConfig의 externalLinkPattern 속성 접근
-  const externalLinkPattern = (linkField as { externalLinkPattern?: RegExp })
-    ?.externalLinkPattern;
+  // inputList 타입인 경우 inputs 배열에서 'link' input 찾기
+  if (linkField && linkField.type === 'inputList') {
+    const linkInput = linkField.inputConfig.inputs.find(
+      (input) => input.name === 'link',
+    );
 
-  if (externalLinkPattern) {
-    return externalLinkPattern.test(url);
+    // Zod 스키마에서 정규식 추출
+    if (linkInput?.zodSchema) {
+      const zodSchema = linkInput.zodSchema as ZodString;
+      // Zod 스키마의 내부 구조에서 regex check 찾기
+      const checks = zodSchema._def.checks as unknown as Array<{ kind: string; regex?: RegExp }>;
+      const regexCheck = checks?.find((check) => check.kind === 'regex');
+      
+      if (regexCheck?.regex) {
+        return regexCheck.regex.test(url);
+      }
+    }
   }
 
   // 기본 패턴: /로 시작하는 경우만 내부 링크

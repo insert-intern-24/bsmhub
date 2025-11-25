@@ -89,8 +89,6 @@ interface BaseFieldConfig {
       toInsert: Record<string, unknown>[];
     }; // 변경사항 계산 함수
   };
-  // 외부 링크 판단을 위한 정규식 (링크 필드에 사용)
-  externalLinkPattern?: RegExp;
 }
 
 // InputList 타입
