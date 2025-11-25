@@ -36,7 +36,6 @@ const PortfolioCard = ({
           <ProfileImage
             src={profile.profile_image}
             name={displayName}
-            studentName={studentName}
             size="small"
             showTooltip={true}
           />
@@ -53,7 +52,6 @@ const PortfolioCard = ({
         <ProfileImage
           src={profile.profile_image}
           name={displayName}
-          studentName={studentName}
           size="small"
           showTooltip={true}
         />
