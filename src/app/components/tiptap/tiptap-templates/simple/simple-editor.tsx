@@ -28,6 +28,7 @@ import "@/app/components/tiptap/tiptap-node/heading-node/heading-node.scss"
 import "@/app/components/tiptap/tiptap-node/paragraph-node/paragraph-node.scss"
 import "@/app/components/tiptap/tiptap-node/figma-node/figma-node.scss"
 import "@/app/components/tiptap/tiptap-node/youtube-node/youtube-node.scss"
+import "@/app/components/tiptap/tiptap-node/link-card-node/link-card.scss"
 
 // Highlight.js styles for syntax highlighting
 // Using a theme that works well in both light and dark modes

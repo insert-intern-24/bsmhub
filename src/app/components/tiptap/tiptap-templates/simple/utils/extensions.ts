@@ -16,6 +16,7 @@ import { ImageUploadNode } from "@/app/components/tiptap/tiptap-node/image-uploa
 import { YoutubeNode } from "@/app/components/tiptap/tiptap-node/youtube-node"
 import { FigmaNode } from "@/app/components/tiptap/tiptap-node/figma-node"
 import { CodeBlockNode } from "@/app/components/tiptap/tiptap-node/code-block-node/code-block-node"
+import { LinkCardNode } from "@/app/components/tiptap/tiptap-node/link-card-node/link-card-node"
 
 // Register common languages for code highlighting
 import javascript from "highlight.js/lib/languages/javascript"
@@ -133,6 +134,7 @@ export function createEditorExtensions(
       },
     }),
     CodeBlockLowlight.extend({
+      draggable: true,
       addNodeView() {
         return ReactNodeViewRenderer(CodeBlockNode)
       },
@@ -151,6 +153,7 @@ export function createEditorExtensions(
     Subscript as Extension,
     Selection as Extension,
     FigmaNode as Extension,
+    LinkCardNode as Extension,
   ]
 
   // ImageUploadNode는 upload handler가 제공된 경우에만 추가
