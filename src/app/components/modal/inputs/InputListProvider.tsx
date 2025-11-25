@@ -111,39 +111,44 @@ const InputListProvider = ({
   const { showToast } = useToast();
   const debouncedCurrentFormData = useDebounce(currentFormData, 300);
 
+  // 정적 쿼리(dependsOnFormData=false)의 초기 로드 완료 여부를 추적
+  const staticQueryLoadedRef = React.useRef(false);
+
   // dropdownInputConfig가 있으면 테이블 데이터 로드
   React.useEffect(() => {
-    if (dropdownInputConfig?.query) {
-      // dependsOnFormData가 true일 때만 debouncedCurrentFormData를 사용하고,
-      // 그렇지 않으면(정적 쿼리) 의존성 배열에 포함하지 않음(또는 undefined 전달)
-      const queryData = dropdownInputConfig.dependsOnFormData
-        ? debouncedCurrentFormData
-        : undefined;
-
-      // 커스텀 쿼리 함수가 있으면 사용
-      dropdownInputConfig
-        .query(queryData)
-        .then((data) => {
-          setTableData(data);
-        })
-        .catch((error) => {
-          showToast(
-            error instanceof Error
-              ? error.message
-              : '데이터를 불러오는 중 오류가 발생했습니다.',
-            'error',
-            3000,
-            '오류',
-          );
-        });
+    if (!dropdownInputConfig?.query) {
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    dropdownInputConfig,
-    showToast,
-    // dependsOnFormData가 true일 때만 debouncedCurrentFormData가 변경될 때 재실행
-    dropdownInputConfig?.dependsOnFormData ? debouncedCurrentFormData : null,
-  ]);
+
+    // 정적 쿼리(dependsOnFormData=false)의 경우 초기 로드만 수행
+    if (!dropdownInputConfig.dependsOnFormData) {
+      if (staticQueryLoadedRef.current) {
+        return;
+      }
+      staticQueryLoadedRef.current = true;
+    }
+
+    const queryData = dropdownInputConfig.dependsOnFormData
+      ? debouncedCurrentFormData
+      : undefined;
+
+    // 커스텀 쿼리 함수가 있으면 사용
+    dropdownInputConfig
+      .query(queryData)
+      .then((data) => {
+        setTableData(data);
+      })
+      .catch((error) => {
+        showToast(
+          error instanceof Error
+            ? error.message
+            : '데이터를 불러오는 중 오류가 발생했습니다.',
+          'error',
+          3000,
+          '오류',
+        );
+      });
+  }, [dropdownInputConfig, showToast, debouncedCurrentFormData]);
 
   // input 클릭/포커스 시 드롭다운 표시
   const handleInputFocus = (index: number) => {
