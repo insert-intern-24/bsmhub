@@ -32,8 +32,8 @@
   }
 
   &[data-variant="fixed"] {
-    position: fixed;
-    top: 0;
+    position: sticky;
+    top: 41px;
     left: 0;
     right: 0;
     z-index: 10;
@@ -55,7 +55,7 @@
     @media (max-width: 480px) {
       position: fixed;
       top: auto;
-      bottom: 0;
+      bottom: 79px;
       left: 0;
       right: 0;
       height: calc(var(--tt-toolbar-height) + var(--tt-safe-area-bottom));
