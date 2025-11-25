@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Link from 'next/link';
 import { PortfolioCardProps } from './types';
 import ProfileInfo from '@/app/components/ui/profile/portfolio/ProfileInfo';
@@ -12,6 +12,20 @@ const PortfolioCard = ({
   studentName,
   maxProjects,
 }: PortfolioCardProps) => {
+  // 중복 제거: 프로젝트 title 기준으로 첫 번째 항목만 유지
+  const uniqueProjects = useMemo(
+    () =>
+      Array.from(
+        projects.reduce((map, project) => {
+          if (!map.has(project.title)) {
+            map.set(project.title, project);
+          }
+          return map;
+        }, new Map()).values()
+      ),
+    [projects]
+  );
+
   // 팀이 아닌 경우 studentName을 사용, 없으면 profile.name 사용
   const displayName = studentName || profile.name;
   const content = (
@@ -26,7 +40,7 @@ const PortfolioCard = ({
       <div className="@[450px]:hidden w-full h-fit flex-col flex-center">
         {/* Project Images Header - 모바일은 최대 3개 */}
         <ProjectImages
-          projects={projects}
+          projects={uniqueProjects}
           variant="default"
           maxProjects={maxProjects ?? 3}
         />
@@ -64,9 +78,9 @@ const PortfolioCard = ({
           />
 
           {/* Project Images - 데스크톱은 무제한 */}
-          {projects.length ? (
+          {uniqueProjects.length ? (
             <ProjectImages
-              projects={projects}
+              projects={uniqueProjects}
               variant="long"
               maxProjects={maxProjects}
             />
