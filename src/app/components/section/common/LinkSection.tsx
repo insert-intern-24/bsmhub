@@ -42,7 +42,7 @@ export const LinkSection = ({
                 key={index}
                 href={href}
                 {...(isExternal
-                  ? { target: '_blank', rel: 'noopener noreferrer' }
+                  ? { target: '_blank', rel: 'noopener noreferrer nofollow' }
                   : {})}
                 className="text-detail cursor-pointer hover:underline flex items-center gap-0.5"
               >
