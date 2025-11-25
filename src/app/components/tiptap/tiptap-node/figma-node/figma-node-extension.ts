@@ -93,6 +93,22 @@ export const FigmaNode = Node.create<FigmaNodeOptions>({
           }
         },
       },
+      height: {
+        default: 450,
+        parseHTML: (element) => {
+          const iframe = element.querySelector("iframe")
+          const heightAttr = iframe?.getAttribute("height") || element.getAttribute("height")
+          return heightAttr ? parseInt(heightAttr, 10) : 450
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.height) {
+            return {}
+          }
+          return {
+            "data-height": attributes.height,
+          }
+        },
+      }
     }
   },
 

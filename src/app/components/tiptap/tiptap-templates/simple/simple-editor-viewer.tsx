@@ -192,7 +192,7 @@ export function SimpleEditorViewer({
             <iframe
               src={embedUrl}
               width="100%"
-              height="450"
+              height={node.attrs.height || "450"}
               frameBorder="0"
               allowFullScreen
               title="Figma Embed"
