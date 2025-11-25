@@ -14,7 +14,7 @@ const LabelOfInputs = ({
       {required && <span className="text-red-primary whitespace-nowrap">*</span>}
       {description && (
         <span className="ml-1 text-gray-footer whitespace-nowrap text-label">
-          {"(" + description + ")"}
+          {`(${description})`}
         </span>
       )}
     </div>
