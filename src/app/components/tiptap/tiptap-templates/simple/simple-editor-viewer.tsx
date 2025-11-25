@@ -3,6 +3,7 @@
 import { useMemo } from "react"
 import { renderToReactElement } from "@tiptap/static-renderer/pm/react"
 import { Node as ProsemirrorNode } from "@tiptap/pm/model"
+import { IconLink } from "@tabler/icons-react"
 import type { SimpleEditorViewerProps } from "./types"
 import { createEditorExtensions } from "./utils/extensions"
 
@@ -17,6 +18,7 @@ import "@/app/components/tiptap/tiptap-node/heading-node/heading-node.scss"
 import "@/app/components/tiptap/tiptap-node/paragraph-node/paragraph-node.scss"
 import "@/app/components/tiptap/tiptap-node/figma-node/figma-node.scss"
 import "@/app/components/tiptap/tiptap-node/youtube-node/youtube-node.scss"
+import "@/app/components/tiptap/tiptap-node/link-card-node/link-card.scss"
 
 // Highlight.js styles for syntax highlighting
 import "highlight.js/styles/github.css"
@@ -196,6 +198,35 @@ export function SimpleEditorViewer({
               title="Figma Embed"
             ></iframe>
           </div>
+        </div>
+      )
+    },
+    linkCard: ({ node }: { node: ProsemirrorNode }) => {
+      const { href, title, description, image } = node.attrs
+
+      return (
+        <div className="link-card-wrapper">
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link-card"
+          >
+            <div className="link-card__content">
+              <div className="link-card__title">{title || href}</div>
+              <div className="link-card__description">{description}</div>
+              <div className="link-card__url">
+                <IconLink size={14} />
+                {href ? new URL(href).hostname : ""}
+              </div>
+            </div>
+            {image && (
+              <div className="link-card__image">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={image} alt={title || "Link preview"} />
+              </div>
+            )}
+          </a>
         </div>
       )
     },
