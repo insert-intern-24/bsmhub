@@ -140,9 +140,9 @@ export default function SearchTab({
       <section className="flex-col gap-3 p-4 w-full bg-[#FAFAFA] rounded-lg">
         {filteredData.length > 0 ? (
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-            {filteredData.map((data, index) => (
+            {filteredData.map((data) => (
               <PortfolioCard
-                key={index}
+                key={data.profile.name}
                 profile={data.profile}
                 projects={data.projects}
                 src={`/portfolio/${encodeURIComponent(data.profile.name)}`}
