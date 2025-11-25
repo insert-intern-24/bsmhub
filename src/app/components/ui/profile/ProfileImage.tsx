@@ -26,7 +26,7 @@ const DEFAULT_FALLBACK_PROFILE =
 
 interface ProfileImageProps {
   src?: string | null;
-  /** 프로필 이름 (alt 텍스트 생성에 사용) */
+  /** 프로필 이름 (alt 텍스트 및 툴팁에 사용) */
   name?: string;
   size: Size;
   shape?: Shape;
@@ -93,7 +93,7 @@ function ProfileImage({
 
   if (showTooltip && name) {
     return (
-      <Tooltip placement="top">
+      <Tooltip placement="top" delay={0}>
         <TooltipTrigger asChild>{imageWithLink}</TooltipTrigger>
         <TooltipContent>{name}</TooltipContent>
       </Tooltip>
