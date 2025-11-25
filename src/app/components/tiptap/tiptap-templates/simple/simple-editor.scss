@@ -69,7 +69,7 @@
 
 .simple-editor-content .tiptap.ProseMirror.simple-editor {
   flex: 1;
-  padding-top: 2rem;
+  padding-top: calc(var(--tt-toolbar-height) + 2rem);
   user-select: text;
   -webkit-user-select: text;
   -moz-user-select: text;
@@ -83,6 +83,6 @@
 
 @media screen and (max-width: 480px) {
   .simple-editor-content .tiptap.ProseMirror.simple-editor {
-    padding: 1rem 1.5rem 30vh;
+    padding: 1rem 1.5rem calc(var(--tt-toolbar-height) + var(--tt-safe-area-bottom) + 1rem);
   }
 }
