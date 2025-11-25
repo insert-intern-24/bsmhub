@@ -217,7 +217,13 @@ export function SimpleEditorViewer({
               <div className="link-card__description">{description}</div>
               <div className="link-card__url">
                 <IconLink size={14} />
-                {href ? new URL(href).hostname : ""}
+                {href ? (() => {
+                  try {
+                    return new URL(href).hostname
+                  } catch {
+                    return href
+                  }
+                })() : ""}
               </div>
             </div>
             {image && (
