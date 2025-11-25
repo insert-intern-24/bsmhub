@@ -10,7 +10,7 @@ import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConver
 export function transformTeamToCard(team: TeamData): CardProps {
   return {
     id: parseInt(team.profile_id, 10),
-    title: undefined,
+    title: team.profile_name || '',
     description: team.profile_name || '',
     projectImage: team.profile_image
       ? convertFromDatabaseImageURL(team.profile_image)
