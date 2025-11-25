@@ -65,7 +65,6 @@ import { CloseIcon } from "@/app/components/tiptap/tiptap-icons/close-icon"
 
 // --- Hooks ---
 import { useIsBreakpoint } from "@/utils/hook/tiptap/use-is-breakpoint"
-import { useWindowSize } from "@/utils/hook/tiptap/use-window-size"
 import { useCursorVisibility } from "@/utils/hook/tiptap/use-cursor-visibility"
 
 // --- Components ---
@@ -215,7 +214,6 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
     ref
   ) {
     const isMobile = useIsBreakpoint()
-    const { height } = useWindowSize()
     const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
       "main"
     )
@@ -283,7 +281,7 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
       [editor]
     )
 
-    const rect = useCursorVisibility({
+    useCursorVisibility({
       editor,
       overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
     })

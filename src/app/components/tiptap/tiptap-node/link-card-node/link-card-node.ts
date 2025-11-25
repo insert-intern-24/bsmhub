@@ -3,7 +3,7 @@ import { ReactNodeViewRenderer } from "@tiptap/react"
 import { LinkCardComponent } from "./LinkCardComponent"
 
 export interface LinkCardOptions {
-  HTMLAttributes: Record<string, any>
+  HTMLAttributes: Record<string, unknown>
 }
 
 declare module "@tiptap/core" {
@@ -54,7 +54,7 @@ export const LinkCardNode = Node.create<LinkCardOptions>({
     ]
   },
 
-  renderHTML({ HTMLAttributes }: { HTMLAttributes: Record<string, any> }) {
+  renderHTML({ HTMLAttributes }: { HTMLAttributes: Record<string, unknown> }) {
     return [
       "div",
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
@@ -71,7 +71,7 @@ export const LinkCardNode = Node.create<LinkCardOptions>({
     return {
       setLinkCard:
         (options: { href: string }) =>
-        ({ commands }: { commands: any }) => {
+        ({ commands }) => {
           return commands.insertContent({
             type: this.name,
             attrs: options,
