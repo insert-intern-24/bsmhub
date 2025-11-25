@@ -39,5 +39,5 @@ export const getProfile = async (
     return null;
   }
 
-  return data;
+  return data ?? null;
 };
