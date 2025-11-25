@@ -3,7 +3,6 @@ import { Caption, Label } from '../../ui/text/text';
 import ProfileImage from '@/app/components/ui/profile/ProfileImage';
 
 interface ProjectCardMetadataProps {
-  title: string;
   description: string;
   authors: {
     name?: string;
@@ -12,13 +11,12 @@ interface ProjectCardMetadataProps {
 }
 
 const ProjectCardMetadata = ({
-  title,
   description,
   authors,
 }: ProjectCardMetadataProps) => {
   return (
     <figcaption className="flex-x-center gap-4">
-      <Label className="text-gray-base truncate">{title} - {description}</Label>
+      <Label className="text-gray-base truncate">{description}</Label>
       <div className="flex-y-center gap-1 shrink-0">
         {authors.length === 1 ? (
           // 작성자가 1명인 경우: 프로필 사진 + 이름

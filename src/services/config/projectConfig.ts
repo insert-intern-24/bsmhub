@@ -1,4 +1,4 @@
-import { FormConfig } from '@/app/components/ui/input/types/inputTypes';
+import { FormConfig, FormFieldConfig } from '@/app/components/ui/input/types/inputTypes';
 import { createClient } from '@/services/supabase/client';
 import {
   createDataTransformer,
@@ -239,8 +239,8 @@ export const projectConfig: FormConfig = {
               .string()
               .min(1)
               .regex(
-                /^[가-힣A-Za-z0-9_-]+$/,
-                '한글, 영문, 숫자, 언더스코어(_), 하이픈(-)만 사용할 수 있습니다.',
+                /^[가-힣A-Za-z0-9][가-힣A-Za-z0-9 _-]*[가-힣A-Za-z0-9]$/,
+                '한글, 영문, 숫자, 공백(단, 앞/뒤 공백 불가), 언더스코어(_), 하이픈(-)만 사용할 수 있습니다.',
               ),
           },
         ],
@@ -298,6 +298,7 @@ export const projectConfig: FormConfig = {
         deleteFilterGenerator: createDeleteFilterGenerator(['link', 'alt']),
         changeCalculator: createChangeCalculator(['link', 'alt']),
       },
+      description: '링크 제목이 /play이면 플레이 버튼이 생겨요.',
       inputConfig: {
         onlyOne: false,
         inputs: [
@@ -306,6 +307,15 @@ export const projectConfig: FormConfig = {
             type: 'text',
             placeholder: '링크 URL을 입력하세요',
             required: true,
+            // 외부 링크는 http:// 또는 https://로만 시작하도록 제한
+            // (mailto:, sms:, tel:, geo:, itms:, intent: 등 다른 프로토콜 및 상대 경로 차단)
+            zodSchema: z
+              .string()
+              .min(1)
+              .regex(
+                /^https?:\/\//i,
+                '링크는 http:// 또는 https://로 시작해야 합니다.',
+              ),
           },
           {
             name: 'alt',
@@ -315,7 +325,7 @@ export const projectConfig: FormConfig = {
           },
         ],
       },
-    },
+    } as FormFieldConfig,
     {
       fieldName: 'project_category',
       label: '프로젝트 카테고리',

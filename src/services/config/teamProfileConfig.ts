@@ -1,4 +1,4 @@
-import { FormConfig } from '@/app/components/ui/input/types/inputTypes';
+import { FormConfig, FormFieldConfig } from '@/app/components/ui/input/types/inputTypes';
 import { createClient } from '@/services/supabase/client';
 import {
   createDataTransformer,
@@ -6,6 +6,7 @@ import {
   createChangeCalculator,
   processGraphQLRelationTables,
 } from '@/services/graphQL/relationTableHelper.graphql';
+import { z } from 'zod';
 
 export const teamProfileConfig: FormConfig = {
   redirect: {
@@ -174,6 +175,15 @@ export const teamProfileConfig: FormConfig = {
             type: 'text',
             placeholder: '링크 URL을 입력하세요',
             required: true,
+            // 외부 링크는 http:// 또는 https://로만 시작하도록 제한
+            // (mailto:, sms:, tel:, geo:, itms:, intent: 등 다른 프로토콜 및 상대 경로 차단)
+            zodSchema: z
+              .string()
+              .min(1)
+              .regex(
+                /^https?:\/\//i,
+                '링크는 http:// 또는 https://로 시작해야 합니다.',
+              ),
           },
           {
             name: 'alt',
@@ -183,7 +193,7 @@ export const teamProfileConfig: FormConfig = {
           },
         ],
       },
-    },
+    } as FormFieldConfig,
     {
       fieldName: 'team_members',
       label: '팀원',

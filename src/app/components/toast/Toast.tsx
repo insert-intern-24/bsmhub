@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { useToast, type ToastItem } from './ToastContext';
 import { Title, Label } from '../ui/text/text';
+import './style.css';
 
 const TOAST_DURATION = 2000;
 const ANIMATION_DURATION = 500;
@@ -176,7 +177,7 @@ const ToastItem = ({ toast, onClose }: ToastItemProps) => {
       />
 
       <div
-        className={`absolute left-0 rounded-[5px] flex flex-col gap-[3px] items-start justify-start p-4 overflow-hidden ${bgColor}`}
+        className={`absolute left-0 rounded-[5px] flex flex-col gap-[3px] items-start justify-start p-4 overflow-hidden ${bgColor} toast-card-shadow`}
         style={{
           bottom: TOAST_LAYOUT.CARD_BOTTOM_OFFSET,
           top: TOAST_LAYOUT.CARD_TOP_OFFSET,

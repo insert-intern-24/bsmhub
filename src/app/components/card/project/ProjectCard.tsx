@@ -43,7 +43,7 @@ const Card = ({
             className="object-cover"
           />
         </figure>
-        <ProjectCardMetadata title={title} description={description} authors={authors} />
+        <ProjectCardMetadata description={description} authors={authors} />
       </div>
     </Link>
   );
