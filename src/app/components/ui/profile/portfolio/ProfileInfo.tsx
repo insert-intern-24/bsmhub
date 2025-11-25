@@ -38,7 +38,7 @@ const ProfileInfo = ({
       : profile.status;
 
   return (
-    <div className={containerClass}>
+    <div className={`${containerClass} max-h-[8.25rem] overflow-hidden`}>
       <div className="flex-center">
         <Body2>{profile.name}</Body2>
         <StatusBadge status={statusBadgeText} />
@@ -47,7 +47,7 @@ const ProfileInfo = ({
         <RoleComponent className="text-gray-base -mt-1">{roleText}</RoleComponent>
       )}
       {showBio && (
-        <Caption className="text-gray-base break-words line-clamp-2 h-full">
+        <Caption className="!block text-gray-base break-words line-clamp-3">
           {profile.bio}
         </Caption>
       )}
