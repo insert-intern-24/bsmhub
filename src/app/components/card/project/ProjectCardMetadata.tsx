@@ -3,7 +3,6 @@ import { Caption, Label } from '../../ui/text/text';
 import ProfileImage from '@/app/components/ui/profile/ProfileImage';
 
 interface ProjectCardMetadataProps {
-  title: string;
   description: string;
   authors: {
     name?: string;
@@ -12,7 +11,6 @@ interface ProjectCardMetadataProps {
 }
 
 const ProjectCardMetadata = ({
-  title,
   description,
   authors,
 }: ProjectCardMetadataProps) => {
