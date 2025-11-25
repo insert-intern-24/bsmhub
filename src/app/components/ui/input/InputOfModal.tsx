@@ -36,7 +36,7 @@ const InputOfModal = ({
   mode,
   onClose,
 }: InputOfModalProps) => {
-  const { control, handleSubmit, formState: { errors }, reset, watch } = useForm({
+  const { control, handleSubmit, formState: { errors, isSubmitted }, reset, watch } = useForm({
     defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>, field) => {
       // 초기값이 제공된 경우 사용, 그렇지 않으면 기본값 사용
       if (initialValues && initialValues[field.fieldName] !== undefined) {
@@ -63,6 +63,7 @@ const InputOfModal = ({
   const { openModal, closeModal } = useModal();
   const { showToast } = useToast();
   const [isDeleting, setIsDeleting] = useState(false);
+  const fieldRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
 
   // initialValues가 변경될 때마다 폼을 리셋
   useEffect(() => {
@@ -70,6 +71,31 @@ const InputOfModal = ({
       reset(initialValues);
     }
   }, [initialValues, reset]);
+
+  // 에러 발생 시 첫 번째 에러 필드로 스크롤
+  useEffect(() => {
+    if (isSubmitted && Object.keys(errors).length > 0) {
+      // 첫 번째 에러 필드 찾기
+      const firstErrorFieldName = Object.keys(errors)[0];
+      const errorFieldRef = fieldRefs.current[firstErrorFieldName];
+      
+      if (errorFieldRef) {
+        // 모달 컨텐츠 컨테이너 찾기
+        const modalContent = errorFieldRef.closest('.modal-content') as HTMLElement;
+        
+        if (modalContent) {
+          // 필드가 보이도록 스크롤
+          requestAnimationFrame(() => {
+            errorFieldRef.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+              inline: 'nearest',
+            });
+          });
+        }
+      }
+    }
+  }, [isSubmitted, errors]);
 
   const onFormSubmit = (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>) => {
     try {
@@ -132,7 +158,13 @@ const InputOfModal = ({
 
       {config.fields.map((field) => {
         return (
-          <div key={field.fieldName} className="w-full flex-col gap-2">
+          <div 
+            key={field.fieldName} 
+            ref={(el) => {
+              fieldRefs.current[field.fieldName] = el;
+            }}
+            className="w-full flex-col gap-2"
+          >
             <LabelOfInputs 
               label={field.label}
               required={field.required}
@@ -144,7 +176,7 @@ const InputOfModal = ({
               control={control}
               rules={{ 
                 validate: (value) => {
-                  if (!field.required) return true;
+                  if (!field.required && !value) return true;
                   
                   // Checkbox 타입 검증
                   if (field.type === 'checkbox' && !value) {
@@ -152,8 +184,28 @@ const InputOfModal = ({
                   }
                   
                   // 배열 타입 검증 (InputList, SkillTag, Picture)
-                  if (Array.isArray(value) && value.length === 0) {
-                    return `${field.label}은(는) 필수 항목입니다.`;
+                  if (Array.isArray(value)) {
+                    if (field.required && value.length === 0) {
+                      return `${field.label}은(는) 필수 항목입니다.`;
+                    }
+
+                    // InputList 및 DropdownInputList에 대한 Zod 검증
+                    if ((field.type === 'inputList' || field.type === 'dropdownInputList') && field.inputConfig?.inputs) {
+                      const inputs = value as MultiInputItem[][];
+                      
+                      const validationError = inputs
+                        .flatMap((group) =>
+                          group.map((item, i) => {
+                            const schema = field.inputConfig?.inputs[i]?.zodSchema;
+                            if (!schema) return null;
+                            const result = schema.safeParse(item.value);
+                            return result.success ? null : (result.error.issues[0]?.message || '입력값이 유효하지 않습니다.');
+                          }),
+                        )
+                        .find((msg) => msg !== null);
+
+                      if (validationError) return validationError;
+                    }
                   }
                   
                   return true;

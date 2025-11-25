@@ -13,6 +13,8 @@ import {
 import { useToast } from '@/app/components/toast';
 import { useDebounce } from '@/utils/hook/useDebounce';
 
+import { ZodType } from 'zod';
+
 // Input 설정 타입 - inputs 배열로 통일
 export type InputConfig = {
   inputs: Array<{
@@ -26,6 +28,7 @@ export type InputConfig = {
     aspectRatio?: string;
     icon?: 'check' | 'search' | 'calendar';
     textarea?: boolean; // textarea로 렌더링할지 여부
+    zodSchema?: ZodType; // Zod 스키마 추가
   }>;
   onlyOne?: boolean;
   white?: boolean; // SkillTag용
