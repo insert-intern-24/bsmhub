@@ -36,13 +36,21 @@ export default async function Home() {
     carouselImages = [];
   }
 
+  const carouselSlides = carouselImages.map((src, index) => ({
+    src,
+    href:
+      index === 1
+        ? 'https://sleepy-apple-8a6.notion.site/2b5d5ab3072f8074970ee64034050974'
+        : undefined,
+  }));
+
   return (
     <div className="flex-col gap-4 w-full">
       <OneTapComponent />
       <div className="flex-center">
         <div className="h-[19.4rem] w-full justify-between flex items-end mobile:justify-center mobile:h-[14.75rem]">
           <div className="h-full w-[54rem] mobile:hidden">
-            <AutoCarousel images={carouselImages} />
+            <AutoCarousel images={carouselSlides} />
           </div>
           <div className="h-[14.75rem] mobile:w-full">
             <AutoSlidingBusinessCard />
