@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
-
 .simple-editor-wrapper {
   --tt-toolbar-height: 44px;
   --tt-theme-text: var(--tt-gray-light-900);
@@ -8,7 +6,7 @@
     --tt-theme-text: var(--tt-gray-dark-900);
   }
 
-  font-family: "Inter", sans-serif;
+  font-family: "Pretendard", sans-serif;
   color: var(--tt-theme-text);
   font-optical-sizing: auto;
   font-weight: 400;
@@ -43,7 +41,8 @@
 }
 
 .tiptap.ProseMirror {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Pretendard", sans-serif;
+  // font-size: 1.6rem;
 }
 
 .simple-editor-wrapper {
