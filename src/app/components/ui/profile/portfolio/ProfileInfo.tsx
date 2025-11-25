@@ -47,7 +47,7 @@ const ProfileInfo = ({
         <RoleComponent className="text-gray-base -mt-1">{roleText}</RoleComponent>
       )}
       {showBio && (
-        <Caption className="!block text-gray-base break-words line-clamp-3 text-ellipsis">
+        <Caption className="!block text-gray-base break-words line-clamp-3">
           {profile.bio}
         </Caption>
       )}
