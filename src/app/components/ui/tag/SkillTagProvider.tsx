@@ -5,7 +5,6 @@ import { useInputList } from '@/utils/hook/useInputList';
 import SkillTag from './ModalSkillTag';
 import { createClient } from '@/services/supabase/client';
 import { Tables } from '@/services/supabase/database.types';
-
 import { useToast } from '@/app/components/toast';
 
 interface SkillTagProviderProps {

@@ -114,6 +114,10 @@ const InputListProvider = ({
   const { showToast } = useToast();
   const debouncedCurrentFormData = useDebounce(currentFormData, 300);
 
+  const queryDependency = dropdownInputConfig?.dependsOnFormData
+    ? debouncedCurrentFormData
+    : null;
+
   // dropdownInputConfig가 있으면 테이블 데이터 로드
   React.useEffect(() => {
     if (dropdownInputConfig?.query) {
@@ -141,12 +145,8 @@ const InputListProvider = ({
         });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    dropdownInputConfig,
-    showToast,
-    // dependsOnFormData가 true일 때만 debouncedCurrentFormData가 변경될 때 재실행
-    dropdownInputConfig?.dependsOnFormData ? debouncedCurrentFormData : null,
-  ]);
+  }, [dropdownInputConfig, showToast, queryDependency]);
+
 
   // input 클릭/포커스 시 드롭다운 표시
   const handleInputFocus = (index: number) => {
@@ -175,7 +175,9 @@ const InputListProvider = ({
   };
 
   // 추천 필터링 함수
-  const handleInputChange = (value: string) => {
+  const handleInputChange = (rawValue: string) => {
+    console.log('[InputListProvider] handleInputChange called', { rawValue, dropdownInputConfig, tableData });
+    const value = String(rawValue ?? '');
     if (dropdownInputConfig && tableData.length > 0) {
       // onlyOne일 때 빈 값이면 모든 옵션 표시 (단일 선택 드롭다운)
       if (onlyOne && value === '') {
@@ -186,10 +188,10 @@ const InputListProvider = ({
 
       // 입력값으로 필터링
       const filtered = tableData.filter((item) => {
-        const itemName = (
-          item[dropdownInputConfig.nameColumnName] as string
-        )?.toLowerCase();
-        return itemName?.includes(value.toLowerCase());
+        const itemName = String(
+          item[dropdownInputConfig.nameColumnName] ?? '',
+        ).toLowerCase();
+        return itemName.includes(String(value ?? '').toLowerCase());
       });
       setSuggestions(filtered);
       setShowSuggestions(filtered.length > 0);
