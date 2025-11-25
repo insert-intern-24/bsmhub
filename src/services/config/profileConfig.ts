@@ -1,4 +1,4 @@
-import { FormConfig } from '@/app/components/ui/input/types/inputTypes';
+import { FormConfig, FormFieldConfig } from '@/app/components/ui/input/types/inputTypes';
 import {
   updateProfileSkills,
   updateStudentCertificates,
@@ -252,7 +252,10 @@ export const profileConfig: FormConfig = {
           },
         ],
       },
-    },
+      // 외부 링크 판단을 위한 정규식: /로 시작하지 않는 경우 외부 링크
+      // (내부 링크는 /로 시작, 외부 링크는 그 외 모든 경우)
+      externalLinkPattern: /^(?!\/)/,
+    } as FormFieldConfig,
     {
       fieldName: 'student_certificates',
       label: '자격증',

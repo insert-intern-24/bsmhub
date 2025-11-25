@@ -1,6 +1,8 @@
 import ProfileItem from '@/app/components/ui/profile/ProfileItem';
 import { Label } from '@/app/components/ui/text/text';
 import SkillTagProvider from '@/app/components/ui/tag/SkillTagProvider';
+import { LinkSection } from '@/app/components/section/common/LinkSection';
+import { profileConfig } from '@/services/config/profileConfig';
 
 import {
   PortfolioDetailProps as PortfolioDetailType,
@@ -32,31 +34,45 @@ const PortfolioDetail = ({ details }: PortfolioDetailProps) => {
 
         return (
           <div key={mode}>
-            <Label>{modeTextMap[mode]}</Label>
-            {mode === 'skill' ? (
-              skillIds.length > 0 ? (
-                <SkillTagProvider readOnly white initialTags={skillIds} />
-              ) : (
-                <Label className="text-detail !block">
-                  등록된 정보가 없습니다.
-                </Label>
-              )
-            ) : hasData ? (
-              <div className="flex-col">
-                {datas.map((data, index) => (
-                  <ProfileItem
-                    key={index}
-                    mode={mode}
-                    value={data.value ?? null}
-                    url={'url' in data ? data.url : undefined}
-                    prize={'prize' in data ? data.prize : undefined}
-                  />
-                ))}
-              </div>
+            {mode === 'link' ? (
+              <LinkSection
+                links={datas.map((data) => ({
+                  url: 'url' in data && data.url ? data.url : '',
+                  title: data.value ?? null,
+                }))}
+                config={profileConfig}
+                fieldName="profile_link"
+                forceExternal={true}
+              />
             ) : (
-              <Label className="text-detail !block">
-                등록된 정보가 없습니다.
-              </Label>
+              <>
+                <Label>{modeTextMap[mode]}</Label>
+                {mode === 'skill' ? (
+                  skillIds.length > 0 ? (
+                    <SkillTagProvider readOnly white initialTags={skillIds} />
+                  ) : (
+                    <Label className="text-detail !block">
+                      등록된 정보가 없습니다.
+                    </Label>
+                  )
+                ) : hasData ? (
+                  <div className="flex-col">
+                    {datas.map((data, index) => (
+                      <ProfileItem
+                        key={index}
+                        mode={mode}
+                        value={data.value ?? null}
+                        url={'url' in data ? data.url : undefined}
+                        prize={'prize' in data ? data.prize : undefined}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <Label className="text-detail !block">
+                    등록된 정보가 없습니다.
+                  </Label>
+                )}
+              </>
             )}
           </div>
         );

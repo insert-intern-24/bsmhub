@@ -1,4 +1,3 @@
-import ProfileItem from '@/app/components/ui/profile/ProfileItem';
 import TeamLabel from '@/app/components/ui/label/TeamLabel';
 import { Body, Label, TitleEN } from '@/app/components/ui/text/text';
 import { TeamData } from '@/app/(box-layout)/team/types';
@@ -7,6 +6,8 @@ import getAccount from '@/services/auth/getAccount.server';
 import TeamProfileEditButton from '@/app/components/ui/profile/team/TeamProfileEditButton';
 import ProfileImage from '@/app/components/ui/profile/ProfileImage';
 import SidebarLayout from '@/app/components/layout/sidebar/SidebarLayout';
+import { LinkSection } from '@/app/components/section/common/LinkSection';
+import { teamProfileConfig } from '@/services/config/teamProfileConfig';
 
 interface TeamSidebarProps {
   teamDetail: TeamData;
@@ -45,17 +46,14 @@ const TeamSidebar = async ({ teamDetail, projectCount }: TeamSidebarProps) => {
         />
       </div>
       <hr className="border-light-gray-outline" />
-      <div className="flex-col gap-1">
-        <Label className="mb-1.5">링크</Label>
-        {teamDetail?.profile_link.map((link) => (
-          <ProfileItem
-            key={link.link}
-            mode="link"
-            url={link.link}
-            value={link.title}
-          />
-        ))}
-      </div>
+      <LinkSection
+        links={teamDetail?.profile_link.map((link) => ({
+          url: link.link,
+          title: link.title,
+        })) || []}
+        config={teamProfileConfig}
+        fieldName="profile_link"
+      />
       <hr className="border-light-gray-outline" />
       <div className="flex-col gap-1">
         <Label className="mb-1.5">팀원</Label>

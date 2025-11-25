@@ -298,6 +298,7 @@ export const projectConfig: FormConfig = {
         deleteFilterGenerator: createDeleteFilterGenerator(['link', 'alt']),
         changeCalculator: createChangeCalculator(['link', 'alt']),
       },
+      description: '링크 제목이 /play이면 플레이 버튼이 생겨요.',
       inputConfig: {
         onlyOne: false,
         inputs: [
@@ -306,6 +307,7 @@ export const projectConfig: FormConfig = {
             type: 'text',
             placeholder: '링크 URL을 입력하세요',
             required: true,
+            zodSchema: z.string().min(1),
           },
           {
             name: 'alt',
@@ -315,6 +317,9 @@ export const projectConfig: FormConfig = {
           },
         ],
       },
+      // 외부 링크 판단을 위한 정규식: /로 시작하지 않는 경우 외부 링크
+      // (내부 링크는 /로 시작, 외부 링크는 그 외 모든 경우)
+      externalLinkPattern: /^(?!\/)/,
     },
     {
       fieldName: 'project_category',
