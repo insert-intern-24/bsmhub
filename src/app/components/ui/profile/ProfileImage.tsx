@@ -26,10 +26,8 @@ const DEFAULT_FALLBACK_PROFILE =
 
 interface ProfileImageProps {
   src?: string | null;
-  /** 프로필 이름 (alt 텍스트 생성에 사용) */
+  /** 프로필 이름 (alt 텍스트 및 툴팁에 사용) */
   name?: string;
-  /** 학생 이름 (툴팁에 표시, studentName이 있으면 우선 사용) */
-  studentName?: string;
   size: Size;
   shape?: Shape;
   className?: string;
@@ -55,7 +53,6 @@ const getShapeClassName = (shape: Shape): string => {
 function ProfileImage({
   src,
   name,
-  studentName,
   size,
   shape = 'circle',
   className,
@@ -94,13 +91,11 @@ function ProfileImage({
     image
   );
 
-  const tooltipName = studentName ?? name;
-
-  if (showTooltip && tooltipName) {
+  if (showTooltip && name) {
     return (
       <Tooltip placement="top" delay={0}>
         <TooltipTrigger asChild>{imageWithLink}</TooltipTrigger>
-        <TooltipContent>{tooltipName}</TooltipContent>
+        <TooltipContent>{name}</TooltipContent>
       </Tooltip>
     );
   }
