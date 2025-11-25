@@ -89,22 +89,23 @@ export function useFormConfigData(
       setIsSaving(true);
       setError(null);
 
-      await Promise.all(
-        formConfig.fields.map(async (field) => {
-          if (
-            field.type === 'picture' &&
-            !field.multiple &&
-            formData[field.fieldName] instanceof File
-          ) {
-            formData[field.fieldName] = await uploadProfileImage(
-              formData[field.fieldName] as File,
-              field.bucket,
-            );
-          }
-        }),
-      );
-
       try {
+        // 이미지 업로드 처리 (파일 크기 검증 포함)
+        await Promise.all(
+          formConfig.fields.map(async (field) => {
+            if (
+              field.type === 'picture' &&
+              !field.multiple &&
+              formData[field.fieldName] instanceof File
+            ) {
+              formData[field.fieldName] = await uploadProfileImage(
+                formData[field.fieldName] as File,
+                field.bucket,
+              );
+            }
+          }),
+        );
+
         const result = await dataService.saveData(
           formConfig,
           formData,

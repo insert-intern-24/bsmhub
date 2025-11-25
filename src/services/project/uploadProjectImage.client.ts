@@ -1,5 +1,7 @@
 import { createClient } from '@/services/supabase/client';
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
 // 파일명에서 확장자만 추출하고, 확장자를 제외한 파일명을 랜덤하게 생성합니다.
 function generateRandomFileName(originalName: string): string {
   const hasExt = originalName.includes('.');
@@ -22,6 +24,13 @@ export default async function uploadProjectImage(
   onProgress?: (event: { progress: number }) => void,
   abortSignal?: AbortSignal,
 ): Promise<string> {
+  // 프론트엔드에서 파일 크기 먼저 검증
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error(
+      `파일 크기가 최대 허용 크기(${MAX_FILE_SIZE / (1024 * 1024)}MB)를 초과했습니다.`
+    );
+  }
+
   const supabase = createClient();
 
   const randomizedName = generateRandomFileName(file.name);
@@ -51,8 +60,23 @@ export default async function uploadProjectImage(
 
     // 업로드 실패 시 에러 발생
     if (error) {
-      console.error('Error uploading project image:', error.message);
-      throw new Error(`Failed to upload image: ${error.message}`);
+      console.error('Error uploading project image:', error);
+      
+      // Supabase 에러 코드를 확인하여 한글로 변환
+      let errorMessage = error.message;
+      
+      // 파일 크기 초과 에러 처리 (서버 측 검증)
+      // HTTP 413 (Payload Too Large) 또는 EntityTooLarge 에러 코드 확인
+      if (
+        (error as any).statusCode === '413' || 
+        (error as any).statusCode === 413 ||
+        (error as any).error === 'EntityTooLarge' ||
+        error.message === 'Payload too large'
+      ) {
+        errorMessage = '파일 크기가 최대 허용 크기(5MB)를 초과했습니다.';
+      }
+      
+      throw new Error(errorMessage);
     }
 
     // 진행률 100% 보고
