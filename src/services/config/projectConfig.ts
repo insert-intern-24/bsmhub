@@ -7,6 +7,7 @@ import {
   processGraphQLRelationTables,
 } from '@/services/graphQL/relationTableHelper.graphql';
 import { getSelectableProfilesByStudentId, getProfileById } from '@/services/profile/getProfileApi.client';
+import { z } from 'zod';
 
 export const projectConfig: FormConfig = {
   redirect: {
@@ -234,6 +235,13 @@ export const projectConfig: FormConfig = {
             type: 'text',
             placeholder: '프로젝트 이름을 입력하세요',
             required: true,
+            zodSchema: z
+              .string()
+              .min(1)
+              .regex(
+                /^[가-힣A-Za-z0-9_-]+$/,
+                '한글, 영문, 숫자, 언더스코어(_), 하이픈(-)만 사용할 수 있습니다.',
+              ),
           },
         ],
       },

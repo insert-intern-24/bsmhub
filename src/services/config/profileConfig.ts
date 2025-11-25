@@ -11,6 +11,7 @@ import {
   processGraphQLRelationTables,
 } from '@/services/graphQL/relationTableHelper.graphql';
 import { getJobs } from '@/services/portfolio/getJobs.client';
+import { z } from 'zod';
 
 export const profileConfig: FormConfig = {
   redirect: {
@@ -149,6 +150,13 @@ export const profileConfig: FormConfig = {
             type: 'text',
             placeholder: '닉네임을 입력하세요',
             required: true,
+            zodSchema: z
+              .string()
+              .min(1)
+              .regex(
+                /^[가-힣A-Za-z0-9_-]+$/,
+                '한글, 영문, 숫자, 언더스코어(_), 하이픈(-)만 사용할 수 있습니다.',
+              ),
           },
         ],
       },
