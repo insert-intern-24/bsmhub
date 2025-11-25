@@ -36,7 +36,7 @@ const InputOfModal = ({
   mode,
   onClose,
 }: InputOfModalProps) => {
-  const { control, handleSubmit, formState: { errors }, reset, watch } = useForm({
+  const { control, handleSubmit, formState: { errors, isSubmitted }, reset, watch } = useForm({
     defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>, field) => {
       // 초기값이 제공된 경우 사용, 그렇지 않으면 기본값 사용
       if (initialValues && initialValues[field.fieldName] !== undefined) {
@@ -63,6 +63,7 @@ const InputOfModal = ({
   const { openModal, closeModal } = useModal();
   const { showToast } = useToast();
   const [isDeleting, setIsDeleting] = useState(false);
+  const fieldRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
 
   // initialValues가 변경될 때마다 폼을 리셋
   useEffect(() => {
@@ -70,6 +71,31 @@ const InputOfModal = ({
       reset(initialValues);
     }
   }, [initialValues, reset]);
+
+  // 에러 발생 시 첫 번째 에러 필드로 스크롤
+  useEffect(() => {
+    if (isSubmitted && Object.keys(errors).length > 0) {
+      // 첫 번째 에러 필드 찾기
+      const firstErrorFieldName = Object.keys(errors)[0];
+      const errorFieldRef = fieldRefs.current[firstErrorFieldName];
+      
+      if (errorFieldRef) {
+        // 모달 컨텐츠 컨테이너 찾기
+        const modalContent = errorFieldRef.closest('.modal-content') as HTMLElement;
+        
+        if (modalContent) {
+          // 필드가 보이도록 스크롤
+          requestAnimationFrame(() => {
+            errorFieldRef.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+              inline: 'nearest',
+            });
+          });
+        }
+      }
+    }
+  }, [isSubmitted, errors]);
 
   const onFormSubmit = (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>) => {
     try {
@@ -132,7 +158,13 @@ const InputOfModal = ({
 
       {config.fields.map((field) => {
         return (
-          <div key={field.fieldName} className="w-full flex-col gap-2">
+          <div 
+            key={field.fieldName} 
+            ref={(el) => {
+              fieldRefs.current[field.fieldName] = el;
+            }}
+            className="w-full flex-col gap-2"
+          >
             <LabelOfInputs 
               label={field.label}
               required={field.required}
