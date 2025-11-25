@@ -1,7 +1,7 @@
 import type { Extension } from "@tiptap/react"
 import { ReactNodeViewRenderer } from "@tiptap/react"
 import { StarterKit } from "@tiptap/starter-kit"
-import { Image } from "@tiptap/extension-image"
+import { ImageResize } from "tiptap-extension-resize-image"
 import { TaskItem, TaskList } from "@tiptap/extension-list"
 import { TextAlign } from "@tiptap/extension-text-align"
 import { Typography } from "@tiptap/extension-typography"
@@ -16,6 +16,7 @@ import { ImageUploadNode } from "@/app/components/tiptap/tiptap-node/image-uploa
 import { YoutubeNode } from "@/app/components/tiptap/tiptap-node/youtube-node"
 import { FigmaNode } from "@/app/components/tiptap/tiptap-node/figma-node"
 import { CodeBlockNode } from "@/app/components/tiptap/tiptap-node/code-block-node/code-block-node"
+import { LinkCardNode } from "@/app/components/tiptap/tiptap-node/link-card-node/link-card-node"
 
 // Register common languages for code highlighting
 import javascript from "highlight.js/lib/languages/javascript"
@@ -133,6 +134,7 @@ export function createEditorExtensions(
       },
     }),
     CodeBlockLowlight.extend({
+      draggable: true,
       addNodeView() {
         return ReactNodeViewRenderer(CodeBlockNode)
       },
@@ -145,12 +147,13 @@ export function createEditorExtensions(
     TaskList as Extension,
     TaskItem.configure({ nested: true }) as Extension,
     Highlight.configure({ multicolor: true }) as Extension,
-    Image as Extension,
+    ImageResize as Extension,
     Typography as Extension,
     Superscript as Extension,
     Subscript as Extension,
     Selection as Extension,
     FigmaNode as Extension,
+    LinkCardNode as Extension,
   ]
 
   // ImageUploadNode는 upload handler가 제공된 경우에만 추가

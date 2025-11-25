@@ -28,6 +28,7 @@ import "@/app/components/tiptap/tiptap-node/heading-node/heading-node.scss"
 import "@/app/components/tiptap/tiptap-node/paragraph-node/paragraph-node.scss"
 import "@/app/components/tiptap/tiptap-node/figma-node/figma-node.scss"
 import "@/app/components/tiptap/tiptap-node/youtube-node/youtube-node.scss"
+import "@/app/components/tiptap/tiptap-node/link-card-node/link-card.scss"
 
 // Highlight.js styles for syntax highlighting
 // Using a theme that works well in both light and dark modes
@@ -64,7 +65,6 @@ import { CloseIcon } from "@/app/components/tiptap/tiptap-icons/close-icon"
 
 // --- Hooks ---
 import { useIsBreakpoint } from "@/utils/hook/tiptap/use-is-breakpoint"
-import { useWindowSize } from "@/utils/hook/tiptap/use-window-size"
 import { useCursorVisibility } from "@/utils/hook/tiptap/use-cursor-visibility"
 
 // --- Components ---
@@ -214,7 +214,6 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
     ref
   ) {
     const isMobile = useIsBreakpoint()
-    const { height } = useWindowSize()
     const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
       "main"
     )
@@ -282,7 +281,7 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
       [editor]
     )
 
-    const rect = useCursorVisibility({
+    useCursorVisibility({
       editor,
       overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
     })
@@ -318,13 +317,6 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
             <Toolbar
               ref={toolbarRef}
               data-variant="fixed"
-              style={{
-                ...(isMobile
-                  ? {
-                      bottom: `calc(100% - ${height - rect.y}px)`,
-                    }
-                  : {}),
-              }}
             >
               {mobileView === "main" ? (
                 <MainToolbarContent

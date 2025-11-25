@@ -101,11 +101,11 @@ const ProjectMainContent = ({ project, hasEditPermission }: ProjectMainContentPr
     <div className="relative w-full h-full">
       {hasEditPermission && !isEditing && (
         <RoundedButton
-          className="absolute top-8 right-0 !w-fit px-6"
+          className="absolute top-8 right-0 !w-fit px-6 mobile:!w-full"
           onClick={handleEditClick}
           aria-label="프로젝트 편집"
         >
-          <IconPencil className="text-white" size={12} /> 수정
+          <IconPencil className="text-white" size={12} /> 설명 수정
         </RoundedButton>
       )}
       <section

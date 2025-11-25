@@ -51,7 +51,7 @@ export const CodeBlockNode: React.FC<NodeViewProps> = (props) => {
 
   return (
     <NodeViewWrapper className="tiptap-code-block-node">
-      <div className="tiptap-code-block-header">
+      <div className="tiptap-code-block-header" data-drag-handle>
         <select
           className="tiptap-code-block-language-selector"
           value={language}
