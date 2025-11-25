@@ -46,7 +46,12 @@ export const LinkCardComponent = ({
 
   return (
     <NodeViewWrapper className="link-card-wrapper" data-drag-handle>
-      <a href={href} onClick={handleCardClick} className="link-card">
+      <a
+        href={href}
+        onClick={handleCardClick}
+        className="link-card"
+        aria-label={`링크 카드: ${title || href}`}
+      >
         <div className="link-card__content">
           <div className="link-card__title">
             {title || (loading ? "Loading..." : href)}
