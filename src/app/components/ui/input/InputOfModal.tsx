@@ -199,7 +199,7 @@ const InputOfModal = ({
                             const schema = field.inputConfig?.inputs[i]?.zodSchema;
                             if (!schema) return null;
                             const result = schema.safeParse(item.value);
-                            return result.success ? null : result.error.issues[0].message;
+                            return result.success ? null : (result.error.issues[0]?.message || '입력값이 유효하지 않습니다.');
                           }),
                         )
                         .find((msg) => msg !== null);
