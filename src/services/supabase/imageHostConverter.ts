@@ -14,9 +14,9 @@ export function convertFromDatabaseImageURL(url: string): string {
   const excludedExtensions = ['.svg', '.ico', '.bmp'];
   const isExcluded = excludedExtensions.some(ext => cleanedUrl.toLowerCase().endsWith(ext));
 
-  if(isExcluded) {
+  if (isExcluded) {
     cleanedUrl = cleanedUrl.replace('{{supabaseHost}}', externalSupabaseUrl);
-  }else {
+  } else {
     // {{supabaseHost}}를 실제 URL로 변환
     cleanedUrl = cleanedUrl.replace('{{supabaseHost}}', internalSupabaseUrl);
   }
