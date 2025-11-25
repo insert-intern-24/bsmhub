@@ -176,7 +176,7 @@ const InputOfModal = ({
               control={control}
               rules={{ 
                 validate: (value) => {
-                  if (!field.required && (!value || (Array.isArray(value) && value.length === 0))) return true;
+                  if (!field.required && !value) return true;
                   
                   // Checkbox 타입 검증
                   if (field.type === 'checkbox' && !value) {
