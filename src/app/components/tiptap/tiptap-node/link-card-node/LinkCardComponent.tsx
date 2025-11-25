@@ -61,7 +61,13 @@ export const LinkCardComponent = ({
           </div>
           <div className="link-card__url">
             <IconLink size={14} />
-            {new URL(href).hostname}
+            {href ? (() => {
+              try {
+                return new URL(href).hostname
+              } catch {
+                return href
+              }
+            })() : ""}
           </div>
         </div>
         {image && (
