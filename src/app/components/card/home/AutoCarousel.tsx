@@ -73,7 +73,7 @@ export default function AutoCarousel({ interval = 5000, images }: AutoCarouselPr
                 key={index}
                 href={href}
                 target="_blank"
-                rel="noreferrer noopener"
+                rel="noopener noreferrer nofollow"
                 className="relative flex-shrink-0 w-full h-full"
               >
                 {slideContent}
