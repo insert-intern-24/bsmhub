@@ -19,14 +19,20 @@ const ProjectGrid = ({
     if (isTeamProject) {
       // TeamProjectType 변환
       const teamProject = project as TeamProjectType;
+
+      const teamName = teamProject.profile.profile_name;
+      const filteredContributors = teamProject.project_contributors.filter(
+        (contributor) => contributor.profile.profile_name !== teamName,
+      );
+
       return {
         id: teamProject.project_id,
         title: teamProject.project_name,
         description: teamProject.description,
         projectImage: teamProject.project_thumbnail,
-        ownerName: teamProject.profile.profile_name,
+        ownerName: teamName,
         isTeam: teamProject.profile.is_team,
-        authors: teamProject.project_contributors.map((contributor) => ({
+        authors: filteredContributors.map((contributor) => ({
           name: contributor.profile.profile_name,
           profileImage: contributor.profile.profile_image,
         })),

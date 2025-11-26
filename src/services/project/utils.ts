@@ -18,10 +18,10 @@ export function createAuthorsFromProject(
 ): Array<{ name?: string; profileImage: string }> {
   const authors: Array<{ name?: string; profileImage: string }> = [];
 
-  // Owner를 먼저 추가
-  if (owner) {
+  // Owner를 먼저 추가 (team이 owner인 경우 제외)
+  if (owner && !owner.is_team) {
     authors.push({
-      name: owner.is_team ? owner.profile_name : owner.student?.name,
+      name: owner.student?.name,
       profileImage: owner.profile_image
         ? convertFromDatabaseImageURL(owner.profile_image)
         : '',

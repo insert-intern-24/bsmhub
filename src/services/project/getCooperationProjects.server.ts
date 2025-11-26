@@ -103,13 +103,13 @@ export const getCooperationProjects = async (
   const projects: CardProps[] = teamProjects.map(({ projects }) => {
     const authors: Array<{ name?: string; profileImage: string }> = [];
 
-    // Owner를 먼저 추가
-    authors.push({
-      name: projects.profile.is_team
-        ? projects.profile.profile_name
-        : projects.profile.student?.name,
-      profileImage: projects.profile.profile_image,
-    });
+    // Owner를 먼저 추가 (team이 owner인 경우 제외)
+    if (!projects.profile.is_team) {
+      authors.push({
+        name: projects.profile.student?.name,
+        profileImage: projects.profile.profile_image,
+      });
+    }
 
     // Contributors 추가 (owner와 중복되지 않도록)
     const contributors = profileImages
