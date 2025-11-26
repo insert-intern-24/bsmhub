@@ -15,15 +15,24 @@ export interface CookiePrefixes {
 
 /**
  * Supabase URL에서 쿠키 프리픽스를 추출합니다.
+ * @throws 환경 변수가 설정되지 않은 경우 에러 발생
  */
 export function getCookiePrefixes(): CookiePrefixes {
-  const publicHost = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!).host;
-  const internalHost = new URL(process.env.NEXT_PUBLIC_SUPABASE_INTERNAL_URL!)
-    .host;
+  const publicUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const internalUrl = process.env.NEXT_PUBLIC_SUPABASE_INTERNAL_URL;
+
+  if (!publicUrl || !internalUrl) {
+    throw new Error(
+      'NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_INTERNAL_URL must be set',
+    );
+  }
+
+  const publicHost = new URL(publicUrl).host;
+  const internalHost = new URL(internalUrl).host;
 
   return {
-    publicPrefix: `sb-${publicHost?.split('.')[0]}`,
-    internalPrefix: `sb-${internalHost?.split('.')[0]}`,
+    publicPrefix: `sb-${publicHost.split('.')[0]}`,
+    internalPrefix: `sb-${internalHost.split('.')[0]}`,
   };
 }
 
