@@ -23,7 +23,7 @@ const Button = ({
 
   return (
     <button
-      className={`flex-col justify-center w-full h-[3.25rem] py-2 shrink-0 rounded-full ${textColor} text-body2 ${disabled ? 'bg-light-gray text-dark-gray cursor-not-allowed' : bgColorMap[color]}`}
+      className={`flex-col justify-center w-full h-[3.25rem] py-2 shrink-0 rounded-full ${textColor} text-body2 ${bgColorMap[color]} ${disabled ? 'opacity-80 cursor-not-allowed' : ''}`}
       onClick={onClick}
       disabled={disabled}
     >
