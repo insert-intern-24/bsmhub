@@ -10,32 +10,6 @@ import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConver
 const SLIDE_INTERVAL = 1500;
 const DEFAULT_AVATAR = '/default-avatar.svg';
 
-const DEFAULT_CARDS: BusinessCardData[] = [
-  {
-    id: '1',
-    name: '홍길동',
-    department: '소프트웨어개발과',
-    profileImage: DEFAULT_AVATAR,
-    profileName: 'hong-gildong',
-    projects: [
-      { id: '1', title: '산뜻 - SANDDEOT', image: DEFAULT_AVATAR },
-      { id: '2', title: 'FindOut', image: DEFAULT_AVATAR },
-      { id: '3', title: 'FindOut', image: DEFAULT_AVATAR },
-    ],
-  },
-  {
-    id: '2',
-    name: '김철수',
-    department: '컴퓨터공학과',
-    profileImage: DEFAULT_AVATAR,
-    profileName: 'kim-cheolsu',
-    projects: [
-      { id: '1', title: '프로젝트 A', image: DEFAULT_AVATAR },
-      { id: '2', title: '프로젝트 B', image: DEFAULT_AVATAR },
-    ],
-  },
-];
-
 const convertPortfolioToBusinessCard = (
   portfolio: PortfolioData,
 ): BusinessCardData => ({
@@ -58,14 +32,11 @@ const AutoSlidingBusinessCard = () => {
   const [isHovered, setIsHovered] = useState(false);
   const { data, isLoading, error, loadMore } = useInfinitePortfolio();
 
-  const filteredCards =
-    data.length > 0
-      ? data
-          .filter((portfolio) => portfolio.projects.length > 0)
-          .map(convertPortfolioToBusinessCard)
-      : [];
-
-  const displayCards = filteredCards.length > 0 ? filteredCards : DEFAULT_CARDS;
+  const displayCards = data.length > 0
+    ? data
+        .filter((portfolio) => portfolio.projects.length > 0)
+        .map(convertPortfolioToBusinessCard)
+    : [];
 
   useEffect(() => {
     if (displayCards.length === 0) return;
@@ -92,10 +63,10 @@ const AutoSlidingBusinessCard = () => {
     );
   }
 
-  if (error) {
+  if (error || displayCards.length === 0) {
     return (
       <article className="relative flex items-center justify-center h-full w-[26rem] mobile:w-full mobile:h-[15rem] bg-[#D7EFFF] rounded-[0.25rem] overflow-hidden">
-        <div className="text-red-600">데이터 로드 실패</div>
+        <div className="text-gray-600">포트폴리오 데이터를 불러올 수 없습니다</div>
       </article>
     );
   }

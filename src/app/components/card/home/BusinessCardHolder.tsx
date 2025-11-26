@@ -15,7 +15,12 @@ const BusinessCardHolder = () => {
 
   useEffect(() => {
     const loadRecentPortfolios = () => {
-      setRecentPortfolios(getRecentPortfolios());
+      try {
+        setRecentPortfolios(getRecentPortfolios());
+      } catch (error) {
+        console.error('최근 포트폴리오 로드 실패:', error);
+        setRecentPortfolios([]);
+      }
     };
 
     loadRecentPortfolios();
