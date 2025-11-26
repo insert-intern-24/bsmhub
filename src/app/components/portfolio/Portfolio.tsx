@@ -23,12 +23,12 @@ interface PortfolioProps {
 
 const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
   const profile = await getProfile(profileName);
-  
+
   // 프로필이 없으면 404 페이지 표시
   if (!profile) {
     notFound();
   }
-  
+
   const uuid = profile.profile_id;
   const studentInfo = profile.student;
 
@@ -40,7 +40,7 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
   const profileDetail = await getProfileDetail(profileName);
   const cooperationProjects = await getCooperationProjects(uuid);
   const personalProjects = await getPersonalProjects(uuid);
-  
+
   // Check edit permission
   const hasEditPermission = await checkProfileEditPermission(uuid);
 
@@ -76,25 +76,31 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
         </div>
 
         <aside className="flex-col gap-6 sticky top-24 self-start w-[21.75rem] mobile:static mobile:w-full">
-          {profile.description && <Body className="text-gray-base">{profile.description}</Body>}
+          {profile.description && (
+            <Body className="text-gray-base">{profile.description}</Body>
+          )}
           <ProfileEditButton ownerId={profile.owner ?? ''} />
           <PortfolioItems details={profileDetail} />
         </aside>
 
         <div className="flex-col gap-6">
           {/* HTML Description Section */}
-          <ContentEditor
-            contentType="profile"
-            id={profile.profile_id}
-            initialHtmlContent={profile.profile_html_description?.html_content}
-            hasEditPermission={hasEditPermission}
-          />
 
           {isHome ? (
-            <PortfolioHome
-              projects={personalProjects}
-              profile_name={profile.profile_name}
-            />
+            <>
+              <ContentEditor
+                contentType="profile"
+                id={profile.profile_id}
+                initialHtmlContent={
+                  profile.profile_html_description?.html_content
+                }
+                hasEditPermission={hasEditPermission}
+              />
+              <PortfolioHome
+                projects={personalProjects}
+                profile_name={profile.profile_name}
+              />
+            </>
           ) : (
             <PortfolioProject
               personalProjects={personalProjects}
