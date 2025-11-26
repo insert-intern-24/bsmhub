@@ -3,13 +3,14 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
 export default function NavigationProgressBar() {
   const pathname = usePathname();
 
   // NProgress 설정을 컴포넌트 마운트 시 한 번만 실행
   useEffect(() => {
-    NProgress.configure({ 
+    NProgress.configure({
       showSpinner: false,
       trickleSpeed: 200,
       minimum: 0.08,
