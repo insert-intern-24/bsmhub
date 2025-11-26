@@ -1,4 +1,5 @@
 import uploadImage from '@/services/core/uploadImage.client';
+import { convertFromDatabaseImageURL } from '../supabase/imageHostConverter';
 
 const BUCKET_NAME = 'project-html-description-image';
 
@@ -14,12 +15,13 @@ export default async function uploadProjectImage(
   onProgress?: (event: { progress: number }) => void,
   abortSignal?: AbortSignal,
 ): Promise<string> {
-  return uploadImage({
+  const url = await uploadImage({
     file,
     bucket: BUCKET_NAME,
     onProgress,
     abortSignal,
   });
+  return convertFromDatabaseImageURL(url, true);
 }
 
 
