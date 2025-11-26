@@ -7,63 +7,36 @@ import { Button } from "@/app/components/tiptap/tiptap-ui-primitive/button"
 import { Input } from "@/app/components/tiptap/tiptap-ui-primitive/input"
 import { CloseIcon } from "@/app/components/tiptap/tiptap-icons/close-icon"
 import { ExternalLinkIcon } from "@/app/components/tiptap/tiptap-icons/external-link-icon"
+import {
+  getFigmaEmbedUrl,
+  extractOriginalUrlFromEmbed,
+  isValidFigmaUrl,
+  getSafeEmbedUrl,
+} from "@/app/components/tiptap/tiptap-node/figma-node/figma-utils"
 import "@/app/components/tiptap/tiptap-node/figma-node/figma-node.scss"
 
-/**
- * Parse Figma URL to extract type and file key
- */
-function parseFigmaUrl(url: string): { type: string; fileKey: string } | null {
-  const regex = /figma\.com\/(design|board|proto|slides|deck|file)\/([a-zA-Z0-9]+)/
-  const match = url.match(regex)
-  
-  if (match && match[1] && match[2]) {
-    // Normalize 'file' to 'design'
-    const type = match[1] === 'file' ? 'design' : match[1]
-    return {
-      type,
-      fileKey: match[2]
-    }
-  }
-  
-  return null
-}
-
-/**
- * Convert Figma URL to embed URL
- */
-function getFigmaEmbedUrl(url: string): string {
-  // Validate the URL first
-  try {
-    const urlObj = new URL(url)
-    const allowedHosts = ["figma.com", "www.figma.com"]
-    if (!allowedHosts.includes(urlObj.hostname)) {
-      return ""
-    }
-  } catch {
-    // Invalid URL
-    return ""
-  }
-  
-  const parsed = parseFigmaUrl(url)
-  if (!parsed) {
-    return ""
-  }
-  
-  const { type, fileKey } = parsed
-  const params = new URLSearchParams({
-    'embed-host': 'bsmhub',
-    'page-selector': 'true',
-    'viewport-controls': 'true',
-    'footer': 'true',
-    'theme': 'system'
-  })
-  
-  return `https://embed.figma.com/${type}/${fileKey}?${params.toString()}`
-}
-
 export const FigmaNode: React.FC<NodeViewProps> = (props) => {
-  const { url: initialUrl } = props.node.attrs
-  const [url, setUrl] = useState(initialUrl || "")
+  const { url: initialUrl, originalUrl: initialOriginalUrl } = props.node.attrs
+
+  // 원본 URL: 노드 속성에 originalUrl이 있으면 사용, 없으면 url에서 추출 시도
+  // 보안을 위해 유효성 검사 수행
+  const getOriginalUrl = (urlAttr: string, origUrlAttr: string | null): string => {
+    if (origUrlAttr && isValidFigmaUrl(origUrlAttr)) return origUrlAttr
+    if (!urlAttr) return ""
+    return extractOriginalUrlFromEmbed(urlAttr)
+  }
+
+  // 안전한 URL만 외부 창에서 열기 위한 핸들러
+  const handleOpenInFigma = () => {
+    if (originalUrl && isValidFigmaUrl(originalUrl)) {
+      window.open(originalUrl, "_blank", "noopener,noreferrer")
+    }
+  }
+
+  const [originalUrl, setOriginalUrl] = useState(
+    getOriginalUrl(initialUrl, initialOriginalUrl)
+  )
+  const [inputUrl, setInputUrl] = useState(originalUrl)
   const [isEditing, setIsEditing] = useState(!initialUrl)
   const [embedUrl, setEmbedUrl] = useState(
     initialUrl ? getFigmaEmbedUrl(initialUrl) : ""
@@ -71,23 +44,34 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
 
   useEffect(() => {
     if (initialUrl) {
-      setUrl(initialUrl)
+      const origUrl = getOriginalUrl(initialUrl, initialOriginalUrl)
+      setOriginalUrl(origUrl)
+      setInputUrl(origUrl)
       setEmbedUrl(getFigmaEmbedUrl(initialUrl))
     }
-  }, [initialUrl])
+  }, [initialUrl, initialOriginalUrl])
 
   const handleSubmit = () => {
-    if (!url.trim()) return
+    if (!inputUrl.trim()) return
 
-    const newEmbedUrl = getFigmaEmbedUrl(url)
+    const newEmbedUrl = getFigmaEmbedUrl(inputUrl)
+
+    // 유효하지 않은 URL인 경우 사용자에게 알림
+    if (!newEmbedUrl) {
+      alert("유효한 Figma URL을 입력해주세요.")
+      return
+    }
+
     setEmbedUrl(newEmbedUrl)
+    setOriginalUrl(inputUrl)
     setIsEditing(false)
 
-    // Update the node attributes
+    // 노드 속성에 원본 URL과 임베드 URL 모두 저장
     const pos = props.getPos()
     if (typeof pos === "number") {
       props.updateAttributes({
         url: newEmbedUrl,
+        originalUrl: inputUrl,
       })
     }
   }
@@ -99,7 +83,7 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
     }
     if (e.key === "Escape") {
       setIsEditing(false)
-      setUrl(initialUrl || "")
+      setInputUrl(originalUrl)
     }
   }
 
@@ -121,8 +105,8 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
           <Input
             type="text"
             placeholder="Paste Figma URL here..."
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
+            value={inputUrl}
+            onChange={(e) => setInputUrl(e.target.value)}
             onKeyDown={handleKeyDown}
             autoFocus
           />
@@ -131,7 +115,7 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
               type="button"
               data-style="ghost"
               onClick={handleSubmit}
-              disabled={!url.trim()}
+              disabled={!inputUrl.trim()}
             >
               Embed
             </Button>
@@ -140,7 +124,7 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
               data-style="ghost"
               onClick={() => {
                 setIsEditing(false)
-                setUrl(initialUrl || "")
+                setInputUrl(originalUrl)
               }}
             >
               Cancel
@@ -150,6 +134,9 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
       </NodeViewWrapper>
     )
   }
+
+  // 렌더링에 사용할 안전한 임베드 URL
+  const safeEmbedUrl = getSafeEmbedUrl(embedUrl)
 
   return (
     <NodeViewWrapper className="tiptap-figma-node" data-drag-handle>
@@ -163,11 +150,11 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
           >
             Edit
           </Button>
-          {url && (
+          {originalUrl && isValidFigmaUrl(originalUrl) && (
             <Button
               type="button"
               data-style="ghost"
-              onClick={() => window.open(url, "_blank")}
+              onClick={handleOpenInFigma}
               tooltip="Open in Figma"
             >
               <ExternalLinkIcon className="tiptap-button-icon" />
@@ -182,10 +169,10 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
             <CloseIcon className="tiptap-button-icon" />
           </Button>
         </div>
-        {embedUrl ? (
+        {safeEmbedUrl ? (
           <div className="tiptap-figma-node-embed">
             <iframe
-              src={embedUrl}
+              src={safeEmbedUrl}
               width="100%"
               height="450"
               frameBorder="0"

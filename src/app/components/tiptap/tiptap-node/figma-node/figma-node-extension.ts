@@ -1,6 +1,7 @@
 import { mergeAttributes, Node } from "@tiptap/react"
 import { ReactNodeViewRenderer } from "@tiptap/react"
 import { FigmaNode as FigmaNodeComponent } from "@/app/components/tiptap/tiptap-node/figma-node/figma-node"
+import { getFigmaEmbedUrl } from "@/app/components/tiptap/tiptap-node/figma-node/figma-utils"
 
 export interface FigmaNodeOptions {
   /**
@@ -19,41 +20,6 @@ declare module "@tiptap/react" {
       setFigma: (options: { url: string }) => ReturnType
     }
   }
-}
-
-/**
- * Extract Figma file ID from URL
- */
-function extractFigmaFileId(url: string): string | null {
-  // Match patterns like:
-  // https://www.figma.com/file/{fileId}/...
-  // https://www.figma.com/design/{fileId}/...
-  // https://figma.com/file/{fileId}/...
-  const patterns = [
-    /figma\.com\/(?:file|design)\/([a-zA-Z0-9]+)/,
-    /figma\.com\/file\/([a-zA-Z0-9]+)/,
-  ]
-
-  for (const pattern of patterns) {
-    const match = url.match(pattern)
-    if (match && match[1]) {
-      return match[1]
-    }
-  }
-
-  return null
-}
-
-/**
- * Convert Figma URL to embed URL
- */
-function getFigmaEmbedUrl(url: string): string {
-  const fileId = extractFigmaFileId(url)
-  if (fileId) {
-    return `https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/file/${fileId}`
-  }
-  // If we can't extract the file ID, try to use the URL as-is
-  return url
 }
 
 /**
@@ -90,6 +56,20 @@ export const FigmaNode = Node.create<FigmaNodeOptions>({
           }
           return {
             "data-url": attributes.url,
+          }
+        },
+      },
+      originalUrl: {
+        default: null,
+        parseHTML: (element) => {
+          return element.getAttribute("data-original-url")
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.originalUrl) {
+            return {}
+          }
+          return {
+            "data-original-url": attributes.originalUrl,
           }
         },
       },
@@ -164,6 +144,7 @@ export const FigmaNode = Node.create<FigmaNodeOptions>({
             type: this.name,
             attrs: {
               url: embedUrl,
+              originalUrl: options.url,
             },
           })
         },

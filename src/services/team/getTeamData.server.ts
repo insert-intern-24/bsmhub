@@ -86,6 +86,7 @@ export const getTeamData = async (
     description: teamProfile.description,
     created_at: teamProfile.created_at,
     owner: teamProfile.owner,
+    profile_html_description: teamProfile.profile_html_description,
     profile_link: (teamProfile.profile_link || []).map(
       (link: { link: string; alt: string | null }) => ({
         link: link.link,
