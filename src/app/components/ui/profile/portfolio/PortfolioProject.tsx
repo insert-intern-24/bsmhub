@@ -34,10 +34,10 @@ const PortfolioProject = ({
   ];
 
   return (
-    <div className="grid gap-6 grid-cols-auto-fit-card -mt-8">
+    <div className="grid gap-6 grid-cols-auto-fit-card">
       {projects.map(({ mode, datas }) => (
         <Fragment key={mode}>
-          <Title className="col-span-full mt-8">{mapProjectMode[mode]}</Title>
+          <Title className="col-span-full">{mapProjectMode[mode]}</Title>
           {datas.map((data) => (
             <Card
               key={data.id}
