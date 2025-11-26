@@ -16,6 +16,9 @@ export const getProfile = async (
       description,
       profile_image,
       owner,
+      profile_html_description (
+        html_content
+      ),
       student!profile_owner_fkey1 (
         name,
         student_number,

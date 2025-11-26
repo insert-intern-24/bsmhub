@@ -35,6 +35,9 @@ export const getTeamData = async (
       created_at,
       owner,
       is_official,
+      profile_html_description (
+        html_content
+      ),
       profile_link (
         link,
         alt

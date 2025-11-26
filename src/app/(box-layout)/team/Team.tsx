@@ -9,6 +9,8 @@ import SidebarContentLayout from '@/app/components/layout/sidebar/SidebarContent
 import Tabs from '@/app/components/layout/tabs/Tabs';
 import { Title } from '@/app/components/ui/text/text';
 import { getFoundedYear } from '@/utils/date';
+import ContentEditor from '@/app/components/feature/editor/ContentEditor';
+import { checkProfileEditPermission } from '@/services/profile/checkProfileEditPermission.server';
 
 // 날짜 정보가 없는 프로젝트를 나타내는 상수
 const UNKNOWN_DATE_YEAR = -1;
@@ -22,6 +24,9 @@ const Team = async ({
 }) => {
   const teamDetail = (await getTeamData(teamName)) ?? notFound();
   const teamProjects = await getTeamProjects(teamName);
+  
+  // Check edit permission for team
+  const hasEditPermission = await checkProfileEditPermission(teamDetail.profile_id);
 
   const projectsByYear = teamProjects.reduce(
     (acc, project) => {
@@ -53,10 +58,19 @@ const Team = async ({
           <div className="mb-6">
             <Tabs tabs={['home', 'project']} />
           </div>
+          
+          {/* HTML Description Section */}
+          <ContentEditor
+            contentType="profile"
+            id={teamDetail.profile_id}
+            initialHtmlContent={teamDetail.profile_html_description?.html_content}
+            hasEditPermission={hasEditPermission}
+          />
+          
           {path === 'home' ? (
-            <ProjectGrid projects={teamProjects} className="" isTeamProject={true} />
+            <ProjectGrid projects={teamProjects} className="mt-6" isTeamProject={true} />
           ) : (
-            <div className="w-full flex flex-col gap-8">
+            <div className="w-full flex flex-col gap-8 mt-6">
               {sortedYears.map((year) => (
                 <div key={year} className="w-full flex flex-col gap-4">
                   <Title>{year === UNKNOWN_DATE_YEAR ? '날짜 미상' : `${year}년`}</Title>
