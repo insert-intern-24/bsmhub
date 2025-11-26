@@ -27,7 +27,7 @@ export const getTeamData = async (
 ): Promise<TeamData | null> => {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  const { data: teamProfile, error: teamProfileError } = await supabase
     .from('profile')
     .select(
       `
@@ -58,28 +58,44 @@ export const getTeamData = async (
     .eq('is_team', true)
     .maybeSingle<SupabaseTeamData>();
 
-  if (error) {
+  if (teamProfileError) {
     console.error('팀 데이터 조회 중 오류');
   }
 
-  if (!data) {
+  if (!teamProfile) {
     return null;
   }
 
+  const { data: ownerProfile, error: ownerProfileError } = await supabase
+    .from('profile')
+    .select('profile_id, profile_image, profile_name')
+    .eq('owner', teamProfile.owner)
+    .eq('is_team', false)
+    .single();
+
+  if (ownerProfileError) {
+    console.error('팀장 프로필 조회 중 오류');
+  }
+
+  console.log(ownerProfile);
+
   // alt를 title로 매핑
   return {
-    profile_id: data.profile_id,
-    profile_name: data.profile_name,
-    profile_image: data.profile_image,
-    description: data.description,
-    created_at: data.created_at,
-    owner: data.owner,
-    profile_link: (data.profile_link || []).map(
+    profile_id: teamProfile.profile_id,
+    profile_name: teamProfile.profile_name,
+    profile_image: teamProfile.profile_image,
+    description: teamProfile.description,
+    created_at: teamProfile.created_at,
+    owner: teamProfile.owner,
+    profile_link: (teamProfile.profile_link || []).map(
       (link: { link: string; alt: string | null }) => ({
         link: link.link,
         title: link.alt,
       }),
     ),
-    team_member: data.team_member || [],
+    team_member: [
+      { profile: ownerProfile },
+      ...(teamProfile.team_member || []),
+    ],
   } as TeamData;
 };
