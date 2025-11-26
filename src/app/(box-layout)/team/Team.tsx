@@ -24,18 +24,17 @@ const Team = async ({
 }) => {
   const teamDetail = (await getTeamData(teamName)) ?? notFound();
   const teamProjects = await getTeamProjects(teamName);
-  
-  // Check edit permission for team
-  const hasEditPermission = await checkProfileEditPermission(teamDetail.profile_id);
 
-  const projectsByYear = teamProjects.reduce(
-    (acc, project) => {
-      const year = getFoundedYear(project.created_at ?? null);
-      (acc[year] ??= []).push(project);
-      return acc;
-    },
-    {} as Record<number, typeof teamProjects>,
+  // Check edit permission for team
+  const hasEditPermission = await checkProfileEditPermission(
+    teamDetail.profile_id,
   );
+
+  const projectsByYear = teamProjects.reduce((acc, project) => {
+    const year = getFoundedYear(project.created_at ?? null);
+    (acc[year] ??= []).push(project);
+    return acc;
+  }, {} as Record<number, typeof teamProjects>);
 
   const sortedYears = Object.keys(projectsByYear)
     .map(Number)
@@ -51,29 +50,42 @@ const Team = async ({
       <ProfileIcon image={teamDetail.profile_image} />
       <SidebarContentLayout
         sidebar={
-          <TeamSidebar teamDetail={teamDetail} projectCount={teamProjects.length} />
+          <TeamSidebar
+            teamDetail={teamDetail}
+            projectCount={teamProjects.length}
+          />
         }
       >
         <section className="w-full pl-[3rem] pt-[4.5rem] responsive-teamProjects">
           <div className="mb-6">
             <Tabs tabs={['home', 'project']} />
           </div>
-          
+
           {/* HTML Description Section */}
-          <ContentEditor
-            contentType="profile"
-            id={teamDetail.profile_id}
-            initialHtmlContent={teamDetail.profile_html_description?.html_content}
-            hasEditPermission={hasEditPermission}
-          />
-          
+
           {path === 'home' ? (
-            <ProjectGrid projects={teamProjects} className="mt-6" isTeamProject={true} />
+            <>
+              <ContentEditor
+                contentType="profile"
+                id={teamDetail.profile_id}
+                initialHtmlContent={
+                  teamDetail.profile_html_description?.html_content
+                }
+                hasEditPermission={hasEditPermission}
+              />
+              <ProjectGrid
+                projects={teamProjects}
+                className="mt-6"
+                isTeamProject={true}
+              />
+            </>
           ) : (
             <div className="w-full flex flex-col gap-8 mt-6">
               {sortedYears.map((year) => (
                 <div key={year} className="w-full flex flex-col gap-4">
-                  <Title>{year === UNKNOWN_DATE_YEAR ? '날짜 미상' : `${year}년`}</Title>
+                  <Title>
+                    {year === UNKNOWN_DATE_YEAR ? '날짜 미상' : `${year}년`}
+                  </Title>
                   <ProjectGrid
                     projects={projectsByYear[year]}
                     isTeamProject={true}

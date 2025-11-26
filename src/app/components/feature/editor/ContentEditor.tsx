@@ -52,7 +52,8 @@ const ContentEditor = ({
     }
   }, [initialHtmlContent]);
 
-  const [editedContentJson, setEditedContentJson] = useState<JSONContent | null>(null);
+  const [editedContentJson, setEditedContentJson] =
+    useState<JSONContent | null>(null);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -77,10 +78,7 @@ const ContentEditor = ({
       }
 
       if (!result.success) {
-        showToast(
-          result.error?.message || '저장에 실패했습니다.',
-          'error'
-        );
+        showToast(result.error?.message || '저장에 실패했습니다.', 'error');
         return;
       }
 
@@ -88,7 +86,7 @@ const ContentEditor = ({
         contentType === 'project'
           ? '프로젝트 내용이 저장되었습니다.'
           : '프로필 내용이 저장되었습니다.',
-        'success'
+        'success',
       );
       setIsEditing(false);
       setEditedContentJson(null);
@@ -107,11 +105,11 @@ const ContentEditor = ({
   // 읽기 모드용 콘텐츠 (JSON 또는 HTML에서 변환)
   const viewContent = useMemo<JSONContent | null>(() => {
     if (isEditing) return null;
-    
+
     if (editedContentJson) {
       return editedContentJson;
     }
-    
+
     return initialContent || null;
   }, [isEditing, editedContentJson, initialContent]);
 
@@ -135,7 +133,10 @@ const ContentEditor = ({
           <div>
             <SimpleEditor
               ref={editorRef}
-              initialContent={editedContentJson || initialContent}
+              initialContent={
+                editedContentJson ||
+                initialContent || { type: 'doc', content: [] }
+              }
               onChange={(json: JSONContent) => {
                 setEditedContentJson(json);
               }}
