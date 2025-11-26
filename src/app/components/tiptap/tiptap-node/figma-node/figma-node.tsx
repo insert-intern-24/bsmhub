@@ -10,55 +10,29 @@ import { ExternalLinkIcon } from "@/app/components/tiptap/tiptap-icons/external-
 import "@/app/components/tiptap/tiptap-node/figma-node/figma-node.scss"
 
 /**
- * Parse Figma URL to extract type and file key
- */
-function parseFigmaUrl(url: string): { type: string; fileKey: string } | null {
-  const regex = /figma\.com\/(design|board|proto|slides|deck|file)\/([a-zA-Z0-9]+)/
-  const match = url.match(regex)
-  
-  if (match && match[1] && match[2]) {
-    // Normalize 'file' to 'design'
-    const type = match[1] === 'file' ? 'design' : match[1]
-    return {
-      type,
-      fileKey: match[2]
-    }
-  }
-  
-  return null
-}
-
-/**
- * Convert Figma URL to embed URL
+ * Convert Figma URL to embed URL using www.figma.com/embed format
  */
 function getFigmaEmbedUrl(url: string): string {
   // Validate the URL first
   try {
     const urlObj = new URL(url)
-    const allowedHosts = ["figma.com", "www.figma.com"]
+    const allowedHosts = ["figma.com", "www.figma.com", "embed.figma.com"]
     if (!allowedHosts.includes(urlObj.hostname)) {
       return ""
+    }
+    
+    // If it's already an embed URL, return it as-is to avoid double encoding
+    if (urlObj.hostname === "embed.figma.com" || urlObj.pathname.startsWith("/embed")) {
+      return url
     }
   } catch {
     // Invalid URL
     return ""
   }
   
-  const parsed = parseFigmaUrl(url)
-  if (!parsed) {
-    return ""
-  }
-  
-  const { type, fileKey } = parsed
-  const params = new URLSearchParams({
-    'embed-host': 'bsmhub',
-    'page-selector': 'true',
-    'viewport-controls': 'true',
-    'footer': 'true',
-    'theme': 'system'
-  })
-  
-  return `https://embed.figma.com/${type}/${fileKey}?${params.toString()}`
+  // Use Figma's standard embed format: encode the full original URL
+  const embedUrl = `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(url)}`
+  return embedUrl
 }
 
 export const FigmaNode: React.FC<NodeViewProps> = (props) => {

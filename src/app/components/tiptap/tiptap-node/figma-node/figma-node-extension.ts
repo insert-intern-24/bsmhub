@@ -22,38 +22,28 @@ declare module "@tiptap/react" {
 }
 
 /**
- * Extract Figma file ID from URL
- */
-function extractFigmaFileId(url: string): string | null {
-  // Match patterns like:
-  // https://www.figma.com/file/{fileId}/...
-  // https://www.figma.com/design/{fileId}/...
-  // https://figma.com/file/{fileId}/...
-  const patterns = [
-    /figma\.com\/(?:file|design)\/([a-zA-Z0-9]+)/,
-    /figma\.com\/file\/([a-zA-Z0-9]+)/,
-  ]
-
-  for (const pattern of patterns) {
-    const match = url.match(pattern)
-    if (match && match[1]) {
-      return match[1]
-    }
-  }
-
-  return null
-}
-
-/**
- * Convert Figma URL to embed URL
+ * Convert Figma URL to embed URL using www.figma.com/embed format
  */
 function getFigmaEmbedUrl(url: string): string {
-  const fileId = extractFigmaFileId(url)
-  if (fileId) {
-    return `https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/file/${fileId}`
+  // Validate the URL first
+  try {
+    const urlObj = new URL(url)
+    const allowedHosts = ["figma.com", "www.figma.com", "embed.figma.com"]
+    if (!allowedHosts.includes(urlObj.hostname)) {
+      return url // Return original URL if not a Figma URL
+    }
+    
+    // If it's already an embed URL, return it as-is to avoid double encoding
+    if (urlObj.hostname === "embed.figma.com" || urlObj.pathname.startsWith("/embed")) {
+      return url
+    }
+  } catch {
+    // Invalid URL, return as-is
+    return url
   }
-  // If we can't extract the file ID, try to use the URL as-is
-  return url
+  
+  // Use Figma's standard embed format: encode the full original URL
+  return `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(url)}`
 }
 
 /**
