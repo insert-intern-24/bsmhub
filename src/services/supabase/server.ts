@@ -90,11 +90,10 @@ export async function createClient(useExternalUrl = false, anon = false) {
         },
         setAll(cookiesToSet) {
           try {
-            // sb-10-* 쿠키는 저장하지 않음 (sb-bsmhub-* 쿠키만 실제 저장)
-            const cookiesToActuallySet = filterOutInternalPrefixCookies(
-              cookiesToSet,
-              prefixes,
-            );
+            // useExternalUrl이 false일 때만 sb-10-* 쿠키 필터링
+            const cookiesToActuallySet = !useExternalUrl
+              ? filterOutInternalPrefixCookies(cookiesToSet, prefixes)
+              : cookiesToSet;
             cookiesToActuallySet.forEach(({ name, value, options }) => {
               // Ensure cookies are set with path=/ for cross-path sharing
               cookieStore.set(name, value, {
