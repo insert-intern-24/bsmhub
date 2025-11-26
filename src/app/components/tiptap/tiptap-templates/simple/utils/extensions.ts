@@ -1,6 +1,7 @@
 import type { Extension } from "@tiptap/react"
 import { ReactNodeViewRenderer } from "@tiptap/react"
 import { StarterKit } from "@tiptap/starter-kit"
+import { Image } from "@tiptap/extension-image"
 import { ImageResize } from "tiptap-extension-resize-image"
 import { TaskItem, TaskList } from "@tiptap/extension-list"
 import { TextAlign } from "@tiptap/extension-text-align"
@@ -133,6 +134,8 @@ export function createEditorExtensions(
         enableClickSelection: true,
       },
     }),
+    // 표준 이미지 노드 등록 (이미지 업로드/리사이즈 기능의 기반)
+    Image as Extension,
     CodeBlockLowlight.extend({
       draggable: true,
       addNodeView() {
@@ -147,6 +150,7 @@ export function createEditorExtensions(
     TaskList as Extension,
     TaskItem.configure({ nested: true }) as Extension,
     Highlight.configure({ multicolor: true }) as Extension,
+    // 이미지 리사이즈 확장은 @tiptap/extension-image에 의존합니다.
     ImageResize as Extension,
     Typography as Extension,
     Superscript as Extension,
