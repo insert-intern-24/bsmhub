@@ -93,9 +93,6 @@ const LOADING_PLACEHOLDER = `data:image/svg+xml,${encodeURIComponent(
   `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150"><rect fill="#f3f4f6" width="200" height="150"/><text x="100" y="70" text-anchor="middle" dominant-baseline="middle" fill="#9ca3af" font-family="system-ui, sans-serif" font-size="14">업로드 중...</text><circle cx="100" cy="100" r="8" fill="none" stroke="#6b7280" stroke-width="2" stroke-dasharray="25" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="1s" repeatCount="indefinite"/></circle></svg>`,
 )}`;
 
-// 기본 이미지 업로드 제한
-const DEFAULT_MAX_IMAGE_LIMIT = 10;
-
 const MainToolbarContent = ({
   onHighlighterClick,
   onLinkClick,
@@ -267,11 +264,11 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
 
     /**
      * 이미지 파일 유효성 검사
-     * 파일 크기와 이미지 개수 제한을 검증
+     * 파일 크기 제한을 검증
      */
     const validateImageFiles = useCallback((files: File[]): File[] => {
       // 파일 크기 초과 이미지 필터링
-      const validFiles = files.filter((file) => {
+      return files.filter((file) => {
         if (file.size > MAX_FILE_SIZE) {
           if (process.env.NODE_ENV === 'development') {
             console.error(`파일 크기가 제한을 초과했습니다: ${file.name}`);
@@ -281,17 +278,6 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
         }
         return true;
       });
-
-      // 이미지 개수 제한 검증
-      if (validFiles.length > DEFAULT_MAX_IMAGE_LIMIT) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error(`최대 ${DEFAULT_MAX_IMAGE_LIMIT}개의 이미지만 업로드할 수 있습니다.`);
-        }
-        window.alert(`최대 ${DEFAULT_MAX_IMAGE_LIMIT}개의 이미지만 업로드할 수 있습니다.`);
-        return validFiles.slice(0, DEFAULT_MAX_IMAGE_LIMIT);
-      }
-
-      return validFiles;
     }, []);
 
     /**
@@ -332,11 +318,10 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
           if (!isMountedRef.current) return;
           if (!url) return;
 
-          // 플레이스홀더 찾아서 실제 URL로 교체
-          const { state } = view;
+          // 현재 에디터 상태에서 플레이스홀더 찾기 (비동기 완료 시점의 최신 상태 사용)
           let placeholderPos: number | null = null;
 
-          state.doc.descendants((node, pos) => {
+          view.state.doc.descendants((node, pos) => {
             if (
               node.type.name === 'image' &&
               node.attrs.title === placeholderId
@@ -348,13 +333,13 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
           });
 
           if (placeholderPos !== null) {
-            view.dispatch(
-              view.state.tr.setNodeMarkup(placeholderPos, undefined, {
-                src: url,
-                alt: filename,
-                title: '',
-              }),
-            );
+            // 트랜잭션 생성 시점의 상태로 업데이트
+            const tr = view.state.tr.setNodeMarkup(placeholderPos, undefined, {
+              src: url,
+              alt: filename,
+              title: '',
+            });
+            view.dispatch(tr);
           } else {
             // 플레이스홀더를 찾을 수 없는 경우 사용자 알림
             if (process.env.NODE_ENV === 'development') {
@@ -376,12 +361,11 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
           }
           window.alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
 
-          // 실패 시 플레이스홀더 제거
-          const { state } = view;
+          // 현재 에디터 상태에서 플레이스홀더 찾기
           let placeholderPos: number | null = null;
           let nodeSize = 0;
 
-          state.doc.descendants((node, pos) => {
+          view.state.doc.descendants((node, pos) => {
             if (
               node.type.name === 'image' &&
               node.attrs.title === placeholderId
@@ -394,9 +378,8 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
           });
 
           if (placeholderPos !== null) {
-            view.dispatch(
-              view.state.tr.delete(placeholderPos, placeholderPos + nodeSize),
-            );
+            const tr = view.state.tr.delete(placeholderPos, placeholderPos + nodeSize);
+            view.dispatch(tr);
           }
         });
     }, [uploadHandler]);
