@@ -8,7 +8,7 @@ export async function updateSession(request: NextRequest) {
 
   const supabase = await createClient();
 
-  // Do not run code between createServerClient and
+  // Do not run code between createClient and
   // supabase.auth.getUser(). A simple mistake could make it very hard to debug
   // issues with users being randomly logged out.
 
