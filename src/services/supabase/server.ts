@@ -82,11 +82,12 @@ export async function createClient(useExternalUrl = false, anon = false) {
       },
       cookies: {
         getAll() {
-          // sb-bsmhub-* 쿠키를 sb-10-* 형식으로 복제하여 반환 (실제 저장 없음)
-          return duplicateCookiesForInternalUrl(
-            cookieStore.getAll(),
-            prefixes,
-          );
+          // useExternalUrl이 false일 때만 sb-bsmhub-* 쿠키를 sb-10-* 형식으로 복제
+          const cookies = cookieStore.getAll();
+          if (!useExternalUrl) {
+            return duplicateCookiesForInternalUrl(cookies, prefixes);
+          }
+          return cookies;
         },
         setAll(cookiesToSet) {
           try {
