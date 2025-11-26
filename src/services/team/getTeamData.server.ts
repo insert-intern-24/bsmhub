@@ -77,7 +77,6 @@ export const getTeamData = async (
     console.error('팀장 프로필 조회 중 오류');
   }
 
-  console.log(ownerProfile);
 
   // alt를 title로 매핑
   return {
