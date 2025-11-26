@@ -13,11 +13,19 @@ export interface CookiePrefixes {
   internalPrefix: string;
 }
 
+// 환경 변수는 런타임에 변경되지 않으므로 캐시하여 성능 개선
+let cachedPrefixes: CookiePrefixes | null = null;
+
 /**
  * Supabase URL에서 쿠키 프리픽스를 추출합니다.
+ * 환경 변수는 런타임에 변경되지 않으므로 결과를 캐시합니다.
  * @throws 환경 변수가 설정되지 않은 경우 에러 발생
  */
 export function getCookiePrefixes(): CookiePrefixes {
+  if (cachedPrefixes) {
+    return cachedPrefixes;
+  }
+
   const publicUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const internalUrl = process.env.NEXT_PUBLIC_SUPABASE_INTERNAL_URL;
 
@@ -30,10 +38,12 @@ export function getCookiePrefixes(): CookiePrefixes {
   const publicHost = new URL(publicUrl).host;
   const internalHost = new URL(internalUrl).host;
 
-  return {
+  cachedPrefixes = {
     publicPrefix: `sb-${publicHost.split('.')[0]}`,
     internalPrefix: `sb-${internalHost.split('.')[0]}`,
   };
+
+  return cachedPrefixes;
 }
 
 /**
