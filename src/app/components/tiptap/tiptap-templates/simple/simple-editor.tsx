@@ -93,9 +93,6 @@ const LOADING_PLACEHOLDER = `data:image/svg+xml,${encodeURIComponent(
   `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150"><rect fill="#f3f4f6" width="200" height="150"/><text x="100" y="70" text-anchor="middle" dominant-baseline="middle" fill="#9ca3af" font-family="system-ui, sans-serif" font-size="14">업로드 중...</text><circle cx="100" cy="100" r="8" fill="none" stroke="#6b7280" stroke-width="2" stroke-dasharray="25" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="1s" repeatCount="indefinite"/></circle></svg>`,
 )}`;
 
-// 기본 이미지 업로드 제한
-const DEFAULT_MAX_IMAGE_LIMIT = 10;
-
 const MainToolbarContent = ({
   onHighlighterClick,
   onLinkClick,
@@ -267,11 +264,11 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
 
     /**
      * 이미지 파일 유효성 검사
-     * 파일 크기와 이미지 개수 제한을 검증
+     * 파일 크기 제한을 검증
      */
     const validateImageFiles = useCallback((files: File[]): File[] => {
       // 파일 크기 초과 이미지 필터링
-      const validFiles = files.filter((file) => {
+      return files.filter((file) => {
         if (file.size > MAX_FILE_SIZE) {
           if (process.env.NODE_ENV === 'development') {
             console.error(`파일 크기가 제한을 초과했습니다: ${file.name}`);
@@ -281,17 +278,6 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
         }
         return true;
       });
-
-      // 이미지 개수 제한 검증
-      if (validFiles.length > DEFAULT_MAX_IMAGE_LIMIT) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error(`최대 ${DEFAULT_MAX_IMAGE_LIMIT}개의 이미지만 업로드할 수 있습니다.`);
-        }
-        window.alert(`최대 ${DEFAULT_MAX_IMAGE_LIMIT}개의 이미지만 업로드할 수 있습니다.`);
-        return validFiles.slice(0, DEFAULT_MAX_IMAGE_LIMIT);
-      }
-
-      return validFiles;
     }, []);
 
     /**
