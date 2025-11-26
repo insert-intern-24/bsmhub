@@ -10,6 +10,8 @@ import { ExternalLinkIcon } from "@/app/components/tiptap/tiptap-icons/external-
 import {
   getFigmaEmbedUrl,
   extractOriginalUrlFromEmbed,
+  isValidFigmaUrl,
+  getSafeEmbedUrl,
 } from "@/app/components/tiptap/tiptap-node/figma-node/figma-utils"
 import "@/app/components/tiptap/tiptap-node/figma-node/figma-node.scss"
 
@@ -17,10 +19,18 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
   const { url: initialUrl, originalUrl: initialOriginalUrl } = props.node.attrs
 
   // 원본 URL: 노드 속성에 originalUrl이 있으면 사용, 없으면 url에서 추출 시도
+  // 보안을 위해 유효성 검사 수행
   const getOriginalUrl = (urlAttr: string, origUrlAttr: string | null): string => {
-    if (origUrlAttr) return origUrlAttr
+    if (origUrlAttr && isValidFigmaUrl(origUrlAttr)) return origUrlAttr
     if (!urlAttr) return ""
     return extractOriginalUrlFromEmbed(urlAttr)
+  }
+
+  // 안전한 URL만 외부 창에서 열기 위한 핸들러
+  const handleOpenInFigma = () => {
+    if (originalUrl && isValidFigmaUrl(originalUrl)) {
+      window.open(originalUrl, "_blank", "noopener,noreferrer")
+    }
   }
 
   const [originalUrl, setOriginalUrl] = useState(
@@ -125,6 +135,9 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
     )
   }
 
+  // 렌더링에 사용할 안전한 임베드 URL
+  const safeEmbedUrl = getSafeEmbedUrl(embedUrl)
+
   return (
     <NodeViewWrapper className="tiptap-figma-node" data-drag-handle>
       <div className="tiptap-figma-node-container">
@@ -137,11 +150,11 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
           >
             Edit
           </Button>
-          {originalUrl && (
+          {originalUrl && isValidFigmaUrl(originalUrl) && (
             <Button
               type="button"
               data-style="ghost"
-              onClick={() => window.open(originalUrl, "_blank", "noopener,noreferrer")}
+              onClick={handleOpenInFigma}
               tooltip="Open in Figma"
             >
               <ExternalLinkIcon className="tiptap-button-icon" />
@@ -156,10 +169,10 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
             <CloseIcon className="tiptap-button-icon" />
           </Button>
         </div>
-        {embedUrl ? (
+        {safeEmbedUrl ? (
           <div className="tiptap-figma-node-embed">
             <iframe
-              src={embedUrl}
+              src={safeEmbedUrl}
               width="100%"
               height="450"
               frameBorder="0"
