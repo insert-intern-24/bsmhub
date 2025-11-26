@@ -1,6 +1,12 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { Database } from '@/services/supabase/database.types';
+import {
+  getCookiePrefixes,
+  duplicateCookiesForInternalUrl,
+  filterOutInternalPrefixCookies,
+} from '@/services/supabase/cookieUtils';
+
 /**
  * Supabase 요청에 대한 재시도 로직을 포함한 fetch wrapper
  * @param url - 요청할 URL
@@ -63,9 +69,7 @@ export async function createClient(useExternalUrl = false, anon = false) {
         set() {},
       };
 
-  const publicHost = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!).host;
-  const internalHost = new URL(process.env.NEXT_PUBLIC_SUPABASE_INTERNAL_URL!)
-    .host;
+  const prefixes = getCookiePrefixes();
 
   return createServerClient<Database>(
     useExternalUrl
@@ -78,24 +82,20 @@ export async function createClient(useExternalUrl = false, anon = false) {
       },
       cookies: {
         getAll() {
-          const cookies = cookieStore.getAll();
-          cookies.map((c) => {
-            if (c.name.startsWith(`sb-${publicHost?.split('.')[0]}`)) {
-              cookies.push({
-                name: c.name.replace(
-                  `sb-${publicHost?.split('.')[0]}`,
-                  `sb-${internalHost?.split('.')[0]}`,
-                ),
-                value: c.value,
-              });
-            }
-          });
-
-          return cookies;
+          // sb-bsmhub-* 쿠키를 sb-10-* 형식으로 복제하여 반환 (실제 저장 없음)
+          return duplicateCookiesForInternalUrl(
+            cookieStore.getAll(),
+            prefixes,
+          );
         },
         setAll(cookiesToSet) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) => {
+            // sb-10-* 쿠키는 저장하지 않음 (sb-bsmhub-* 쿠키만 실제 저장)
+            const cookiesToActuallySet = filterOutInternalPrefixCookies(
+              cookiesToSet,
+              prefixes,
+            );
+            cookiesToActuallySet.forEach(({ name, value, options }) => {
               // Ensure cookies are set with path=/ for cross-path sharing
               cookieStore.set(name, value, {
                 ...options,
