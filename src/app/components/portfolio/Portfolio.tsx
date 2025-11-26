@@ -76,7 +76,7 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
         </div>
 
         <aside className="flex-col gap-6 sticky top-24 self-start w-[21.75rem] mobile:static mobile:w-full">
-          {profile.description && <Body className='text-gray-base'>{profile.description}</Body>}
+          {profile.description && <Body className="text-gray-base">{profile.description}</Body>}
           <ProfileEditButton ownerId={profile.owner ?? ''} />
           <PortfolioItems details={profileDetail} />
         </aside>
