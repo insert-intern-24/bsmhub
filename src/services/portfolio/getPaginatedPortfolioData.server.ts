@@ -98,6 +98,33 @@ export async function getPaginatedPortfolioData(
   }
 
   const portfolioData: PortfolioData[] = profilesWithProjects.map((data) => {
+    // 프로젝트 중복 제거를 위한 Map (project_id를 키로 사용)
+    const projectMap = new Map();
+
+    // 1. 기여한 프로젝트 추가
+    data.project_contributors?.forEach((contribution) => {
+      if (contribution.project?.project_id) {
+        projectMap.set(contribution.project.project_id, {
+          title: contribution.project.project_name,
+          logo: contribution.project.project_logo,
+          description: contribution.project.description,
+          projectImage: contribution.project.project_thumbnail,
+        });
+      }
+    });
+
+    // 2. 소유한 프로젝트 추가 (중복 시 덮어씀 - 소유 프로젝트 우선)
+    data.projects?.forEach((project) => {
+      if (project.project_id) {
+        projectMap.set(project.project_id, {
+          title: project.project_name,
+          logo: project.project_logo,
+          description: project.description,
+          projectImage: project.project_thumbnail,
+        });
+      }
+    });
+
     return {
       profile: {
         name: data.profile_name,
@@ -107,20 +134,7 @@ export async function getPaginatedPortfolioData(
         profile_image: data.profile_image,
       },
       student: data.student,
-      projects: [
-        ...(data.project_contributors?.map((contribution) => ({
-          title: contribution.project.project_name,
-          logo: contribution.project.project_logo,
-          description: contribution.project.description,
-          projectImage: contribution.project.project_thumbnail,
-        })) || []),
-        ...data.projects?.map((project) => ({
-          title: project.project_name,
-          logo: project.project_logo,
-          description: project.description,
-          projectImage: project.project_thumbnail,
-        })),
-      ],
+      projects: Array.from(projectMap.values()),
     };
   });
 
