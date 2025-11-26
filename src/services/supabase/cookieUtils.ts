@@ -53,7 +53,7 @@ export function duplicateCookiesForInternalUrl<
     if (cookie.name.startsWith(prefixes.publicPrefix)) {
       result.push({
         ...cookie,
-        name: cookie.name.replace(prefixes.publicPrefix, prefixes.internalPrefix),
+        name: prefixes.internalPrefix + cookie.name.slice(prefixes.publicPrefix.length),
       } as T);
     }
   });
