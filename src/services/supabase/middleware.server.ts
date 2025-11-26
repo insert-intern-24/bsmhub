@@ -6,13 +6,31 @@ export async function updateSession(request: NextRequest) {
     request,
   });
 
+  // INTERNAL URL에서 사용할 호스트명의 프리픽스 추출
+  const publicHost = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!).host;
+  const internalHost = new URL(process.env.NEXT_PUBLIC_SUPABASE_INTERNAL_URL!)
+    .host;
+  const publicPrefix = `sb-${publicHost?.split('.')[0]}`;
+  const internalPrefix = `sb-${internalHost?.split('.')[0]}`;
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_INTERNAL_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         getAll() {
-          return request.cookies.getAll();
+          const cookies = request.cookies.getAll();
+          const result = [...cookies];
+          // sb-bsmhub-* 쿠키를 sb-10-* 형식으로 복사하여 INTERNAL URL에서 사용할 수 있도록 함
+          cookies.forEach((c) => {
+            if (c.name.startsWith(publicPrefix)) {
+              result.push({
+                name: c.name.replace(publicPrefix, internalPrefix),
+                value: c.value,
+              });
+            }
+          });
+          return result;
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) =>
@@ -25,7 +43,8 @@ export async function updateSession(request: NextRequest) {
             supabaseResponse.cookies.set(name, value, {
               ...options,
               path: '/',
-              sameSite: (options?.sameSite as 'lax' | 'strict' | 'none') || 'lax',
+              sameSite:
+                (options?.sameSite as 'lax' | 'strict' | 'none') || 'lax',
             }),
           );
         },
@@ -56,14 +75,14 @@ export async function updateSession(request: NextRequest) {
       const cookies = request.cookies.getAll();
       cookies.forEach(({ name }) => {
         if (name.startsWith('sb-')) {
-           supabaseResponse.cookies.set(name, '', { maxAge: 0 });
+          supabaseResponse.cookies.set(name, '', { maxAge: 0 });
         }
       });
       // Also clear the main response cookies just in case
       request.cookies.getAll().forEach(({ name }) => {
-         if (name.startsWith('sb-')) {
-            request.cookies.set(name, '');
-         }
+        if (name.startsWith('sb-')) {
+          request.cookies.set(name, '');
+        }
       });
     }
   }
@@ -96,4 +115,3 @@ export async function updateSession(request: NextRequest) {
 
   return supabaseResponse;
 }
-
