@@ -1,17 +1,17 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import {
+  getCookiePrefixes,
+  duplicateCookiesForInternalUrl,
+  filterOutInternalPrefixCookies,
+} from '@/services/supabase/cookieUtils';
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   });
 
-  // INTERNAL URL에서 사용할 호스트명의 프리픽스 추출
-  const publicHost = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!).host;
-  const internalHost = new URL(process.env.NEXT_PUBLIC_SUPABASE_INTERNAL_URL!)
-    .host;
-  const publicPrefix = `sb-${publicHost?.split('.')[0]}`;
-  const internalPrefix = `sb-${internalHost?.split('.')[0]}`;
+  const prefixes = getCookiePrefixes();
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_INTERNAL_URL!,
@@ -19,27 +19,26 @@ export async function updateSession(request: NextRequest) {
     {
       cookies: {
         getAll() {
-          const cookies = request.cookies.getAll();
-          const result = [...cookies];
-          // sb-bsmhub-* 쿠키를 sb-10-* 형식으로 복사하여 INTERNAL URL에서 사용할 수 있도록 함
-          cookies.forEach((c) => {
-            if (c.name.startsWith(publicPrefix)) {
-              result.push({
-                name: c.name.replace(publicPrefix, internalPrefix),
-                value: c.value,
-              });
-            }
-          });
-          return result;
+          // sb-bsmhub-* 쿠키를 sb-10-* 형식으로 복제하여 반환 (실제 저장 없음)
+          return duplicateCookiesForInternalUrl(
+            request.cookies.getAll(),
+            prefixes,
+          );
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
+          // sb-10-* 쿠키는 저장하지 않음 (sb-bsmhub-* 쿠키만 실제 저장)
+          const cookiesToActuallySet = filterOutInternalPrefixCookies(
+            cookiesToSet,
+            prefixes,
+          );
+
+          cookiesToActuallySet.forEach(({ name, value }) =>
             request.cookies.set(name, value),
           );
           supabaseResponse = NextResponse.next({
             request,
           });
-          cookiesToSet.forEach(({ name, value, options }) =>
+          cookiesToActuallySet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, {
               ...options,
               path: '/',
