@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Title } from '@/app/components/ui/text/text';
 import LabelOfInputs from './LabelOfInputs';
@@ -65,6 +65,7 @@ const InputOfModal = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fieldRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
+  const submitTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // initialValues가 변경될 때마다 폼을 리셋
   useEffect(() => {
@@ -72,6 +73,15 @@ const InputOfModal = ({
       reset(initialValues);
     }
   }, [initialValues, reset]);
+
+  // 컴포넌트 언마운트 시 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (submitTimerRef.current) {
+        clearTimeout(submitTimerRef.current);
+      }
+    };
+  }, []);
 
   // 에러 발생 시 첫 번째 에러 필드로 스크롤
   useEffect(() => {
@@ -103,7 +113,7 @@ const InputOfModal = ({
     try {
       onSubmit?.(data);
       // 최소 1초 후에 버튼 활성화 (네트워크 요청 시간 고려)
-      setTimeout(() => {
+      submitTimerRef.current = setTimeout(() => {
         setIsSubmitting(false);
       }, 1000);
     } catch (error) {
