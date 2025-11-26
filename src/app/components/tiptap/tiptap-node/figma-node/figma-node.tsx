@@ -45,6 +45,13 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
     if (!inputUrl.trim()) return
 
     const newEmbedUrl = getFigmaEmbedUrl(inputUrl)
+
+    // 유효하지 않은 URL인 경우 사용자에게 알림
+    if (!newEmbedUrl) {
+      alert("유효한 Figma URL을 입력해주세요.")
+      return
+    }
+
     setEmbedUrl(newEmbedUrl)
     setOriginalUrl(inputUrl)
     setIsEditing(false)

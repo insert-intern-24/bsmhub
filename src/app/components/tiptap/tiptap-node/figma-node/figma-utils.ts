@@ -83,7 +83,7 @@ export function extractOriginalUrlFromEmbed(embedUrl: string): string {
     // embed.figma.com 형식인 경우 원본 URL 추출 시도
     if (urlObj.hostname === "embed.figma.com") {
       // embed.figma.com/{type}/{fileKey} 형식에서 원본 URL 재구성
-      const pathMatch = urlObj.pathname.match(/^\/([^/]+)\/([a-zA-Z0-9]+)/)
+      const pathMatch = urlObj.pathname.match(/^\/([^/]+)\/([a-zA-Z0-9_-]+)/)
       if (pathMatch) {
         const [, type, fileKey] = pathMatch
         return `https://www.figma.com/${type}/${fileKey}`
