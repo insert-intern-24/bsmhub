@@ -1,6 +1,7 @@
 import { mergeAttributes, Node } from "@tiptap/react"
 import { ReactNodeViewRenderer } from "@tiptap/react"
 import { FigmaNode as FigmaNodeComponent } from "@/app/components/tiptap/tiptap-node/figma-node/figma-node"
+import { getFigmaEmbedUrl } from "@/app/components/tiptap/tiptap-node/figma-node/figma-utils"
 
 export interface FigmaNodeOptions {
   /**
@@ -19,31 +20,6 @@ declare module "@tiptap/react" {
       setFigma: (options: { url: string }) => ReturnType
     }
   }
-}
-
-/**
- * Convert Figma URL to embed URL using www.figma.com/embed format
- */
-function getFigmaEmbedUrl(url: string): string {
-  // Validate the URL first
-  try {
-    const urlObj = new URL(url)
-    const allowedHosts = ["figma.com", "www.figma.com", "embed.figma.com"]
-    if (!allowedHosts.includes(urlObj.hostname)) {
-      return url // Return original URL if not a Figma URL
-    }
-    
-    // If it's already an embed URL, return it as-is to avoid double encoding
-    if (urlObj.hostname === "embed.figma.com" || urlObj.pathname.startsWith("/embed")) {
-      return url
-    }
-  } catch {
-    // Invalid URL, return as-is
-    return url
-  }
-  
-  // Use Figma's standard embed format: encode the full original URL
-  return `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(url)}`
 }
 
 /**
@@ -80,6 +56,20 @@ export const FigmaNode = Node.create<FigmaNodeOptions>({
           }
           return {
             "data-url": attributes.url,
+          }
+        },
+      },
+      originalUrl: {
+        default: null,
+        parseHTML: (element) => {
+          return element.getAttribute("data-original-url")
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.originalUrl) {
+            return {}
+          }
+          return {
+            "data-original-url": attributes.originalUrl,
           }
         },
       },
@@ -154,6 +144,7 @@ export const FigmaNode = Node.create<FigmaNodeOptions>({
             type: this.name,
             attrs: {
               url: embedUrl,
+              originalUrl: options.url,
             },
           })
         },

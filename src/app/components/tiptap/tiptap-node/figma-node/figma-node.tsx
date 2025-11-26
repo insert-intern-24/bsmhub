@@ -7,37 +7,26 @@ import { Button } from "@/app/components/tiptap/tiptap-ui-primitive/button"
 import { Input } from "@/app/components/tiptap/tiptap-ui-primitive/input"
 import { CloseIcon } from "@/app/components/tiptap/tiptap-icons/close-icon"
 import { ExternalLinkIcon } from "@/app/components/tiptap/tiptap-icons/external-link-icon"
+import {
+  getFigmaEmbedUrl,
+  extractOriginalUrlFromEmbed,
+} from "@/app/components/tiptap/tiptap-node/figma-node/figma-utils"
 import "@/app/components/tiptap/tiptap-node/figma-node/figma-node.scss"
 
-/**
- * Convert Figma URL to embed URL using www.figma.com/embed format
- */
-function getFigmaEmbedUrl(url: string): string {
-  // Validate the URL first
-  try {
-    const urlObj = new URL(url)
-    const allowedHosts = ["figma.com", "www.figma.com", "embed.figma.com"]
-    if (!allowedHosts.includes(urlObj.hostname)) {
-      return ""
-    }
-    
-    // If it's already an embed URL, return it as-is to avoid double encoding
-    if (urlObj.hostname === "embed.figma.com" || urlObj.pathname.startsWith("/embed")) {
-      return url
-    }
-  } catch {
-    // Invalid URL
-    return ""
-  }
-  
-  // Use Figma's standard embed format: encode the full original URL
-  const embedUrl = `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(url)}`
-  return embedUrl
-}
-
 export const FigmaNode: React.FC<NodeViewProps> = (props) => {
-  const { url: initialUrl } = props.node.attrs
-  const [url, setUrl] = useState(initialUrl || "")
+  const { url: initialUrl, originalUrl: initialOriginalUrl } = props.node.attrs
+
+  // 원본 URL: 노드 속성에 originalUrl이 있으면 사용, 없으면 url에서 추출 시도
+  const getOriginalUrl = (urlAttr: string, origUrlAttr: string | null): string => {
+    if (origUrlAttr) return origUrlAttr
+    if (!urlAttr) return ""
+    return extractOriginalUrlFromEmbed(urlAttr)
+  }
+
+  const [originalUrl, setOriginalUrl] = useState(
+    getOriginalUrl(initialUrl, initialOriginalUrl)
+  )
+  const [inputUrl, setInputUrl] = useState(originalUrl)
   const [isEditing, setIsEditing] = useState(!initialUrl)
   const [embedUrl, setEmbedUrl] = useState(
     initialUrl ? getFigmaEmbedUrl(initialUrl) : ""
@@ -45,23 +34,34 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
 
   useEffect(() => {
     if (initialUrl) {
-      setUrl(initialUrl)
+      const origUrl = getOriginalUrl(initialUrl, initialOriginalUrl)
+      setOriginalUrl(origUrl)
+      setInputUrl(origUrl)
       setEmbedUrl(getFigmaEmbedUrl(initialUrl))
     }
-  }, [initialUrl])
+  }, [initialUrl, initialOriginalUrl])
 
   const handleSubmit = () => {
-    if (!url.trim()) return
+    if (!inputUrl.trim()) return
 
-    const newEmbedUrl = getFigmaEmbedUrl(url)
+    const newEmbedUrl = getFigmaEmbedUrl(inputUrl)
+
+    // 유효하지 않은 URL인 경우 사용자에게 알림
+    if (!newEmbedUrl) {
+      alert("유효한 Figma URL을 입력해주세요.")
+      return
+    }
+
     setEmbedUrl(newEmbedUrl)
+    setOriginalUrl(inputUrl)
     setIsEditing(false)
 
-    // Update the node attributes
+    // 노드 속성에 원본 URL과 임베드 URL 모두 저장
     const pos = props.getPos()
     if (typeof pos === "number") {
       props.updateAttributes({
         url: newEmbedUrl,
+        originalUrl: inputUrl,
       })
     }
   }
@@ -73,7 +73,7 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
     }
     if (e.key === "Escape") {
       setIsEditing(false)
-      setUrl(initialUrl || "")
+      setInputUrl(originalUrl)
     }
   }
 
@@ -95,8 +95,8 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
           <Input
             type="text"
             placeholder="Paste Figma URL here..."
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
+            value={inputUrl}
+            onChange={(e) => setInputUrl(e.target.value)}
             onKeyDown={handleKeyDown}
             autoFocus
           />
@@ -105,7 +105,7 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
               type="button"
               data-style="ghost"
               onClick={handleSubmit}
-              disabled={!url.trim()}
+              disabled={!inputUrl.trim()}
             >
               Embed
             </Button>
@@ -114,7 +114,7 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
               data-style="ghost"
               onClick={() => {
                 setIsEditing(false)
-                setUrl(initialUrl || "")
+                setInputUrl(originalUrl)
               }}
             >
               Cancel
@@ -137,11 +137,11 @@ export const FigmaNode: React.FC<NodeViewProps> = (props) => {
           >
             Edit
           </Button>
-          {url && (
+          {originalUrl && (
             <Button
               type="button"
               data-style="ghost"
-              onClick={() => window.open(url, "_blank")}
+              onClick={() => window.open(originalUrl, "_blank", "noopener,noreferrer")}
               tooltip="Open in Figma"
             >
               <ExternalLinkIcon className="tiptap-button-icon" />
