@@ -295,12 +295,14 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
         .toString(36)
         .slice(2)}`;
       const filename = file.name?.replace(/\.[^/.]+$/, '') || 'image';
+      
+      // 각 업로드마다 고유한 placeholder src 생성 (ID 포함)
+      const placeholderSrc = `${LOADING_PLACEHOLDER}#${placeholderId}`;
 
       // 로딩 플레이스홀더 이미지 삽입
       const imageNode = view.state.schema.nodes.image.create({
-        src: LOADING_PLACEHOLDER,
+        src: placeholderSrc,
         alt: filename,
-        title: placeholderId, // 임시로 ID 저장
       });
 
       if (position !== null && position !== undefined) {
@@ -318,13 +320,13 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
           if (!isMountedRef.current) return;
           if (!url) return;
 
-          // 현재 에디터 상태에서 플레이스홀더 찾기 (비동기 완료 시점의 최신 상태 사용)
+          // 현재 에디터 상태에서 플레이스홀더 찾기 (src로 매칭)
           let placeholderPos: number | null = null;
 
           view.state.doc.descendants((node, pos) => {
             if (
               node.type.name === 'image' &&
-              node.attrs.title === placeholderId
+              node.attrs.src === placeholderSrc
             ) {
               placeholderPos = pos;
               return false;
@@ -337,7 +339,6 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
             const tr = view.state.tr.setNodeMarkup(placeholderPos, undefined, {
               src: url,
               alt: filename,
-              title: '',
             });
             view.dispatch(tr);
           } else {
@@ -361,14 +362,14 @@ export const SimpleEditor = forwardRef<SimpleEditorRef, SimpleEditorProps>(
           }
           window.alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
 
-          // 현재 에디터 상태에서 플레이스홀더 찾기
+          // 현재 에디터 상태에서 플레이스홀더 찾기 (src로 매칭)
           let placeholderPos: number | null = null;
           let nodeSize = 0;
 
           view.state.doc.descendants((node, pos) => {
             if (
               node.type.name === 'image' &&
-              node.attrs.title === placeholderId
+              node.attrs.src === placeholderSrc
             ) {
               placeholderPos = pos;
               nodeSize = node.nodeSize;
