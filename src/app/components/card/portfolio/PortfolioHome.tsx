@@ -13,7 +13,12 @@ const PortfolioHome = ({ projects }: PortfolioHomeProps) => {
     <section className="flex-col gap-5 min-h-[calc(100vh-10rem)] mobile:min-h-0">
       <div>
         <Title>개인 프로젝트</Title>
-        <ProjectGrid projects={projects} className="mt-2 portfolioHomeCard" />
+        {projects.length === 0 && (
+          <div className="mt-2 text-gray-base">아직 등록되지 않았습니다.</div>
+        )}
+        {projects.length > 0 && (
+          <ProjectGrid projects={projects} className="mt-2 portfolioHomeCard" />
+        )}
       </div>
     </section>
   );
