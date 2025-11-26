@@ -63,6 +63,7 @@ const InputOfModal = ({
   const { openModal, closeModal } = useModal();
   const { showToast } = useToast();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const fieldRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
 
   // initialValues가 변경될 때마다 폼을 리셋
@@ -98,9 +99,15 @@ const InputOfModal = ({
   }, [isSubmitted, errors]);
 
   const onFormSubmit = (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>) => {
+    setIsSubmitting(true);
     try {
       onSubmit?.(data);
+      // 최소 1초 후에 버튼 활성화 (네트워크 요청 시간 고려)
+      setTimeout(() => {
+        setIsSubmitting(false);
+      }, 1000);
     } catch (error) {
+      setIsSubmitting(false);
       showToast(
         error instanceof Error ? error.message : '제출 중 오류가 발생했습니다.',
         'error',
@@ -300,6 +307,7 @@ const InputOfModal = ({
             color="black"
             text={submitButtonText}
             onClick={handleSubmit(onFormSubmit)}
+            disabled={isSubmitting}
           />
         </div>
       </div>

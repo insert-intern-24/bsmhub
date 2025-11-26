@@ -4,12 +4,14 @@ interface ButtonProps {
   text?: string;
   color?: 'black' | 'blue' | 'gray';
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 const Button = ({
   color = 'black',
   text = '추가하기',
   onClick,
+  disabled = false,
 }: ButtonProps) => {
   const bgColorMap: Record<'black' | 'blue' | 'gray', string> = {
     black: 'bg-black',
@@ -21,8 +23,9 @@ const Button = ({
 
   return (
     <button
-      className={`flex-col justify-center w-full h-[3.25rem] py-2 shrink-0 rounded-full ${textColor} text-body2 ${bgColorMap[color]}`}
+      className={`flex-col justify-center w-full h-[3.25rem] py-2 shrink-0 rounded-full ${textColor} text-body2 ${disabled ? 'bg-light-gray text-dark-gray cursor-not-allowed' : bgColorMap[color]}`}
       onClick={onClick}
+      disabled={disabled}
     >
       {text}
     </button>
