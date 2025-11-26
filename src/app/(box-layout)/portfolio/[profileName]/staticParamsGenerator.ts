@@ -1,7 +1,7 @@
 import { createClient } from '@/services/supabase/server';
 
 export default async function staticParamsGenerator(): Promise<string[]> {
-  const supabase = await createClient(true);
+  const supabase = await createClient(false, true);
   const { data, error } = await supabase
     .from('profile')
     .select(
