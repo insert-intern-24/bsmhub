@@ -506,6 +506,8 @@ export type Database = {
           company_name: string
           hr_manager_name: string | null
           hr_manager_phone: string | null
+          latitude: number | null
+          longitude: number | null
         }
         Insert: {
           company_address?: string | null
@@ -513,6 +515,8 @@ export type Database = {
           company_name: string
           hr_manager_name?: string | null
           hr_manager_phone?: string | null
+          latitude?: number | null
+          longitude?: number | null
         }
         Update: {
           company_address?: string | null
@@ -520,6 +524,8 @@ export type Database = {
           company_name?: string
           hr_manager_name?: string | null
           hr_manager_phone?: string | null
+          latitude?: number | null
+          longitude?: number | null
         }
         Relationships: []
       }
@@ -860,6 +866,46 @@ export type Database = {
           },
         ]
       }
+      predictions: {
+        Row: {
+          confidence: number | null
+          created_at: string | null
+          id: number
+          model_version: string | null
+          prediction_value: number | null
+          student_id: number
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string | null
+          id?: number
+          model_version?: string | null
+          prediction_value?: number | null
+          student_id: number
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string | null
+          id?: number
+          model_version?: string | null
+          prediction_value?: number | null
+          student_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "predictions_student_id_fkey"
+            columns: ["student_id"]
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "predictions_student_id_fkey1"
+            columns: ["student_id"]
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile: {
         Row: {
           created_at: string
@@ -931,6 +977,34 @@ export type Database = {
           },
           {
             foreignKeyName: "profile_competitions_profile_id_fkey"
+            columns: ["profile_id"]
+            referencedRelation: "profile"
+            referencedColumns: ["profile_id"]
+          },
+        ]
+      }
+      profile_html_description: {
+        Row: {
+          created_at: string | null
+          html_content: string
+          profile_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          html_content: string
+          profile_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          html_content?: string
+          profile_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_html_description_profile_id_fkey"
             columns: ["profile_id"]
             referencedRelation: "profile"
             referencedColumns: ["profile_id"]
@@ -1463,6 +1537,43 @@ export type Database = {
           },
         ]
       }
+      student_records: {
+        Row: {
+          created_at: string | null
+          data: Json | null
+          id: number
+          record_type: string | null
+          student_id: number
+        }
+        Insert: {
+          created_at?: string | null
+          data?: Json | null
+          id?: number
+          record_type?: string | null
+          student_id: number
+        }
+        Update: {
+          created_at?: string | null
+          data?: Json | null
+          id?: number
+          record_type?: string | null
+          student_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_records_student_id_fkey"
+            columns: ["student_id"]
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_records_student_id_fkey1"
+            columns: ["student_id"]
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       student_universities: {
         Row: {
           created_at: string
@@ -1493,6 +1604,33 @@ export type Database = {
             referencedColumns: ["university_id"]
           },
         ]
+      }
+      students: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: number
+          name: string | null
+          student_hash: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id?: number
+          name?: string | null
+          student_hash: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: number
+          name?: string | null
+          student_hash?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       team_member: {
         Row: {
