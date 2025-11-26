@@ -11,6 +11,7 @@ export type TeamData = MergeDeep<
       profile: Pick<Tables<'profile'>, 'profile_id' | 'profile_name' | 'profile_image'>;
     }[];
     projects?: Array<Pick<Tables<'projects'>, 'project_id' | 'project_name' | 'project_thumbnail' | 'description'>> | null;
+    profile_html_description?: Tables<'profile_html_description'>;
   }
 >;
 

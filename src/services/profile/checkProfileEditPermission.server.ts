@@ -2,6 +2,13 @@
 
 import { createClient } from '@/services/supabase/server';
 
+// Type for the profile query result
+type ProfileWithTeamMembers = {
+  owner: string;
+  is_team: boolean;
+  team_member: Array<{ participant_id: string }> | null;
+};
+
 /**
  * Check if the current user has edit permission for a profile
  * @param profileId - The profile ID to check permissions for
@@ -34,7 +41,7 @@ export async function checkProfileEditPermission(
     `,
     )
     .eq('profile_id', profileId)
-    .single();
+    .single<ProfileWithTeamMembers>();
 
   if (error || !profile) {
     return false;
@@ -53,7 +60,7 @@ export async function checkProfileEditPermission(
       .select('profile_id')
       .eq('owner', user.id)
       .eq('is_team', false)
-      .single();
+      .single<{ profile_id: string }>();
 
     if (userProfile) {
       const isMember = profile.team_member.some(

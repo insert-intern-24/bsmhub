@@ -11,6 +11,9 @@ type SupabaseTeamData = {
   owner: string;
   is_official?: boolean | null;
   profile_link: Array<{ link: string; alt: string | null }> | null;
+  profile_html_description?: {
+    html_content: string;
+  } | null;
   team_member: Array<{
     profile: {
       profile_id: string;
