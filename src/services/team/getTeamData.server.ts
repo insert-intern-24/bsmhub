@@ -11,6 +11,9 @@ type SupabaseTeamData = {
   owner: string;
   is_official?: boolean | null;
   profile_link: Array<{ link: string; alt: string | null }> | null;
+  profile_html_description?: {
+    html_content: string;
+  } | null;
   team_member: Array<{
     profile: {
       profile_id: string;
@@ -35,6 +38,9 @@ export const getTeamData = async (
       created_at,
       owner,
       is_official,
+      profile_html_description (
+        html_content
+      ),
       profile_link (
         link,
         alt

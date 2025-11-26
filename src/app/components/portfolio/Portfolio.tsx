@@ -13,6 +13,8 @@ import ProfileIcon from '@/app/components/ui/profile/ProfileIcon';
 import PortfolioVisitTracker from '@/app/components/card/portfolio/PortfolioVisitTracker';
 import ProfileEditButton from '@/app/components/ui/profile/portfolio/ProfileEditButton';
 import PortfolioItems from '@/app/components/ui/profile/portfolio/PortfolioDetail';
+import ContentEditor from '@/app/components/feature/editor/ContentEditor';
+import { checkProfileEditPermission } from '@/services/profile/checkProfileEditPermission.server';
 
 interface PortfolioProps {
   profileName: string;
@@ -38,6 +40,9 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
   const profileDetail = await getProfileDetail(profileName);
   const cooperationProjects = await getCooperationProjects(uuid);
   const personalProjects = await getPersonalProjects(uuid);
+  
+  // Check edit permission
+  const hasEditPermission = await checkProfileEditPermission(uuid);
 
   const isHome = path === 'home';
 
@@ -71,22 +76,32 @@ const Portfolio = async ({ profileName, path = 'home' }: PortfolioProps) => {
         </div>
 
         <aside className="flex-col gap-6 sticky top-24 self-start w-[21.75rem] mobile:static mobile:w-full">
+          {profile.description && <Body className="text-gray-base">{profile.description}</Body>}
           <ProfileEditButton ownerId={profile.owner ?? ''} />
           <PortfolioItems details={profileDetail} />
         </aside>
 
-        {isHome ? (
-          <PortfolioHome
-            content={profile.description ?? ''}
-            projects={personalProjects}
-            profile_name={profile.profile_name}
+        <div className="flex-col gap-6">
+          {/* HTML Description Section */}
+          <ContentEditor
+            contentType="profile"
+            id={profile.profile_id}
+            initialHtmlContent={profile.profile_html_description?.html_content}
+            hasEditPermission={hasEditPermission}
           />
-        ) : (
-          <PortfolioProject
-            personalProjects={personalProjects}
-            cooperationProjects={cooperationProjects}
-          />
-        )}
+
+          {isHome ? (
+            <PortfolioHome
+              projects={personalProjects}
+              profile_name={profile.profile_name}
+            />
+          ) : (
+            <PortfolioProject
+              personalProjects={personalProjects}
+              cooperationProjects={cooperationProjects}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
