@@ -67,7 +67,7 @@ const ProjectSidebar = ({
   return (
     <div ref={sidebarRef}>
       <SidebarLayout
-        className="mobile:border-0 mobile:px-0 mobile:pb-8"
+        className="mobile:border-0 mobile:px-0 mobile:pb-8 h-full"
         header={
           <ProjectSummarySection
             title={project.title}
