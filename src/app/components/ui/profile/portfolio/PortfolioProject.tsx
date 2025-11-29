@@ -38,6 +38,11 @@ const PortfolioProject = ({
       {projects.map(({ mode, datas }) => (
         <Fragment key={mode}>
           <Title className="col-span-full">{mapProjectMode[mode]}</Title>
+          {datas.length === 0 && (
+            <div className="col-span-full text-gray-base">
+              아직 등록되지 않았습니다.
+            </div>
+          )}
           {datas.map((data) => (
             <Card
               key={data.id}

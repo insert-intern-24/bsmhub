@@ -13,7 +13,7 @@ type LoginBoxProps = {
 const LoginBox: React.FC<LoginBoxProps> = ({
   className = '',
   title = '로그인하기',
-  description = 'Google 계정으로 계속 진행하세요.',
+  description = '로그인하여 학생용 기능을 사용하세요.',
 }) => {
   return (
     <section
@@ -36,5 +36,3 @@ const LoginBox: React.FC<LoginBoxProps> = ({
 };
 
 export default LoginBox;
-
-

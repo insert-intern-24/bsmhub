@@ -126,7 +126,11 @@ const ContentEditor = ({
       )}
       <section
         className={`flex-1 w-full ${
-          isEditing ? 'pt-6' : 'pt-[4.5rem]'
+          isEditing
+            ? 'pt-6'
+            : contentType === 'project' || hasEditPermission
+              ? 'pt-[4.5rem]'
+              : ''
         } mobile:px-0`}
       >
         {isEditing ? (
