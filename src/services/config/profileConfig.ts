@@ -47,6 +47,7 @@ export const profileConfig: FormConfig = {
               profile_name
               profile_image
               description
+              email
               owner
               profile_linkCollection {
                 edges {
@@ -127,6 +128,7 @@ export const profileConfig: FormConfig = {
             profile_name
             profile_image
             description
+            email
             owner
             is_team
           }
@@ -215,6 +217,28 @@ export const profileConfig: FormConfig = {
             placeholder: '자기소개를 입력하세요',
             required: false,
             textarea: true,
+          },
+        ],
+      },
+    },
+    {
+      fieldName: 'profile_email',
+      label: '이메일',
+      type: 'inputList',
+      required: false,
+      columnInfo: { table: 'profile', column: 'email' },
+      inputConfig: {
+        onlyOne: true,
+        inputs: [
+          {
+            name: 'email',
+            type: 'text',
+            placeholder: '이메일을 입력하세요',
+            required: false,
+            zodSchema: z.union([
+              z.string().email('올바른 이메일 형식이 아닙니다.'),
+              z.literal(''),
+            ]),
           },
         ],
       },
