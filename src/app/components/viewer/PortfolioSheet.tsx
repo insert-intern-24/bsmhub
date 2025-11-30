@@ -104,7 +104,7 @@ const PortfolioSheet = ({ data }: PortfolioSheetProps) => {
         </div>
 
         {/* 상세 정보 섹션들 */}
-        <div className="flex-col gap-[40px] w-full">
+        <div className="flex-col gap-10 w-full">
           {/* 언어/기술/스택 */}
           {skillNames && (
             <Section title="언어/기술/스택">
