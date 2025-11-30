@@ -218,9 +218,9 @@ export async function getAllViewerPortfolioData(): Promise<ViewerPortfolioData[]
       const nameA = a.student?.name || '';
       const nameB = b.student?.name || '';
 
-      // 소프트웨어개발과 우선
-      const isSoftwareA = deptA.includes('소프트웨어개발과') || deptA.includes('소프트웨어 개발과');
-      const isSoftwareB = deptB.includes('소프트웨어개발과') || deptB.includes('소프트웨어 개발과');
+      // 소프트웨어개발과 우선 (공백 제거 후 비교)
+      const isSoftwareA = deptA.replace(/\s+/g, '').includes('소프트웨어개발과');
+      const isSoftwareB = deptB.replace(/\s+/g, '').includes('소프트웨어개발과');
 
       if (isSoftwareA !== isSoftwareB) return isSoftwareA ? -1 : 1;
       if (isSoftwareA) return nameA.localeCompare(nameB, 'ko');
