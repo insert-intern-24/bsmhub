@@ -6,30 +6,11 @@ import BulletList from '@/app/components/viewer/BulletList';
 import Section from '@/app/components/viewer/Section';
 import { ViewerPortfolioData } from '@/services/portfolio/getAllViewerPortfolioData.server';
 import { calculateGradeFromStudentNumber } from '@/utils/student/studentCalculations';
-import { converIsTeamToUrl } from '@/utils/convertIsTeamToUrl';
+import { getNotNull, joinNames, createProjectLink } from '@/utils/portfolioUtils';
 
 interface PortfolioSheetProps {
   data: ViewerPortfolioData;
 }
-
-// 유틸리티 함수들
-const getNotNull = <T,>(value: T | null | undefined, fallback = ''): T | string =>
-  value ?? fallback;
-
-const joinNames = (items: Array<{ [key: string]: string | null }>, key: string): string =>
-  items
-    .map((item) => item[key])
-    .filter((name): name is string => name !== null && name !== undefined)
-    .join(', ');
-
-const createProjectLink = (
-  ownerProfileName: string | null,
-  ownerIsTeam: boolean | null,
-  projectName: string,
-): string | undefined =>
-  ownerProfileName && projectName
-    ? `/${converIsTeamToUrl(ownerIsTeam ?? false)}/${ownerProfileName}/${projectName}`
-    : undefined;
 
 const PortfolioSheet = ({ data }: PortfolioSheetProps) => {
   const { profile, student, department, jobs, skills, competitions, projects } = data;
