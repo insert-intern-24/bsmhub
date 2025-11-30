@@ -64,6 +64,7 @@ const config: Config = {
         black: '#131313',
         detail: '#858587',
         'blue-primary': '#1462FF',
+        'blue-secondary': '#0C89CD',
         'red-primary': '#FD462D',
       },
       keyframes: {
