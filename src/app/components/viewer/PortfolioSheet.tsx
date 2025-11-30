@@ -59,7 +59,7 @@ const PortfolioSheet = ({ data }: PortfolioSheetProps) => {
     });
 
   return (
-    <article className="flex-col gap-[24px] w-full">
+    <article className="flex-col gap-[24px] w-full border border-[#F3F3F3] rounded p-8 bg-white">
       {/* 상단 라벨 */}
       {topLabelText && (
         <Label className="text-blue-secondary font-light">
