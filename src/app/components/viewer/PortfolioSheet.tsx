@@ -103,13 +103,8 @@ const PortfolioSheet = ({ data }: PortfolioSheetProps) => {
               {studentName && <Title className="text-black">{studentName}</Title>}
               {email && <Body className="text-black">{email}</Body>}
               {bio && (
-                <Body className="text-blue-secondary">
-                  {bio.split('\n').map((line, index) => (
-                    <React.Fragment key={index}>
-                      {line}
-                      {index < bio.split('\n').length - 1 && <br />}
-                    </React.Fragment>
-                  ))}
+                <Body className="text-blue-secondary whitespace-pre-line">
+                  {bio}
                 </Body>
               )}
             </div>
