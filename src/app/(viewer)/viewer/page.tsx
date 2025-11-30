@@ -13,7 +13,7 @@ const getBanner = (dept: string | null): string | null => {
   return null;
 };
 
-const page = async () => {
+const ViewerPage = async () => {
   const portfolioData = await getAllViewerPortfolioData();
 
   if (!portfolioData?.length) {
@@ -54,4 +54,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default ViewerPage;

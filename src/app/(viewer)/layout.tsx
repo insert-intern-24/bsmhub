@@ -9,7 +9,7 @@ export const metadata = {
   image: '/favicon.ico',
 };
 
-export default function BoxLayout({ children }: { children: React.ReactNode }) {
+export default function ViewerLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="scroll-smooth w-full min-h-dvh pt-4 mt-14 mobile:mt-0 mobile:pt-0">
       <div className="max-w-[109rem] bg-white mobile:p-3 min-h-screen mobile:pb-12 mx-auto p-[4rem]">
