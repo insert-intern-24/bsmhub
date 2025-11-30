@@ -4,10 +4,10 @@ import '@/app/components/modal/inputs/common/common.css';
 import '@/app/components/modal/modal.css';
 
 export const metadata = {
-    title: '부산소프트웨어마이스터고 프로젝트의 장',
-    description: '부산소프트웨어마이스터고 포트폴리오 사이트',
-    image: '/favicon.ico',
-  };
+  title: '부산소프트웨어마이스터고 프로젝트의 장',
+  description: '부산소프트웨어마이스터고 포트폴리오 사이트',
+  image: '/favicon.ico',
+};
 
 export default function BoxLayout({ children }: { children: React.ReactNode }) {
   return (
