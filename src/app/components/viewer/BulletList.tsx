@@ -16,7 +16,6 @@ const BulletList = ({ items }: BulletListProps) => {
   return (
     <ul className="list-bullet-square">
       {items.map((item, index) => {
-        const isLast = index === items.length - 1;
         const className = `text-black ${item.href ? 'hover:underline cursor-pointer' : ''}`;
         const content = <Body className={className}>{item.text}</Body>;
 

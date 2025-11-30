@@ -38,7 +38,6 @@ const PortfolioSheet = ({ data }: PortfolioSheetProps) => {
     : 0;
   const departmentName = getNotNull(department?.department_name);
   const topLabelText = grade > 0 && departmentName ? `${grade}학년 ${departmentName}` : departmentName;
-  const profileName = profile.profile_name;
 
   const jobNames = joinNames(jobs, 'job_name');
   const skillNames = joinNames(skills, 'skill_name');
