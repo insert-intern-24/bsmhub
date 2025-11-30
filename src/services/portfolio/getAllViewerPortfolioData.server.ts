@@ -77,31 +77,13 @@ export interface PaginatedViewerPortfolioResponse {
 }
 
 export async function getAllViewerPortfolioData(
-  page: number = 1,
-  limit: number = 10,
-): Promise<PaginatedViewerPortfolioResponse> {
+  page?: number,
+  limit?: number,
+): Promise<ViewerPortfolioData[]> {
   const supabase = await createClient();
-  const offset = (page - 1) * limit;
 
-  // 전체 개수 조회
-  const { count: totalCount, error: countError } = await supabase
-    .from('profile')
-    .select('*', { count: 'exact', head: true })
-    .eq('is_team', false);
-
-  if (countError) {
-    console.error('Failed to fetch portfolio count:', countError);
-    return {
-      data: [],
-      hasMore: false,
-      totalCount: 0,
-      currentPage: page,
-      totalPages: 0,
-    };
-  }
-
-  // 페이지네이션된 프로필 데이터 조회
-  const { data: profiles, error: profileError } = await supabase
+  // 프로필 데이터 조회 (페이지네이션 없이 모든 데이터)
+  let query = supabase
     .from('profile')
     .select(
       `
@@ -154,32 +136,26 @@ export async function getAllViewerPortfolioData(
       )
       `,
     )
-    .eq('is_team', false)
-    .range(offset, offset + limit - 1);
+    .eq('is_team', false);
+
+  // limit이 제공된 경우에만 페이지네이션 적용 (하위 호환성)
+  if (limit !== undefined && page !== undefined) {
+    const offset = (page - 1) * limit;
+    query = query.range(offset, offset + limit - 1);
+  }
+
+  const { data: profiles, error: profileError } = await query;
 
   if (profileError) {
     console.error(
       'Failed to fetch viewer portfolio data from database:',
       profileError,
     );
-    return {
-      data: [],
-      hasMore: false,
-      totalCount: totalCount || 0,
-      currentPage: page,
-      totalPages: 0,
-    };
+    return [];
   }
 
   if (!profiles || profiles.length === 0) {
-    const totalPages = Math.ceil((totalCount || 0) / limit);
-    return {
-      data: [],
-      hasMore: false,
-      totalCount: totalCount || 0,
-      currentPage: page,
-      totalPages,
-    };
+    return [];
   }
 
   // 데이터 변환
@@ -271,15 +247,6 @@ export async function getAllViewerPortfolioData(
       return deptCompare !== 0 ? deptCompare : nameA.localeCompare(nameB, 'ko');
     });
 
-  const totalPages = Math.ceil((totalCount || 0) / limit);
-  const hasMore = page < totalPages;
-
-  return {
-    data: portfolioData,
-    hasMore,
-    totalCount: totalCount || 0,
-    currentPage: page,
-    totalPages,
-  };
+  return portfolioData;
 }
 

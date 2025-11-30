@@ -1,12 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import PortfolioSheet from '@/app/components/viewer/PortfolioSheet';
-import ViewerPagination from '@/app/components/viewer/ViewerPagination';
 import { getAllViewerPortfolioData, ViewerPortfolioData } from '@/services/portfolio/getAllViewerPortfolioData.server';
-
-interface PageProps {
-  searchParams: { page?: string };
-}
 
 const getBanner = (dept: string | null): string | null => {
   if (!dept) return null;
@@ -15,11 +10,8 @@ const getBanner = (dept: string | null): string | null => {
   return null;
 };
 
-const page = async ({ searchParams }: PageProps) => {
-  const { data: portfolioData, totalPages, currentPage } = await getAllViewerPortfolioData(
-    parseInt(searchParams.page || '1', 10),
-    10,
-  );
+const page = async () => {
+  const portfolioData = await getAllViewerPortfolioData();
 
   if (!portfolioData?.length) {
     return (
@@ -55,7 +47,6 @@ const page = async ({ searchParams }: PageProps) => {
           ),
         )}
       </div>
-      <ViewerPagination currentPage={currentPage} totalPages={totalPages} basePath="/viewer" />
     </div>
   );
 };
