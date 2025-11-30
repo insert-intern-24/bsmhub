@@ -26,7 +26,7 @@ const page = async ({ searchParams }: PageProps) => {
   }
 
   return (
-    <div className="flex-col gap-[40px] w-full">
+    <div className="flex-col gap-40 w-full">
       {portfolioData.map((data, index) => (
         <PortfolioSheet key={data.profile.profile_name || index} data={data} />
       ))}

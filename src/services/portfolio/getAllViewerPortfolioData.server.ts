@@ -1,6 +1,51 @@
 'use server';
 
 import { createClient } from '@/services/supabase/server';
+import { Database } from '@/services/supabase/database.types';
+
+type ProfileRow = Database['public']['Tables']['profile']['Row'];
+type StudentRow = Database['public']['Tables']['student']['Row'];
+type DepartmentRow = Database['public']['Tables']['departments']['Row'];
+type JobRow = Database['public']['Tables']['jobs']['Row'];
+type SkillRow = Database['public']['Tables']['skills']['Row'];
+type CompetitionRow = Database['public']['Tables']['competitions']['Row'];
+type ProjectRow = Database['public']['Tables']['projects']['Row'];
+type StudentJobRow = Database['public']['Tables']['student_jobs']['Row'];
+type ProfileSkillRow = Database['public']['Tables']['profile_skills']['Row'];
+type ProfileCompetitionRow =
+  Database['public']['Tables']['profile_competitions']['Row'];
+type ProjectContributorRow =
+  Database['public']['Tables']['project_contributors']['Row'];
+
+// Supabase 쿼리 결과 타입 정의
+type ProfileWithRelations = ProfileRow & {
+  student:
+    | (StudentRow & {
+        department: DepartmentRow | null;
+        student_jobs: Array<
+          StudentJobRow & {
+            job: JobRow | null;
+          }
+        >;
+      })
+    | null;
+  profile_skills: Array<
+    ProfileSkillRow & {
+      skills: SkillRow | null;
+    }
+  >;
+  profile_competitions: Array<
+    ProfileCompetitionRow & {
+      competitions: CompetitionRow | null;
+    }
+  >;
+  projects: ProjectRow[] | null;
+  project_contributors: Array<
+    ProjectContributorRow & {
+      project: ProjectRow | null;
+    }
+  >;
+};
 
 export interface ViewerPortfolioData {
   profile: {
@@ -140,14 +185,19 @@ export async function getAllViewerPortfolioData(
   }
 
   // 데이터 변환
-  const portfolioData: ViewerPortfolioData[] = profiles.map((profile: any) => {
+  const portfolioData: ViewerPortfolioData[] = (
+    profiles as ProfileWithRelations[]
+  ).map((profile) => {
     // 프로젝트 중복 제거를 위한 Set
     const projectSet = new Set<string>();
-    const projects: Array<{ project_name: string | null; description: string | null }> = [];
+    const projects: Array<{
+      project_name: string | null;
+      description: string | null;
+    }> = [];
 
     // 소유한 프로젝트 추가
     if (profile.projects) {
-      profile.projects.forEach((project: any) => {
+      profile.projects.forEach((project) => {
         if (project.project_name && !projectSet.has(project.project_name)) {
           projectSet.add(project.project_name);
           projects.push({
@@ -160,7 +210,7 @@ export async function getAllViewerPortfolioData(
 
     // 기여한 프로젝트 추가
     if (profile.project_contributors) {
-      profile.project_contributors.forEach((contributor: any) => {
+      profile.project_contributors.forEach((contributor) => {
         if (
           contributor.project?.project_name &&
           !projectSet.has(contributor.project.project_name)
@@ -168,7 +218,8 @@ export async function getAllViewerPortfolioData(
           projectSet.add(contributor.project.project_name);
           projects.push({
             project_name: contributor.project.project_name,
-            description: contributor.project.description || contributor.description,
+            description:
+              contributor.project.description || contributor.description,
           });
         }
       });
@@ -191,17 +242,31 @@ export async function getAllViewerPortfolioData(
       department: profile.student?.department || null,
       jobs:
         profile.student?.student_jobs
-          ?.map((sj: any) => ({ job_name: sj.job?.job_name }))
-          .filter((job: any) => job.job_name !== null && job.job_name !== undefined) || [],
+          ?.map((sj) => ({ job_name: sj.job?.job_name ?? null }))
+          .filter(
+            (job): job is { job_name: string } =>
+              job.job_name !== null && job.job_name !== undefined,
+          ) || [],
       skills:
         profile.profile_skills
-          ?.map((ps: any) => ({ skill_name: ps.skills?.skill_name }))
-          .filter((skill: any) => skill.skill_name !== null && skill.skill_name !== undefined) || [],
+          ?.map((ps) => ({ skill_name: ps.skills?.skill_name ?? null }))
+          .filter(
+            (skill): skill is { skill_name: string } =>
+              skill.skill_name !== null && skill.skill_name !== undefined,
+          ) || [],
       competitions:
-        profile.profile_competitions?.map((pc: any) => ({
-          competition_name: pc.competitions?.competition_name,
-          prize: pc.prize,
-        })) || [],
+        profile.profile_competitions
+          ?.map((pc) => ({
+            competition_name: pc.competitions?.competition_name ?? null,
+            prize: pc.prize,
+          }))
+          .filter(
+            (comp): comp is { competition_name: string; prize: string } =>
+              comp.competition_name !== null &&
+              comp.competition_name !== undefined &&
+              comp.prize !== null &&
+              comp.prize !== undefined,
+          ) || [],
       projects,
     };
   });

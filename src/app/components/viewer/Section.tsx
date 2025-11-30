@@ -12,7 +12,7 @@ const Section = ({ title, children }: SectionProps) => {
       <Label className="text-blue-secondary font-bold whitespace-pre">
         {title}
       </Label>
-      <hr className="border-blue-secondary" />
+      <hr className="border-light-gray" />
       <div className="w-full">{children}</div>
     </div>
   );
