@@ -68,22 +68,11 @@ export interface ViewerPortfolioData {
   }>;
 }
 
-export interface PaginatedViewerPortfolioResponse {
-  data: ViewerPortfolioData[];
-  hasMore: boolean;
-  totalCount: number;
-  currentPage: number;
-  totalPages: number;
-}
-
-export async function getAllViewerPortfolioData(
-  page?: number,
-  limit?: number,
-): Promise<ViewerPortfolioData[]> {
+export async function getAllViewerPortfolioData(): Promise<ViewerPortfolioData[]> {
   const supabase = await createClient();
 
-  // 프로필 데이터 조회 (페이지네이션 없이 모든 데이터)
-  let query = supabase
+  // 프로필 데이터 조회 (전체 데이터)
+  const query = supabase
     .from('profile')
     .select(
       `
@@ -137,12 +126,6 @@ export async function getAllViewerPortfolioData(
       `,
     )
     .eq('is_team', false);
-
-  // limit이 제공된 경우에만 페이지네이션 적용 (하위 호환성)
-  if (limit !== undefined && page !== undefined) {
-    const offset = (page - 1) * limit;
-    query = query.range(offset, offset + limit - 1);
-  }
 
   const { data: profiles, error: profileError } = await query;
 
