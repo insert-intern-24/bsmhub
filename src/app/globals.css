@@ -96,3 +96,17 @@ input[type="search"]::-webkit-search-results-decoration {
 html {
   font-size: 12px;
 }
+
+/* 리스트 아이템에 ▪ 기호 데코레이션 추가 */
+.list-bullet-square {
+  @apply flex-col gap-0 list-none pl-0;
+}
+
+.list-bullet-square > li {
+  @apply flex items-start;
+}
+
+.list-bullet-square > li::before {
+  content: '▪';
+  @apply text-[#2c2e35] mr-1 shrink-0;
+}
