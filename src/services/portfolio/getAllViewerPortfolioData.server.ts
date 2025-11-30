@@ -1,50 +1,38 @@
 'use server';
 
 import { createClient } from '@/services/supabase/server';
-import { Database } from '@/services/supabase/database.types';
 
-type ProfileRow = Database['public']['Tables']['profile']['Row'];
-type StudentRow = Database['public']['Tables']['student']['Row'];
-type DepartmentRow = Database['public']['Tables']['departments']['Row'];
-type JobRow = Database['public']['Tables']['jobs']['Row'];
-type SkillRow = Database['public']['Tables']['skills']['Row'];
-type CompetitionRow = Database['public']['Tables']['competitions']['Row'];
-type ProjectRow = Database['public']['Tables']['projects']['Row'];
-type StudentJobRow = Database['public']['Tables']['student_jobs']['Row'];
-type ProfileSkillRow = Database['public']['Tables']['profile_skills']['Row'];
-type ProfileCompetitionRow =
-  Database['public']['Tables']['profile_competitions']['Row'];
-type ProjectContributorRow =
-  Database['public']['Tables']['project_contributors']['Row'];
-
-// Supabase 쿼리 결과 타입 정의
-type ProfileWithRelations = ProfileRow & {
-  student:
-    | (StudentRow & {
-        department: DepartmentRow | null;
-        student_jobs: Array<
-          StudentJobRow & {
-            job: JobRow | null;
-          }
-        >;
-      })
-    | null;
-  profile_skills: Array<
-    ProfileSkillRow & {
-      skills: SkillRow | null;
-    }
-  >;
-  profile_competitions: Array<
-    ProfileCompetitionRow & {
-      competitions: CompetitionRow | null;
-    }
-  >;
-  projects: ProjectRow[] | null;
-  project_contributors: Array<
-    ProjectContributorRow & {
-      project: ProjectRow | null;
-    }
-  >;
+// Supabase 쿼리 결과 타입 (간소화)
+type ProfileWithRelations = {
+  profile_name: string | null;
+  description: string | null;
+  profile_image: string;
+  email: string | null;
+  student: {
+    name: string;
+    student_number: number | null;
+    join_at: string;
+    department: { department_name: string } | null;
+    student_jobs: Array<{ job: { job_name: string } | null }>;
+  } | null;
+  profile_skills: Array<{ skills: { skill_name: string } | null }>;
+  profile_competitions: Array<{
+    prize: string;
+    competitions: { competition_name: string } | null;
+  }>;
+  projects: Array<{
+    project_name: string;
+    description: string;
+    profile?: { profile_name: string | null; is_team: boolean | null } | null;
+  }> | null;
+  project_contributors: Array<{
+    description: string | null;
+    project: {
+      project_name: string;
+      description: string;
+      profile?: { profile_name: string | null; is_team: boolean | null } | null;
+    } | null;
+  }>;
 };
 
 export interface ViewerPortfolioData {
@@ -75,6 +63,8 @@ export interface ViewerPortfolioData {
   projects: Array<{
     project_name: string | null;
     description: string | null;
+    owner_profile_name: string | null;
+    owner_is_team: boolean | null;
   }>;
 }
 
@@ -145,13 +135,21 @@ export async function getAllViewerPortfolioData(
       ),
       projects!projects_owner_fkey(
         project_name,
-        description
+        description,
+        profile!projects_owner_fkey(
+          profile_name,
+          is_team
+        )
       ),
       project_contributors(
         description,
         project:projects(
           project_name,
-          description
+          description,
+          profile!projects_owner_fkey(
+            profile_name,
+            is_team
+          )
         )
       )
       `,
@@ -187,89 +185,91 @@ export async function getAllViewerPortfolioData(
   // 데이터 변환
   const portfolioData: ViewerPortfolioData[] = (
     profiles as ProfileWithRelations[]
-  ).map((profile) => {
-    // 프로젝트 중복 제거를 위한 Set
-    const projectSet = new Set<string>();
-    const projects: Array<{
-      project_name: string | null;
-      description: string | null;
-    }> = [];
+  )
+    .map((profile) => {
+      // 프로젝트 중복 제거 및 병합
+      const projectMap = new Map<string, {
+        project_name: string | null;
+        description: string | null;
+        owner_profile_name: string | null;
+        owner_is_team: boolean | null;
+      }>();
 
-    // 소유한 프로젝트 추가
-    if (profile.projects) {
-      profile.projects.forEach((project) => {
-        if (project.project_name && !projectSet.has(project.project_name)) {
-          projectSet.add(project.project_name);
-          projects.push({
+      profile.projects?.forEach((project) => {
+        if (project.project_name) {
+          projectMap.set(project.project_name, {
             project_name: project.project_name,
             description: project.description,
+            owner_profile_name: project.profile?.profile_name ?? null,
+            owner_is_team: project.profile?.is_team ?? null,
           });
         }
       });
-    }
 
-    // 기여한 프로젝트 추가
-    if (profile.project_contributors) {
-      profile.project_contributors.forEach((contributor) => {
-        if (
-          contributor.project?.project_name &&
-          !projectSet.has(contributor.project.project_name)
-        ) {
-          projectSet.add(contributor.project.project_name);
-          projects.push({
-            project_name: contributor.project.project_name,
-            description:
-              contributor.project.description || contributor.description,
+      profile.project_contributors?.forEach((contributor) => {
+        const project = contributor.project;
+        if (project?.project_name && !projectMap.has(project.project_name)) {
+          projectMap.set(project.project_name, {
+            project_name: project.project_name,
+            description: project.description || contributor.description,
+            owner_profile_name: project.profile?.profile_name ?? null,
+            owner_is_team: project.profile?.is_team ?? null,
           });
         }
       });
-    }
 
-    return {
-      profile: {
-        profile_name: profile.profile_name,
-        description: profile.description,
-        profile_image: profile.profile_image,
-        email: profile.email,
-      },
-      student: profile.student
-        ? {
-            name: profile.student.name,
-            student_number: profile.student.student_number,
-            join_at: profile.student.join_at,
-          }
-        : null,
-      department: profile.student?.department || null,
-      jobs:
-        profile.student?.student_jobs
-          ?.map((sj) => ({ job_name: sj.job?.job_name ?? null }))
-          .filter(
-            (job): job is { job_name: string } =>
-              job.job_name !== null && job.job_name !== undefined,
-          ) || [],
-      skills:
-        profile.profile_skills
-          ?.map((ps) => ({ skill_name: ps.skills?.skill_name ?? null }))
-          .filter(
-            (skill): skill is { skill_name: string } =>
-              skill.skill_name !== null && skill.skill_name !== undefined,
-          ) || [],
-      competitions:
-        profile.profile_competitions
-          ?.map((pc) => ({
+      return {
+        profile: {
+          profile_name: profile.profile_name,
+          description: profile.description,
+          profile_image: profile.profile_image,
+          email: profile.email,
+        },
+        student: profile.student
+          ? {
+              name: profile.student.name,
+              student_number: profile.student.student_number,
+              join_at: profile.student.join_at,
+            }
+          : null,
+        department: profile.student?.department || null,
+        jobs: (profile.student?.student_jobs || [])
+          .map((sj) => sj.job?.job_name)
+          .filter((name): name is string => name !== null && name !== undefined)
+          .map((name) => ({ job_name: name })),
+        skills: (profile.profile_skills || [])
+          .map((ps) => ps.skills?.skill_name)
+          .filter((name): name is string => name !== null && name !== undefined)
+          .map((name) => ({ skill_name: name })),
+        competitions: (profile.profile_competitions || [])
+          .map((pc) => ({
             competition_name: pc.competitions?.competition_name ?? null,
             prize: pc.prize,
           }))
           .filter(
             (comp): comp is { competition_name: string; prize: string } =>
-              comp.competition_name !== null &&
-              comp.competition_name !== undefined &&
-              comp.prize !== null &&
-              comp.prize !== undefined,
-          ) || [],
-      projects,
-    };
-  });
+              comp.competition_name !== null && comp.prize !== null,
+          ),
+        projects: Array.from(projectMap.values()),
+      };
+    })
+    .sort((a, b) => {
+      const deptA = a.department?.department_name || '';
+      const deptB = b.department?.department_name || '';
+      const nameA = a.student?.name || '';
+      const nameB = b.student?.name || '';
+
+      // 소프트웨어개발과 우선
+      const isSoftwareA = deptA.includes('소프트웨어개발과') || deptA.includes('소프트웨어 개발과');
+      const isSoftwareB = deptB.includes('소프트웨어개발과') || deptB.includes('소프트웨어 개발과');
+
+      if (isSoftwareA !== isSoftwareB) return isSoftwareA ? -1 : 1;
+      if (isSoftwareA) return nameA.localeCompare(nameB, 'ko');
+
+      // 다른 과끼리는 과 이름순, 같으면 이름순
+      const deptCompare = deptA.localeCompare(deptB, 'ko');
+      return deptCompare !== 0 ? deptCompare : nameA.localeCompare(nameB, 'ko');
+    });
 
   const totalPages = Math.ceil((totalCount || 0) / limit);
   const hasMore = page < totalPages;

@@ -1,8 +1,10 @@
 import React from 'react';
+import Link from 'next/link';
 import { Body } from '@/app/components/ui/text/text';
 
 export interface BulletListItem {
   text: string;
+  href?: string;
 }
 
 interface BulletListProps {
@@ -10,19 +12,17 @@ interface BulletListProps {
 }
 
 const BulletList = ({ items }: BulletListProps) => {
+
   return (
     <ul className="list-bullet-square">
       {items.map((item, index) => {
         const isLast = index === items.length - 1;
+        const className = `text-black ${item.href ? 'hover:underline cursor-pointer' : ''}`;
+        const content = <Body className={className}>{item.text}</Body>;
+
         return (
           <li key={index}>
-            <Body
-              className={`text-[#2c2e35] text-[13.357px] leading-[16.697px] tracking-[-0.2609px] ${
-                !isLast ? 'mb-0' : ''
-              }`}
-            >
-              {item.text}
-            </Body>
+            {item.href ? <Link href={item.href} className="block">{content}</Link> : content}
           </li>
         );
       })}

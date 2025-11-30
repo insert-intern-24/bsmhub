@@ -5,73 +5,58 @@ import BulletList from '@/app/components/viewer/BulletList';
 import Section from '@/app/components/viewer/Section';
 import { ViewerPortfolioData } from '@/services/portfolio/getAllViewerPortfolioData.server';
 import { calculateGradeFromStudentNumber } from '@/utils/student/studentCalculations';
+import { converIsTeamToUrl } from '@/utils/convertIsTeamToUrl';
 
 interface PortfolioSheetProps {
   data: ViewerPortfolioData;
 }
 
+// 유틸리티 함수들
+const getNotNull = <T,>(value: T | null | undefined, fallback = ''): T | string =>
+  value ?? fallback;
+
+const joinNames = (items: Array<{ [key: string]: string | null }>, key: string): string =>
+  items
+    .map((item) => item[key])
+    .filter((name): name is string => name !== null && name !== undefined)
+    .join(', ');
+
+const createProjectLink = (
+  ownerProfileName: string | null,
+  ownerIsTeam: boolean | null,
+  projectName: string,
+): string | undefined =>
+  ownerProfileName && projectName
+    ? `/${converIsTeamToUrl(ownerIsTeam ?? false)}/${ownerProfileName}/${projectName}`
+    : undefined;
+
 const PortfolioSheet = ({ data }: PortfolioSheetProps) => {
   const { profile, student, department, jobs, skills, competitions, projects } = data;
 
-  // 학년 계산
   const grade = student?.student_number
     ? calculateGradeFromStudentNumber(student.student_number)
     : 0;
+  const departmentName = getNotNull(department?.department_name);
+  const topLabelText = grade > 0 && departmentName ? `${grade}학년 ${departmentName}` : departmentName;
+  const profileName = profile.profile_name;
 
-  // 학과명
-  const departmentName = department?.department_name || '';
+  const jobNames = joinNames(jobs, 'job_name');
+  const skillNames = joinNames(skills, 'skill_name');
 
-  // 상단 라벨 텍스트 생성
-  const topLabelText =
-    grade > 0 && departmentName
-      ? `${grade}학년 ${departmentName}`
-      : departmentName || '';
-
-  // 학생 이름
-  const studentName = student?.name || '';
-
-  // 이메일
-  const email = profile.email || '';
-
-  // 자기소개
-  const bio = profile.description || '';
-
-  // 희망 취업 분야
-  const jobNames = jobs
-    .map((job) => job.job_name)
-    .filter((name): name is string => name !== null)
-    .join(', ');
-
-  // 기술 스택
-  const skillNames = skills
-    .map((skill) => skill.skill_name)
-    .filter((name): name is string => name !== null)
-    .join(', ');
-
-  // 수상경력 리스트
   const competitionItems = competitions
-    .filter(
-      (comp) =>
-        comp.competition_name !== null &&
-        comp.competition_name !== undefined &&
-        comp.prize !== null &&
-        comp.prize !== undefined,
-    )
-    .map((comp) => ({
-      text: `${comp.competition_name} ${comp.prize}`,
-    }));
+    .filter((comp) => comp.competition_name && comp.prize)
+    .map((comp) => ({ text: `${comp.competition_name} ${comp.prize}` }));
 
-  // 프로젝트 리스트
   const projectItems = projects
-    .filter(
-      (proj) =>
-        proj.project_name !== null && proj.project_name !== undefined,
-    )
-    .map((proj) => ({
-      text: proj.description
-        ? `${proj.project_name} : ${proj.description}`
-        : proj.project_name || '',
-    }));
+    .filter((proj) => proj.project_name)
+    .map((proj) => {
+      const projectName = proj.project_name!;
+      const text = proj.description ? `${projectName} : ${proj.description}` : projectName;
+      return {
+        text,
+        href: createProjectLink(proj.owner_profile_name, proj.owner_is_team, projectName),
+      };
+    });
 
   return (
     <article className="flex-col gap-[24px] w-full">
@@ -90,7 +75,7 @@ const PortfolioSheet = ({ data }: PortfolioSheetProps) => {
           <div className="h-[213px] w-[166px] shrink-0">
             <ProfileImage
               src={profile.profile_image}
-              name={studentName}
+              name={student?.name || ''}
               size={{ width: 166, height: 213 }}
               shape="square"
               className="w-full h-full"
@@ -100,16 +85,15 @@ const PortfolioSheet = ({ data }: PortfolioSheetProps) => {
           {/* 프로필 텍스트 정보 */}
           <div className="flex-col h-[213px] justify-between shrink-0 flex-1">
             <div className="flex-col gap-[7px] w-full">
-              {studentName && <Title className="text-black">{studentName}</Title>}
-              {email && <Body className="text-black">{email}</Body>}
-              {bio && (
+              {student?.name && <Title className="text-black">{student.name}</Title>}
+              {profile.email && <Body className="text-black">{profile.email}</Body>}
+              {profile.description && (
                 <Body className="text-blue-secondary whitespace-pre-line">
-                  {bio}
+                  {profile.description}
                 </Body>
               )}
             </div>
 
-            {/* 희망 취업 분야 */}
             {jobNames && (
               <div className="flex-col gap-[3px]">
                 <Label className="text-blue-secondary">희망 취업 분야</Label>
