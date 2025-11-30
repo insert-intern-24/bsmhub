@@ -43,7 +43,14 @@ const ViewerPage = async () => {
         {items.map((item, i) =>
           item.type === 'banner' ? (
             <div key={`banner-${i}`} className="col-span-full relative w-full h-auto">
-              <Image src={item.src} alt="과 배너" width={1200} height={300} className="w-full h-auto object-contain" priority />
+              <Image
+                src={item.src}
+                alt="과 배너"
+                width={1200}
+                height={300}
+                className="w-full h-auto object-contain"
+                {...(items.findIndex(it => it.type === 'banner') === i ? { priority: true } : {})}
+              />
             </div>
           ) : (
             <PortfolioSheet key={item.data.profile.profile_name || i} data={item.data} />
