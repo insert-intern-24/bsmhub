@@ -4,8 +4,8 @@ import '@/app/components/modal/inputs/common/common.css';
 import '@/app/components/modal/modal.css';
 
 export const metadata = {
-  title: 'BSMHub',
-  description: '부산소프트웨어마이스터고 프로젝트의 장',
+  title: '부산소프트웨어마이스터고 프로젝트의 장',
+  description: '부산소프트웨어마이스터고 포트폴리오 사이트',
   image: '/favicon.ico',
 };
 
