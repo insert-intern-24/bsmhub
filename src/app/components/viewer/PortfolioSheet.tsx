@@ -1,5 +1,6 @@
 import { Label, Title, Body } from '@/app/components/ui/text/text';
 import React from 'react';
+import Link from 'next/link';
 import ProfileImage from '@/app/components/ui/profile/ProfileImage';
 import BulletList from '@/app/components/viewer/BulletList';
 import Section from '@/app/components/viewer/Section';
@@ -84,7 +85,16 @@ const PortfolioSheet = ({ data }: PortfolioSheetProps) => {
           {/* 프로필 텍스트 정보 */}
           <div className="flex-col h-[213px] justify-between shrink-0 flex-1">
             <div className="flex-col gap-[7px] w-full">
-              {student?.name && <Title className="text-black">{student.name}</Title>}
+              {student?.name && profile.profile_name && (
+                <Link href={`/portfolio/${encodeURIComponent(profile.profile_name)}`}>
+                  <Title className="text-black cursor-pointer hover:underline">
+                    {student.name}
+                  </Title>
+                </Link>
+              )}
+              {!profile.profile_name && student?.name && (
+                <Title className="text-black">{student.name}</Title>
+              )}
               {profile.email && <Body className="text-black">{profile.email}</Body>}
               {profile.description && (
                 <Body className="text-blue-secondary whitespace-pre-line">
