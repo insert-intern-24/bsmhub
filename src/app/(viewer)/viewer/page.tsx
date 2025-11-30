@@ -3,6 +3,9 @@ import Image from 'next/image';
 import PortfolioSheet from '@/app/components/viewer/PortfolioSheet';
 import { getAllViewerPortfolioData, ViewerPortfolioData } from '@/services/portfolio/getAllViewerPortfolioData.server';
 
+// Full Route Cache 설정 (1시간마다 재검증)
+export const revalidate = 3600;
+
 const getBanner = (dept: string | null): string | null => {
   if (!dept) return null;
   if (dept.includes('소프트웨어개발과') || dept.includes('소프트웨어 개발과')) return '/banner/s.png';
