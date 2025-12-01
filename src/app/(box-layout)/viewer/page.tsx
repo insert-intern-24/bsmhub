@@ -23,9 +23,7 @@ const ViewerPage = async ({ searchParams }: ViewerPageProps) => {
   // filter 파라미터가 있으면 동적 렌더링 (클라이언트 컴포넌트), 없으면 정적 렌더링 (서버 컴포넌트)
   if (showFilter) {
     return (
-      <Suspense fallback={<ViewerSkeleton />}>
-        <ViewerContent portfolioData={portfolioData} jobs={jobs} showFilter={showFilter} />
-      </Suspense>
+      <ViewerContent portfolioData={portfolioData} jobs={jobs} showFilter={showFilter} />
     );
   }
 
