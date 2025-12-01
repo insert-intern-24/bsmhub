@@ -1,3 +1,8 @@
+// 스켈레톤 아이템 상수 (매 렌더링마다 새 배열 생성 방지)
+const FILTER_ITEMS_1 = [1, 2, 3];
+const FILTER_ITEMS_2 = [1, 2];
+const PORTFOLIO_ITEMS = [1, 2, 3, 4];
+
 export default function ViewerSkeleton() {
   return (
     <div className="pt-12 flex mobile:flex-col flex-row gap-4 min-h-dvh w-full">
@@ -7,13 +12,13 @@ export default function ViewerSkeleton() {
         <div className="flex-col gap-3 p-2">
           <div className="h-5 bg-gray-200 rounded w-20 animate-pulse" />
           <div className="flex-col gap-1">
-            {[1, 2, 3].map((i) => (
+            {FILTER_ITEMS_1.map((i) => (
               <div key={i} className="h-6 bg-gray-200 rounded animate-pulse" />
             ))}
           </div>
           <div className="h-5 bg-gray-200 rounded w-16 mt-4 animate-pulse" />
           <div className="flex-col gap-1">
-            {[1, 2].map((i) => (
+            {FILTER_ITEMS_2.map((i) => (
               <div key={i} className="h-6 bg-gray-200 rounded animate-pulse" />
             ))}
           </div>
@@ -23,7 +28,7 @@ export default function ViewerSkeleton() {
       {/* 메인 콘텐츠 스켈레톤 */}
       <div className="flex-col gap-40 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mobile:gap-20 w-full">
-          {[1, 2, 3, 4].map((i) => (
+          {PORTFOLIO_ITEMS.map((i) => (
             <div
               key={i}
               className="flex-col gap-[24px] w-full border border-[#F3F3F3] rounded p-8 bg-white"
