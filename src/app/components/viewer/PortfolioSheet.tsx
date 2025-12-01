@@ -5,7 +5,7 @@ import ProfileImage from '@/app/components/ui/profile/ProfileImage';
 import BulletList from '@/app/components/viewer/BulletList';
 import Section from '@/app/components/viewer/Section';
 import { ViewerPortfolioData } from '@/services/portfolio/getAllViewerPortfolioData.server';
-import { calculateGradeFromStudentNumber } from '@/utils/student/studentCalculations';
+import { calculateGradeFromJoinAt } from '@/utils/student/studentCalculations';
 import { getNotNull, joinNames, createProjectLink } from '@/utils/portfolioUtils';
 
 interface PortfolioSheetProps {
@@ -15,8 +15,8 @@ interface PortfolioSheetProps {
 const PortfolioSheet = ({ data }: PortfolioSheetProps) => {
   const { profile, student, department, jobs, skills, competitions, projects } = data;
 
-  const grade = student?.student_number
-    ? calculateGradeFromStudentNumber(student.student_number)
+  const grade = student?.join_at
+    ? calculateGradeFromJoinAt(student.join_at)
     : 0;
   const departmentName = getNotNull(department?.department_name);
   const topLabelText = grade > 0 && departmentName ? `${grade}학년 ${departmentName}` : departmentName;
@@ -43,7 +43,7 @@ const PortfolioSheet = ({ data }: PortfolioSheetProps) => {
     <article className="flex-col gap-[24px] w-full border border-[#F3F3F3] rounded p-8 mobile:p-0 mobile:border-none bg-white">
       {/* 상단 라벨 */}
       {topLabelText && (
-        <Label className="text-blue-secondary font-light">
+        <Label className="text-blue-secondary">
           {topLabelText}
         </Label>
       )}
