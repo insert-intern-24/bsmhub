@@ -6,8 +6,7 @@ import { PortfolioData } from './types';
 import FilterSidebar, { FilterState } from './FilterSidebar';
 import { Tables } from '@/services/supabase/database.types';
 
-const JOB_SEEKING_STATUS = ['구직 중', 'jobseeking'];
-const EMPLOYED_STATUS = ['취직 중', 'employed'];
+import { JOB_SEEKING_STATUS, EMPLOYED_STATUS } from './constants';
 
 export default function SearchTab({
   portfolioData,
