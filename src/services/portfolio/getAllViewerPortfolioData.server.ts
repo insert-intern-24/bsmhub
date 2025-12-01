@@ -41,6 +41,8 @@ export interface ViewerPortfolioData {
     description: string | null;
     profile_image: string | null;
     email: string | null;
+    status: string;
+    role: string[];
   };
   student: {
     name: string | null;
@@ -177,12 +179,18 @@ export async function getAllViewerPortfolioData(): Promise<ViewerPortfolioData[]
         }
       });
 
+      const jobNames = (profile.student?.student_jobs || [])
+        .map((sj) => sj.job?.job_name)
+        .filter((name): name is string => name !== null && name !== undefined);
+
       return {
         profile: {
           profile_name: profile.profile_name,
           description: profile.description,
           profile_image: profile.profile_image,
           email: profile.email,
+          status: '구직 중', // 기본값 (getPersonalPortfolioData와 동일)
+          role: jobNames,
         },
         student: profile.student
           ? {
