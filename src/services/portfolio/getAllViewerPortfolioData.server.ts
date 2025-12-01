@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient } from '@/services/supabase/server';
+import { calculateGradeFromJoinAt } from '@/utils/student/studentCalculations';
 
 // Supabase 쿼리 결과 타입 (간소화)
 type ProfileWithRelations = {
@@ -143,10 +144,16 @@ export async function getAllViewerPortfolioData(): Promise<ViewerPortfolioData[]
     return [];
   }
 
-  // 데이터 변환
+  // 데이터 변환 및 2학년 필터링
   const portfolioData: ViewerPortfolioData[] = (
     profiles as ProfileWithRelations[]
   )
+    .filter((profile) => {
+      // 입학년도(join_at)로 2학년 계산하여 필터링
+      const joinAt = profile.student?.join_at;
+      const grade = calculateGradeFromJoinAt(joinAt || null);
+      return grade === 2;
+    })
     .map((profile) => {
       // 프로젝트 중복 제거 및 병합
       const projectMap = new Map<string, {
