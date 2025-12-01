@@ -1,6 +1,27 @@
 import { converIsTeamToUrl } from '@/utils/convertIsTeamToUrl';
 
 /**
+ * 데이터 배열에서 고유한 학과 목록을 추출하는 유틸리티 함수
+ * DRY 원칙에 따라 SearchTab과 ViewerContent에서 공통으로 사용
+ * @param data - 학과 정보를 포함한 데이터 배열
+ * @param getDepartmentName - 각 아이템에서 학과 이름을 추출하는 함수
+ * @returns 중복 제거 및 정렬된 학과 이름 배열
+ */
+export const extractUniqueDepartments = <T,>(
+  data: T[],
+  getDepartmentName: (item: T) => string | null | undefined,
+): string[] => {
+  const deptSet = new Set<string>();
+  data.forEach((item) => {
+    const deptName = getDepartmentName(item);
+    if (deptName) {
+      deptSet.add(deptName);
+    }
+  });
+  return Array.from(deptSet).sort((a, b) => a.localeCompare(b, 'ko'));
+};
+
+/**
  * null 또는 undefined 값을 fallback 값으로 대체하는 유틸리티 함수
  * @param value - 체크할 값
  * @param fallback - value가 null/undefined일 때 반환할 기본값 (기본값: '')
