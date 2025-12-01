@@ -3,11 +3,28 @@
 import { useState, useMemo } from 'react';
 import PortfolioCard from '@/app/components/card/portfolio/PortfolioCard';
 import { PortfolioData } from './types';
-import FilterSidebar, { FilterState } from './FilterSidebar';
+import FilterSidebar from './FilterSidebar';
 import { Tables } from '@/services/supabase/database.types';
-import { extractUniqueDepartments } from '@/utils/portfolioUtils';
+import {
+  extractUniqueDepartments,
+  filterPortfolioData,
+  FilterState,
+  PortfolioFilterAccessors,
+} from '@/utils/portfolioUtils';
 
-import { JOB_SEEKING_STATUS, EMPLOYED_STATUS } from './constants';
+// PortfolioData용 필터 접근자
+const searchTabAccessors: PortfolioFilterAccessors<PortfolioData> = {
+  getProfileName: (data) => data.profile.name,
+  getStudentName: (data) => data.student?.name,
+  getProjects: (data) =>
+    data.projects.map((p) => ({
+      name: p.title,
+      description: p.description,
+    })),
+  getDepartmentName: (data) => data.student?.department?.department_name,
+  getRoles: (data) => data.profile.role,
+  getStatus: (data) => data.profile.status,
+};
 
 export default function SearchTab({
   portfolioData,
@@ -30,55 +47,11 @@ export default function SearchTab({
     [portfolioData],
   );
 
-  // 필터링 함수들
-  const filterBySearchTerm = (data: PortfolioData) => {
-    if (!searchTerm) return true;
-    return (
-      data.profile.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      data.student?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      data.projects.some(
-        (project) =>
-          project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          project.description.toLowerCase().includes(searchTerm.toLowerCase()),
-      )
-    );
-  };
-
-  const filterByDepartments = (data: PortfolioData) => {
-    if (filter.departments.length === 0) return true;
-    const deptName = data.student?.department?.department_name;
-    return deptName ? filter.departments.includes(deptName) : false;
-  };
-
-  const filterByJobs = (data: PortfolioData) => {
-    if (filter.jobs.length === 0) return true;
-    return data.profile.role.some((role) => filter.jobs.includes(role));
-  };
-
-  const filterByEmploymentStatus = (data: PortfolioData) => {
-    const { showOnlyJobSeeking, showOnlyEmployed } = filter;
-    // 둘 다 선택되거나 둘 다 선택되지 않은 경우
-    if (showOnlyJobSeeking === showOnlyEmployed) return true;
-
-    const status = data.profile.status;
-
-    if (showOnlyJobSeeking) {
-      return JOB_SEEKING_STATUS.includes(status);
-    }
-
-    if (showOnlyEmployed) {
-      return EMPLOYED_STATUS.includes(status);
-    }
-
-    return true;
-  };
-
-  // 필터링된 데이터
-  const filteredData = portfolioData
-    .filter(filterBySearchTerm)
-    .filter(filterByDepartments)
-    .filter(filterByJobs)
-    .filter(filterByEmploymentStatus);
+  // 필터링된 데이터 (공통 유틸리티 함수 사용)
+  const filteredData = useMemo(
+    () => filterPortfolioData(portfolioData, searchTerm, filter, searchTabAccessors),
+    [portfolioData, searchTerm, filter],
+  );
 
   return (
     <div className="pt-8 flex mobile:flex-col flex-row gap-4 min-h-dvh w-full">
