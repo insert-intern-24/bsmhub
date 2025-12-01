@@ -7,8 +7,7 @@ import FilterSidebar, { FilterState } from '@/app/components/portfolio/FilterSid
 import { ViewerPortfolioData } from '@/services/portfolio/getAllViewerPortfolioData.server';
 import { Tables } from '@/services/supabase/database.types';
 
-const JOB_SEEKING_STATUS = ['구직 중', 'jobseeking'];
-const EMPLOYED_STATUS = ['취직 중', 'employed'];
+import { JOB_SEEKING_STATUS, EMPLOYED_STATUS } from '@/app/components/portfolio/constants';
 
 interface ViewerContentProps {
   portfolioData: ViewerPortfolioData[];
