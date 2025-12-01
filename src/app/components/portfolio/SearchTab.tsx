@@ -5,6 +5,7 @@ import PortfolioCard from '@/app/components/card/portfolio/PortfolioCard';
 import { PortfolioData } from './types';
 import FilterSidebar, { FilterState } from './FilterSidebar';
 import { Tables } from '@/services/supabase/database.types';
+import { extractUniqueDepartments } from '@/utils/portfolioUtils';
 
 const JOB_SEEKING_STATUS = ['구직 중', 'jobseeking'];
 const EMPLOYED_STATUS = ['취직 중', 'employed'];
@@ -24,17 +25,11 @@ export default function SearchTab({
     showOnlyEmployed: false,
   });
 
-  // 고유한 학과 목록 추출
-  const departments = useMemo(() => {
-    const deptSet = new Set<string>();
-    portfolioData.forEach((data) => {
-      const deptName = data.student?.department?.department_name;
-      if (deptName) {
-        deptSet.add(deptName);
-      }
-    });
-    return Array.from(deptSet).sort((a, b) => a.localeCompare(b, 'ko'));
-  }, [portfolioData]);
+  // 고유한 학과 목록 추출 (공통 유틸리티 함수 사용)
+  const departments = useMemo(
+    () => extractUniqueDepartments(portfolioData, (data) => data.student?.department?.department_name),
+    [portfolioData],
+  );
 
   // 필터링 함수들
   const filterBySearchTerm = (data: PortfolioData) => {
