@@ -48,7 +48,10 @@ export default function SearchTab({
   );
 
   // 필터링된 데이터 (공통 유틸리티 함수 사용)
-  const filteredData = filterPortfolioData(portfolioData, searchTerm, filter, searchTabAccessors);
+  const filteredData = useMemo(
+    () => filterPortfolioData(portfolioData, searchTerm, filter, searchTabAccessors),
+    [portfolioData, searchTerm, filter],
+  );
 
   return (
     <div className="pt-8 flex mobile:flex-col flex-row gap-4 min-h-dvh w-full">
