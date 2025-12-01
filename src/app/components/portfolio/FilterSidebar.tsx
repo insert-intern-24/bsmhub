@@ -4,13 +4,10 @@ import Inputs from '@/app/components/ui/input/SingleInput';
 import Checkbox from '@/app/components/ui/input/Checkbox';
 import { Body } from '@/app/components/ui/text/text';
 import { Tables } from '@/services/supabase/database.types';
+import { FilterState } from '@/utils/portfolioUtils';
 
-export interface FilterState {
-  jobs: string[];
-  departments: string[];
-  showOnlyJobSeeking: boolean;
-  showOnlyEmployed: boolean;
-}
+// 하위 호환성을 위해 FilterState를 re-export
+export type { FilterState };
 
 interface FilterSidebarProps {
   searchTerm: string;

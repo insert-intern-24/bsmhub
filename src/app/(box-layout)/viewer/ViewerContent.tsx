@@ -3,12 +3,15 @@
 import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import PortfolioSheet from '@/app/components/viewer/PortfolioSheet';
-import FilterSidebar, { FilterState } from '@/app/components/portfolio/FilterSidebar';
+import FilterSidebar from '@/app/components/portfolio/FilterSidebar';
 import { ViewerPortfolioData } from '@/services/portfolio/getAllViewerPortfolioData.server';
 import { Tables } from '@/services/supabase/database.types';
-import { extractUniqueDepartments } from '@/utils/portfolioUtils';
-
-import { JOB_SEEKING_STATUS, EMPLOYED_STATUS } from '@/app/components/portfolio/constants';
+import {
+  extractUniqueDepartments,
+  filterPortfolioData,
+  FilterState,
+  PortfolioFilterAccessors,
+} from '@/utils/portfolioUtils';
 
 interface ViewerContentProps {
   portfolioData: ViewerPortfolioData[];
@@ -23,8 +26,21 @@ const getBanner = (dept: string | null): string | null => {
   return null;
 };
 
-export default function ViewerContent({ portfolioData, jobs, showFilter }: ViewerContentProps) {
+// ViewerPortfolioData용 필터 접근자
+const viewerAccessors: PortfolioFilterAccessors<ViewerPortfolioData> = {
+  getProfileName: (data) => data.profile.profile_name,
+  getStudentName: (data) => data.student?.name,
+  getProjects: (data) =>
+    data.projects.map((p) => ({
+      name: p.project_name,
+      description: p.description,
+    })),
+  getDepartmentName: (data) => data.department?.department_name,
+  getRoles: (data) => data.profile.role,
+  getStatus: (data) => data.profile.status,
+};
 
+export default function ViewerContent({ portfolioData, jobs, showFilter }: ViewerContentProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState<FilterState>({
     jobs: [],
@@ -39,58 +55,10 @@ export default function ViewerContent({ portfolioData, jobs, showFilter }: Viewe
     [portfolioData],
   );
 
-  // 필터링 함수들
-  const filterBySearchTerm = (data: ViewerPortfolioData) => {
-    if (!searchTerm) return true;
-    const searchLower = searchTerm.toLowerCase();
-    return (
-      data.profile.profile_name?.toLowerCase().includes(searchLower) ||
-      data.student?.name?.toLowerCase().includes(searchLower) ||
-      data.projects.some(
-        (project) =>
-          project.project_name?.toLowerCase().includes(searchLower) ||
-          project.description?.toLowerCase().includes(searchLower),
-      )
-    );
-  };
-
-  const filterByDepartments = (data: ViewerPortfolioData) => {
-    if (filter.departments.length === 0) return true;
-    const deptName = data.department?.department_name;
-    return deptName ? filter.departments.includes(deptName) : false;
-  };
-
-  const filterByJobs = (data: ViewerPortfolioData) => {
-    if (filter.jobs.length === 0) return true;
-    return data.profile.role.some((role) => filter.jobs.includes(role));
-  };
-
-  const filterByEmploymentStatus = (data: ViewerPortfolioData) => {
-    const { showOnlyJobSeeking, showOnlyEmployed } = filter;
-    // 둘 다 선택되거나 둘 다 선택되지 않은 경우
-    if (showOnlyJobSeeking === showOnlyEmployed) return true;
-
-    const status = data.profile.status;
-
-    if (showOnlyJobSeeking) {
-      return JOB_SEEKING_STATUS.includes(status);
-    }
-
-    if (showOnlyEmployed) {
-      return EMPLOYED_STATUS.includes(status);
-    }
-
-    return true;
-  };
-
-  // 필터링된 데이터
+  // 필터링된 데이터 (공통 유틸리티 함수 사용)
   const filteredData = useMemo(() => {
     if (!showFilter) return portfolioData;
-    return portfolioData
-      .filter(filterBySearchTerm)
-      .filter(filterByDepartments)
-      .filter(filterByJobs)
-      .filter(filterByEmploymentStatus);
+    return filterPortfolioData(portfolioData, searchTerm, filter, viewerAccessors);
   }, [portfolioData, showFilter, searchTerm, filter]);
 
   // 배너와 포트폴리오 아이템 생성
