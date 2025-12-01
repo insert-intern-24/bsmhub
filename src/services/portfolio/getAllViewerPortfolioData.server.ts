@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient } from '@/services/supabase/server';
+import { calculateGradeFromJoinAt } from '@/utils/student/studentCalculations';
 
 // Supabase 쿼리 결과 타입 (간소화)
 type ProfileWithRelations = {
@@ -41,6 +42,8 @@ export interface ViewerPortfolioData {
     description: string | null;
     profile_image: string | null;
     email: string | null;
+    status: string;
+    role: string[];
   };
   student: {
     name: string | null;
@@ -141,10 +144,16 @@ export async function getAllViewerPortfolioData(): Promise<ViewerPortfolioData[]
     return [];
   }
 
-  // 데이터 변환
+  // 데이터 변환 및 2학년 필터링
   const portfolioData: ViewerPortfolioData[] = (
     profiles as ProfileWithRelations[]
   )
+    .filter((profile) => {
+      // 입학년도(join_at)로 2학년 계산하여 필터링
+      const joinAt = profile.student?.join_at;
+      const grade = calculateGradeFromJoinAt(joinAt || null);
+      return grade === 2;
+    })
     .map((profile) => {
       // 프로젝트 중복 제거 및 병합
       const projectMap = new Map<string, {
@@ -177,12 +186,18 @@ export async function getAllViewerPortfolioData(): Promise<ViewerPortfolioData[]
         }
       });
 
+      const jobNames = (profile.student?.student_jobs || [])
+        .map((sj) => sj.job?.job_name)
+        .filter((name): name is string => name !== null && name !== undefined);
+
       return {
         profile: {
           profile_name: profile.profile_name,
           description: profile.description,
           profile_image: profile.profile_image,
           email: profile.email,
+          status: '구직 중', // 기본값 (getPersonalPortfolioData와 동일)
+          role: jobNames,
         },
         student: profile.student
           ? {

@@ -68,6 +68,30 @@ export function calculateGradeFromStudentNumber(
 }
 
 /**
+ * 생년월일로 현재 학년 계산
+ * 마이스터고는 15세에 입학하므로, 입학년도 = 생년 + 15
+ * 현재 학년 = 현재 연도 - 입학년도 + 1
+ * @param birthday - 생년월일 날짜 문자열
+ * @returns 학년 (1, 2, 3), 계산 불가능한 경우 0
+ */
+export function calculateGradeFromBirthday(birthday: string | null): number {
+  if (!birthday) return 0;
+
+  const birthYear = extractYearFromDate(birthday);
+  if (birthYear === -1) return 0;
+
+  const currentYear = getCurrentYear();
+  const enrollmentYear = birthYear + 15; // 마이스터고는 15세에 입학
+  const grade = currentYear - enrollmentYear + 1;
+
+  // 학년은 1~3학년 범위로 제한 (마이스터고는 3년제)
+  if (grade < 1) return 0;
+  if (grade > 3) return 0; // 졸업생도 0으로 처리
+
+  return grade;
+}
+
+/**
  * 기수 계산
  * 현재 연도 기준: 현재 연도 - 창립년도 + 1 = 기수
  * @param foundedYear - 창립년도

@@ -1,21 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import PortfolioCard from '@/app/components/card/portfolio/PortfolioCard';
 import { PortfolioData } from './types';
-import Inputs from '@/app/components/ui/input/SingleInput';
-import Checkbox from '@/app/components/ui/input/Checkbox';
-import { Body } from '@/app/components/ui/text/text';
+import FilterSidebar from './FilterSidebar';
 import { Tables } from '@/services/supabase/database.types';
+import {
+  extractUniqueDepartments,
+  filterPortfolioData,
+  FilterState,
+  PortfolioFilterAccessors,
+} from '@/utils/portfolioUtils';
 
-const JOB_SEEKING_STATUS = ['구직 중', 'jobseeking'];
-const EMPLOYED_STATUS = ['취직 중', 'employed'];
-
-interface FilterState {
-  jobs: string[];
-  showOnlyJobSeeking: boolean;
-  showOnlyEmployed: boolean;
-}
+// PortfolioData용 필터 접근자
+const searchTabAccessors: PortfolioFilterAccessors<PortfolioData> = {
+  getProfileName: (data) => data.profile.name,
+  getStudentName: (data) => data.student?.name,
+  getProjects: (data) =>
+    data.projects.map((p) => ({
+      name: p.title,
+      description: p.description,
+    })),
+  getDepartmentName: (data) => data.student?.department?.department_name,
+  getRoles: (data) => data.profile.role,
+  getStatus: (data) => data.profile.status,
+};
 
 export default function SearchTab({
   portfolioData,
@@ -27,114 +36,34 @@ export default function SearchTab({
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState<FilterState>({
     jobs: [],
+    departments: [],
     showOnlyJobSeeking: false,
     showOnlyEmployed: false,
   });
 
-  // 필터링 함수들
-  const filterBySearchTerm = (data: PortfolioData) => {
-    if (!searchTerm) return true;
-    return (
-      data.profile.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      data.student?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      data.projects.some(
-        (project) =>
-          project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          project.description.toLowerCase().includes(searchTerm.toLowerCase()),
-      )
-    );
-  };
+  // 고유한 학과 목록 추출 (공통 유틸리티 함수 사용)
+  const departments = useMemo(
+    () => extractUniqueDepartments(portfolioData, (data) => data.student?.department?.department_name),
+    [portfolioData],
+  );
 
-  const filterByJobs = (data: PortfolioData) => {
-    if (filter.jobs.length === 0) return true;
-    return data.profile.role.some((role) => filter.jobs.includes(role));
-  };
+  // 필터링된 데이터 (공통 유틸리티 함수 사용)
+  const filteredData = useMemo(
+    () => filterPortfolioData(portfolioData, searchTerm, filter, searchTabAccessors),
+    [portfolioData, searchTerm, filter],
+  );
 
-  const filterByEmploymentStatus = (data: PortfolioData) => {
-    const { showOnlyJobSeeking, showOnlyEmployed } = filter;
-    // 둘 다 선택되거나 둘 다 선택되지 않은 경우
-    if (showOnlyJobSeeking === showOnlyEmployed) return true;
-
-    const status = data.profile.status;
-
-    if (showOnlyJobSeeking) {
-      return JOB_SEEKING_STATUS.includes(status);
-    }
-
-    if (showOnlyEmployed) {
-      return EMPLOYED_STATUS.includes(status);
-    }
-
-    return true;
-  };
-
-  // 핸들러 함수들
-  const handleJobFilter = (jobName: string, checked: boolean) => {
-    setFilter((prev) => ({
-      ...prev,
-      jobs: checked
-        ? [...prev.jobs, jobName]
-        : prev.jobs.filter((name) => name !== jobName),
-    }));
-  };
-
-  const handleEmploymentFilter = (
-    filterType: 'jobSeeking' | 'employed',
-    checked: boolean,
-  ) => {
-    setFilter((prev) => ({
-      ...prev,
-      [filterType === 'jobSeeking' ? 'showOnlyJobSeeking' : 'showOnlyEmployed']:
-        checked,
-    }));
-  };
-
-  // 필터링된 데이터
-  const filteredData = portfolioData
-    .filter(filterBySearchTerm)
-    .filter(filterByJobs)
-    .filter(filterByEmploymentStatus);
   return (
     <div className="pt-8 flex mobile:flex-col flex-row gap-4 min-h-dvh w-full">
       {/* 검색 및 필터 사이드바 */}
-      <aside className="flex-col gap-3 min-w-[25rem]">
-        <Inputs
-          icon="search"
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search"
-        />
-
-        <div className="flex-col gap-3 p-2">
-          {/* 직무분야 필터 */}
-          <Body>직무분야</Body>
-          <div className="flex-col gap-1">
-            {jobs.map((job) => (
-              <Checkbox
-                label={job.job_name}
-                key={job.job_id}
-                onChange={(checked) => handleJobFilter(job.job_name, checked)}
-              />
-            ))}
-          </div>
-
-          {/* 옵션 필터 */}
-          <Body>옵션</Body>
-          <div className="flex-col gap-1">
-            <Checkbox
-              label="구직 중만 표시"
-              onChange={(checked) =>
-                handleEmploymentFilter('jobSeeking', checked)
-              }
-            />
-            <Checkbox
-              label="취직 중만 표시"
-              onChange={(checked) =>
-                handleEmploymentFilter('employed', checked)
-              }
-            />
-          </div>
-        </div>
-      </aside>
+      <FilterSidebar
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        filter={filter}
+        onFilterChange={setFilter}
+        jobs={jobs}
+        departments={departments}
+      />
 
       {/* 포트폴리오 목록 */}
       <section className="flex-col gap-3 p-4 w-full bg-[#FAFAFA] rounded-lg">
