@@ -44,7 +44,7 @@ const ProfileEditModal = ({
   const handleProfileSubmit = (
     formData: Record<
       string,
-      MultiInputItem[][] | string[] | boolean | File | number[] | null
+      MultiInputItem[][] | string[] | boolean | File | number[] | string | null
     >,
   ): void => {
     void (async () => {

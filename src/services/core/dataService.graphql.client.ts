@@ -46,7 +46,7 @@ export class GraphQLDataService {
     formConfig: FormConfig,
     variables?: Record<string, unknown>,
   ): Promise<
-    Record<string, MultiInputItem[][] | string[] | boolean | File | null>
+    Record<string, MultiInputItem[][] | string[] | boolean | File | string | null>
   > {
     try {
       const query = buildReadQuery(formConfig);
@@ -337,10 +337,10 @@ export class GraphQLDataService {
    */
   getEmptyFormData(
     formConfig: FormConfig,
-  ): Record<string, MultiInputItem[][] | string[] | boolean | File | null> {
+  ): Record<string, MultiInputItem[][] | string[] | boolean | File | string | null> {
     const formData: Record<
       string,
-      MultiInputItem[][] | string[] | boolean | File | null
+      MultiInputItem[][] | string[] | boolean | File | string | null
     > = {};
 
     formConfig.fields.forEach((field) => {

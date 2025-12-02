@@ -25,7 +25,7 @@ export function useFormConfigData(
   },
 ) {
   const [initialValues, setInitialValues] = useState<
-    Record<string, MultiInputItem[][] | string[] | boolean | File | null>
+    Record<string, MultiInputItem[][] | string[] | boolean | File | string | null>
   >({});
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);

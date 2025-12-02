@@ -1,6 +1,7 @@
 import { FormConfig } from '@/app/components/ui/input/types/inputTypes';
 import { MultiInputItem } from '@/utils/hook/useInputList';
 import { isRelationshipTable } from '@/services/graphQL/metadataExtractor.graphql';
+import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 
 /**
  * GraphQL 응답을 React Hook Form 형식으로 변환
@@ -11,10 +12,10 @@ import { isRelationshipTable } from '@/services/graphQL/metadataExtractor.graphq
 export function graphqlToFormData(
   graphqlData: Record<string, unknown>,
   formConfig: FormConfig,
-): Record<string, MultiInputItem[][] | string[] | boolean | File | null> {
+): Record<string, MultiInputItem[][] | string[] | boolean | File | string | null> {
   const formData: Record<
     string,
-    MultiInputItem[][] | string[] | boolean | File | null
+    MultiInputItem[][] | string[] | boolean | File | string | null
   > = {};
 
   // GraphQL 응답에서 edges.node 추출
@@ -44,7 +45,12 @@ export function graphqlToFormData(
     // Picture 타입 처리
     if (field.type === 'picture') {
       const pic = (mainData as Record<string, unknown>)[column];
-      formData[field.fieldName] = (pic as File) ?? null;
+      // picture는 string URL이거나 null
+      if (typeof pic === 'string' && pic) {
+        formData[field.fieldName] = convertFromDatabaseImageURL(pic);
+      } else {
+        formData[field.fieldName] = null;
+      }
       return;
     }
 

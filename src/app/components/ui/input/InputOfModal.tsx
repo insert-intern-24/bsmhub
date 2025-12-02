@@ -18,9 +18,9 @@ import { useToast } from '@/app/components/toast';
 interface InputOfModalProps {
   config: FormConfig;
   title?: string;
-  initialValues?: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>;
+  initialValues?: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | string | null>;
   submitButtonText?: string;
-  onSubmit?: (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>) => void;
+  onSubmit?: (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | string | null>) => void;
   onDelete?: () => void;
   mode?: 'create' | 'update';
   onClose?: () => void;
@@ -37,7 +37,7 @@ const InputOfModal = ({
   onClose,
 }: InputOfModalProps) => {
   const { control, handleSubmit, formState: { errors, isSubmitted }, reset, watch } = useForm({
-    defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>, field) => {
+    defaultValues: config.fields.reduce((acc: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | string | null>, field) => {
       // 초기값이 제공된 경우 사용, 그렇지 않으면 기본값 사용
       if (initialValues && initialValues[field.fieldName] !== undefined) {
         acc[field.fieldName] = initialValues[field.fieldName];
@@ -49,7 +49,7 @@ const InputOfModal = ({
         acc[field.fieldName] = [];
       }
       return acc;
-    }, {} as Record<string, MultiInputItem[][] | string[] | boolean | File | null>)
+    }, {} as Record<string, MultiInputItem[][] | string[] | boolean | File | string | null>)
   });
 
   // 현재 폼 데이터를 watch로 추적하고 mode 및 owner 정보 추가
@@ -108,7 +108,7 @@ const InputOfModal = ({
     }
   }, [isSubmitted, errors]);
 
-  const onFormSubmit = (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | null>) => {
+  const onFormSubmit = (data: Record<string, MultiInputItem[][] | number[] | string[] | boolean | File | string | null>) => {
     setIsSubmitting(true);
     try {
       onSubmit?.(data);
@@ -257,6 +257,7 @@ const InputOfModal = ({
                     <PictureUpload
                       aspectRatio={field.aspectRatio}
                       onFileChange={onChange}
+                      existingImageUrl={typeof value === 'string' ? value : undefined}
                     />
                   );
                 }
