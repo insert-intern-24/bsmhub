@@ -48,7 +48,8 @@ export const getProfileWithDetails = async (userId: string) => {
 
   const { data, error } = await supabase
     .from('profile')
-    .select(`
+    .select(
+      `
       *,
       profile_link(*),
       profile_skills(
@@ -65,7 +66,8 @@ export const getProfileWithDetails = async (userId: string) => {
           )
         )
       )
-    `)
+    `,
+    )
     .eq('owner', userId)
     .eq('is_team', false)
     .maybeSingle();
@@ -78,13 +80,18 @@ export const getProfileWithDetails = async (userId: string) => {
   // 데이터 구조 평면화: student_certificates를 최상위로 이동
   if (
     data &&
-    (data as unknown as { student?: Array<{ student_certificates?: unknown[] }> })
-      .student &&
+    (
+      data as unknown as {
+        student?: Array<{ student_certificates?: unknown[] }>;
+      }
+    ).student &&
     (data as unknown as { student: unknown[] }).student.length > 0
   ) {
-    const studentArr = (data as unknown as {
-      student: Array<{ student_certificates?: unknown[] }>;
-    }).student;
+    const studentArr = (
+      data as unknown as {
+        student: Array<{ student_certificates?: unknown[] }>;
+      }
+    ).student;
     (data as Record<string, unknown>).student_certificates =
       studentArr[0].student_certificates || [];
   }
@@ -126,9 +133,29 @@ export const getSelectableProfilesByStudentId = async (
     // 2. team_member 테이블에서 사용자가 속한 팀 ID 조회
     const { data: teamMemberships, error: teamMemberError } = await supabase
       .from('team_member')
-      .select('profile_id')
+      .select(
+        `
+        profile_id,
+        profile!team_member_participant_id_fkey(
+          profile_id,
+          profile_name,
+          profile_image,
+          is_team
+        )
+        `,
+      )
       .eq('participant_id', personalProfile.profile_id)
-      .returns<{ profile_id: string }[]>();
+      .returns<
+        {
+          profile_id: string;
+          profile: {
+            profile_id: string;
+            profile_name: string;
+            profile_image: string;
+            is_team: boolean;
+          };
+        }[]
+      >();
 
     if (teamMemberError) {
       console.error('Error fetching team memberships:', teamMemberError);
@@ -136,28 +163,44 @@ export const getSelectableProfilesByStudentId = async (
       return [personalProfile];
     }
 
-    // 3. 속한 팀이 없으면 개인 프로필만 반환
-    if (!teamMemberships || teamMemberships.length === 0) {
-      return [personalProfile];
-    }
-
-    // 4. 팀 프로필 정보 조회
-    const teamIds = teamMemberships.map((tm) => tm.profile_id);
-    const { data: teamProfiles, error: teamProfileError } = await supabase
+    const { data: ownerTeamProfiles, error: ownerTeamError } = await supabase
       .from('profile')
       .select('profile_id, profile_name, profile_image, is_team')
+      .eq('owner', studentId)
       .eq('is_team', true)
-      .in('profile_id', teamIds);
+      .returns<
+        {
+          profile_id: string;
+          profile_name: string;
+          profile_image: string;
+          is_team: boolean;
+        }[]
+      >();
 
-    if (teamProfileError) {
-      console.error('Error fetching team profiles:', teamProfileError);
+    if (ownerTeamError) {
+      console.error('Error fetching owner team profiles:', ownerTeamError);
       return [personalProfile];
     }
 
-    // 5. 개인 프로필 + 팀 프로필 반환
-    return [personalProfile, ...(teamProfiles || [])];
+    // 3. 속한 팀이 없으면 개인 프로필만 반환
+    if (
+      (!teamMemberships || teamMemberships.length === 0) &&
+      (!ownerTeamProfiles || ownerTeamProfiles.length === 0)
+    ) {
+      return [personalProfile];
+    }
+
+    // 4. 개인 프로필 + 팀 프로필 반환
+    return [
+      personalProfile,
+      ...(teamMemberships.map((tm) => tm.profile) || []),
+      ...(ownerTeamProfiles || []),
+    ];
   } catch (error) {
-    console.error('Unexpected error in getSelectableProfilesByStudentId:', error);
+    console.error(
+      'Unexpected error in getSelectableProfilesByStudentId:',
+      error,
+    );
     return [];
   }
 };
