@@ -82,11 +82,7 @@ const ProfileEditModal = ({
           : null;
 
         if (redirectPath) {
-          if (mode === 'create' && !isTeamValue) {
-            setTimeout(() => {
-              window.location.reload();
-            }, 100);
-          }
+          // 낙관적 업데이트가 적용되었으므로 reload 대신 push만 사용
           router.push(redirectPath);
         }
         
@@ -119,9 +115,8 @@ const ProfileEditModal = ({
             is_team: isTeamValue,
           });
           router.push(redirectPath);
-        } else {
-          router.refresh();
         }
+        // 낙관적 업데이트가 적용되었으므로 refresh 불필요
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.';

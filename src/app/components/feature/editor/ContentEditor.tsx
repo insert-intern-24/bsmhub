@@ -88,9 +88,13 @@ const ContentEditor = ({
           : '프로필 내용이 저장되었습니다.',
         'success',
       );
+      // 낙관적 업데이트: 저장된 콘텐츠를 즉시 반영
+      setEditedContentJson(data.json);
       setIsEditing(false);
-      setEditedContentJson(null);
-      router.refresh();
+      // 서버 컴포넌트가 있는 경우에만 refresh (선택적)
+      // 낙관적 업데이트로 대부분의 경우 불필요하지만, 
+      // 서버 컴포넌트에서 데이터를 가져오는 경우를 위해 주석 처리
+      // router.refresh();
     } catch (error) {
       console.error('내용 저장 중 오류 발생:', error);
       showToast('저장 중 오류가 발생했습니다.', 'error');
