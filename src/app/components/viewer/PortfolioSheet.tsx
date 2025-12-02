@@ -67,7 +67,11 @@ const PortfolioSheet = ({ data }: PortfolioSheetProps) => {
           <div className="flex-col h-[213px] justify-between shrink-0 flex-1">
             <div className="flex-col gap-[7px] w-full">
               {student?.name && profile.profile_name && (
-                <Link href={`/portfolio/${encodeURIComponent(profile.profile_name)}`}>
+                <Link 
+                  href={`/portfolio/${encodeURIComponent(profile.profile_name)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Title className="text-black cursor-pointer hover:underline">
                     {student.name}
                   </Title>

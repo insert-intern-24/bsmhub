@@ -21,7 +21,16 @@ const BulletList = ({ items }: BulletListProps) => {
 
         return (
           <li key={index}>
-            {item.href ? <Link href={item.href} className="block">{content}</Link> : content}
+            {item.href ? (
+              <Link 
+                href={item.href} 
+                className="block"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {content}
+              </Link>
+            ) : content}
           </li>
         );
       })}
