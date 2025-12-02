@@ -11,6 +11,7 @@ import {
   checkProfileExistence,
   getProfileByStudentId,
 } from '@/services/profile/getProfileApi.client';
+import { convertFromDatabaseImageURL } from '@/services/supabase/imageHostConverter';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -19,6 +20,7 @@ const Account = () => {
   const supabase = createClient();
   const currentUser = useCurrentUser();
   const [profileName, setProfileName] = useState<string | null>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const { openModal, closeModal } = useModal();
   const router = useRouter();
 
@@ -40,8 +42,10 @@ const Account = () => {
       if (!mounted) return;
       if (profile) {
         setProfileName(profile.profile_name);
+        setProfileImage(profile.profile_image);
       } else {
         setProfileName(null);
+        setProfileImage(null);
       }
       if (!exists) handleMakeProfile();
     };
@@ -52,11 +56,15 @@ const Account = () => {
     };
   }, [currentUser?.id, handleMakeProfile]);
 
+  const profileImageUrl = profileImage
+    ? convertFromDatabaseImageURL(profileImage, true)
+    : '/default-avatar.svg';
+
   return currentUser ? (
     <Dropdown
       trigger={
         <Image
-          src={currentUser?.user_metadata?.avatar_url ?? '/avatar.png'}
+          src={profileImageUrl}
           alt="프로필"
           width={20}
           height={20}
