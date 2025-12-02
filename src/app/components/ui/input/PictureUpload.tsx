@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 interface PictureUploadProps {
   aspectRatio?: string;
@@ -11,7 +11,10 @@ interface PictureUploadProps {
 const PictureUpload = ({ aspectRatio = '1:1', onFileChange, existingImageUrl }: PictureUploadProps) => {
   const [preview, setPreview] = useState<string>();
   const imageUrl = preview || existingImageUrl;
-  const [w, h] = aspectRatio.split(':').map(Number);
+  const [w, h] = useMemo(() => {
+    const validRatio = /^\d+:\d+$/.test(aspectRatio) ? aspectRatio : '1:1';
+    return validRatio.split(':').map(Number);
+  }, [aspectRatio]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -22,12 +25,9 @@ const PictureUpload = ({ aspectRatio = '1:1', onFileChange, existingImageUrl }: 
     onFileChange?.(file);
   };
 
-  // 컴포넌트 언마운트 시 preview URL 정리
   useEffect(() => {
     return () => {
-      if (preview) {
-        URL.revokeObjectURL(preview);
-      }
+      if (preview) URL.revokeObjectURL(preview);
     };
   }, [preview]);
 
