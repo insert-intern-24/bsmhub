@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 interface PictureUploadProps {
   aspectRatio?: string;
@@ -21,6 +21,15 @@ const PictureUpload = ({ aspectRatio = '1:1', onFileChange, existingImageUrl }: 
     setPreview(URL.createObjectURL(file));
     onFileChange?.(file);
   };
+
+  // 컴포넌트 언마운트 시 preview URL 정리
+  useEffect(() => {
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [preview]);
 
   return (
     <label 
