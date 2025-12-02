@@ -4,8 +4,11 @@ import {
   ProfileWithProjects,
 } from '@/app/components/portfolio/types';
 import { PaginatedPortfolioResponse } from '@/types/pagination';
+import { unstable_cache } from 'next/cache';
+import { shuffleArray } from '@/utils/shuffle';
 
-export async function getPaginatedPortfolioData(
+// 캐시된 데이터 페칭 함수
+async function fetchPaginatedPortfolioData(
   page: number = 1,
   limit: number = 5,
 ): Promise<PaginatedPortfolioResponse> {
@@ -141,11 +144,29 @@ export async function getPaginatedPortfolioData(
   const totalPages = Math.ceil((totalCount || 0) / limit);
   const hasMore = page < totalPages;
 
+  // 첫 페이지인 경우에만 셔플 (1시간 단위로 캐시되므로 1시간마다 다른 순서)
+  const shuffledData = page === 1 ? shuffleArray(portfolioData) : portfolioData;
+
   return {
-    data: portfolioData,
+    data: shuffledData,
     hasMore,
     totalCount: totalCount || 0,
     currentPage: page,
     totalPages,
   };
+}
+
+// 캐시 래퍼 함수 (1시간 캐시, 페이지와 limit별로 별도 캐시)
+export async function getPaginatedPortfolioData(
+  page: number = 1,
+  limit: number = 5,
+): Promise<PaginatedPortfolioResponse> {
+  return unstable_cache(
+    async () => fetchPaginatedPortfolioData(page, limit),
+    [`portfolio-paginated-${page}-${limit}`],
+    {
+      revalidate: 3600, // 1시간마다 재검증
+      tags: ['portfolio'], // 태그 기반 캐시 무효화 가능
+    },
+  )();
 }

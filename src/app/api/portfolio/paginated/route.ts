@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPaginatedPortfolioData } from '@/services/portfolio/getPaginatedPortfolioData.server';
 
+// 1시간 동안 캐시 (포트폴리오 데이터는 자주 변경되지 않음)
+export const revalidate = 3600;
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -17,7 +20,12 @@ export async function GET(request: NextRequest) {
 
     const result = await getPaginatedPortfolioData(page, limit);
     
-    return NextResponse.json(result);
+    // 캐시 헤더 추가
+    return NextResponse.json(result, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=7200',
+      },
+    });
   } catch (error) {
     console.error('Error in paginated portfolio API:', error);
     return NextResponse.json(
