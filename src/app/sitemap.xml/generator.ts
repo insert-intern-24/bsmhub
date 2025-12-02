@@ -4,7 +4,7 @@ import path from 'path';
 import type { MetadataRoute } from 'next';
 
 const siteConfig = {
-  url: process.env.SITE_URL || 'https://example.com',
+  url: process.env.SITE_URL || 'https://insert.team',
 };
 
 const exclusiveRoutes = ['/auth*'];
