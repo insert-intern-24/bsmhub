@@ -5,44 +5,38 @@ import { useRef, useState } from 'react';
 interface PictureUploadProps {
   aspectRatio?: string;
   onFileChange?: (file: File | null) => void;
+  existingImageUrl?: string;
 }
 
-const PictureUpload = ({ aspectRatio = '1:1', onFileChange }: PictureUploadProps) => {
+const PictureUpload = ({ aspectRatio = '1:1', onFileChange, existingImageUrl }: PictureUploadProps) => {
   const [preview, setPreview] = useState<string>();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const imageUrl = preview || existingImageUrl;
+  const [w, h] = aspectRatio.split(':').map(Number);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) {
-      onFileChange?.(null);
-      return;
-    }
+    if (!file) return onFileChange?.(null);
     
     if (preview) URL.revokeObjectURL(preview);
-    const url = URL.createObjectURL(file);
-    setPreview(url);
+    setPreview(URL.createObjectURL(file));
     onFileChange?.(file);
-  };
-
-  const getWidth = (ratio: string) => {
-    const [w, h] = ratio.split(':').map(Number);
-    const height = 5.875; // rem
-    return `${(height * w) / h}rem`;
   };
 
   return (
     <label 
-      className="overflow-hidden input-common flex-col !justify-center cursor-pointer"
-      style={{ height: '5.875rem', width: getWidth(aspectRatio) }}
+      className="group relative overflow-hidden input-common flex-col !justify-center cursor-pointer"
+      style={{ height: '5.875rem', width: `${(5.875 * w) / h}rem` }}
     >
-      {preview ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={preview} alt="업로드된 이미지" className="object-cover w-full h-full" />
-      ) : (
-        <span className="text-gray-500 text-body">사진 업로드</span>
+      {imageUrl && (
+        <div 
+          className="absolute inset-0 bg-cover bg-center transition-opacity duration-400 group-hover:opacity-0"
+          style={{ backgroundImage: `url(${imageUrl})` }}
+        />
       )}
+      <span className={`text-gray-500 text-body z-10 relative ${imageUrl ? 'opacity-0 group-hover:opacity-100' : ''} transition-opacity duration-400`}>
+        사진 업로드
+      </span>
       <input
-        ref={inputRef}
         type="file"
         accept="image/*"
         className="hidden"

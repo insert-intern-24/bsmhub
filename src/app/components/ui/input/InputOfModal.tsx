@@ -257,6 +257,7 @@ const InputOfModal = ({
                     <PictureUpload
                       aspectRatio={field.aspectRatio}
                       onFileChange={onChange}
+                      existingImageUrl={typeof value === 'string' ? value : undefined}
                     />
                   );
                 }
