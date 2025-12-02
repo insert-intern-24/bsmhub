@@ -31,6 +31,8 @@ const PictureUpload = ({ aspectRatio = '1:1', onFileChange, existingImageUrl }: 
         <div 
           className="absolute inset-0 bg-cover bg-center transition-opacity duration-400 group-hover:opacity-0"
           style={{ backgroundImage: `url(${imageUrl})` }}
+          role="img"
+          aria-label="업로드된 이미지 미리보기"
         />
       )}
       <span className={`text-gray-500 text-body z-10 relative ${imageUrl ? 'opacity-0 group-hover:opacity-100' : ''} transition-opacity duration-400`}>
