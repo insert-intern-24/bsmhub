@@ -116,7 +116,8 @@ const ProfileEditModal = ({
           });
           router.push(redirectPath);
         }
-        // 낙관적 업데이트가 적용되었으므로 refresh 불필요
+        // 삭제 후 UI 갱신을 위해 router.refresh() 호출
+        router.refresh();
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.';
