@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPaginatedPortfolioData } from '@/services/portfolio/getPaginatedPortfolioData.server';
 
-// 1시간 동안 캐시 (포트폴리오 데이터는 자주 변경되지 않음)
-export const revalidate = 3600;
-
+// 데이터 캐싱은 getPaginatedPortfolioData 내부의 unstable_cache와 아래 Cache-Control 헤더로 처리합니다.
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
