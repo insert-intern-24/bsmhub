@@ -3,82 +3,62 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { PortfolioData } from '@/app/components/portfolio/types';
 
-export function useInfinitePortfolio() {
-  const [data, setData] = useState<PortfolioData[]>([]);
+export function useInfinitePortfolio(initialData: PortfolioData[] = []) {
+  const [data, setData] = useState<PortfolioData[]>(initialData);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
-  const pageRef = useRef(1);
-  const initializedRef = useRef(false);
+  const pageRef = useRef(initialData.length > 0 ? 2 : 1); // 초기 데이터가 있으면 다음 페이지부터 시작
+  const initializedRef = useRef(initialData.length > 0); // 초기 데이터가 있으면 이미 초기화된 것으로 간주
 
   const loadMore = useCallback(async () => {
     if (isLoading || !hasMore) return;
 
     setIsLoading(true);
-    let retryCount = 0;
-    const maxRetries = 1;
+    try {
+      const response = await fetch(
+        `/api/portfolio/paginated?page=${pageRef.current}&limit=5`,
+        {
+          // 브라우저 캐시 활용 (API Route의 Cache-Control 헤더에 따라 캐시됨)
+          cache: 'default',
+        },
+      );
 
-    while (retryCount <= maxRetries) {
-      try {
-        const response = await fetch(
-          `/api/portfolio/paginated?page=${pageRef.current}&limit=5`,
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.error || `HTTP error! status: ${response.status}`
         );
-
-        // HTTP 응답 상태 코드 확인
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(
-            errorData.error || `HTTP error! status: ${response.status}`,
-          );
-        }
-
-        const result = await response.json();
-
-        // API 응답에 error 필드가 있는 경우 처리
-        if (result.error) {
-          throw new Error(result.error);
-        }
-
-        // result.hasMore를 사용하여 더 정확하게 처리
-        if (result.hasMore !== undefined) {
-          setHasMore(result.hasMore);
-        }
-
-        if (result.data && result.data.length > 0) {
-          setData((prev) => {
-            const existing = new Set(prev.map((item) => item.profile.name));
-            const newData = result.data.filter(
-              (item: PortfolioData) => !existing.has(item.profile.name),
-            );
-            return [...prev, ...newData];
-          });
-          pageRef.current += 1;
-
-          // result.hasMore가 없을 때만 길이로 판단
-          if (result.hasMore === undefined && result.data.length < 5) {
-            setHasMore(false);
-          }
-        } else if (result.hasMore === undefined) {
-          // hasMore 정보가 없고 데이터도 없으면 더 이상 없음으로 간주
-          setHasMore(false);
-        }
-
-        setError(null); // 성공 시 에러 초기화
-        break; // 성공하면 루프 종료
-      } catch (err) {
-        retryCount += 1;
-        if (retryCount > maxRetries) {
-          console.error('Failed to load portfolio data after retry', err);
-          setError(
-            err instanceof Error ? err.message : '데이터 로드 실패',
-          );
-        } else {
-          // 재시도 전 짧은 대기
-          await new Promise((resolve) => setTimeout(resolve, 500));
-        }
       }
+
+      const result = await response.json();
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      // hasMore 판단 통합: result.hasMore가 있으면 사용, 없으면 데이터 길이로 판단
+      const limit = 5;
+      setHasMore(result.hasMore ?? result.data.length >= limit);
+
+      if (result.data && result.data.length > 0) {
+        setData((prev) => {
+          const existing = new Set(prev.map((item) => item.profile.name));
+          const newData = result.data.filter(
+            (item: PortfolioData) => !existing.has(item.profile.name),
+          );
+          return [...prev, ...newData];
+        });
+        pageRef.current += 1;
+      }
+
+      setError(null);
+    } catch (err) {
+      console.error('Failed to load portfolio data', err);
+      setError(err instanceof Error ? err.message : '데이터 로드 실패');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, [isLoading, hasMore]);
 
   useEffect(() => {
