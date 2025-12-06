@@ -59,8 +59,8 @@ const AutoSlidingBusinessCardClient = ({ initialData }: AutoSlidingBusinessCardC
     return () => clearInterval(interval);
   }, [displayCards.length, isLoading, loadMore, isHovered]);
 
-  // 초기 데이터가 없고 로딩 중일 때만 로딩 표시
-  if (isLoading && data.length === 0 && initialData.length === 0) {
+  // 데이터가 없고 로딩 중일 때만 로딩 표시
+  if (isLoading && data.length === 0) {
     return (
       <article className="relative flex items-center justify-center h-full w-[26rem] mobile:w-full mobile:h-[15rem] bg-[#D7EFFF] rounded-[0.25rem] overflow-hidden">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
