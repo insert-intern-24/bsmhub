@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     // 캐시 헤더 추가
     return NextResponse.json(result, {
       headers: {
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=7200',
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=3600',
       },
     });
   } catch (error) {
