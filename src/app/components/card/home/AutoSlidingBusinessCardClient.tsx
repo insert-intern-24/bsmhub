@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Image from 'next/image';
 import { useInfinitePortfolio } from '@/utils/hook/useInfinitePortfolio';
 import { PortfolioData } from '@/app/components/portfolio/types';
@@ -36,11 +36,15 @@ const AutoSlidingBusinessCardClient = ({ initialData }: AutoSlidingBusinessCardC
   const [isHovered, setIsHovered] = useState(false);
   const { data, isLoading, error, loadMore } = useInfinitePortfolio(initialData);
 
-  const displayCards = data.length > 0
-    ? data
-        .filter((portfolio) => portfolio.projects.length > 0)
-        .map(convertPortfolioToBusinessCard)
-    : [];
+  const displayCards = useMemo(
+    () =>
+      data.length > 0
+        ? data
+            .filter((portfolio) => portfolio.projects.length > 0)
+            .map(convertPortfolioToBusinessCard)
+        : [],
+    [data],
+  );
 
   useEffect(() => {
     if (displayCards.length === 0) return;
