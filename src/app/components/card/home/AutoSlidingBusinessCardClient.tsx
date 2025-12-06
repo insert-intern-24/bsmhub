@@ -38,26 +38,39 @@ const AutoSlidingBusinessCardClient = ({ initialData }: AutoSlidingBusinessCardC
   const [isHovered, setIsHovered] = useState(false);
   const { data, isLoading, error, loadMore } = useInfinitePortfolio(initialData);
   const [shuffledData, setShuffledData] = useState<PortfolioData[]>([]);
-  const prevLengthRef = useRef(0);
+  const dataSetRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (!data.length) {
       setShuffledData([]);
-      prevLengthRef.current = 0;
+      dataSetRef.current.clear();
       return;
     }
 
-    if (!prevLengthRef.current) {
-      setShuffledData(shuffleArray([...data]));
-    } else if (data.length > prevLengthRef.current) {
-      setShuffledData((prev) => [...prev, ...data.slice(prevLengthRef.current)]);
+    // 새로운 데이터만 필터링하여 추가
+    const newItems = data.filter((item) => !dataSetRef.current.has(item.profile.name));
+    
+    if (newItems.length > 0) {
+      setShuffledData((prev) => {
+        if (!prev.length) {
+          // 초기 데이터는 셔플
+          const shuffled = shuffleArray([...newItems]);
+          shuffled.forEach((item) => dataSetRef.current.add(item.profile.name));
+          return shuffled;
+        } else {
+          // 새 데이터는 뒤에 추가
+          const updated = [...prev, ...newItems];
+          newItems.forEach((item) => dataSetRef.current.add(item.profile.name));
+          return updated;
+        }
+      });
     }
-    prevLengthRef.current = data.length;
   }, [data]);
 
   const displayCards = useMemo(
     () =>
-      shuffledData
+      [...shuffledData]
+        .reverse()
         .filter((p) => p.projects.length > 0)
         .map(convertPortfolioToBusinessCard),
     [shuffledData],
