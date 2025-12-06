@@ -47,8 +47,7 @@ export function useInfinitePortfolio(initialData: PortfolioData[] = []) {
           const newData = result.data.filter(
             (item: PortfolioData) => !existing.has(item.profile.name),
           );
-          // 후반에 들어온 데이터를 배열의 앞에 삽입
-          return [...newData, ...prev];
+          return [...prev, ...newData];
         });
         pageRef.current += 1;
       }

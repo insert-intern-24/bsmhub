@@ -5,7 +5,6 @@ import {
 } from '@/app/components/portfolio/types';
 import { PaginatedPortfolioResponse } from '@/types/pagination';
 import { unstable_cache } from 'next/cache';
-import { shuffleArray } from '@/utils/shuffle';
 
 // 캐시된 데이터 페칭 함수
 async function fetchPaginatedPortfolioData(
@@ -144,11 +143,8 @@ async function fetchPaginatedPortfolioData(
   const totalPages = Math.ceil((totalCount || 0) / limit);
   const hasMore = page < totalPages;
 
-  // 첫 페이지인 경우에만 셔플 (1시간 단위로 캐시되므로 1시간마다 다른 순서)
-  const shuffledData = page === 1 ? shuffleArray(portfolioData) : portfolioData;
-
   return {
-    data: shuffledData,
+    data: portfolioData,
     hasMore,
     totalCount: totalCount || 0,
     currentPage: page,
