@@ -450,6 +450,24 @@ export type Database = {
         }
         Relationships: []
       }
+      authenticated_users: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+        }
+        Insert: {
+          created_at: string
+          email: string
+          id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+        }
+        Relationships: []
+      }
       certificates: {
         Row: {
           certificate_id: number
@@ -471,33 +489,26 @@ export type Database = {
       chat_messages: {
         Row: {
           content: string
-          conversation_id: string | null
-          created_at: string | null
-          message_id: number
-          sender_profile_id: string
+          id: string
+          room_id: string
+          sender_id: string
+          sent_at: string
         }
         Insert: {
           content: string
-          conversation_id?: string | null
-          created_at?: string | null
-          message_id?: number
-          sender_profile_id: string
+          id: string
+          room_id: string
+          sender_id: string
+          sent_at: string
         }
         Update: {
           content?: string
-          conversation_id?: string | null
-          created_at?: string | null
-          message_id?: number
-          sender_profile_id?: string
+          id?: string
+          room_id?: string
+          sender_id?: string
+          sent_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "chat_messages_conversation_id_fkey"
-            columns: ["conversation_id"]
-            referencedRelation: "conversations"
-            referencedColumns: ["conversation_id"]
-          },
-        ]
+        Relationships: []
       }
       companies: {
         Row: {
@@ -955,16 +966,19 @@ export type Database = {
       profile_competitions: {
         Row: {
           competition_id: number
+          id: number
           prize: string
           profile_id: string | null
         }
         Insert: {
           competition_id?: number
+          id?: number
           prize: string
           profile_id?: string | null
         }
         Update: {
           competition_id?: number
+          id?: number
           prize?: string
           profile_id?: string | null
         }
@@ -1113,6 +1127,33 @@ export type Database = {
             referencedColumns: ["profile_id"]
           },
         ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          id: string
+          nickname: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at: string
+          id: string
+          nickname: string
+          updated_at: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          nickname?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       project_category: {
         Row: {
@@ -1312,6 +1353,57 @@ export type Database = {
           },
         ]
       }
+      rooms: {
+        Row: {
+          broadcast_expires_at: string
+          chat_expires_at: string | null
+          chat_started_at: string | null
+          created_at: string
+          extended_count: number
+          extension_voting_expires_at: string | null
+          guest_agreed_to_extend: boolean
+          guest_user_id: string | null
+          host_agreed_to_extend: boolean
+          host_user_id: string
+          id: string
+          mode: string
+          status: string
+          topic: string
+        }
+        Insert: {
+          broadcast_expires_at: string
+          chat_expires_at?: string | null
+          chat_started_at?: string | null
+          created_at: string
+          extended_count: number
+          extension_voting_expires_at?: string | null
+          guest_agreed_to_extend: boolean
+          guest_user_id?: string | null
+          host_agreed_to_extend: boolean
+          host_user_id: string
+          id: string
+          mode: string
+          status: string
+          topic: string
+        }
+        Update: {
+          broadcast_expires_at?: string
+          chat_expires_at?: string | null
+          chat_started_at?: string | null
+          created_at?: string
+          extended_count?: number
+          extension_voting_expires_at?: string | null
+          guest_agreed_to_extend?: boolean
+          guest_user_id?: string | null
+          host_agreed_to_extend?: boolean
+          host_user_id?: string
+          id?: string
+          mode?: string
+          status?: string
+          topic?: string
+        }
+        Relationships: []
+      }
       skills: {
         Row: {
           language: boolean | null
@@ -1466,6 +1558,31 @@ export type Database = {
           },
           {
             foreignKeyName: "student_courses_student_id_fkey"
+            columns: ["student_id"]
+            referencedRelation: "student"
+            referencedColumns: ["student_id"]
+          },
+        ]
+      }
+      student_discord: {
+        Row: {
+          created_at: string
+          discord_id: number | null
+          student_id: string
+        }
+        Insert: {
+          created_at?: string
+          discord_id?: number | null
+          student_id: string
+        }
+        Update: {
+          created_at?: string
+          discord_id?: number | null
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_discord_student_id_fkey"
             columns: ["student_id"]
             referencedRelation: "student"
             referencedColumns: ["student_id"]
