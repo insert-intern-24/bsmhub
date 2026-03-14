@@ -40,8 +40,6 @@ const verifyDiscordBotJwt = async (
 ): Promise<DiscordTokenPayload> => {
   const publicKey = process.env.DISCORD_BOT_JWT_PUBLIC_KEY;
   const secret = process.env.DISCORD_BOT_JWT_SECRET;
-  const issuer = process.env.DISCORD_BOT_JWT_ISSUER;
-  const audience = process.env.DISCORD_BOT_JWT_AUDIENCE;
 
   if (!publicKey && !secret) {
     throw new Error(
@@ -82,8 +80,6 @@ const verifyDiscordBotJwt = async (
 
   const { payload } = await jwtVerify(token, verificationKey, {
     algorithms,
-    issuer,
-    audience,
   });
 
   return payload as DiscordTokenPayload;
@@ -205,7 +201,8 @@ export default async function DiscordAuthPage({
     <div className="p-6">
       <h1 className="text-xl font-semibold">Discord 연동 완료</h1>
       <p className="mt-2 text-sm text-gray-600">
-        학생 계정과 Discord 계정이 정상적으로 연결되었습니다.
+        학생 계정과 Discord 계정이 정상적으로 연결되었습니다. 이 페이지를 닫고
+        디스코드 봇 인증 완료 버튼을 눌러주세요.
       </p>
     </div>
   );
