@@ -63,14 +63,17 @@ const Account = () => {
   return currentUser ? (
     <Dropdown
       trigger={
-        <Image
-          src={profileImageUrl}
-          alt="프로필"
-          width={20}
-          height={20}
-          className="rounded-full cursor-pointer hover:opacity-80"
-        />
+        <div className="w-5 h-5 rounded-full overflow-hidden hover:opacity-80 cursor-pointer">
+          <Image
+            src={profileImageUrl}
+            alt="프로필"
+            width={20}
+            height={20}
+            className="object-cover w-full h-full"
+          />
+        </div>
       }
+      triggerClassName="!p-0"
       align="right"
     >
       {profileName ? (
