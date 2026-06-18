@@ -1,60 +1,146 @@
 import type { Config } from 'tailwindcss';
+import type { CSSProperties } from 'react';
 
 const config: Config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/shared/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    screens: {
+      mobile: {
+        max: '900px',
+      },
+      sm: {
+        min: '640px',
+      },
+      md: {
+        min: '768px',
+      },
+      lg: {
+        min: '1024px',
+      },
+      xl: {
+        min: '1280px',
+      },
+      '2xl': {
+        min: '1536px',
+      },
+    },
     extend: {
+      gridTemplateColumns: {
+        'auto-fit-card': 'repeat(auto-fill, minmax(24rem, 1fr))',
+      },
       lineClamp: {
         7: '7',
         8: '8',
       },
       padding: {
         '14px': '0.875rem',
+        'white-space-margin': '0 211px',
       },
       text: {
         '14px': '0.875rem',
       },
       fontFamily: {
         threat: ['Threat', 'sans-serif'],
+        'material-symbols': ['Material Symbols Outlined', 'sans-serif'],
       },
       maxWidth: {
         outer: '92.5rem',
         inner: '86.625rem',
       },
       colors: {
-        background: 'var(--background)',
-        foreground: 'var(--foreground)',
-        titleColor: '#171719',
-        descriptionColor: '#5E5E5E',
-        detailColor: '#858587',
-        strokeColor: '#F1F1F1',
-        footerTextColor: '#7E7E8C',
-        footerBgColor: '#EDEDED',
-        customGray: '#F5F5F7',
-        customGray2: '#F2F2F2',
-        followBlue: '#216BFF',
-        moreGray: '#8E8E8E',
-        textBasic: '#1E2124',
-        textDisabled: '#8A949E',
-        itemBlue: '#1462FF',
+        white: '#FFFFFF',
+        'light-gray-input': '#F5F5F7',
+        'light-gray-outline': '#F5F5F7',
+        'light-gray-footer-bg': '#F5F5F5',
+        'light-gray': '#EAEAEC',
+        'gray-footer': '#51515C',
+        'placeholder-gray': '#858587',
+        'gray-base': '#5E5E5E',
+        black: '#131313',
+        detail: '#858587',
+        'blue-primary': '#1462FF',
+        'blue-secondary': '#0C89CD',
+        'red-primary': '#FD462D',
       },
-      backgroundImage: {
-        'contest-gradient':
-          'linear-gradient(180deg, rgba(47, 66, 205, 0.07) 0%, rgba(255, 255, 255, 0.07) 100%)',
+      keyframes: {
+        'slide-up': {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(0%) rotate(0deg)' },
+        },
+        'slide-down': {
+          '0%': { transform: 'translateY(0%) rotate(0deg)' },
+          '100%': { transform: 'translateY(100%)' },
+        },
+      },
+      animation: {
+        'slide-up': 'slide-up 0.5s ease-out',
+        'slide-down': 'slide-down 0.5s ease-out',
       },
     },
   },
   plugins: [
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('@tailwindcss/line-clamp'),
+    require('@tailwindcss/container-queries'),
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@tailwindcss/typography'),
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('tailwind-scrollbar'),
+    // flex-row, flex-col 시 display: flex 자동 적용
+    function ({
+      addUtilities,
+    }: {
+      addUtilities: (utils: Record<string, CSSProperties>) => void;
+    }) {
+      addUtilities({
+        '.flex-row': {
+          display: 'flex',
+          flexDirection: 'row',
+        },
+        '.flex-col': {
+          display: 'flex',
+          flexDirection: 'column',
+        },
+        '.flex-center': {
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        },
+        '.flex-x-center': {
+          display: 'flex',
+          justifyContent: 'space-between',
+        },
+        '.flex-y-center': {
+          display: 'flex',
+          alignItems: 'center',
+        },
+        '.inline-flex-center': {
+          display: 'inline-flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        },
+        '.icon-checkbox': {
+          fontWeight: 'normal',
+          fontStyle: 'normal',
+          fontSize: '24px',
+          lineHeight: 1,
+          letterSpacing: 'normal',
+          textTransform: 'none',
+          display: 'inline-block',
+          whiteSpace: 'nowrap',
+          wordWrap: 'normal',
+          direction: 'ltr',
+          WebkitFontFeatureSettings: "'liga'",
+          WebkitFontSmoothing: 'antialiased',
+        },
+      });
+    },
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('@tailwindcss/aspect-ratio'),
   ],
 };
 export default config;

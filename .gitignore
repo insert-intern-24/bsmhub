@@ -38,3 +38,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#local file
+*.local
+
+# lighthouse ci
+.lighthouseci/
+.lighthouserc.json
+
+# storybook
+storybook-static
+# Sentry Config File
+.env.sentry-build-plugin

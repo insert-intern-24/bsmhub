@@ -1,0 +1,410 @@
+import { FormConfig, FormFieldConfig } from '@/app/components/ui/input/types/inputTypes';
+import { createClient } from '@/services/supabase/client';
+import {
+  createDataTransformer,
+  createDeleteFilterGenerator,
+  createChangeCalculator,
+  processGraphQLRelationTables,
+} from '@/services/graphQL/relationTableHelper.graphql';
+import { z } from 'zod';
+
+export const teamProfileConfig: FormConfig = {
+  redirect: {
+    buildPath: async (formData, mode, variables) => {
+      // 개발 디버깅용 플래그 (환경변수 DEBUG_TEAM_PROFILE_REDIRECT='true'로 활성화)
+      const DEBUG = process.env.DEBUG_TEAM_PROFILE_REDIRECT === 'true';
+      // 핵심 로직: formData에서 profile_full_name 추출 후 경로 생성
+      const nameData = formData.profile_full_name as unknown[][];
+      const profileName = (nameData?.[0]?.[0] as { value?: string })?.value;
+      const redirectPath = profileName ? `/team/${encodeURIComponent(profileName)}` : null;
+      if (DEBUG) {
+        console.log('[teamProfileConfig.redirect] buildPath debug', {
+          formData,
+          mode,
+          variables,
+          nameData,
+          profileName,
+          redirectPath,
+        });
+        if (!profileName) {
+          console.warn('[teamProfileConfig.redirect] No profileName found, returning null');
+        }
+      }
+      return redirectPath;
+    },
+    deletePath: () => {
+      return '/team';
+    },
+  },
+  deleteable: true,
+  graphql: {
+    read: `
+      query GetTeamProfile($profile_id: String!) {
+        profileCollection(filter: { profile_id: { eq: $profile_id }, is_team: { eq: true } }) {
+          edges {
+            node {
+              profile_id
+              profile_name
+              profile_image
+              description
+              email
+              owner
+              profile_linkCollection {
+                edges {
+                  node {
+                    link
+                    alt
+                  }
+                }
+              }
+              team_memberCollection {
+                edges {
+                  node {
+                    participant_id
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+    insert: `
+      mutation InsertTeamProfile($objects: [profileInsertInput!]!) {
+        insertIntoprofileCollection(objects: $objects) {
+          affectedCount
+          records {
+            profile_id
+          }
+        }
+      }
+    `,
+    update: `
+      mutation UpdateTeamProfile($set: profileUpdateInput!, $filter: profileFilter!) {
+        updateprofileCollection(set: $set, filter: $filter) {
+          affectedCount
+          records {
+            profile_id
+            profile_name
+            profile_image
+            description
+            email
+            owner
+            is_team
+          }
+        }
+      }
+    `,
+    delete: `
+      mutation DeleteTeamProfile($filter: profileFilter!) {
+        deleteFromprofileCollection(filter: $filter) {
+          affectedCount
+          records {
+            profile_id
+            profile_name
+          }
+        }
+      }
+    `,
+  },
+  fields: [
+    {
+      fieldName: 'profile_full_name',
+      label: '이름',
+      type: 'inputList',
+      required: true,
+      columnInfo: { table: 'profile', column: 'profile_name' },
+      inputConfig: {
+        onlyOne: true,
+        inputs: [
+          {
+            name: 'name',
+            type: 'text',
+            placeholder: '이름을 입력하세요',
+            required: true,
+          },
+        ],
+      },
+    },
+    {
+      fieldName: 'profile_avatar_url',
+      label: '프로필 이미지',
+      type: 'picture',
+      required: false,
+      columnInfo: { table: 'profile', column: 'profile_image' },
+      aspectRatio: '1:1',
+      bucket: 'profile-image',
+    },
+    {
+      fieldName: 'profile_description',
+      label: '자기소개',
+      type: 'inputList',
+      required: false,
+      columnInfo: { table: 'profile', column: 'description' },
+      inputConfig: {
+        onlyOne: true,
+        inputs: [
+          {
+            name: 'description',
+            type: 'text',
+            placeholder: '자기소개를 입력하세요',
+            required: false,
+          },
+        ],
+      },
+    },
+    {
+      fieldName: 'profile_email',
+      label: '이메일',
+      type: 'inputList',
+      required: false,
+      columnInfo: { table: 'profile', column: 'email' },
+      inputConfig: {
+        onlyOne: true,
+        inputs: [
+          {
+            name: 'email',
+            type: 'text',
+            placeholder: '이메일을 입력하세요',
+            required: false,
+            zodSchema: z.union([
+              z.string().email('올바른 이메일 형식이 아닙니다.'),
+              z.literal(''),
+            ]),
+          },
+        ],
+      },
+    },
+    {
+      fieldName: 'profile_link',
+      label: '링크',
+      type: 'inputList',
+      required: false,
+      columnInfo: { table: 'profile_link', column: '*' },
+      relationHandler: {
+        type: 'graphql',
+        identifierIsStudentId: false,
+        dataTransformer: createDataTransformer(
+          { link: 'link', alt: 'alt' },
+          (item) => Boolean(item.link),
+        ),
+        deleteFilterGenerator: createDeleteFilterGenerator(['link', 'alt']),
+        changeCalculator: createChangeCalculator(['link', 'alt']),
+      },
+      inputConfig: {
+        onlyOne: false,
+        inputs: [
+          {
+            name: 'link',
+            type: 'text',
+            placeholder: '링크 URL을 입력하세요',
+            required: true,
+            // 외부 링크는 http:// 또는 https://로만 시작하도록 제한
+            // (mailto:, sms:, tel:, geo:, itms:, intent: 등 다른 프로토콜 및 상대 경로 차단)
+            zodSchema: z
+              .string()
+              .min(1)
+              .regex(
+                /^https?:\/\//i,
+                '링크는 http:// 또는 https://로 시작해야 합니다.',
+              ),
+          },
+          {
+            name: 'alt',
+            type: 'text',
+            placeholder: '링크 제목을 입력하세요',
+            required: true,
+          },
+        ],
+      },
+    } as FormFieldConfig,
+    {
+      fieldName: 'team_members',
+      label: '팀원',
+      type: 'dropdownInputList',
+      required: false,
+      inputConfig: {
+        inputs: [
+          {
+            name: 'participant_id',
+            placeholder: '팀원을 검색하세요',
+            required: true,
+          },
+        ],
+      },
+      dropdownInputConfig: {
+        nameColumnName: 'profile_name',
+        valueColumnName: 'profile_id',
+        query: async (formData) => {
+          const supabase = await createClient();
+
+          // 현재 로그인한 사용자 조회
+          const { data: { user } } = await supabase.auth.getUser();
+
+          if (!user) {
+            console.error('User not authenticated');
+            return [];
+          }
+
+          let ownerStudentId: string;
+
+          // mode에 따라 owner 결정
+          if (formData?._mode === 'create') {
+            // 생성 모드: 현재 로그인한 유저가 owner
+            ownerStudentId = user.id;
+          } else {
+            // 수정 모드: formData에서 owner 추출 (없으면 현재 유저 사용)
+            ownerStudentId = (formData?.owner as string) || user.id;
+          }
+
+          // owner의 profile_id 조회
+          const { data: ownerProfile } = await supabase
+            .from('profile')
+            .select('profile_id')
+            .eq('owner', ownerStudentId)
+            .eq('is_team', false)
+            .maybeSingle();
+
+          const ownerProfileId = (ownerProfile as { profile_id?: string } | null)?.profile_id;
+
+          // owner를 제외한 모든 개인 프로필 조회
+          let query = supabase
+            .from('profile')
+            .select('profile_id, profile_name')
+            .eq('is_team', false);
+
+          if (ownerProfileId) {
+            query = query.neq('profile_id', ownerProfileId);
+          }
+
+          const { data, error } = await query;
+
+          if (error) {
+            console.error('Error fetching profiles:', error);
+            return [];
+          }
+
+          return data ?? [];
+        },
+      },
+      columnInfo: { table: 'team_member', column: '*' },
+      relationHandler: {
+        type: 'graphql',
+        identifierIsStudentId: false,
+        dataTransformer: createDataTransformer({
+          participant_id: 'participant_id',
+        }),
+        deleteFilterGenerator: createDeleteFilterGenerator(['participant_id']),
+        changeCalculator: createChangeCalculator(['participant_id']),
+      },
+    },
+    // {
+    //   fieldName: 'profile_competitions',
+    //   label: '수상이력',
+    //   type: 'inputList',
+    //   required: false,
+    //   columnInfo: { table: 'profile_competitions', column: '*' },
+    //   relationHandler: {
+    //     type: 'rest',
+    //     handler: updateProfileCompetitions,
+    //     identifierIsStudentId: false,
+    //   },
+    //   inputConfig: {
+    //     onlyOne: false,
+    //     inputs: [
+    //       {
+    //         name: 'prize',
+    //         type: 'text',
+    //         placeholder: '수상내역을 입력하세요',
+    //         required: true,
+    //       },
+    //     ],
+    //   },
+    // },
+    // {
+    //   fieldName: 'profile_skills',
+    //   label: '기술스택',
+    //   type: 'skillTag',
+    //   required: false,
+    //   columnInfo: { table: 'profile_skills', column: '*' },
+    //   relationHandler: {
+    //     type: 'rest',
+    //     handler: updateProfileSkills,
+    //     identifierIsStudentId: false,
+    //   },
+    //   valuePath: 'skill_id',
+    //   white: false,
+    // },
+  ],
+
+  /**
+   * Team Profile 전용 관계 테이블 처리 핸들러
+   */
+  afterSave: async ({ recordId, relationTableData, originalRelationData }) => {
+    console.log('[teamProfileConfig] afterSave started');
+    console.log('[teamProfileConfig] recordId (profile_id):', recordId);
+
+    const profileId = recordId as string;
+
+    // GraphQL로 처리할 테이블 정보 수집
+    const graphqlTables: Array<{
+      tableName: string;
+      relationData: unknown[];
+      dataTransformer?: (data: unknown[]) => unknown[];
+      deleteFilterGenerator?: (
+        item: Record<string, unknown>,
+        identifier: string | number,
+        identifierField?: string,
+      ) => Record<string, unknown>;
+      changeCalculator?: (
+        newData: unknown[],
+        existingData: Record<string, unknown>[],
+      ) => {
+        toDelete: Record<string, unknown>[];
+        toInsert: Record<string, unknown>[];
+      };
+    }> = [];
+
+    // fields에서 각 테이블의 설정 정보 가져오기
+    for (const [tableName, relationData] of relationTableData) {
+      const fieldConfig = teamProfileConfig.fields.find(
+        (field) => field.columnInfo?.table === tableName,
+      );
+
+      if (fieldConfig?.relationHandler?.type === 'graphql') {
+        graphqlTables.push({
+          tableName,
+          relationData,
+          dataTransformer: fieldConfig.relationHandler.dataTransformer,
+          deleteFilterGenerator:
+            fieldConfig.relationHandler.deleteFilterGenerator,
+          changeCalculator: fieldConfig.relationHandler.changeCalculator,
+        });
+      }
+    }
+
+    // GraphQL 처리 - team_member를 먼저 처리 (RLS 정책 때문)
+    const teamMemberTable = graphqlTables.find(t => t.tableName === 'team_member');
+    const otherTables = graphqlTables.filter(t => t.tableName !== 'team_member');
+
+    if (teamMemberTable) {
+      await processGraphQLRelationTables(
+        [teamMemberTable],
+        profileId,
+        'profile_id',
+        originalRelationData,
+      );
+    }
+
+    if (otherTables.length > 0) {
+      await processGraphQLRelationTables(
+        otherTables,
+        profileId,
+        'profile_id',
+        originalRelationData,
+      );
+    }
+
+    console.log('[teamProfileConfig] afterSave completed');
+  },
+};

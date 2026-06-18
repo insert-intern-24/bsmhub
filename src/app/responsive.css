@@ -1,0 +1,88 @@
+@media (max-width: 900px) {
+  .responsive-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 0;
+  }
+
+  .responsive-navigator {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 1.75rem;
+    padding-bottom: 2.25rem;
+  }
+
+  .responsive-footer {
+    display: flex;
+    flex-direction: column;
+    padding: 2.5rem;
+  }
+
+  /* Project Team Section */
+  .project-team-content.foldable {
+    max-height: 180px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .project-team-content.foldable::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, white);
+    pointer-events: none;
+  }
+
+  .project-team-expand-button {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .project-team-content.expanded {
+    max-height: none;
+    overflow: visible;
+  }
+  .responsive-main {
+    padding: 120px 0 0;
+  }
+
+  .responsive-portfolioHome {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .responsive-portfolioHome .portfolioHomeCard {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+  }
+
+  .responsive-team {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .responsive-teamSidebar {
+    width: 100%;
+    min-height: auto;
+    border: none;
+    padding-right: 0;
+  }
+
+  .responsive-teamProjects {
+    padding: 0;
+  }
+}

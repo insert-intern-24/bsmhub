@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './components/ui/text/text.css';
+
 :root {
   --background: #f5f5f7;
   --foreground: #171717;
@@ -26,23 +28,15 @@ body {
   font-family: 'Threat';
   font-style: normal;
   font-weight: 400;
-  src: local('Threat'),
+  src:
+    local('Threat'),
     url('https://fonts.cdnfonts.com/s/95719/Threat-2OAeX.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Material Symbols Outlined';
-  font-style: normal;
-  font-weight: 400;
-  src: url(https://fonts.gstatic.com/s/materialsymbolsoutlined/v215/kJF1BvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzByHX9rA6RzaxHMPdY43zj-jCxv3fzvRNU22ZXGJpEpjC_1v-p_4MrImHCIJIZrDCvHOejbd5zrDAt.woff2)
-    format('woff2');
 }
 
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
   font-weight: normal;
   font-style: normal;
-  font-size: 16px;
   line-height: 1;
   letter-spacing: normal;
   text-transform: none;
@@ -62,6 +56,19 @@ body {
     format('woff2');
 }
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+  -webkit-appearance: none;
+}
+
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -78,10 +85,28 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.selected{
-  background: linear-gradient(180deg, rgba(0, 117, 251, 0.00) 92.07%, rgba(0, 117, 251, 0.10) 99.61%);
+.selected {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 117, 251, 0) 92.07%,
+    rgba(0, 117, 251, 0.1) 99.61%
+  );
 }
 
 html {
   font-size: 12px;
+}
+
+/* 리스트 아이템에 ▪ 기호 데코레이션 추가 */
+.list-bullet-square {
+  @apply flex-col gap-0 list-none pl-0;
+}
+
+.list-bullet-square > li {
+  @apply flex items-start;
+}
+
+.list-bullet-square > li::before {
+  content: '▪';
+  @apply text-[#2c2e35] mr-1 shrink-0;
 }
