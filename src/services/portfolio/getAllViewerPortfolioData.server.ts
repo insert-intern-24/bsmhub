@@ -144,15 +144,15 @@ export async function getAllViewerPortfolioData(): Promise<ViewerPortfolioData[]
     return [];
   }
 
-  // 데이터 변환 및 2학년 필터링
+  // 데이터 변환 및 3학년 필터링
   const portfolioData: ViewerPortfolioData[] = (
     profiles as ProfileWithRelations[]
   )
     .filter((profile) => {
-      // 입학년도(join_at)로 2학년 계산하여 필터링
+      // 입학년도(join_at)로 3학년 계산하여 필터링
       const joinAt = profile.student?.join_at;
       const grade = calculateGradeFromJoinAt(joinAt || null);
-      return grade === 2;
+      return grade === 3;
     })
     .map((profile) => {
       // 프로젝트 중복 제거 및 병합
