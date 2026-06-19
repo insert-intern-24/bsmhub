@@ -67,12 +67,9 @@ const ProjectEditModal = ({
           );
           if (redirectPath) {
             router.push(redirectPath);
-          } else {
-            router.refresh();
           }
-        } else {
-          router.refresh();
         }
+        // 낙관적 업데이트가 적용되었으므로 refresh 불필요
       } else {
         const errorMessage = formatErrorMessage(result.message, 'project');
         showToast(errorMessage, 'error', 2000, '오류');
@@ -99,9 +96,8 @@ const ProjectEditModal = ({
         if (config.redirect?.deletePath) {
           const redirectPath = config.redirect.deletePath(variables);
           router.push(redirectPath);
-        } else {
-          router.refresh();
         }
+        // 낙관적 업데이트가 적용되었으므로 refresh 불필요
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : '삭제 중 오류가 발생했습니다.';
         showToast(errorMessage, 'error', 3000, '오류');
